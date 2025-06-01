@@ -1,32 +1,14 @@
-Elden Ring Save Editor (PS4/PC)
-A powerful and easy-to-use save editor for Elden Ring (Latest Update) on PS4 and PC.
+Elden Ring Nightreign Save Editor PS4
+A powerful and easy-to-use save editor for Elden Ring (Latest Update) on PS4 
 
 ✨ Features
-🔧 Add or modify in-game items:
+🔧 modify in-game items:
 
-Weapons
-
-Goods
-
-Talismans
-
-Armor
-
-Ashes of War (AoW)
-
-Cookbooks
-
-🔁 Change New Game+ cycle
+Edit Relics
+Replace Relics
+Replace and modify Relics Effect
 
 💎 Edit Runes
-
-⚙️ Customize Player Stats
-
-👤 Edit Character Type
-
-🛡️ Checksum Support
-This tool utilizes the checksum implementation from:
-🔗 Ariescyn/EldenRing-Save-Manager
 
 ⚠️ Disclaimer
 
