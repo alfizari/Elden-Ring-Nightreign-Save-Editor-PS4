@@ -1,6 +1,8 @@
 Elden Ring Nightreign Save Editor PS4
 A powerful and easy-to-use save editor for Elden Ring (Latest Update) on PS4 
 
+## Contribute by adding relics id's and effects id's to the Json files
+
 ✨ Features
 🔧 modify in-game items:
 
