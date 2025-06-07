@@ -1,15 +1,14 @@
+import csv
 import json
 import os
 import tkinter as tk
+from tkinter import filedialog
 from tkinter import ttk, filedialog, messagebox, simpledialog, Scrollbar
 from functools import wraps
 from time import time
 import hashlib
 import binascii
 import shutil
-
-
-
 
 hex_pattern1_Fixed = "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF" #inventory
 souls_distance = -1080  # Distance from the found hex pattern to the souls value
@@ -38,8 +37,6 @@ loaded_file_data = None
 
 working_directory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(working_directory)
-
-
 
 def read_file_section(file_path, start_offset, end_offset):
     try:
@@ -73,7 +70,6 @@ def find_value_at_offset(section_data, offset, byte_size=4):
         pass
     return None
 
-
 def find_character_name(section_data, offset, byte_size=32):
     try:
         value_bytes = section_data[offset:offset+byte_size]
@@ -90,7 +86,6 @@ def find_character_name(section_data, offset, byte_size=32):
     except IndexError:
         return "N/A"
     
-
 def open_file():
     global loaded_file_data, SECTIONS
     file_path = filedialog.askopenfilename(filetypes=[("Save Files", "*")])
@@ -132,11 +127,13 @@ def open_file():
                 loaded_file_data = file.read()
             
             # Create a backup
-            backup_path = f"{file_path}.bak1"
-            with open(backup_path, 'wb') as backup_file:
-                backup_file.write(loaded_file_data)
+            backup_path = f"{file_path}.bak"
+            if not os.path.exists(backup_path):
+                with open(backup_path, 'wb') as backup_file:
+                    backup_file.write(loaded_file_data)
+                print(f"Backup created: {backup_path}")
             
-            messagebox.showinfo("Backup Created", f"Backup saved as {backup_path}")
+            # messagebox.showinfo("Backup Created", f"Backup saved as {backup_path}")
             
             # Enable section buttons
             for btn in section_buttons:
@@ -145,10 +142,9 @@ def open_file():
         except Exception as e:
             messagebox.showerror("Error", f"Failed to read file or create backup: {str(e)}")
             return
+
 def calculate_offset2(offset1, distance):
     return offset1 + distance
-
-
 
 found_slots = []  # Store found slots for editing
 current_slot_index = 0  # Track which slot is currently selected
@@ -339,15 +335,15 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                         }
                         found_slots.append(slot_info)
                         
-                        print(f"[DEBUG] Found valid slot with b4=0xC0 at offset {i}, size {slot_size} bytes.")
-                        print(f"Item ID: {item_id}, Effects: {effect1_id}, {effect2_id}, {effect3_id}")
+                        # print(f"[DEBUG] Found valid slot with b4=0xC0 at offset {i}, size {slot_size} bytes.")
+                        # print(f"Item ID: {item_id}, Effects: {effect1_id}, {effect2_id}, {effect3_id}")
 
                     i += slot_size
                     continue
         
         # Check for empty slots
         if i + 8 <= len(section_data) and section_data[i:i+8] == b'\x00\x00\x00\x00\xFF\xFF\xFF\xFF':
-            print(f"[DEBUG] Found empty slot at offset {i}")
+            # print(f"[DEBUG] Found empty slot at offset {i}")
             i += 8  # Empty slots are typically 8 bytes
             continue
             
@@ -604,6 +600,75 @@ def apply_slot_changes():
     except Exception as e:
         messagebox.showerror("Error", f"Failed to update slot: {e}")
 
+def import_items_from_csv():
+
+    if not found_slots:
+        messagebox.showerror("Error", "No slots loaded. Scan for slots first.")
+        return
+    
+    csv_file_path = filedialog.askopenfilename(
+        title="Select CSV File",
+        filetypes=[("CSV files", "*.csv")]
+    )
+
+    if not csv_file_path:
+        return  # Cancelado
+
+    try:
+        with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile, delimiter='\t')
+            
+            for row in reader:
+                try:
+                    id = int(row['id']) - 1
+                    if id < 0 or id >= len(found_slots):
+                        print(f"Order {id + 1} is out of range. Skipping.")
+                        continue
+                    
+                    slot = found_slots[id]
+                    new_slot_data = bytearray(slot['raw_data'])
+                    
+                    # Item ID
+                    item_id = int(row['item'])
+                    item_id_bytes = item_id.to_bytes(3, byteorder='little')
+                    new_slot_data[4:7] = item_id_bytes
+                    new_slot_data[8:11] = item_id_bytes
+                    
+                    # Effects
+                    for idx, eff_offset in enumerate(range(16, 28, 4)):
+                        effect_col = f'effect{idx+1}'
+                        effect_id = int(row.get(effect_col, 0))
+                        effect_bytes = effect_id.to_bytes(4, byteorder='little')
+                        new_slot_data[eff_offset:eff_offset+4] = effect_bytes
+                    
+                    # Write to file
+                    with open(file_path_var.get(), 'r+b') as file:
+                        file.seek(slot['offset'])
+                        file.write(new_slot_data)
+                    
+                    # Update loaded data in memory
+                    start_idx = slot['offset']
+                    end_idx = start_idx + len(new_slot_data)
+                    loaded_file_data[start_idx:end_idx] = new_slot_data
+
+                    # Update slot info
+                    slot['raw_data'] = new_slot_data
+                    slot['data'] = new_slot_data.hex()
+                    slot['item_id'] = item_id
+                    for idx in range(5):
+                        slot[f'effect{idx+1}_id'] = int(row.get(f'effect{idx+1}', 0))
+                    
+                    print(f"Updated slot {id + 1} successfully.")
+                    
+                except Exception as ex:
+                    print(f"Error processing row {row}: {ex}")
+        
+        messagebox.showinfo("Import Complete", "CSV import completed successfully.")
+        update_replace_tab()
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to import CSV: {e}")
+
 ##UI stuff
 file_open_frame = tk.Frame(window)
 file_open_frame.pack(fill="x", padx=10, pady=5)
@@ -628,7 +693,6 @@ notebook.add(name_tab, text="Name")
 ttk.Label(name_tab, text="Current Character Name:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
 ttk.Label(name_tab, textvariable=current_name_var).grid(row=0, column=1, padx=10, pady=10)
 
-
 souls_tab = ttk.Frame(notebook)
 notebook.add(souls_tab, text="Murks/Runes")
 ttk.Label(souls_tab, text="Current Souls:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
@@ -636,10 +700,12 @@ ttk.Label(souls_tab, textvariable=current_souls_var).grid(row=0, column=1, padx=
 ttk.Label(souls_tab, text="New Souls Value (MAX 999999999):").grid(row=1, column=0, padx=10, pady=10, sticky="e")
 ttk.Entry(souls_tab, textvariable=new_souls_var, width=20).grid(row=1, column=1, padx=10, pady=10)
 ttk.Button(souls_tab, text="Update Souls", command=update_souls_value).grid(row=2, column=0, columnspan=2, pady=20)
+
 # Replace tab
 replace_tab = ttk.Frame(notebook)
 notebook.add(replace_tab, text="Replace")
 tk.Button(replace_tab, text="Scan for Relics", command=find_and_replace_pattern_with_aow_and_update_counters).grid(row=0, column=0, columnspan=2, pady=20)
+
 # Slot information display
 ttk.Label(replace_tab, text="Slot Information:").grid(row=0, column=0, columnspan=4, padx=10, pady=5, sticky="w")
 slot_info_text = tk.Text(replace_tab, height=4, width=60, state=tk.NORMAL)
@@ -690,8 +756,15 @@ effect3_entry = tk.Entry(effect3_frame, width=15)
 effect3_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
 
-# Apply button
-tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white").grid(row=7, column=0, columnspan=4, padx=10, pady=20)
+# Create a frame to hold both buttons
+button_frame = tk.Frame(replace_tab)
+button_frame.grid(row=7, column=0, columnspan=4, pady=20)
+
+# Apply Changes button
+tk.Button(button_frame, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white").pack(side="left", padx=20)
+
+# Import CSV button
+tk.Button(button_frame, text="Import from CSV", command=import_items_from_csv, bg="green", fg="white").pack(side="left", padx=20)
 
 # Configure column weights for resizing
 replace_tab.columnconfigure(0, weight=1)
@@ -708,6 +781,5 @@ my_label.pack(side="top", anchor="ne", padx=10, pady=5)
 we_label = tk.Label(window, text="USE AT YOUR OWN RISK. EDITING STATS AND HP COULD GET YOU BANNED", anchor="w", padx=10)
 we_label.pack(side="bottom", anchor="nw", padx=10, pady=5)
 
-messagebox.showinfo("Info", "Contribute by adding the relics id's and effects's id to the json files at /src/Resources/Json in https://github.com/alfizari/Elden-Ring-Nightreign .")
 # Run 
 window.mainloop()
