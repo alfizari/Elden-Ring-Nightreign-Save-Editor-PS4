@@ -35,11 +35,40 @@ current_souls_var = tk.StringVar(value="N/A")
 new_souls_var = tk.StringVar()
 current_section_var = tk.IntVar(value=0)
 loaded_file_data = None
-
+item_label_var = tk.StringVar()
+item_label_var.set("Item ID:")  # Initial label
+effect1_label_var = tk.StringVar()
+effect1_label_var.set("Effect 1 ID:")  # Initial label
+effect2_label_var = tk.StringVar()  
+effect2_label_var.set("Effect 2 ID:")  # Initial label
+effect3_label_var = tk.StringVar()
+effect3_label_var.set("Effect 3 ID:")  # Initial label
+effect4_label_var = tk.StringVar()
+effect4_label_var.set("Effect 4 ID:")  # Initial label
 working_directory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(working_directory)
-
-
+SECTIONS = {
+                1: {'start': 0x80, 'end': 0x10007F},
+                2: {'start': 0x100080, 'end': 0x20007F},
+                3: {'start': 0x200080, 'end': 0x30007F},
+                4: {'start': 0x300080, 'end': 0x40007F},
+                5: {'start': 0x400080, 'end': 0x50007F},
+                6: {'start': 0x500080, 'end': 0x60007F},
+                7: {'start': 0x600080, 'end': 0x70007F},
+                8: {'start': 0x700080, 'end': 0x80007F},
+                9: {'start': 0x800080, 'end': 0x90007F},
+                10: {'start': 0x900080, 'end': 0xA0007F}
+            }
+def locate_name(file_path, offset):
+    try:
+        with open(file_path, 'rb') as file:
+            file.seek(offset)
+            name_data = file.read(32)
+            print(f"Character Name: {name_data}")
+            return name_data
+    except IOError as e:
+        messagebox.showerror("Error", f"Failed to read file: {str(e)}")
+        return ""
 
 def read_file_section(file_path, start_offset, end_offset):
     try:
@@ -177,17 +206,20 @@ def load_section(section_number):
     section_info = SECTIONS[section_number]
     section_data = loaded_file_data[section_info['start']:section_info['end']+1]
 
+    name_bytes =locate_name(file_path_var.get(), 0xA019DE)  # Adjust the offset as needed
+    
+
     # Try to find hex pattern in the section
-    offset1 = find_hex_offset(section_data, hex_pattern1_Fixed)
+    offset1 = find_hex_offset(section_data, name_bytes.hex())
     if offset1 is not None:
         # Display Souls value
-        souls_offset = offset1 + souls_distance
+        souls_offset = offset1 + 52
         current_souls = find_value_at_offset(section_data, souls_offset)
         current_souls_var.set(current_souls if current_souls is not None else "N/A")
 
         # Display character name
         for distance in possible_name_distances_for_name_tap:
-            name_offset = offset1 + distance
+            name_offset = offset1
             current_name = find_character_name(section_data, name_offset)
             if current_name and current_name != "N/A":
                 current_name_var.set(current_name)
@@ -322,10 +354,13 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                         effect1_bytes = slot_data[16:20]  # 17th to 20th bytes (0-indexed)
                         effect2_bytes = slot_data[20:24]  # 21st to 24th bytes
                         effect3_bytes = slot_data[24:28]  # 25th to 28th bytes
+                        effect4_bytes = slot_data[28:32]  # 29th to 32nd bytes
+                    
                         
                         effect1_id = int.from_bytes(effect1_bytes, byteorder='little')
                         effect2_id = int.from_bytes(effect2_bytes, byteorder='little')
                         effect3_id = int.from_bytes(effect3_bytes, byteorder='little')
+                        effect4_id = int.from_bytes(effect4_bytes, byteorder='little')
                         
                         slot_info = {
                             'offset': start_pos + i,  # Absolute offset in file
@@ -335,12 +370,13 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                             'item_id': item_id,
                             'effect1_id': effect1_id,
                             'effect2_id': effect2_id,
-                            'effect3_id': effect3_id
+                            'effect3_id': effect3_id,
+                            'effect4_id': effect4_id
                         }
                         found_slots.append(slot_info)
                         
                         print(f"[DEBUG] Found valid slot with b4=0xC0 at offset {i}, size {slot_size} bytes.")
-                        print(f"Item ID: {item_id}, Effects: {effect1_id}, {effect2_id}, {effect3_id}")
+                        print(f"Item ID: {item_id}, Effects: {effect1_id}, {effect2_id}, {effect3_id}. {effect4_id}")
 
                     i += slot_size
                     continue
@@ -360,6 +396,138 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
     # Update the replace tab with found slots
     update_replace_tab()
 
+def import_section():
+    global loaded_file_data
+    global current_stemaid_var
+    if not loaded_file_data:
+        messagebox.showerror("Error", "Please open a file first")
+        return
+
+    current_section = current_section_var.get()
+    if not current_section:
+        messagebox.showerror("Error", "Please Choose a slot first")
+        return
+    
+
+    import_path = filedialog.askopenfilename(filetypes=[("Save Files", "*")])
+    if not import_path:
+        return
+
+    import_file_name = os.path.basename(import_path)
+
+    # Define import sections
+    if import_file_name.lower() == "memory.dat":
+        import_sections = {
+            1: {'start': 0x70, 'end': 0x28006F},
+            2: {'start': 0x280070, 'end': 0x50006F},
+            3: {'start': 0x500070, 'end': 0x78006F},
+            4: {'start': 0x780070, 'end': 0xA0006F},
+            5: {'start': 0xA00070, 'end': 0xC8006F},
+            6: {'start': 0xC80070, 'end': 0xF0006F},
+            7: {'start': 0xF00070, 'end': 0x118006F},
+            8: {'start': 0x1180070, 'end': 0x140006F},
+            9: {'start': 0x1400070, 'end': 0x168006F},
+            10: {'start': 0x1680070, 'end': 0x190006F}
+        }
+    elif import_file_name.lower() == "er0000.sl2":
+        import_sections = {
+            1: {'start': 0x310, 'end': 0x28030F},
+            2: {'start': 0x280320, 'end': 0x50031F},
+            3: {'start': 0x500330, 'end': 0x78032F},
+            4: {'start': 0x780340, 'end': 0xA0033F},
+            5: {'start': 0xA00350, 'end': 0xC8034F},
+            6: {'start': 0xC80360, 'end': 0xF0035F},
+            7: {'start': 0xF00370, 'end': 0x118036F},
+            8: {'start': 0x1180380, 'end': 0x140037F},
+            9: {'start': 0x1400390, 'end': 0x168038F},
+            10: {'start': 0x16803A0, 'end': 0x190039F}
+        }
+    else:
+        messagebox.showerror("Unsupported File", "Unsupported file format for import.")
+        return
+
+    try:
+        with open(import_path, 'rb') as f:
+            import_data = f.read()
+    except Exception as e:
+        messagebox.showerror("Error", f"Could not read import file: {e}")
+        return
+    # Extract names for all sections
+    section_names = []
+    name_offsets = [0xA019DE, 0xA019E6, 0xA019EE, 0xA019F6, 0xA019FE, 0xA01A06, 0xA01A0E, 0xA01A16, 0xA01A1E, 0xA01A26]
+
+    # Store name bytes for all offsets in a list
+    name_bytes_list = []
+    with open(import_path, 'rb') as f:
+        for name_offset in name_offsets:
+            name_bytes = locate_name(import_path, name_offset)
+            name_bytes_list.append(name_bytes)
+
+    # Now process each section
+    for sec_num, sec_info in import_sections.items():
+        data = import_data[sec_info['start']:sec_info['end']+1]
+        name_found = "N/A"
+        
+        # Loop over name_bytes_list and check each one
+        for name_bytes in name_bytes_list:
+            offset1 = find_hex_offset(data, name_bytes.hex())
+            if offset1 is not None:
+                for distance in possible_name_distances_for_name_tap:
+                    name_offset = offset1
+                    name = find_character_name(data, name_offset)
+                    if name and name != "N/A":
+                        name_found = name
+                        break
+                if name_found != "N/A":
+                    break
+
+        section_names.append((sec_num, name_found))
+
+
+
+    # UI to choose section to import
+    section_window = tk.Toplevel()
+    section_window.title("Import Section")
+    section_window.geometry("350x400")
+
+    label = tk.Label(section_window, text="Choose a section to import from:")
+    label.pack(pady=10)
+
+    for sec_num, name in section_names:
+        btn_text = f"Section {sec_num} - {name}"
+        def make_callback(s=sec_num):
+            def callback():
+                global loaded_file_data
+
+                # Get original Steam ID saved from current section
+
+                # Extract the section chunk to import
+                imported_chunk = import_data[import_sections[s]['start']:import_sections[s]['end']+1]
+
+                # Try to locate the Steam ID in the imported chunk
+
+                # Replace the section in the loaded file data
+                local_start = SECTIONS[current_section]['start']
+                local_end = SECTIONS[current_section]['end']
+                loaded_file_data = (
+                    loaded_file_data[:local_start] +
+                    imported_chunk +
+                    loaded_file_data[local_end+1:]
+                )
+
+                # Save to file
+                with open(file_path_var.get(), 'wb') as f:
+                    f.write(loaded_file_data)
+
+                messagebox.showinfo("Import Successful", f"Replaced current section with Section {s} from import file.")
+                load_section(current_section)
+                section_window.destroy()
+            return callback
+
+        btn = tk.Button(section_window, text=btn_text, command=make_callback())
+        btn.pack(pady=5)
+
+###
 def find_and_replace_pattern_with_aow_and_update_counters():
     global loaded_file_data
     try:
@@ -409,8 +577,8 @@ def find_and_replace_pattern_with_aow_and_update_counters():
         messagebox.showerror("Error", f"Failed to add or update item: {e}")
 
 def update_replace_tab():
-    global current_slot_index
-    
+    global current_slot_index, item_label_var,effect1_label_var, effect2_label_var, effect3_label_var, effect4_label_var
+
     if not found_slots:
         slot_info_text.delete(1.0, tk.END)
         slot_info_text.insert(1.0, "No slots with b4=0xC0 found.")
@@ -419,36 +587,69 @@ def update_replace_tab():
         effect1_entry.delete(0, tk.END)
         effect2_entry.delete(0, tk.END)
         effect3_entry.delete(0, tk.END)
+        effect4_entry.delete(0, tk.END)
         slot_navigation_label.config(text="No slots available")
         return
-    
+
     # Reset to first slot if current index is out of bounds
     if current_slot_index >= len(found_slots):
         current_slot_index = 0
-    
+
     # Display current slot info
     slot = found_slots[current_slot_index]
+
+    # Extract IDs
+    item_id = slot['item_id']
+    effect1_id = slot['effect1_id']
+    effect2_id = slot['effect2_id']
+    effect3_id = slot['effect3_id']
+    effect4_id = slot['effect4_id']
+
+    # Look up names
+    item_name = items_json.get(str(item_id), {}).get("name", "Unknown Item")
+    effect1_name = effects_json.get(str(effect1_id), {}).get("name", "None")
+    effect2_name = effects_json.get(str(effect2_id), {}).get("name", "None")
+    effect3_name = effects_json.get(str(effect3_id), {}).get("name", "None")
+    effect4_name = effects_json.get(str(effect4_id), {}).get("name", "None")
+    item_label_var.set(f"Item ID:{item_id} - {item_name}")
+    effect1_label_var.set(f"Effect 1 ID:{effect1_id} -{effect1_name}")
+    effect2_label_var.set(f"Effect 2 ID:{effect2_id} -{effect2_name}" ) 
+    effect3_label_var.set(f"Effect 3 ID:{effect3_id}- {effect3_name}")
+    effect4_label_var.set(f"Effect 4 ID (Hidden slot):{effect4_id }-{effect4_name}")
+
+    # Clear and insert info
     slot_info_text.delete(1.0, tk.END)
     slot_info_text.insert(1.0, f"Slot {current_slot_index + 1} of {len(found_slots)}\n")
     slot_info_text.insert(tk.END, f"Offset: {slot['offset']} (0x{slot['offset']:X})\n")
     slot_info_text.insert(tk.END, f"Size: {slot['size']} bytes\n")
-    slot_info_text.insert(tk.END, f"Raw Data: {slot['data'][:32]}...")  # Show first 32 chars
+    slot_info_text.insert(tk.END, f"Raw Data: {slot['data'][:32]}...\n\n")
     
-    # Update entry fields with current slot data
+    # Insert with names
+    slot_info_text.insert(tk.END, f"Item ID: {item_id} - {item_name}\n")
+    slot_info_text.insert(tk.END, f"Effect 1 ID: {effect1_id} - {effect1_name}\n")
+    slot_info_text.insert(tk.END, f"Effect 2 ID: {effect2_id} - {effect2_name}\n")
+    slot_info_text.insert(tk.END, f"Effect 3 ID: {effect3_id} - {effect3_name}\n")
+    slot_info_text.insert(tk.END, f"Effect 4 ID: {effect4_id} - {effect4_name}\n")
+
+    # Update entry fields
     item_id_entry.delete(0, tk.END)
-    item_id_entry.insert(0, str(slot['item_id']))
-    
+    item_id_entry.insert(0, str(item_id))
+
     effect1_entry.delete(0, tk.END)
-    effect1_entry.insert(0, str(slot['effect1_id']))
-    
+    effect1_entry.insert(0, str(effect1_id))
+
     effect2_entry.delete(0, tk.END)
-    effect2_entry.insert(0, str(slot['effect2_id']))
-    
+    effect2_entry.insert(0, str(effect2_id))
+
     effect3_entry.delete(0, tk.END)
-    effect3_entry.insert(0, str(slot['effect3_id']))
-    
+    effect3_entry.insert(0, str(effect3_id))
+
+    effect4_entry.delete(0, tk.END)
+    effect4_entry.insert(0, str(effect4_id))
+
     # Update navigation label
     slot_navigation_label.config(text=f"Slot {current_slot_index + 1} of {len(found_slots)}")
+
 
 def navigate_slot(direction):
     global current_slot_index
@@ -550,6 +751,7 @@ def apply_slot_changes():
         new_effect1_id = int(effect1_entry.get())
         new_effect2_id = int(effect2_entry.get())
         new_effect3_id = int(effect3_entry.get())
+        new_effect4_id = int(effect4_entry.get())
         
         current_slot = found_slots[current_slot_index]
         
@@ -565,10 +767,12 @@ def apply_slot_changes():
         effect1_bytes = new_effect1_id.to_bytes(4, byteorder='little')
         effect2_bytes = new_effect2_id.to_bytes(4, byteorder='little')
         effect3_bytes = new_effect3_id.to_bytes(4, byteorder='little')
+        effect4_bytes = new_effect4_id.to_bytes(4, byteorder='little')
         
         new_slot_data[16:20] = effect1_bytes  # 17th to 20th bytes
         new_slot_data[20:24] = effect2_bytes  # 21st to 24th bytes
         new_slot_data[24:28] = effect3_bytes  # 25th to 28th bytes
+        new_slot_data[28:32] = effect4_bytes  # 29th to 32nd bytes
         
         # Get file path
         file_path = file_path_var.get()
@@ -593,6 +797,7 @@ def apply_slot_changes():
         current_slot['effect1_id'] = new_effect1_id
         current_slot['effect2_id'] = new_effect2_id
         current_slot['effect3_id'] = new_effect3_id
+        current_slot['effect4_id'] = new_effect4_id
         
         # Refresh the display
         update_replace_tab()
@@ -621,6 +826,13 @@ for i in range(1, 11):
     section_buttons.append(btn)
 
 notebook = ttk.Notebook(window)
+import_message_var = tk.StringVar()
+import_message_label = ttk.Label(window, textvariable=import_message_var, foreground="green")
+import_message_label.pack(pady=10)
+import_btn = tk.Button(window, text="Import Save(PS4 beta)", command=import_section)
+import_btn.pack(pady=5)
+# Change to ttk.Button for Azure theme
+
 
 # Name tab
 name_tab = ttk.Frame(notebook)
@@ -639,59 +851,86 @@ ttk.Button(souls_tab, text="Update Souls", command=update_souls_value).grid(row=
 # Replace tab
 replace_tab = ttk.Frame(notebook)
 notebook.add(replace_tab, text="Replace")
-tk.Button(replace_tab, text="Scan for Relics", command=find_and_replace_pattern_with_aow_and_update_counters).grid(row=0, column=0, columnspan=2, pady=20)
-# Slot information display
-ttk.Label(replace_tab, text="Slot Information:").grid(row=0, column=0, columnspan=4, padx=10, pady=5, sticky="w")
-slot_info_text = tk.Text(replace_tab, height=4, width=60, state=tk.NORMAL)
-slot_info_text.grid(row=1, column=0, columnspan=4, padx=10, pady=5, sticky="ew")
 
-# Navigation controls
+# === Scan Button ===
+tk.Button(replace_tab, text="Scan for Relics", command=find_and_replace_pattern_with_aow_and_update_counters)\
+    .grid(row=0, column=0, columnspan=4, pady=10)
+
+# === Slot Info ===
+ttk.Label(replace_tab, text="Slot Information:")\
+    .grid(row=1, column=0, columnspan=4, padx=10, sticky="w")
+
+slot_info_text = tk.Text(replace_tab, height=4, width=60, state=tk.NORMAL)
+slot_info_text.grid(row=2, column=0, columnspan=4, padx=10, pady=5, sticky="ew")
+
+# === Navigation Buttons ===
 nav_frame = tk.Frame(replace_tab)
-nav_frame.grid(row=2, column=0, columnspan=4, pady=10)
+nav_frame.grid(row=3, column=0, columnspan=4, pady=10)
 
 tk.Button(nav_frame, text="← Previous", command=lambda: navigate_slot("prev")).pack(side="left", padx=5)
 slot_navigation_label = tk.Label(nav_frame, text="No slots available")
 slot_navigation_label.pack(side="left", padx=20)
 tk.Button(nav_frame, text="Next →", command=lambda: navigate_slot("next")).pack(side="left", padx=5)
 
-# Item ID section
-ttk.Label(replace_tab, text="Item ID:").grid(row=3, column=0, padx=10, pady=5, sticky="w")
+# === Item ID Section ===
+ttk.Label(replace_tab, textvariable=item_label_var)\
+    .grid(row=4, column=0, padx=10, pady=(10, 2), sticky="w")
+
 item_id_frame = tk.Frame(replace_tab)
-item_id_frame.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
+item_id_frame.grid(row=5, column=0, padx=10, pady=2, sticky="ew")
 
 item_id_entry = tk.Entry(item_id_frame, width=15)
 item_id_entry.pack(side="left", padx=(0, 5))
 tk.Button(item_id_frame, text="Select from JSON", command=open_item_selector).pack(side="left")
 
-# Effect 1 section
-ttk.Label(replace_tab, text="Effect 1 ID:").grid(row=3, column=1, padx=10, pady=5, sticky="w")
+# === Effect 1 ===
+ttk.Label(replace_tab, textvariable=effect1_label_var)\
+    .grid(row=4, column=1, padx=10, pady=(10, 2), sticky="w")
+
 effect1_frame = tk.Frame(replace_tab)
-effect1_frame.grid(row=4, column=1, padx=10, pady=5, sticky="ew")
+effect1_frame.grid(row=5, column=1, padx=10, pady=2, sticky="ew")
 
 effect1_entry = tk.Entry(effect1_frame, width=15)
 effect1_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect1_frame, text="Select from JSON", command=lambda: open_effect_selector(effect1_entry)).pack(side="left")
 
-# Effect 2 section
-ttk.Label(replace_tab, text="Effect 2 ID:").grid(row=5, column=0, padx=10, pady=5, sticky="w")
+# === Effect 2 ===
+ttk.Label(replace_tab, textvariable=effect2_label_var)\
+    .grid(row=6, column=0, padx=10, pady=(10, 2), sticky="w")
+
 effect2_frame = tk.Frame(replace_tab)
-effect2_frame.grid(row=6, column=0, padx=10, pady=5, sticky="ew")
+effect2_frame.grid(row=7, column=0, padx=10, pady=2, sticky="ew")
 
 effect2_entry = tk.Entry(effect2_frame, width=15)
 effect2_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect2_frame, text="Select from JSON", command=lambda: open_effect_selector(effect2_entry)).pack(side="left")
 
-# Effect 3 section
-ttk.Label(replace_tab, text="Effect 3 ID:").grid(row=5, column=1, padx=10, pady=5, sticky="w")
+# === Effect 3 ===
+ttk.Label(replace_tab, textvariable=effect3_label_var)\
+    .grid(row=6, column=1, padx=10, pady=(10, 2), sticky="w")
+
 effect3_frame = tk.Frame(replace_tab)
-effect3_frame.grid(row=6, column=1, padx=10, pady=5, sticky="ew")
+effect3_frame.grid(row=7, column=1, padx=10, pady=2, sticky="ew")
 
 effect3_entry = tk.Entry(effect3_frame, width=15)
 effect3_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
 
-# Apply button
-tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white").grid(row=7, column=0, columnspan=4, padx=10, pady=20)
+# === Effect 4 ===
+ttk.Label(replace_tab, textvariable=effect4_label_var)\
+    .grid(row=6, column=2, padx=10, pady=(10, 2), sticky="w")
+
+effect4_frame = tk.Frame(replace_tab)
+effect4_frame.grid(row=7, column=2, padx=10, pady=2, sticky="ew")
+
+effect4_entry = tk.Entry(effect4_frame, width=15)
+effect4_entry.pack(side="left", padx=(0, 5))
+tk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_selector(effect4_entry)).pack(side="left")
+
+# === Apply Button ===
+tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white")\
+    .grid(row=8, column=0, columnspan=4, padx=10, pady=20)
+
 
 # Configure column weights for resizing
 replace_tab.columnconfigure(0, weight=1)
