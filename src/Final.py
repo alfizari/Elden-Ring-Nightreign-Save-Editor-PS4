@@ -941,18 +941,18 @@ def import_items_from_csv():
         messagebox.showerror("Error", f"Failed to import CSV: {e}")
 
 ##UI stuff
-file_open_frame = tk.Frame(window)
+file_open_frame = ttk.Frame(window)
 file_open_frame.pack(fill="x", padx=10, pady=5)
 
-tk.Button(file_open_frame, text="Open Save File", command=open_file).pack(side="left", padx=5)
-file_name_label = tk.Label(file_open_frame, text="No file selected", anchor="w")
+ttk.Button(file_open_frame, text="Open Save File", command=open_file).pack(side="left", padx=5)
+file_name_label = ttk.Label(file_open_frame, text="No file selected", anchor="w")
 file_name_label.pack(side="left", padx=10, fill="x")
 
-section_frame = tk.Frame(window)
+section_frame = ttk.Frame(window)
 section_frame.pack(fill="x", padx=10, pady=5)
 section_buttons = []
 for i in range(1, 11):
-    btn = tk.Button(section_frame, text=f"Slot {i}", command=lambda x=i: load_section(x), state=tk.DISABLED)
+    btn = ttk.Button(section_frame, text=f"Slot {i}", command=lambda x=i: load_section(x), state=tk.DISABLED)
     btn.pack(side="left", padx=5)
     section_buttons.append(btn)
 
@@ -982,7 +982,7 @@ replace_tab = ttk.Frame(notebook)
 notebook.add(replace_tab, text="Replace Relics")
 
 # === Scan Button ===
-tk.Button(
+ttk.Button(
     replace_tab, text="Scan for Relics",
     command=find_and_replace_pattern_with_aow_and_update_counters
 ).grid(row=0, column=0, columnspan=4, pady=10)
@@ -994,76 +994,76 @@ slot_info_text = tk.Text(replace_tab, height=4, width=60, state=tk.NORMAL)
 slot_info_text.grid(row=2, column=0, columnspan=4, padx=10, pady=5, sticky="ew")
 
 # === Navigation Buttons ===
-nav_frame = tk.Frame(replace_tab)
+nav_frame = ttk.Frame(replace_tab)
 nav_frame.grid(row=3, column=0, columnspan=4, pady=10)
 
-tk.Button(nav_frame, text="← Previous", command=lambda: navigate_slot("prev")).pack(side="left", padx=5)
-slot_navigation_label = tk.Label(nav_frame, text="No slots available")
+ttk.Button(nav_frame, text="← Previous", command=lambda: navigate_slot("prev")).pack(side="left", padx=5)
+slot_navigation_label = ttk.Label(nav_frame, text="No slots available")
 slot_navigation_label.pack(side="left", padx=20)
-tk.Button(nav_frame, text="Next →", command=lambda: navigate_slot("next")).pack(side="left", padx=5)
+ttk.Button(nav_frame, text="Next →", command=lambda: navigate_slot("next")).pack(side="left", padx=5)
 
 # === Item ID Input ===
 ttk.Label(replace_tab, textvariable=item_label_var).grid(row=4, column=0, padx=10, pady=(10, 2), sticky="w")
 
-item_id_frame = tk.Frame(replace_tab)
+item_id_frame = ttk.Frame(replace_tab)
 item_id_frame.grid(row=5, column=0, padx=10, pady=2, sticky="ew")
 
-item_id_entry = tk.Entry(item_id_frame, width=15)
+item_id_entry = ttk.Entry(item_id_frame, width=15)
 item_id_entry.pack(side="left", padx=(0, 5))
-tk.Button(item_id_frame, text="Select from JSON", command=open_item_selector).pack(side="left")
+ttk.Button(item_id_frame, text="Select from JSON", command=open_item_selector).pack(side="left")
 
 # === Effect 1 ===
 ttk.Label(replace_tab, textvariable=effect1_label_var).grid(row=4, column=1, padx=10, pady=(10, 2), sticky="w")
 
-effect1_frame = tk.Frame(replace_tab)
+effect1_frame = ttk.Frame(replace_tab)
 effect1_frame.grid(row=5, column=1, padx=10, pady=2, sticky="ew")
 
-effect1_entry = tk.Entry(effect1_frame, width=15)
+effect1_entry = ttk.Entry(effect1_frame, width=15)
 effect1_entry.pack(side="left", padx=(0, 5))
-tk.Button(effect1_frame, text="Select from JSON", command=lambda: open_effect_selector(effect1_entry)).pack(side="left")
+ttk.Button(effect1_frame, text="Select from JSON", command=lambda: open_effect_selector(effect1_entry)).pack(side="left")
 
 # === Effect 2 ===
 ttk.Label(replace_tab, textvariable=effect2_label_var).grid(row=6, column=0, padx=10, pady=(10, 2), sticky="w")
 
-effect2_frame = tk.Frame(replace_tab)
+effect2_frame = ttk.Frame(replace_tab)
 effect2_frame.grid(row=7, column=0, padx=10, pady=2, sticky="ew")
 
 effect2_entry = tk.Entry(effect2_frame, width=15)
 effect2_entry.pack(side="left", padx=(0, 5))
-tk.Button(effect2_frame, text="Select from JSON", command=lambda: open_effect_selector(effect2_entry)).pack(side="left")
+ttk.Button(effect2_frame, text="Select from JSON", command=lambda: open_effect_selector(effect2_entry)).pack(side="left")
 
 # === Effect 3 ===
 ttk.Label(replace_tab, textvariable=effect3_label_var).grid(row=6, column=1, padx=10, pady=(10, 2), sticky="w")
 
-effect3_frame = tk.Frame(replace_tab)
+effect3_frame = ttk.Frame(replace_tab)
 effect3_frame.grid(row=7, column=1, padx=10, pady=2, sticky="ew")
 
-effect3_entry = tk.Entry(effect3_frame, width=15)
+effect3_entry = ttk.Entry(effect3_frame, width=15)
 effect3_entry.pack(side="left", padx=(0, 5))
-tk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
+ttk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
 
 # === Effect 4 ===
 ttk.Label(replace_tab, textvariable=effect4_label_var).grid(row=6, column=2, padx=10, pady=(10, 2), sticky="w")
 
-effect4_frame = tk.Frame(replace_tab)
+effect4_frame = ttk.Frame(replace_tab)
 effect4_frame.grid(row=7, column=2, padx=10, pady=2, sticky="ew")
 
-effect4_entry = tk.Entry(effect4_frame, width=15)
+effect4_entry = ttk.Entry(effect4_frame, width=15)
 effect4_entry.pack(side="left", padx=(0, 5))
-tk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_selector(effect4_entry)).pack(side="left")
+ttk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_selector(effect4_entry)).pack(side="left")
 
 # === Action Buttons ===
-button_frame = tk.Frame(replace_tab)
+button_frame = ttk.Frame(replace_tab)
 button_frame.grid(row=8, column=0, columnspan=4, pady=20)
 
-tk.Button(
+ttk.Button(
     button_frame, text="Apply Changes",
-    command=apply_slot_changes, bg="orange", fg="white"
+    command=apply_slot_changes
 ).pack(side="left", padx=20)
 
-tk.Button(
+ttk.Button(
     button_frame, text="Import from CSV",
-    command=import_items_from_csv, bg="green", fg="white"
+    command=import_items_from_csv,
 ).pack(side="left", padx=20)
 
 # === Grid Configuration for Responsiveness ===
