@@ -702,28 +702,40 @@ def open_item_selector():
     if not items_json:
         messagebox.showwarning("Warning", "Items JSON not loaded. Please load items.json file.")
         return
-    
+
     selector_window = tk.Toplevel(window)
     selector_window.title("Select Item")
-    selector_window.geometry("400x500")
-    
-    # Create listbox with scrollbar
+    selector_window.geometry("400x550")
+
+    search_var = tk.StringVar()
+
+    def update_listbox(*args):
+        search_term = search_var.get().lower()
+        listbox.delete(0, tk.END)
+        for item_id, item_data in items_json.items():
+            item_name = item_data.get('name', f'Item {item_id}')
+            if search_term in item_name.lower() or search_term in item_id:
+                listbox.insert(tk.END, f"{item_id}: {item_name}")
+
+    # Search entry
+    search_entry = tk.Entry(selector_window, textvariable=search_var)
+    search_entry.pack(fill="x", padx=10, pady=(10, 0))
+    search_var.trace_add("write", update_listbox)
+
+    # Listbox + Scrollbar
     frame = tk.Frame(selector_window)
     frame.pack(fill="both", expand=True, padx=10, pady=10)
-    
+
     scrollbar = tk.Scrollbar(frame)
     scrollbar.pack(side="right", fill="y")
-    
+
     listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set)
     listbox.pack(side="left", fill="both", expand=True)
-    
     scrollbar.config(command=listbox.yview)
-    
-    # Populate listbox with items
-    for item_id, item_data in items_json.items():
-        item_name = item_data.get('name', f'Item {item_id}')
-        listbox.insert(tk.END, f"{item_id}: {item_name}")
-    
+
+    # Initial population
+    update_listbox()
+
     def select_item():
         selection = listbox.curselection()
         if selection:
@@ -732,35 +744,50 @@ def open_item_selector():
             item_id_entry.delete(0, tk.END)
             item_id_entry.insert(0, item_id)
             selector_window.destroy()
-    
+
     tk.Button(selector_window, text="Select", command=select_item).pack(pady=10)
 
 def open_effect_selector(effect_entry):
     if not effects_json:
         messagebox.showwarning("Warning", "Effects JSON not loaded. Please load effects.json file.")
         return
-    
+
     selector_window = tk.Toplevel(window)
     selector_window.title("Select Effect")
-    selector_window.geometry("400x500")
-    
-    # Create listbox with scrollbar
+    selector_window.geometry("400x550")
+
+    search_var = tk.StringVar()
+
+    # Search entry
+    search_entry = tk.Entry(selector_window, textvariable=search_var)
+    search_entry.pack(fill="x", padx=10, pady=(10, 0))
+
+    # Frame for listbox and scrollbar
     frame = tk.Frame(selector_window)
     frame.pack(fill="both", expand=True, padx=10, pady=10)
-    
+
     scrollbar = tk.Scrollbar(frame)
     scrollbar.pack(side="right", fill="y")
-    
+
     listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set)
     listbox.pack(side="left", fill="both", expand=True)
-    
+
     scrollbar.config(command=listbox.yview)
-    
-    # Populate listbox with effects
-    for effect_id, effect_data in effects_json.items():
-        effect_name = effect_data.get('name', f'Effect {effect_id}')
-        listbox.insert(tk.END, f"{effect_id}: {effect_name}")
-    
+
+    def update_listbox(*args):
+        search_term = search_var.get().lower()
+        listbox.delete(0, tk.END)
+        for effect_id, effect_data in effects_json.items():
+            effect_name = effect_data.get('name', f'Effect {effect_id}')
+            if search_term in effect_name.lower() or search_term in effect_id:
+                listbox.insert(tk.END, f"{effect_id}: {effect_name}")
+
+    # Attach search filter
+    search_var.trace_add("write", update_listbox)
+
+    # Initial population
+    update_listbox()
+
     def select_effect():
         selection = listbox.curselection()
         if selection:
@@ -769,8 +796,9 @@ def open_effect_selector(effect_entry):
             effect_entry.delete(0, tk.END)
             effect_entry.insert(0, effect_id)
             selector_window.destroy()
-    
+
     tk.Button(selector_window, text="Select", command=select_effect).pack(pady=10)
+
 
 def apply_slot_changes():
     global loaded_file_data, found_slots, current_slot_index
@@ -941,17 +969,17 @@ ttk.Label(name_tab, text="Current Character Name:").grid(row=0, column=0, padx=1
 ttk.Label(name_tab, textvariable=current_name_var).grid(row=0, column=1, padx=10, pady=10)
 
 souls_tab = ttk.Frame(notebook)
-notebook.add(souls_tab, text="Murks/Runes")
-ttk.Label(souls_tab, text="Current Souls:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
+notebook.add(souls_tab, text="Murks")
+ttk.Label(souls_tab, text="Current Murks:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
 ttk.Label(souls_tab, textvariable=current_souls_var).grid(row=0, column=1, padx=10, pady=10)
-ttk.Label(souls_tab, text="New Souls Value (MAX 999999999):").grid(row=1, column=0, padx=10, pady=10, sticky="e")
+ttk.Label(souls_tab, text="New Murks Value (MAX 999999999):").grid(row=1, column=0, padx=10, pady=10, sticky="e")
 ttk.Entry(souls_tab, textvariable=new_souls_var, width=20).grid(row=1, column=1, padx=10, pady=10)
-ttk.Button(souls_tab, text="Update Souls", command=update_souls_value).grid(row=2, column=0, columnspan=2, pady=20)
+ttk.Button(souls_tab, text="Update Murks", command=update_souls_value).grid(row=2, column=0, columnspan=2, pady=20)
 
 # Replace tab
 # === Replace Tab ===
 replace_tab = ttk.Frame(notebook)
-notebook.add(replace_tab, text="Replace")
+notebook.add(replace_tab, text="Replace Relics")
 
 # === Scan Button ===
 tk.Button(
