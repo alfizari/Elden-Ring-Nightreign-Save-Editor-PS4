@@ -1,14 +1,15 @@
-import csv
 import json
 import os
 import tkinter as tk
-from tkinter import filedialog
 from tkinter import ttk, filedialog, messagebox, simpledialog, Scrollbar
 from functools import wraps
 from time import time
 import hashlib
 import binascii
 import shutil
+
+
+
 
 hex_pattern1_Fixed = "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF" #inventory
 souls_distance = -1080  # Distance from the found hex pattern to the souls value
@@ -34,44 +35,6 @@ current_souls_var = tk.StringVar(value="N/A")
 new_souls_var = tk.StringVar()
 current_section_var = tk.IntVar(value=0)
 loaded_file_data = None
-
-working_directory = os.path.dirname(os.path.abspath(__file__))
-os.chdir(working_directory)
-
-item_label_var = tk.StringVar()
-item_label_var.set("Item ID:")  # Initial label
-effect1_label_var = tk.StringVar()
-effect1_label_var.set("Effect 1 ID:")  # Initial label
-effect2_label_var = tk.StringVar()  
-effect2_label_var.set("Effect 2 ID:")  # Initial label
-effect3_label_var = tk.StringVar()
-effect3_label_var.set("Effect 3 ID:")  # Initial label
-effect4_label_var = tk.StringVar()
-effect4_label_var.set("Effect 4 ID:")  # Initial label
-working_directory = os.path.dirname(os.path.abspath(__file__))
-os.chdir(working_directory)
-SECTIONS = {
-                1: {'start': 0x80, 'end': 0x10007F},
-                2: {'start': 0x100080, 'end': 0x20007F},
-                3: {'start': 0x200080, 'end': 0x30007F},
-                4: {'start': 0x300080, 'end': 0x40007F},
-                5: {'start': 0x400080, 'end': 0x50007F},
-                6: {'start': 0x500080, 'end': 0x60007F},
-                7: {'start': 0x600080, 'end': 0x70007F},
-                8: {'start': 0x700080, 'end': 0x80007F},
-                9: {'start': 0x800080, 'end': 0x90007F},
-                10: {'start': 0x900080, 'end': 0xA0007F}
-            }
-def locate_name(file_path, offset):
-    try:
-        with open(file_path, 'rb') as file:
-            file.seek(offset)
-            name_data = file.read(32)
-            print(f"Character Name: {name_data}")
-            return name_data
-    except IOError as e:
-        messagebox.showerror("Error", f"Failed to read file: {str(e)}")
-        return ""
 item_label_var = tk.StringVar()
 item_label_var.set("Item ID:")  # Initial label
 effect1_label_var = tk.StringVar()
@@ -107,6 +70,27 @@ def locate_name(file_path, offset):
         messagebox.showerror("Error", f"Failed to read file: {str(e)}")
         return ""
 
+def locate_name1(file_path, offset):
+    try:
+        with open(file_path, 'rb') as file:
+            file.seek(offset)
+            name_data = file.read(10)
+            print(f"Character Name: {name_data}")
+            return name_data
+    except IOError as e:
+        messagebox.showerror("Error", f"Failed to read file: {str(e)}")
+        return ""
+    
+def locate_name2(file_path, offset):
+    try:
+        with open(file_path, 'rb') as file:
+            file.seek(offset)
+            name_data = file.read(6)
+            print(f"Character Name: {name_data}")
+            return name_data
+    except IOError as e:
+        messagebox.showerror("Error", f"Failed to read file: {str(e)}")
+        return ""
 def read_file_section(file_path, start_offset, end_offset):
     try:
         with open(file_path, 'rb') as file:
@@ -139,6 +123,7 @@ def find_value_at_offset(section_data, offset, byte_size=4):
         pass
     return None
 
+
 def find_character_name(section_data, offset, byte_size=32):
     try:
         value_bytes = section_data[offset:offset+byte_size]
@@ -155,6 +140,7 @@ def find_character_name(section_data, offset, byte_size=32):
     except IndexError:
         return "N/A"
     
+
 def open_file():
     global loaded_file_data, SECTIONS
     file_path = filedialog.askopenfilename(filetypes=[("Save Files", "*")])
@@ -196,13 +182,11 @@ def open_file():
                 loaded_file_data = file.read()
             
             # Create a backup
-            backup_path = f"{file_path}.bak"
-            if not os.path.exists(backup_path):
-                with open(backup_path, 'wb') as backup_file:
-                    backup_file.write(loaded_file_data)
-                print(f"Backup created: {backup_path}")
+            backup_path = f"{file_path}.bak1"
+            with open(backup_path, 'wb') as backup_file:
+                backup_file.write(loaded_file_data)
             
-            # messagebox.showinfo("Backup Created", f"Backup saved as {backup_path}")
+            messagebox.showinfo("Backup Created", f"Backup saved as {backup_path}")
             
             # Enable section buttons
             for btn in section_buttons:
@@ -211,9 +195,10 @@ def open_file():
         except Exception as e:
             messagebox.showerror("Error", f"Failed to read file or create backup: {str(e)}")
             return
-
 def calculate_offset2(offset1, distance):
     return offset1 + distance
+
+
 
 found_slots = []  # Store found slots for editing
 current_slot_index = 0  # Track which slot is currently selected
@@ -247,6 +232,13 @@ def load_section(section_number):
 
     # Try to find hex pattern in the section
     offset1 = find_hex_offset(section_data, name_bytes.hex())
+    if offset1 is None:
+        name_bytes =locate_name1(file_path_var.get(), 0xA019DE)
+        offset1 = find_hex_offset(section_data, name_bytes.hex())
+        if offset1 is None:
+            name_bytes =locate_name2(file_path_var.get(), 0xA019DE)
+            offset1 = find_hex_offset(section_data, name_bytes.hex())
+        
     if offset1 is not None:
         # Display Souls value
         souls_offset = offset1 + 52
@@ -266,137 +258,6 @@ def load_section(section_number):
     else:
         current_souls_var.set("N/A")
         current_name_var.set("N/A")
-
-def import_section():
-    global loaded_file_data
-    global current_stemaid_var
-    if not loaded_file_data:
-        messagebox.showerror("Error", "Please open a file first")
-        return
-
-    current_section = current_section_var.get()
-    if not current_section:
-        messagebox.showerror("Error", "Please Choose a slot first")
-        return
-    
-
-    import_path = filedialog.askopenfilename(filetypes=[("Save Files", "*")])
-    if not import_path:
-        return
-
-    import_file_name = os.path.basename(import_path)
-
-    # Define import sections
-    if import_file_name.lower() == "memory.dat":
-        import_sections = {
-            1: {'start': 0x70, 'end': 0x28006F},
-            2: {'start': 0x280070, 'end': 0x50006F},
-            3: {'start': 0x500070, 'end': 0x78006F},
-            4: {'start': 0x780070, 'end': 0xA0006F},
-            5: {'start': 0xA00070, 'end': 0xC8006F},
-            6: {'start': 0xC80070, 'end': 0xF0006F},
-            7: {'start': 0xF00070, 'end': 0x118006F},
-            8: {'start': 0x1180070, 'end': 0x140006F},
-            9: {'start': 0x1400070, 'end': 0x168006F},
-            10: {'start': 0x1680070, 'end': 0x190006F}
-        }
-    elif import_file_name.lower() == "er0000.sl2":
-        import_sections = {
-            1: {'start': 0x310, 'end': 0x28030F},
-            2: {'start': 0x280320, 'end': 0x50031F},
-            3: {'start': 0x500330, 'end': 0x78032F},
-            4: {'start': 0x780340, 'end': 0xA0033F},
-            5: {'start': 0xA00350, 'end': 0xC8034F},
-            6: {'start': 0xC80360, 'end': 0xF0035F},
-            7: {'start': 0xF00370, 'end': 0x118036F},
-            8: {'start': 0x1180380, 'end': 0x140037F},
-            9: {'start': 0x1400390, 'end': 0x168038F},
-            10: {'start': 0x16803A0, 'end': 0x190039F}
-        }
-    else:
-        messagebox.showerror("Unsupported File", "Unsupported file format for import.")
-        return
-
-    try:
-        with open(import_path, 'rb') as f:
-            import_data = f.read()
-    except Exception as e:
-        messagebox.showerror("Error", f"Could not read import file: {e}")
-        return
-    # Extract names for all sections
-    section_names = []
-    name_offsets = [0xA019DE, 0xA019E6, 0xA019EE, 0xA019F6, 0xA019FE, 0xA01A06, 0xA01A0E, 0xA01A16, 0xA01A1E, 0xA01A26]
-
-    # Store name bytes for all offsets in a list
-    name_bytes_list = []
-    with open(import_path, 'rb') as f:
-        for name_offset in name_offsets:
-            name_bytes = locate_name(import_path, name_offset)
-            name_bytes_list.append(name_bytes)
-
-    # Now process each section
-    for sec_num, sec_info in import_sections.items():
-        data = import_data[sec_info['start']:sec_info['end']+1]
-        name_found = "N/A"
-        
-        # Loop over name_bytes_list and check each one
-        for name_bytes in name_bytes_list:
-            offset1 = find_hex_offset(data, name_bytes.hex())
-            if offset1 is not None:
-                for distance in possible_name_distances_for_name_tap:
-                    name_offset = offset1
-                    name = find_character_name(data, name_offset)
-                    if name and name != "N/A":
-                        name_found = name
-                        break
-                if name_found != "N/A":
-                    break
-
-        section_names.append((sec_num, name_found))
-
-
-
-    # UI to choose section to import
-    section_window = tk.Toplevel()
-    section_window.title("Import Section")
-    section_window.geometry("350x400")
-
-    label = tk.Label(section_window, text="Choose a section to import from:")
-    label.pack(pady=10)
-
-    for sec_num, name in section_names:
-        btn_text = f"Section {sec_num} - {name}"
-        def make_callback(s=sec_num):
-            def callback():
-                global loaded_file_data
-
-                # Get original Steam ID saved from current section
-
-                # Extract the section chunk to import
-                imported_chunk = import_data[import_sections[s]['start']:import_sections[s]['end']+1]
-
-                # Try to locate the Steam ID in the imported chunk
-
-                # Replace the section in the loaded file data
-                local_start = SECTIONS[current_section]['start']
-                local_end = SECTIONS[current_section]['end']
-                loaded_file_data = (
-                    loaded_file_data[:local_start] +
-                    imported_chunk +
-                    loaded_file_data[local_end+1:]
-                )
-
-                # Save to file
-                with open(file_path_var.get(), 'wb') as f:
-                    f.write(loaded_file_data)
-
-                messagebox.showinfo("Import Successful", f"Replaced current section with Section {s} from import file.")
-                load_section(current_section)
-                section_window.destroy()
-            return callback
-
-        btn = tk.Button(section_window, text=btn_text, command=make_callback())
-        btn.pack(pady=5)
 
 def write_value_at_offset(file_path, offset, value, byte_size=4):
     value_bytes = value.to_bytes(byte_size, 'little')
@@ -420,10 +281,20 @@ def update_souls_value():
 
     section_info = SECTIONS[section_number]
     section_data = loaded_file_data[section_info['start']:section_info['end']+1]
-    offset1 = find_hex_offset(section_data, hex_pattern1_Fixed)
+    name_bytes =locate_name(file_path_var.get(), 0xA019DE)  # Adjust the offset as needed
+    
+
+    # Try to find hex pattern in the section
+    offset1 = find_hex_offset(section_data, name_bytes.hex())
+    if offset1 is None:
+        name_bytes =locate_name1(file_path_var.get(), 0xA019DE)  # Adjust the offset as needed
+        offset1 = find_hex_offset(section_data, name_bytes.hex())
+        if offset1 is None:
+            name_bytes =locate_name2(file_path_var.get(), 0xA019DE)  # Adjust the offset as needed
+            offset1 = find_hex_offset(section_data, name_bytes.hex())
     
     if offset1 is not None:
-        souls_offset = offset1 + souls_distance
+        souls_offset = offset1 + 52
         write_value_at_offset(file_path, section_info['start'] + souls_offset, new_souls_value)
         messagebox.showinfo("Success", f"Souls value updated to {new_souls_value}. Reload section to verify.")
     else:
@@ -563,6 +434,138 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
     # Update the replace tab with found slots
     update_replace_tab()
 
+def import_section():
+    global loaded_file_data
+    global current_stemaid_var
+    if not loaded_file_data:
+        messagebox.showerror("Error", "Please open a file first")
+        return
+
+    current_section = current_section_var.get()
+    if not current_section:
+        messagebox.showerror("Error", "Please Choose a slot first")
+        return
+    
+
+    import_path = filedialog.askopenfilename(filetypes=[("Save Files", "*")])
+    if not import_path:
+        return
+
+    import_file_name = os.path.basename(import_path)
+
+    # Define import sections
+    if import_file_name.lower() == "memory.dat":
+        import_sections = {
+            1: {'start': 0x70, 'end': 0x28006F},
+            2: {'start': 0x280070, 'end': 0x50006F},
+            3: {'start': 0x500070, 'end': 0x78006F},
+            4: {'start': 0x780070, 'end': 0xA0006F},
+            5: {'start': 0xA00070, 'end': 0xC8006F},
+            6: {'start': 0xC80070, 'end': 0xF0006F},
+            7: {'start': 0xF00070, 'end': 0x118006F},
+            8: {'start': 0x1180070, 'end': 0x140006F},
+            9: {'start': 0x1400070, 'end': 0x168006F},
+            10: {'start': 0x1680070, 'end': 0x190006F}
+        }
+    elif import_file_name.lower() == "er0000.sl2":
+        import_sections = {
+            1: {'start': 0x310, 'end': 0x28030F},
+            2: {'start': 0x280320, 'end': 0x50031F},
+            3: {'start': 0x500330, 'end': 0x78032F},
+            4: {'start': 0x780340, 'end': 0xA0033F},
+            5: {'start': 0xA00350, 'end': 0xC8034F},
+            6: {'start': 0xC80360, 'end': 0xF0035F},
+            7: {'start': 0xF00370, 'end': 0x118036F},
+            8: {'start': 0x1180380, 'end': 0x140037F},
+            9: {'start': 0x1400390, 'end': 0x168038F},
+            10: {'start': 0x16803A0, 'end': 0x190039F}
+        }
+    else:
+        messagebox.showerror("Unsupported File", "Unsupported file format for import.")
+        return
+
+    try:
+        with open(import_path, 'rb') as f:
+            import_data = f.read()
+    except Exception as e:
+        messagebox.showerror("Error", f"Could not read import file: {e}")
+        return
+    # Extract names for all sections
+    section_names = []
+    name_offsets = [0xA019DE, 0xA019E6, 0xA019EE, 0xA019F6, 0xA019FE, 0xA01A06, 0xA01A0E, 0xA01A16, 0xA01A1E, 0xA01A26]
+
+    # Store name bytes for all offsets in a list
+    name_bytes_list = []
+    with open(import_path, 'rb') as f:
+        for name_offset in name_offsets:
+            name_bytes = locate_name(import_path, name_offset)
+            name_bytes_list.append(name_bytes)
+
+    # Now process each section
+    for sec_num, sec_info in import_sections.items():
+        data = import_data[sec_info['start']:sec_info['end']+1]
+        name_found = "N/A"
+        
+        # Loop over name_bytes_list and check each one
+        for name_bytes in name_bytes_list:
+            offset1 = find_hex_offset(data, name_bytes.hex())
+            if offset1 is not None:
+                for distance in possible_name_distances_for_name_tap:
+                    name_offset = offset1
+                    name = find_character_name(data, name_offset)
+                    if name and name != "N/A":
+                        name_found = name
+                        break
+                if name_found != "N/A":
+                    break
+
+        section_names.append((sec_num, name_found))
+
+
+
+    # UI to choose section to import
+    section_window = tk.Toplevel()
+    section_window.title("Import Section")
+    section_window.geometry("350x400")
+
+    label = tk.Label(section_window, text="Choose a section to import from:")
+    label.pack(pady=10)
+
+    for sec_num, name in section_names:
+        btn_text = f"Section {sec_num} - {name}"
+        def make_callback(s=sec_num):
+            def callback():
+                global loaded_file_data
+
+                # Get original Steam ID saved from current section
+
+                # Extract the section chunk to import
+                imported_chunk = import_data[import_sections[s]['start']:import_sections[s]['end']+1]
+
+                # Try to locate the Steam ID in the imported chunk
+
+                # Replace the section in the loaded file data
+                local_start = SECTIONS[current_section]['start']
+                local_end = SECTIONS[current_section]['end']
+                loaded_file_data = (
+                    loaded_file_data[:local_start] +
+                    imported_chunk +
+                    loaded_file_data[local_end+1:]
+                )
+
+                # Save to file
+                with open(file_path_var.get(), 'wb') as f:
+                    f.write(loaded_file_data)
+
+                messagebox.showinfo("Import Successful", f"Replaced current section with Section {s} from import file.")
+                load_section(current_section)
+                section_window.destroy()
+            return callback
+
+        btn = tk.Button(section_window, text=btn_text, command=make_callback())
+        btn.pack(pady=5)
+
+###
 def find_and_replace_pattern_with_aow_and_update_counters():
     global loaded_file_data
     try:
@@ -685,6 +688,7 @@ def update_replace_tab():
     # Update navigation label
     slot_navigation_label.config(text=f"Slot {current_slot_index + 1} of {len(found_slots)}")
 
+
 def navigate_slot(direction):
     global current_slot_index
     
@@ -702,40 +706,28 @@ def open_item_selector():
     if not items_json:
         messagebox.showwarning("Warning", "Items JSON not loaded. Please load items.json file.")
         return
-
+    
     selector_window = tk.Toplevel(window)
     selector_window.title("Select Item")
-    selector_window.geometry("400x550")
-
-    search_var = tk.StringVar()
-
-    def update_listbox(*args):
-        search_term = search_var.get().lower()
-        listbox.delete(0, tk.END)
-        for item_id, item_data in items_json.items():
-            item_name = item_data.get('name', f'Item {item_id}')
-            if search_term in item_name.lower() or search_term in item_id:
-                listbox.insert(tk.END, f"{item_id}: {item_name}")
-
-    # Search entry
-    search_entry = tk.Entry(selector_window, textvariable=search_var)
-    search_entry.pack(fill="x", padx=10, pady=(10, 0))
-    search_var.trace_add("write", update_listbox)
-
-    # Listbox + Scrollbar
+    selector_window.geometry("400x500")
+    
+    # Create listbox with scrollbar
     frame = tk.Frame(selector_window)
     frame.pack(fill="both", expand=True, padx=10, pady=10)
-
+    
     scrollbar = tk.Scrollbar(frame)
     scrollbar.pack(side="right", fill="y")
-
+    
     listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set)
     listbox.pack(side="left", fill="both", expand=True)
+    
     scrollbar.config(command=listbox.yview)
-
-    # Initial population
-    update_listbox()
-
+    
+    # Populate listbox with items
+    for item_id, item_data in items_json.items():
+        item_name = item_data.get('name', f'Item {item_id}')
+        listbox.insert(tk.END, f"{item_id}: {item_name}")
+    
     def select_item():
         selection = listbox.curselection()
         if selection:
@@ -744,50 +736,35 @@ def open_item_selector():
             item_id_entry.delete(0, tk.END)
             item_id_entry.insert(0, item_id)
             selector_window.destroy()
-
+    
     tk.Button(selector_window, text="Select", command=select_item).pack(pady=10)
 
 def open_effect_selector(effect_entry):
     if not effects_json:
         messagebox.showwarning("Warning", "Effects JSON not loaded. Please load effects.json file.")
         return
-
+    
     selector_window = tk.Toplevel(window)
     selector_window.title("Select Effect")
-    selector_window.geometry("400x550")
-
-    search_var = tk.StringVar()
-
-    # Search entry
-    search_entry = tk.Entry(selector_window, textvariable=search_var)
-    search_entry.pack(fill="x", padx=10, pady=(10, 0))
-
-    # Frame for listbox and scrollbar
+    selector_window.geometry("400x500")
+    
+    # Create listbox with scrollbar
     frame = tk.Frame(selector_window)
     frame.pack(fill="both", expand=True, padx=10, pady=10)
-
+    
     scrollbar = tk.Scrollbar(frame)
     scrollbar.pack(side="right", fill="y")
-
+    
     listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set)
     listbox.pack(side="left", fill="both", expand=True)
-
+    
     scrollbar.config(command=listbox.yview)
-
-    def update_listbox(*args):
-        search_term = search_var.get().lower()
-        listbox.delete(0, tk.END)
-        for effect_id, effect_data in effects_json.items():
-            effect_name = effect_data.get('name', f'Effect {effect_id}')
-            if search_term in effect_name.lower() or search_term in effect_id:
-                listbox.insert(tk.END, f"{effect_id}: {effect_name}")
-
-    # Attach search filter
-    search_var.trace_add("write", update_listbox)
-
-    # Initial population
-    update_listbox()
-
+    
+    # Populate listbox with effects
+    for effect_id, effect_data in effects_json.items():
+        effect_name = effect_data.get('name', f'Effect {effect_id}')
+        listbox.insert(tk.END, f"{effect_id}: {effect_name}")
+    
     def select_effect():
         selection = listbox.curselection()
         if selection:
@@ -796,9 +773,8 @@ def open_effect_selector(effect_entry):
             effect_entry.delete(0, tk.END)
             effect_entry.insert(0, effect_id)
             selector_window.destroy()
-
+    
     tk.Button(selector_window, text="Select", command=select_effect).pack(pady=10)
-
 
 def apply_slot_changes():
     global loaded_file_data, found_slots, current_slot_index
@@ -871,88 +847,19 @@ def apply_slot_changes():
     except Exception as e:
         messagebox.showerror("Error", f"Failed to update slot: {e}")
 
-def import_items_from_csv():
-
-    if not found_slots:
-        messagebox.showerror("Error", "No slots loaded. Scan for slots first.")
-        return
-    
-    csv_file_path = filedialog.askopenfilename(
-        title="Select CSV File",
-        filetypes=[("CSV files", "*.csv")]
-    )
-
-    if not csv_file_path:
-        return  # Cancelado
-
-    try:
-        with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
-            reader = csv.DictReader(csvfile, delimiter='\t')
-            
-            for row in reader:
-                try:
-                    id = int(row['id']) - 1
-                    if id < 0 or id >= len(found_slots):
-                        print(f"Order {id + 1} is out of range. Skipping.")
-                        continue
-                    
-                    slot = found_slots[id]
-                    new_slot_data = bytearray(slot['raw_data'])
-                    
-                    # Item ID
-                    item_id = int(row['item'])
-                    item_id_bytes = item_id.to_bytes(3, byteorder='little')
-                    new_slot_data[4:7] = item_id_bytes
-                    new_slot_data[8:11] = item_id_bytes
-                    
-                    # Effects
-                    for idx, eff_offset in enumerate(range(16, 28, 4)):
-                        effect_col = f'effect{idx+1}'
-                        effect_id = int(row.get(effect_col, 0))
-                        effect_bytes = effect_id.to_bytes(4, byteorder='little')
-                        new_slot_data[eff_offset:eff_offset+4] = effect_bytes
-                    
-                    # Write to file
-                    with open(file_path_var.get(), 'r+b') as file:
-                        file.seek(slot['offset'])
-                        file.write(new_slot_data)
-                    
-                    # Update loaded data in memory
-                    start_idx = slot['offset']
-                    end_idx = start_idx + len(new_slot_data)
-                    loaded_file_data[start_idx:end_idx] = new_slot_data
-
-                    # Update slot info
-                    slot['raw_data'] = new_slot_data
-                    slot['data'] = new_slot_data.hex()
-                    slot['item_id'] = item_id
-                    for idx in range(5):
-                        slot[f'effect{idx+1}_id'] = int(row.get(f'effect{idx+1}', 0))
-                    
-                    print(f"Updated slot {id + 1} successfully.")
-                    
-                except Exception as ex:
-                    print(f"Error processing row {row}: {ex}")
-        
-        messagebox.showinfo("Import Complete", "CSV import completed successfully.")
-        update_replace_tab()
-
-    except Exception as e:
-        messagebox.showerror("Error", f"Failed to import CSV: {e}")
-
 ##UI stuff
-file_open_frame = ttk.Frame(window)
+file_open_frame = tk.Frame(window)
 file_open_frame.pack(fill="x", padx=10, pady=5)
 
-ttk.Button(file_open_frame, text="Open Save File", command=open_file).pack(side="left", padx=5)
-file_name_label = ttk.Label(file_open_frame, text="No file selected", anchor="w")
+tk.Button(file_open_frame, text="Open Save File", command=open_file).pack(side="left", padx=5)
+file_name_label = tk.Label(file_open_frame, text="No file selected", anchor="w")
 file_name_label.pack(side="left", padx=10, fill="x")
 
-section_frame = ttk.Frame(window)
+section_frame = tk.Frame(window)
 section_frame.pack(fill="x", padx=10, pady=5)
 section_buttons = []
 for i in range(1, 11):
-    btn = ttk.Button(section_frame, text=f"Slot {i}", command=lambda x=i: load_section(x), state=tk.DISABLED)
+    btn = tk.Button(section_frame, text=f"Slot {i}", command=lambda x=i: load_section(x), state=tk.DISABLED)
     btn.pack(side="left", padx=5)
     section_buttons.append(btn)
 
@@ -960,116 +867,112 @@ notebook = ttk.Notebook(window)
 import_message_var = tk.StringVar()
 import_message_label = ttk.Label(window, textvariable=import_message_var, foreground="green")
 import_message_label.pack(pady=10)
-import_btn = tk.Button(window, text="Import Save(PS4 beta)", command=import_section)
+import_btn = tk.Button(window, text="Import Save(PS4)", command=import_section)
 import_btn.pack(pady=5)
+# Change to ttk.Button for Azure theme
+
+
 # Name tab
 name_tab = ttk.Frame(notebook)
 notebook.add(name_tab, text="Name")
 ttk.Label(name_tab, text="Current Character Name:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
 ttk.Label(name_tab, textvariable=current_name_var).grid(row=0, column=1, padx=10, pady=10)
 
-souls_tab = ttk.Frame(notebook)
-notebook.add(souls_tab, text="Murks")
-ttk.Label(souls_tab, text="Current Murks:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
-ttk.Label(souls_tab, textvariable=current_souls_var).grid(row=0, column=1, padx=10, pady=10)
-ttk.Label(souls_tab, text="New Murks Value (MAX 999999999):").grid(row=1, column=0, padx=10, pady=10, sticky="e")
-ttk.Entry(souls_tab, textvariable=new_souls_var, width=20).grid(row=1, column=1, padx=10, pady=10)
-ttk.Button(souls_tab, text="Update Murks", command=update_souls_value).grid(row=2, column=0, columnspan=2, pady=20)
 
+souls_tab = ttk.Frame(notebook)
+notebook.add(souls_tab, text="Murks/Runes")
+ttk.Label(souls_tab, text="Current Souls:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
+ttk.Label(souls_tab, textvariable=current_souls_var).grid(row=0, column=1, padx=10, pady=10)
+ttk.Label(souls_tab, text="New Souls Value (MAX 999999999):").grid(row=1, column=0, padx=10, pady=10, sticky="e")
+ttk.Entry(souls_tab, textvariable=new_souls_var, width=20).grid(row=1, column=1, padx=10, pady=10)
+ttk.Button(souls_tab, text="Update Souls", command=update_souls_value).grid(row=2, column=0, columnspan=2, pady=20)
 # Replace tab
-# === Replace Tab ===
 replace_tab = ttk.Frame(notebook)
-notebook.add(replace_tab, text="Replace Relics")
+notebook.add(replace_tab, text="Replace")
 
 # === Scan Button ===
-ttk.Button(
-    replace_tab, text="Scan for Relics",
-    command=find_and_replace_pattern_with_aow_and_update_counters
-).grid(row=0, column=0, columnspan=4, pady=10)
+tk.Button(replace_tab, text="Scan for Relics", command=find_and_replace_pattern_with_aow_and_update_counters)\
+    .grid(row=0, column=0, columnspan=4, pady=10)
 
-# === Slot Info Display ===
-ttk.Label(replace_tab, text="Slot Information:").grid(row=1, column=0, columnspan=4, padx=10, sticky="w")
+# === Slot Info ===
+ttk.Label(replace_tab, text="Slot Information:")\
+    .grid(row=1, column=0, columnspan=4, padx=10, sticky="w")
 
 slot_info_text = tk.Text(replace_tab, height=4, width=60, state=tk.NORMAL)
 slot_info_text.grid(row=2, column=0, columnspan=4, padx=10, pady=5, sticky="ew")
 
 # === Navigation Buttons ===
-nav_frame = ttk.Frame(replace_tab)
+nav_frame = tk.Frame(replace_tab)
 nav_frame.grid(row=3, column=0, columnspan=4, pady=10)
 
-ttk.Button(nav_frame, text="← Previous", command=lambda: navigate_slot("prev")).pack(side="left", padx=5)
-slot_navigation_label = ttk.Label(nav_frame, text="No slots available")
+tk.Button(nav_frame, text="← Previous", command=lambda: navigate_slot("prev")).pack(side="left", padx=5)
+slot_navigation_label = tk.Label(nav_frame, text="No slots available")
 slot_navigation_label.pack(side="left", padx=20)
-ttk.Button(nav_frame, text="Next →", command=lambda: navigate_slot("next")).pack(side="left", padx=5)
+tk.Button(nav_frame, text="Next →", command=lambda: navigate_slot("next")).pack(side="left", padx=5)
 
-# === Item ID Input ===
-ttk.Label(replace_tab, textvariable=item_label_var).grid(row=4, column=0, padx=10, pady=(10, 2), sticky="w")
+# === Item ID Section ===
+ttk.Label(replace_tab, textvariable=item_label_var)\
+    .grid(row=4, column=0, padx=10, pady=(10, 2), sticky="w")
 
-item_id_frame = ttk.Frame(replace_tab)
+item_id_frame = tk.Frame(replace_tab)
 item_id_frame.grid(row=5, column=0, padx=10, pady=2, sticky="ew")
 
-item_id_entry = ttk.Entry(item_id_frame, width=15)
+item_id_entry = tk.Entry(item_id_frame, width=15)
 item_id_entry.pack(side="left", padx=(0, 5))
-ttk.Button(item_id_frame, text="Select from JSON", command=open_item_selector).pack(side="left")
+tk.Button(item_id_frame, text="Select from JSON", command=open_item_selector).pack(side="left")
 
 # === Effect 1 ===
-ttk.Label(replace_tab, textvariable=effect1_label_var).grid(row=4, column=1, padx=10, pady=(10, 2), sticky="w")
+ttk.Label(replace_tab, textvariable=effect1_label_var)\
+    .grid(row=4, column=1, padx=10, pady=(10, 2), sticky="w")
 
-effect1_frame = ttk.Frame(replace_tab)
+effect1_frame = tk.Frame(replace_tab)
 effect1_frame.grid(row=5, column=1, padx=10, pady=2, sticky="ew")
 
-effect1_entry = ttk.Entry(effect1_frame, width=15)
+effect1_entry = tk.Entry(effect1_frame, width=15)
 effect1_entry.pack(side="left", padx=(0, 5))
-ttk.Button(effect1_frame, text="Select from JSON", command=lambda: open_effect_selector(effect1_entry)).pack(side="left")
+tk.Button(effect1_frame, text="Select from JSON", command=lambda: open_effect_selector(effect1_entry)).pack(side="left")
 
 # === Effect 2 ===
-ttk.Label(replace_tab, textvariable=effect2_label_var).grid(row=6, column=0, padx=10, pady=(10, 2), sticky="w")
+ttk.Label(replace_tab, textvariable=effect2_label_var)\
+    .grid(row=6, column=0, padx=10, pady=(10, 2), sticky="w")
 
-effect2_frame = ttk.Frame(replace_tab)
+effect2_frame = tk.Frame(replace_tab)
 effect2_frame.grid(row=7, column=0, padx=10, pady=2, sticky="ew")
 
 effect2_entry = tk.Entry(effect2_frame, width=15)
 effect2_entry.pack(side="left", padx=(0, 5))
-ttk.Button(effect2_frame, text="Select from JSON", command=lambda: open_effect_selector(effect2_entry)).pack(side="left")
+tk.Button(effect2_frame, text="Select from JSON", command=lambda: open_effect_selector(effect2_entry)).pack(side="left")
 
 # === Effect 3 ===
-ttk.Label(replace_tab, textvariable=effect3_label_var).grid(row=6, column=1, padx=10, pady=(10, 2), sticky="w")
+ttk.Label(replace_tab, textvariable=effect3_label_var)\
+    .grid(row=6, column=1, padx=10, pady=(10, 2), sticky="w")
 
-effect3_frame = ttk.Frame(replace_tab)
+effect3_frame = tk.Frame(replace_tab)
 effect3_frame.grid(row=7, column=1, padx=10, pady=2, sticky="ew")
 
-effect3_entry = ttk.Entry(effect3_frame, width=15)
+effect3_entry = tk.Entry(effect3_frame, width=15)
 effect3_entry.pack(side="left", padx=(0, 5))
-ttk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
+tk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
 
 # === Effect 4 ===
-ttk.Label(replace_tab, textvariable=effect4_label_var).grid(row=6, column=2, padx=10, pady=(10, 2), sticky="w")
+ttk.Label(replace_tab, textvariable=effect4_label_var)\
+    .grid(row=6, column=2, padx=10, pady=(10, 2), sticky="w")
 
-effect4_frame = ttk.Frame(replace_tab)
+effect4_frame = tk.Frame(replace_tab)
 effect4_frame.grid(row=7, column=2, padx=10, pady=2, sticky="ew")
 
-effect4_entry = ttk.Entry(effect4_frame, width=15)
+effect4_entry = tk.Entry(effect4_frame, width=15)
 effect4_entry.pack(side="left", padx=(0, 5))
-ttk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_selector(effect4_entry)).pack(side="left")
+tk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_selector(effect4_entry)).pack(side="left")
 
-# === Action Buttons ===
-button_frame = ttk.Frame(replace_tab)
-button_frame.grid(row=8, column=0, columnspan=4, pady=20)
+# === Apply Button ===
+tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white")\
+    .grid(row=8, column=0, columnspan=4, padx=10, pady=20)
 
-ttk.Button(
-    button_frame, text="Apply Changes",
-    command=apply_slot_changes
-).pack(side="left", padx=20)
 
-ttk.Button(
-    button_frame, text="Import from CSV",
-    command=import_items_from_csv,
-).pack(side="left", padx=20)
-
-# === Grid Configuration for Responsiveness ===
+# Configure column weights for resizing
 replace_tab.columnconfigure(0, weight=1)
 replace_tab.columnconfigure(1, weight=1)
-
 
 notebook.pack(expand=1, fill="both")
 
@@ -1082,5 +985,6 @@ my_label.pack(side="top", anchor="ne", padx=10, pady=5)
 we_label = tk.Label(window, text="USE AT YOUR OWN RISK. EDITING STATS AND HP COULD GET YOU BANNED", anchor="w", padx=10)
 we_label.pack(side="bottom", anchor="nw", padx=10, pady=5)
 
+messagebox.showinfo("Info", "Contribute by adding the relics id's and effects's id to the json files at /src/Resources/Json in https://github.com/alfizari/Elden-Ring-Nightreign .")
 # Run 
 window.mainloop()
