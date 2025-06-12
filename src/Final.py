@@ -7,7 +7,8 @@ from time import time
 import hashlib
 import binascii
 import shutil
-
+from main_file import decrypt_ds2_sl2, encrypt_modified_files
+import csv
 
 
 
@@ -31,6 +32,7 @@ except tk.TclError as e:
 file_path_var = tk.StringVar()
 current_name_var = tk.StringVar(value="N/A")
 new_name_var = tk.StringVar()
+import_path_var=tk.StringVar()
 current_souls_var = tk.StringVar(value="N/A")
 new_souls_var = tk.StringVar()
 current_section_var = tk.IntVar(value=0)
@@ -47,28 +49,15 @@ effect4_label_var = tk.StringVar()
 effect4_label_var.set("Effect 4 ID:")  # Initial label
 working_directory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(working_directory)
-SECTIONS = {
-                1: {'start': 0x80, 'end': 0x10007F},
-                2: {'start': 0x100080, 'end': 0x20007F},
-                3: {'start': 0x200080, 'end': 0x30007F},
-                4: {'start': 0x300080, 'end': 0x40007F},
-                5: {'start': 0x400080, 'end': 0x50007F},
-                6: {'start': 0x500080, 'end': 0x60007F},
-                7: {'start': 0x600080, 'end': 0x70007F},
-                8: {'start': 0x700080, 'end': 0x80007F},
-                9: {'start': 0x800080, 'end': 0x90007F},
-                10: {'start': 0x900080, 'end': 0xA0007F}
-            }
 def locate_name(file_path, offset):
-    try:
-        with open(file_path, 'rb') as file:
-            file.seek(offset)
-            name_data = file.read(32)
-            print(f"Character Name: {name_data}")
-            return name_data
-    except IOError as e:
-        messagebox.showerror("Error", f"Failed to read file: {str(e)}")
-        return ""
+    with open(file_path, 'rb') as f:
+        f.seek(offset)
+        raw = f.read(32)  # Assuming names are 32 bytes max (16 UTF-16 characters)
+        try:
+            decoded = raw.split(b'\x00\x00')[0].decode('utf-16le')
+        except UnicodeDecodeError:
+            return raw  # fallback if decoding fails
+        return decoded
 
 def locate_name1(file_path, offset):
     try:
@@ -139,8 +128,95 @@ def find_character_name(section_data, offset, byte_size=32):
         return ''.join(name_chars)
     except IndexError:
         return "N/A"
+
+def clean_decrypted_output_folder():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_folder = os.path.join(script_dir, "decrypted_output")
+
+    if os.path.exists(output_folder):
+        print(f"🧹 Cleaning existing folder: {output_folder}")
+        shutil.rmtree(output_folder)  # Removes the entire folder and its contents
+
+    os.makedirs(output_folder)  # Recreate it clean
+    print(f"✅ Ready: {output_folder}")    
+##PC Stuff
+def merge_userdata_files(input_file):
+    clean_decrypted_output_folder()
+    unpacked_folder = decrypt_ds2_sl2(input_file)
+    print('lol')
+
+    if not os.path.isdir(unpacked_folder):
+        print(f"❌ Folder not found: {unpacked_folder}")
+        return
+
+    userdata_files = sorted(glob.glob(os.path.join(unpacked_folder, "USERDATA_*")))
+
+    if len(userdata_files) != 14:
+        print(f"⚠️ Expected 14 USERDATA files, found {len(userdata_files)}")
+        return
+
+    output_file = os.path.join(unpacked_folder, "memory.sl2")
+    sizes = []
+
+    with open(output_file, 'wb') as outfile:
+        for file_path in userdata_files:
+            with open(file_path, 'rb') as f:
+                data = f.read()
+                outfile.write(data)
+                sizes.append(len(data))
+            print(f"✅ Merged: {os.path.basename(file_path)} ({len(data)} bytes)")
+
+    # Save size metadata
+    sizes_path = os.path.join(unpacked_folder, "userdata_sizes.json")
+    with open(sizes_path, 'w') as f:
+        json.dump(sizes, f)
+
+    print(f"📏 Sizes saved to: {sizes_path}")
+    print(f"\n📦 All files merged into: {output_file}")
+    return unpacked_folder
+
     
 
+def split_memory_sl2(output_dir='split_userdata'):
+    input_file = file_path_var.get()
+    if not os.path.exists(input_file):
+        print(f"❌ Input file not found: {input_file}")
+        return
+
+    # Look for the size metadata
+    sizes_path = os.path.join(os.path.dirname(input_file), "userdata_sizes.json")
+    if not os.path.exists(sizes_path):
+        print("❗ Could not find 'userdata_sizes.json'. Cannot split without original sizes.")
+        return
+
+    with open(sizes_path, 'r') as f:
+        sizes = json.load(f)
+
+    with open(input_file, 'rb') as infile:
+        data = infile.read()
+
+    total_size = len(data)
+    print(f"📦 Total file size: {total_size} bytes")
+    print(f"📏 Loaded sizes: {sizes}")
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    offset = 0
+    for i, size in enumerate(sizes):
+        chunk = data[offset:offset + size]
+        output_path = os.path.join(output_dir, f"USERDATA_{i:02d}")
+        with open(output_path, 'wb') as f:
+            f.write(chunk)
+        print(f"✅ Wrote {output_path} ({len(chunk)} bytes)")
+        offset += size
+
+    output_sl2_file=filedialog.asksaveasfilename(defaultextension=".sl2", filetypes=[("SL2 files", "*.sl2")], title="Save SL2 as")
+
+    encrypt_modified_files(output_sl2_file)
+    print(f"\n✅ All sections extracted to: {output_dir}/")
+    
+
+import glob
 def open_file():
     global loaded_file_data, SECTIONS
     file_path = filedialog.askopenfilename(filetypes=[("Save Files", "*")])
@@ -152,6 +228,7 @@ def open_file():
         
         # Define sections based on file name
         if file_name.lower() == "memory.dat":
+            print('lol')
             SECTIONS = {
                 1: {'start': 0x80, 'end': 0x10007F},
                 2: {'start': 0x100080, 'end': 0x20007F},
@@ -164,22 +241,38 @@ def open_file():
                 9: {'start': 0x800080, 'end': 0x90007F},
                 10: {'start': 0x900080, 'end': 0xA0007F}
             }
-        elif file_name.lower() == "er0000.sl2": ## to be done, no decrypted file available
+            print(f"DEBUG: file_name = '{file_name}'")
+            file_path_var.set(file_path)
+        elif file_name == "NR0000.sl2": ## to be done, no decrypted file available
+            print(f"DEBUG: file_name = '{file_name}'")
+            print('no')
+
+            unpacked_folder=merge_userdata_files(file_path)
+            if unpacked_folder is None:
+                print('no unpacked folder')
+            file_path = os.path.join(unpacked_folder, "memory.sl2")
+            print("Trying to read from:", file_path)
+            if not os.path.exists(file_path):
+            
+   
+                print("memory.sl2 not found at:", file_path)
+                
+            file_path_var.set(file_path)
             SECTIONS = {
-                1: {'start': 0x310, 'end': 0x28030F},
-                2: {'start': 0x280320, 'end': 0x50031F},
-                3: {'start': 0x500330, 'end': 0x78032F},
-                4: {'start': 0x780340, 'end': 0xA0033F},
-                5: {'start': 0xA00350, 'end': 0xC8034F},
-                6: {'start': 0xC80360, 'end': 0xF0035F},
-                7: {'start': 0xF00370, 'end': 0x118036F},
-                8: {'start': 0x1180380, 'end': 0x140037F},
-                9: {'start': 0x1400390, 'end': 0x168038F},
-                10: {'start': 0x16803A0, 'end': 0x190039F}
+                1: {'start': 0x00000004, 'end': 0x00100003},
+                2: {'start': 0x00100024, 'end': 0x00200023},
+                3: {'start': 0x00200044, 'end': 0x00300043},
+                4: {'start': 0x00300064, 'end': 0x00400063},
+                5: {'start': 0x00400084, 'end': 0x00500083},
+                6: {'start': 0x005000A4, 'end': 0x006000A3},
+                7: {'start': 0x006000C4, 'end': 0x007000C3},
+                8: {'start': 0x007000E4, 'end': 0x008000E3},
+                9: {'start': 0x00800104, 'end': 0x00900103},
+                10:{'start': 0x00900124, 'end': 0x00A00123}
             }
         try:
             with open(file_path, 'rb') as file:
-                loaded_file_data = file.read()
+                loaded_file_data = bytearray(file.read())
             
             # Create a backup
             backup_path = f"{file_path}.bak1"
@@ -225,18 +318,44 @@ def load_section(section_number):
 
     current_section_var.set(section_number)
     section_info = SECTIONS[section_number]
-    section_data = loaded_file_data[section_info['start']:section_info['end']+1]
+    section_data = loaded_file_data[section_info['start']:section_info['end'] + 1]
 
-    name_bytes =locate_name(file_path_var.get(), 0xA019DE)  # Adjust the offset as needed
+    file_name = os.path.basename(file_path_var.get()).lower()
+    
+    # Determine offset based on file name
+    if file_name == "memory.dat":
+        base_offset = 0xA019DE
+        if 1 <= section_number <= 10:
+            offset = base_offset + (section_number - 1) * 0x278
+        else:
+            messagebox.showerror("Error", f"Invalid section number: {section_number}")
+            return
+    elif file_name == "memory.sl2":
+        # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart
+        base_offset = 0xA01AA2
+        if 1 <= section_number <= 10:
+            offset = base_offset + (section_number - 1) * 0x278
+        else:
+            messagebox.showerror("Error", f"Invalid section number: {section_number}")
+            return
+    else:
+        messagebox.showerror("Error", f"Unknown file type: {file_name}")
+        return
+    print(file_name)
+    # Now call locate_name with the correct offset
+    name_bytes = locate_name(file_path_var.get(), offset)
+
+    # Do something with section_data and name_bytes...
+    print(f"Loaded section {section_number} with name: {name_bytes}")
     
 
     # Try to find hex pattern in the section
     offset1 = find_hex_offset(section_data, name_bytes.hex())
     if offset1 is None:
-        name_bytes =locate_name1(file_path_var.get(), 0xA019DE)
+        name_bytes =locate_name1(file_path_var.get(), offset)
         offset1 = find_hex_offset(section_data, name_bytes.hex())
         if offset1 is None:
-            name_bytes =locate_name2(file_path_var.get(), 0xA019DE)
+            name_bytes =locate_name2(file_path_var.get(), offset)
             offset1 = find_hex_offset(section_data, name_bytes.hex())
         
     if offset1 is not None:
@@ -281,16 +400,39 @@ def update_souls_value():
 
     section_info = SECTIONS[section_number]
     section_data = loaded_file_data[section_info['start']:section_info['end']+1]
-    name_bytes =locate_name(file_path_var.get(), 0xA019DE)  # Adjust the offset as needed
+    file_name = os.path.basename(file_path_var.get()).lower()
+    
+    # Determine offset based on file name
+    if file_name == "memory.dat":
+        base_offset = 0xA019DE
+        if 1 <= section_number <= 10:
+            offset = base_offset + (section_number - 1) * 0x278
+        else:
+            messagebox.showerror("Error", f"Invalid section number: {section_number}")
+            return
+    elif file_name == "memory.sl2":
+        # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart
+        base_offset = 0xA01AA2
+        if 1 <= section_number <= 10:
+            offset = base_offset + (section_number - 1) * 0x278
+        else:
+            messagebox.showerror("Error", f"Invalid section number: {section_number}")
+            return
+    else:
+        messagebox.showerror("Error", f"Unknown file type: {file_name}")
+        return
+    print(file_name)
+    # Now call locate_name with the correct offset
+    name_bytes = locate_name(file_path_var.get(), offset)
     
 
     # Try to find hex pattern in the section
     offset1 = find_hex_offset(section_data, name_bytes.hex())
     if offset1 is None:
-        name_bytes =locate_name1(file_path_var.get(), 0xA019DE)  # Adjust the offset as needed
+        name_bytes =locate_name1(file_path_var.get(), offset) # Adjust the offset as needed
         offset1 = find_hex_offset(section_data, name_bytes.hex())
         if offset1 is None:
-            name_bytes =locate_name2(file_path_var.get(), 0xA019DE)  # Adjust the offset as needed
+            name_bytes =locate_name2(file_path_var.get(), offset)  # Adjust the offset as needed
             offset1 = find_hex_offset(section_data, name_bytes.hex())
     
     if offset1 is not None:
@@ -338,7 +480,7 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
             return False, None
         
         b3, b4 = section_data[pos+2], section_data[pos+3]
-        if b3 == 0x80 and b4 in valid_b4_values:
+        if b3 in (0x80, 0x83) and b4 in valid_b4_values:
             slot_size = get_slot_size(b4)
             if slot_size and pos + slot_size <= len(section_data):
                 return True, slot_size
@@ -434,9 +576,24 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
     # Update the replace tab with found slots
     update_replace_tab()
 
+def find_hex_offsetss(section_data, hex_pattern):
+    try:
+        # Handle both bytes and hex string inputs
+        if isinstance(hex_pattern, bytes):
+            pattern_bytes = hex_pattern
+        else:
+            pattern_bytes = bytes.fromhex(hex_pattern)
+            
+        if pattern_bytes in section_data:
+            return section_data.index(pattern_bytes)
+        return None
+    except ValueError as e:
+        messagebox.showerror("Error", f"Failed to find hex pattern: {str(e)}")
+        return None
 def import_section():
     global loaded_file_data
     global current_stemaid_var
+    messagebox.showinfo("Advice", "Make sure you have a readable name not dots (...) or anything that could occure multiple times in the file")
     if not loaded_file_data:
         messagebox.showerror("Error", "Please open a file first")
         return
@@ -456,43 +613,74 @@ def import_section():
     # Define import sections
     if import_file_name.lower() == "memory.dat":
         import_sections = {
-            1: {'start': 0x70, 'end': 0x28006F},
-            2: {'start': 0x280070, 'end': 0x50006F},
-            3: {'start': 0x500070, 'end': 0x78006F},
-            4: {'start': 0x780070, 'end': 0xA0006F},
-            5: {'start': 0xA00070, 'end': 0xC8006F},
-            6: {'start': 0xC80070, 'end': 0xF0006F},
-            7: {'start': 0xF00070, 'end': 0x118006F},
-            8: {'start': 0x1180070, 'end': 0x140006F},
-            9: {'start': 0x1400070, 'end': 0x168006F},
-            10: {'start': 0x1680070, 'end': 0x190006F}
+            1: {'start': 0x80, 'end': 0x10007F},
+            2: {'start': 0x100080, 'end': 0x20007F},
+            3: {'start': 0x200080, 'end': 0x30007F},
+            4: {'start': 0x300080, 'end': 0x40007F},
+            5: {'start': 0x400080, 'end': 0x50007F},
+            6: {'start': 0x500080, 'end': 0x60007F},
+            7: {'start': 0x600080, 'end': 0x70007F},
+            8: {'start': 0x700080, 'end': 0x80007F},
+            9: {'start': 0x800080, 'end': 0x90007F},
+            10: {'start': 0x900080, 'end': 0xA0007F}
         }
-    elif import_file_name.lower() == "er0000.sl2":
+    elif import_file_name == "NR0000.sl2":
+        print(f"DEBUG: file_name = '{import_file_name}'")
+        print('no')
+
+        unpacked_folder=merge_userdata_files(import_path)
+        if unpacked_folder is None:
+            print('no unpacked folder')
+        import_path = os.path.join(unpacked_folder, "memory.sl2")
+        print("Trying to read from:", import_path)
+        if not os.path.exists(import_path):
+        
+
+            print("memory.sl2 not found at:", import_path)
+            
+        import_path_var.set(import_path)
         import_sections = {
-            1: {'start': 0x310, 'end': 0x28030F},
-            2: {'start': 0x280320, 'end': 0x50031F},
-            3: {'start': 0x500330, 'end': 0x78032F},
-            4: {'start': 0x780340, 'end': 0xA0033F},
-            5: {'start': 0xA00350, 'end': 0xC8034F},
-            6: {'start': 0xC80360, 'end': 0xF0035F},
-            7: {'start': 0xF00370, 'end': 0x118036F},
-            8: {'start': 0x1180380, 'end': 0x140037F},
-            9: {'start': 0x1400390, 'end': 0x168038F},
-            10: {'start': 0x16803A0, 'end': 0x190039F}
-        }
+                1: {'start': 0x00000004, 'end': 0x00100003},
+                2: {'start': 0x00100024, 'end': 0x00200023},
+                3: {'start': 0x00200044, 'end': 0x00300043},
+                4: {'start': 0x00300064, 'end': 0x00400063},
+                5: {'start': 0x00400084, 'end': 0x00500083},
+                6: {'start': 0x005000A4, 'end': 0x006000A3},
+                7: {'start': 0x006000C4, 'end': 0x007000C3},
+                8: {'start': 0x007000E4, 'end': 0x008000E3},
+                9: {'start': 0x00800104, 'end': 0x00900103},
+                10:{'start': 0x00900124, 'end': 0x00A00123}
+            }
     else:
         messagebox.showerror("Unsupported File", "Unsupported file format for import.")
         return
 
     try:
         with open(import_path, 'rb') as f:
-            import_data = f.read()
+            import_data = bytearray(f.read())
+        # Find the Steam ID at offset 0xA00148 (8 bytes)
+        steam_offset = 0xA00148
+        if steam_offset + 8 <= len(import_data):
+            steam_id_bytes = import_data[steam_offset:steam_offset+8]
+            # Replace all occurrences of this 8-byte Steam ID with 8 zero bytes
+            zero_bytes = b'\x00' * 8
+            idx = 0
+            while True:
+                idx = import_data.find(steam_id_bytes, idx)
+                if idx == -1:
+                    break
+                import_data[idx:idx+8] = zero_bytes
+                idx += 8
+        else:
+            messagebox.showwarning("Warning", "Steam ID offset is out of range in the import file.")
+         
     except Exception as e:
         messagebox.showerror("Error", f"Could not read import file: {e}")
         return
     # Extract names for all sections
     section_names = []
-    name_offsets = [0xA019DE, 0xA019E6, 0xA019EE, 0xA019F6, 0xA019FE, 0xA01A06, 0xA01A0E, 0xA01A16, 0xA01A1E, 0xA01A26]
+    # Calculate name_offsets: start at 0xA01AA2, increment by 0x278 (632) for 10 sections
+    name_offsets = [0xA01AA2,0xA01D1A,0xA01F92,0xA0220A,0xA02482,0xA026FA,0xA02972,0xA02BEA,0xA02E62,0xA030DA]
 
     # Store name bytes for all offsets in a list
     name_bytes_list = []
@@ -508,7 +696,7 @@ def import_section():
         
         # Loop over name_bytes_list and check each one
         for name_bytes in name_bytes_list:
-            offset1 = find_hex_offset(data, name_bytes.hex())
+            offset1 = find_hex_offsetss(data, name_bytes)
             if offset1 is not None:
                 for distance in possible_name_distances_for_name_tap:
                     name_offset = offset1
@@ -537,12 +725,8 @@ def import_section():
             def callback():
                 global loaded_file_data
 
-                # Get original Steam ID saved from current section
-
                 # Extract the section chunk to import
                 imported_chunk = import_data[import_sections[s]['start']:import_sections[s]['end']+1]
-
-                # Try to locate the Steam ID in the imported chunk
 
                 # Replace the section in the loaded file data
                 local_start = SECTIONS[current_section]['start']
@@ -552,6 +736,51 @@ def import_section():
                     imported_chunk +
                     loaded_file_data[local_end+1:]
                 )
+
+                # ✅ Try to extract character name from imported_chunk
+                new_name = "N/A"
+                for name_bytes in name_bytes_list:
+                    offset1 = find_hex_offsetss(imported_chunk, name_bytes)
+                    if offset1 is not None:
+                        for distance in possible_name_distances_for_name_tap:
+                            name_offset = offset1
+                            name = find_character_name(imported_chunk, name_offset)
+                            if name and name != "N/A":
+                                new_name = name
+                                break
+                        if new_name != "N/A":
+                            break
+
+                # ✅ Replace all occurrences of the old name in loaded_file_data
+                if new_name != "N/A":
+                    try:
+                        # Get name from the currently loaded section (before replacing it)
+                        base_offset = 0xA019DE
+                        section_number = current_section
+                        if 1 <= section_number <= 10:
+                            name_offset = base_offset + (section_number - 1) * 0x278
+                            old_name = find_character_name(loaded_file_data, name_offset)
+                        else:
+                            old_name = "N/A"
+                        if old_name != "N/A":
+                            old_name_bytes = old_name.encode('utf-16le') + b'\x00\x00'
+                            new_name_bytes = new_name.encode('utf-16le') + b'\x00\x00'
+
+                            count = 0
+                            idx = 0
+                            while True:
+                                idx = loaded_file_data.find(old_name_bytes, idx)
+                                if idx == -1:
+                                    break
+                                loaded_file_data[idx:idx+len(old_name_bytes)] = new_name_bytes.ljust(len(old_name_bytes), b'\x00')
+                                idx += len(old_name_bytes)
+                                count += 1
+
+                            print(f"✓ Replaced {count} occurrences of '{old_name}' with '{new_name}'")
+                        else:
+                            print("⚠ Could not detect old name for replacement.")
+                    except Exception as e:
+                        print(f"⚠ Failed to patch names: {e}")
 
                 # Save to file
                 with open(file_path_var.get(), 'wb') as f:
@@ -609,7 +838,7 @@ def find_and_replace_pattern_with_aow_and_update_counters():
             return
 
         # Call the slot finder with corrected parameters
-        empty_slot_finder_aow(file_path, section_info['start'] + 32, section_info['start'] + fixed_pattern_offset - 431)
+        empty_slot_finder_aow(file_path, section_info['start'] + 32, section_info['end'] + fixed_pattern_offset - 431)
 
     except Exception as e:
         messagebox.showerror("Error", f"Failed to add or update item: {e}")
@@ -846,12 +1075,79 @@ def apply_slot_changes():
         messagebox.showerror("Error", "Please enter valid integer values for all IDs.")
     except Exception as e:
         messagebox.showerror("Error", f"Failed to update slot: {e}")
+def import_items_from_csv():
 
+    if not found_slots:
+        messagebox.showerror("Error", "No slots loaded. Scan for slots first.")
+        return
+    
+    csv_file_path = filedialog.askopenfilename(
+        title="Select CSV File",
+        filetypes=[("CSV files", "*.csv")]
+    )
+
+    if not csv_file_path:
+        return  # Cancelado
+
+    try:
+        with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile, delimiter='\t')
+            
+            for row in reader:
+                try:
+                    id = int(row['id']) - 1
+                    if id < 0 or id >= len(found_slots):
+                        print(f"Order {id + 1} is out of range. Skipping.")
+                        continue
+                    
+                    slot = found_slots[id]
+                    new_slot_data = bytearray(slot['raw_data'])
+                    
+                    # Item ID
+                    item_id = int(row['item'])
+                    item_id_bytes = item_id.to_bytes(3, byteorder='little')
+                    new_slot_data[4:7] = item_id_bytes
+                    new_slot_data[8:11] = item_id_bytes
+                    
+                    # Effects
+                    for idx, eff_offset in enumerate(range(16, 28, 4)):
+                        effect_col = f'effect{idx+1}'
+                        effect_id = int(row.get(effect_col, 0))
+                        effect_bytes = effect_id.to_bytes(4, byteorder='little')
+                        new_slot_data[eff_offset:eff_offset+4] = effect_bytes
+                    
+                    # Write to file
+                    with open(file_path_var.get(), 'r+b') as file:
+                        file.seek(slot['offset'])
+                        file.write(new_slot_data)
+                    
+                    # Update loaded data in memory
+                    start_idx = slot['offset']
+                    end_idx = start_idx + len(new_slot_data)
+                    loaded_file_data[start_idx:end_idx] = new_slot_data
+
+                    # Update slot info
+                    slot['raw_data'] = new_slot_data
+                    slot['data'] = new_slot_data.hex()
+                    slot['item_id'] = item_id
+                    for idx in range(5):
+                        slot[f'effect{idx+1}_id'] = int(row.get(f'effect{idx+1}', 0))
+                    
+                    print(f"Updated slot {id + 1} successfully.")
+                    
+                except Exception as ex:
+                    print(f"Error processing row {row}: {ex}")
+        
+        messagebox.showinfo("Import Complete", "CSV import completed successfully.")
+        update_replace_tab()
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to import CSV: {e}")
 ##UI stuff
 file_open_frame = tk.Frame(window)
 file_open_frame.pack(fill="x", padx=10, pady=5)
 
-tk.Button(file_open_frame, text="Open Save File", command=open_file).pack(side="left", padx=5)
+ttk.Button(file_open_frame, text="Open Save File", command=open_file).pack(side="left", padx=5)
 file_name_label = tk.Label(file_open_frame, text="No file selected", anchor="w")
 file_name_label.pack(side="left", padx=10, fill="x")
 
@@ -859,7 +1155,7 @@ section_frame = tk.Frame(window)
 section_frame.pack(fill="x", padx=10, pady=5)
 section_buttons = []
 for i in range(1, 11):
-    btn = tk.Button(section_frame, text=f"Slot {i}", command=lambda x=i: load_section(x), state=tk.DISABLED)
+    btn = ttk.Button(section_frame, text=f"Slot {i}", command=lambda x=i: load_section(x), state=tk.DISABLED)
     btn.pack(side="left", padx=5)
     section_buttons.append(btn)
 
@@ -867,8 +1163,11 @@ notebook = ttk.Notebook(window)
 import_message_var = tk.StringVar()
 import_message_label = ttk.Label(window, textvariable=import_message_var, foreground="green")
 import_message_label.pack(pady=10)
-import_btn = tk.Button(window, text="Import Save(PS4)", command=import_section)
+import_btn = ttk.Button(window, text="Import Save(PC to PS4)", command=import_section)
 import_btn.pack(pady=5)
+# Change to ttk.Button for Azure theme
+button_width = 15
+ttk.Button(window, text="Save PC file", width=button_width, command=split_memory_sl2).pack(pady=10, padx=10)
 # Change to ttk.Button for Azure theme
 
 
@@ -969,7 +1268,7 @@ tk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_se
 tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white")\
     .grid(row=8, column=0, columnspan=4, padx=10, pady=20)
 
-
+tk.Button(replace_tab, text="Import from CSV", command=import_items_from_csv, bg="green", fg="white").grid(row=8, column=1, columnspan=4, padx=10, pady=20)
 # Configure column weights for resizing
 replace_tab.columnconfigure(0, weight=1)
 replace_tab.columnconfigure(1, weight=1)
