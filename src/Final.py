@@ -844,8 +844,8 @@ def find_and_replace_pattern_with_aow_and_update_counters():
         print(fixed_pattern_offset)
         
         if fixed_pattern_offset is None:
-            messagebox.showerror("Error", "Fixed Pattern 1 not found in the selected section.")
-            return
+            fixed_pattern_offset=0xffff
+            messagebox.showerror("Error", "Due to character name not being found, unrelated items could be shown.")
             
         fixed_pattern_offset_start = fixed_pattern_offset
         search_start_position = fixed_pattern_offset_start + len(hex_pattern1_Fixed) + 1000
