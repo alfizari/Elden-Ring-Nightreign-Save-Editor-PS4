@@ -480,7 +480,7 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
             return False, None
         
         b3, b4 = section_data[pos+2], section_data[pos+3]
-        if b3 in (0x80, 0x83) and b4 in valid_b4_values:
+        if b3 in (0x80, 0x83, 0x81, 0x82, 0x84, 0x85) and b4 in valid_b4_values:
             slot_size = get_slot_size(b4)
             if slot_size and pos + slot_size <= len(section_data):
                 return True, slot_size
@@ -517,7 +517,7 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
         if i + 4 <= len(section_data):
             b3, b4 = section_data[i+2], section_data[i+3]
 
-            if b3 == 0x80 and b4 in valid_b4_values:
+            if b3 in (0x80, 0x83, 0x81, 0x82, 0x84, 0x85) and b4 in valid_b4_values:
                 slot_size = get_slot_size(b4)
 
                 if slot_size and i + slot_size <= len(section_data):
@@ -727,6 +727,7 @@ def import_section():
 
                 # Extract the section chunk to import
                 imported_chunk = import_data[import_sections[s]['start']:import_sections[s]['end']+1]
+                
 
                 # Replace the section in the loaded file data
                 local_start = SECTIONS[current_section]['start']
@@ -750,7 +751,15 @@ def import_section():
                                 break
                         if new_name != "N/A":
                             break
+                expected_size = local_end - local_start + 1
+                imported_size = len(imported_chunk)
 
+                if imported_size != expected_size:
+                    messagebox.showerror(
+                        "Size Mismatch",
+                        f"Imported section size ({imported_size} bytes) does not match target section size ({expected_size} bytes)."
+                    )
+                    return
                 # ✅ Replace all occurrences of the old name in loaded_file_data
                 if new_name != "N/A":
                     try:
@@ -762,17 +771,27 @@ def import_section():
                             old_name = find_character_name(loaded_file_data, name_offset)
                         else:
                             old_name = "N/A"
-                        if old_name != "N/A":
+                        if old_name != "N/A" and new_name != "N/A":
                             old_name_bytes = old_name.encode('utf-16le') + b'\x00\x00'
                             new_name_bytes = new_name.encode('utf-16le') + b'\x00\x00'
-
+                            
+                            # ✅ FORCE SAME LENGTH - pad or truncate new name to match old name length
+                            if len(new_name_bytes) != len(old_name_bytes):
+                                if len(new_name_bytes) > len(old_name_bytes):
+                                    # Truncate new name
+                                    new_name_bytes = new_name_bytes[:len(old_name_bytes)]
+                                else:
+                                    # Pad new name with zeros
+                                    new_name_bytes = new_name_bytes + b'\x00' * (len(old_name_bytes) - len(new_name_bytes))
+                            
+                            # Now replace - sizes are guaranteed to match
                             count = 0
                             idx = 0
                             while True:
                                 idx = loaded_file_data.find(old_name_bytes, idx)
                                 if idx == -1:
                                     break
-                                loaded_file_data[idx:idx+len(old_name_bytes)] = new_name_bytes.ljust(len(old_name_bytes), b'\x00')
+                                loaded_file_data[idx:idx+len(old_name_bytes)] = new_name_bytes
                                 idx += len(old_name_bytes)
                                 count += 1
 
@@ -960,28 +979,41 @@ def open_item_selector():
     if not items_json:
         messagebox.showwarning("Warning", "Items JSON not loaded. Please load items.json file.")
         return
-    
+
     selector_window = tk.Toplevel(window)
     selector_window.title("Select Item")
-    selector_window.geometry("400x500")
-    
-    # Create listbox with scrollbar
+    selector_window.geometry("400x550")
+
+    # Search bar
+    search_var = tk.StringVar()
+    search_entry = tk.Entry(selector_window, textvariable=search_var)
+    search_entry.pack(fill="x", padx=10, pady=(10, 0))
+    search_entry.focus()
+
+    # Create frame with listbox and scrollbar
     frame = tk.Frame(selector_window)
     frame.pack(fill="both", expand=True, padx=10, pady=10)
-    
+
     scrollbar = tk.Scrollbar(frame)
     scrollbar.pack(side="right", fill="y")
-    
+
     listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set)
     listbox.pack(side="left", fill="both", expand=True)
-    
+
     scrollbar.config(command=listbox.yview)
-    
-    # Populate listbox with items
-    for item_id, item_data in items_json.items():
-        item_name = item_data.get('name', f'Item {item_id}')
-        listbox.insert(tk.END, f"{item_id}: {item_name}")
-    
+
+    # Convert items_json to a searchable list of tuples
+    item_list = [f"{item_id}: {item_data.get('name', f'Item {item_id}')}" for item_id, item_data in items_json.items()]
+
+    def update_listbox(*args):
+        search_term = search_var.get().lower()
+        listbox.delete(0, tk.END)
+        for item in item_list:
+            if search_term in item.lower():
+                listbox.insert(tk.END, item)
+
+    search_var.trace_add("write", update_listbox)  # Update listbox on typing
+
     def select_item():
         selection = listbox.curselection()
         if selection:
@@ -990,35 +1022,51 @@ def open_item_selector():
             item_id_entry.delete(0, tk.END)
             item_id_entry.insert(0, item_id)
             selector_window.destroy()
-    
+
     tk.Button(selector_window, text="Select", command=select_item).pack(pady=10)
+
+    # Populate the listbox initially
+    update_listbox()
 
 def open_effect_selector(effect_entry):
     if not effects_json:
         messagebox.showwarning("Warning", "Effects JSON not loaded. Please load effects.json file.")
         return
-    
+
     selector_window = tk.Toplevel(window)
     selector_window.title("Select Effect")
-    selector_window.geometry("400x500")
-    
+    selector_window.geometry("400x550")
+
+    # Search bar
+    search_var = tk.StringVar()
+    search_entry = tk.Entry(selector_window, textvariable=search_var)
+    search_entry.pack(fill="x", padx=10, pady=(10, 0))
+    search_entry.focus()
+
     # Create listbox with scrollbar
     frame = tk.Frame(selector_window)
     frame.pack(fill="both", expand=True, padx=10, pady=10)
-    
+
     scrollbar = tk.Scrollbar(frame)
     scrollbar.pack(side="right", fill="y")
-    
+
     listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set)
     listbox.pack(side="left", fill="both", expand=True)
-    
+
     scrollbar.config(command=listbox.yview)
-    
-    # Populate listbox with effects
-    for effect_id, effect_data in effects_json.items():
-        effect_name = effect_data.get('name', f'Effect {effect_id}')
-        listbox.insert(tk.END, f"{effect_id}: {effect_name}")
-    
+
+    # Prepare searchable list
+    effect_list = [f"{effect_id}: {effect_data.get('name', f'Effect {effect_id}')}" for effect_id, effect_data in effects_json.items()]
+
+    def update_listbox(*args):
+        search_term = search_var.get().lower()
+        listbox.delete(0, tk.END)
+        for effect in effect_list:
+            if search_term in effect.lower():
+                listbox.insert(tk.END, effect)
+
+    search_var.trace_add("write", update_listbox)  # Update listbox on search
+
     def select_effect():
         selection = listbox.curselection()
         if selection:
@@ -1027,8 +1075,12 @@ def open_effect_selector(effect_entry):
             effect_entry.delete(0, tk.END)
             effect_entry.insert(0, effect_id)
             selector_window.destroy()
-    
+
     tk.Button(selector_window, text="Select", command=select_effect).pack(pady=10)
+
+    # Populate the list initially
+    update_listbox()
+
 
 def apply_slot_changes():
     global loaded_file_data, found_slots, current_slot_index
