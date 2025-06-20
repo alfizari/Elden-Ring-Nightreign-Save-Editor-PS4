@@ -1152,6 +1152,45 @@ def apply_slot_changes():
         messagebox.showerror("Error", "Please enter valid integer values for all IDs.")
     except Exception as e:
         messagebox.showerror("Error", f"Failed to update slot: {e}")
+
+
+def export_items_to_csv():
+    if not found_slots:
+        messagebox.showerror("Error", "No slots loaded. Scan for slots first.")
+        return
+    with open("relics.txt", "w") as f:
+        f.write("item_index|item_id|item_name|effect_slot|effect_id|effect_name|relic_size|character_specific|attribute|attribute_adder|color\n")
+        for ix, slot in enumerate(found_slots):
+            item_id = slot.get("item_id", "")
+            item_name = items_json.get(str(item_id), {}).get("name", "Unknown Item")
+            color = items_json.get(str(item_id), {}).get("color", "")
+            relic_size = 0
+            for effect_slot in range(5):
+                effect_id = slot.get(f"effect{effect_slot + 1}_id", "")
+                if effect_id != 4294967295:
+                    relic_size += 1
+            for effect_slot in range(4):
+                effect_id = slot.get(f"effect{effect_slot + 1}_id", "")
+                if effect_id == 4294967295:
+                    continue
+                effect_name = effects_json.get(str(effect_id), {}).get("name", "")
+                character_specific = ""
+                attribute_specific = ""
+                attribute_adder = ""
+                for character in ["Guardian", "Raider", "Duchess", "Recluse", "Revenant", "Executor", "Ironeye", "Wylder"]:
+                    if effect_name.find(character) != -1:
+                        character_specific = character
+                for attribute in ["Mind", "Faith", "Arcane", "Strength", "Dexterity", "Intelligence", "Poise", "Endurance", "Vigor", "Holy Attack Power Up", "Character Skill Cooldown Reduction",
+                                  "Ultimate Art Gauge", "Magic Attack Power Up", "Lightning Attack Power Up", "Physical Attack Up", "Fire Attack Power Up", "Lightning Attack Power Up"]:
+                    if effect_name.startswith(attribute):
+                        attribute_specific = attribute
+                        attribute_adder = effect_name.split(" ")[-1]
+                        if attribute_adder == "Up":
+                            attribute_adder = 0
+                        else:
+                            attribute_adder = int(attribute_adder)
+                f.write(f"{ix}|{item_id}|{item_name}|{effect_slot}|{effect_id}|{effect_name}|{relic_size}|{character_specific}|{attribute_specific}|{attribute_adder}|{color}\n")
+
 def import_items_from_csv():
 
     if not found_slots:
@@ -1345,7 +1384,9 @@ tk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_se
 tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white")\
     .grid(row=8, column=0, columnspan=4, padx=10, pady=20)
 
-tk.Button(replace_tab, text="Import from CSV", command=import_items_from_csv, bg="green", fg="white").grid(row=8, column=1, columnspan=4, padx=10, pady=20)
+tk.Button(replace_tab, text="Import from CSV", command=import_items_from_csv, bg="green", fg="white").grid(row=8, column=1, columnspan=2, padx=10, pady=20)
+tk.Button(replace_tab, text="Export to CSV", command=export_items_to_csv, bg="green", fg="white").grid(row=8, column=3, columnspan=2, padx=10, pady=20)
+
 # Configure column weights for resizing
 replace_tab.columnconfigure(0, weight=1)
 replace_tab.columnconfigure(1, weight=1)
