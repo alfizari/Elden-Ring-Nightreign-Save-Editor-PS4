@@ -13,12 +13,29 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       
-      - name: Create Windows Executable (64-bit)
-        uses: sayyid5416/pyinstaller@v1
+      - name: Setup Python (64-bit)
+        uses: actions/setup-python@v5
         with:
-          python_ver: '3.12'
-          spec: 'src/build.spec'
-          upload_exe_with_name: 'Elden_Ring_Save_Editor_WIN64'
+          python-version: '3.12'
+          architecture: 'x64'
+      
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install cryptography
+          pip install pyinstaller
+      
+      - name: Create Windows Executable (64-bit)
+        run: |
+          pyinstaller src/build.spec
+        env:
+          PYTHONPATH: ${{ runner.workspace }}/src
+      
+      - name: Upload 64-Bit Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Elden_Ring_Save_Editor_WIN64
+          path: dist/
  
   build-windows-32bit:
     runs-on: windows-latest
@@ -32,9 +49,10 @@ jobs:
           python-version: '3.12'
           architecture: 'x86'
 
-      - name: Install PyInstaller
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install cryptography
           pip install pyinstaller
 
       - name: Create Windows Executable (32-bit)
@@ -55,12 +73,28 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Create Linux Executable
-        uses: sayyid5416/pyinstaller@v1
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python_ver: '3.12'
-          spec: 'src/build.spec'
-          upload_exe_with_name: 'Elden_Ring_Save_Editor_LINUX_x86_64'
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install cryptography
+          pip install pyinstaller
+
+      - name: Create Linux Executable
+        run: |
+          pyinstaller src/build.spec
+        env:
+          PYTHONPATH: ${{ runner.workspace }}/src
+
+      - name: Upload Linux Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Elden_Ring_Save_Editor_LINUX_x86_64
+          path: dist/
 
   build-macos_silicon:
     runs-on: macos-latest
@@ -79,6 +113,7 @@ jobs:
           python3 -m venv venv  # Create a virtual environment
           source venv/bin/activate  # Activate the virtual environment
           python3 -m pip install --upgrade pip  # Ensure pip is upgraded in the virtual environment
+          python3 -m pip install cryptography  # Install cryptography library
           python3 -m pip install pyinstaller  # Install PyInstaller inside the virtual environment
           python3 -m pip --version  # Debug: Check pip version
 
@@ -134,8 +169,10 @@ jobs:
           python3 -m venv venv  # Create a virtual environment
           source venv/bin/activate  # Activate the virtual environment
           python3 -m pip install --upgrade pip  # Ensure pip is upgraded in the virtual environment
+          python3 -m pip install cryptography  # Install cryptography library
           python3 -m pip install pyinstaller  # Install PyInstaller inside the virtual environment
           python3 -m pip --version  # Debug: Check pip version
+          
       - name: Create macOS Intel Executable
         run: |
           source venv/bin/activate  # Activate the virtual environment
