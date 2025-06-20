@@ -1076,11 +1076,12 @@ def update_replace_tab():
 
     # Look up names
     item_name = items_json.get(str(item_id), {}).get("name", "Unknown Item")
+    item_color = items_json.get(str(item_id), {}).get("color", "No Color")
     effect1_name = effects_json.get(str(effect1_id), {}).get("name", "None")
     effect2_name = effects_json.get(str(effect2_id), {}).get("name", "None")
     effect3_name = effects_json.get(str(effect3_id), {}).get("name", "None")
     effect4_name = effects_json.get(str(effect4_id), {}).get("name", "None")
-    item_label_var.set(f"Item ID:{item_id} - {item_name}")
+    item_label_var.set(f"Item ID:{item_id} - {item_name} - {item_color}")
     effect1_label_var.set(f"Effect 1 ID:{effect1_id} -{effect1_name}")
     effect2_label_var.set(f"Effect 2 ID:{effect2_id} -{effect2_name}" ) 
     effect3_label_var.set(f"Effect 3 ID:{effect3_id}- {effect3_name}")
@@ -1161,7 +1162,7 @@ def open_item_selector():
     scrollbar.config(command=listbox.yview)
 
     # Convert items_json to a searchable list of tuples
-    item_list = [f"{item_id}: {item_data.get('name', f'Item {item_id}')}" for item_id, item_data in items_json.items()]
+    item_list = [f"{item_id}: {item_data.get('name', f'Item {item_id}')} ({item_data.get('color', 'No Color')})" for item_id, item_data in items_json.items()]
 
     def update_listbox(*args):
         search_term = search_var.get().lower()
@@ -1437,7 +1438,7 @@ notebook = ttk.Notebook(window)
 import_message_var = tk.StringVar()
 import_message_label = ttk.Label(window, textvariable=import_message_var, foreground="green")
 import_message_label.pack(pady=10)
-import_btn = ttk.Button(window, text="Import Save(PC to PS4)", command=import_section)
+import_btn = ttk.Button(window, text="Import Save(PC/PS4)", command=import_section)
 import_btn.pack(pady=5)
 # Change to ttk.Button for Azure theme
 button_width = 15
@@ -1562,7 +1563,7 @@ notebook.pack(expand=1, fill="both")
 # Load JSON data on startup
 load_json_data()
 
-my_label = tk.Label(window, text="Made by Alfazari911 --   Thanks to Nox and BawsDeep for help", anchor="e", padx=10)
+my_label = tk.Label(window, text="Made by Alfazari911 --   Thanks to Nox and BawsDeep for help + All Contributors in Github", anchor="e", padx=10)
 my_label.pack(side="top", anchor="ne", padx=10, pady=5)
 
 we_label = tk.Label(window, text="USE AT YOUR OWN RISK. EDITING STATS AND HP COULD GET YOU BANNED", anchor="w", padx=10)
