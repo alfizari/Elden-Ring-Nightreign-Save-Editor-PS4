@@ -62,31 +62,32 @@ def locate_name(file_path, offset):
         raw = f.read(32)  # Assuming names are 32 bytes max (16 UTF-16 characters)
         try:
             decoded = raw.split(b'\x00\x00')[0].decode('utf-16le')
+            return decoded.encode('utf-8')  # Convert back to bytes
         except UnicodeDecodeError:
-            return raw  # fallback if decoding fails
-        return decoded
+            return raw  
+
 
 def locate_name1(file_path, offset):
-    try:
-        with open(file_path, 'rb') as file:
-            file.seek(offset)
-            name_data = file.read(10)
-            print(f"Character Name: {name_data}")
-            return name_data
-    except IOError as e:
-        messagebox.showerror("Error", f"Failed to read file: {str(e)}")
-        return ""
+    with open(file_path, 'rb') as f:
+        f.seek(offset)
+        raw = f.read(15)  # Assuming names are 32 bytes max (16 UTF-16 characters)
+        try:
+            decoded = raw.split(b'\x00\x00')[0].decode('utf-16le')
+            return decoded.encode('utf-8')  # Convert back to bytes
+        except UnicodeDecodeError:
+            return raw  
+
     
 def locate_name2(file_path, offset):
-    try:
-        with open(file_path, 'rb') as file:
-            file.seek(offset)
-            name_data = file.read(6)
-            print(f"Character Name: {name_data}")
-            return name_data
-    except IOError as e:
-        messagebox.showerror("Error", f"Failed to read file: {str(e)}")
-        return ""
+    with open(file_path, 'rb') as f:
+        f.seek(offset)
+        raw = f.read(6)  # Assuming names are 32 bytes max (16 UTF-16 characters)
+        try:
+            decoded = raw.split(b'\x00\x00')[0].decode('utf-16le')
+            return decoded.encode('utf-8')  # Convert back to bytes
+        except UnicodeDecodeError:
+            return raw  
+
 def read_file_section(file_path, start_offset, end_offset):
     try:
         with open(file_path, 'rb') as file:
