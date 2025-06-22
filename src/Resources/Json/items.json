@@ -333,7 +333,7 @@
   },
   "2011": {
     "name": "Dark Night of the Baron",
-    "color": null
+    "color": "Red"
   },
   "2020": {
     "name": "Night of the Wise",
@@ -389,19 +389,19 @@
   },
   "10002": {
     "name": "Fell Omen Fetish",
-    "color": null
+    "color": "Blue"
   },
   "11000": {
     "name": "Slate Whetstone",
-    "color": null
+    "color": "Red"
   },
   "11001": {
     "name": "The Wylder's Earring",
-    "color": null
+    "color": "Red"
   },
   "11002": {
     "name": "Silver Tear",
-    "color": null
+    "color": "Red"
   },
   "11003": {
     "name": "Delicate Burning Scene",
@@ -425,7 +425,7 @@
   },
   "12003": {
     "name": "Cracked Witch's Brooch",
-    "color": null
+    "color": "Blue"
   },
   "12004": {
     "name": "Delicate Luminous Scene",
@@ -449,11 +449,11 @@
   },
   "13001": {
     "name": "Cracked Sealing Wax",
-    "color": null
+    "color": "Yellow"
   },
   "13002": {
     "name": "Edge of Order",
-    "color": null
+    "color": "Yellow"
   },
   "14000": {
     "name": "Golden Dew",
@@ -461,11 +461,11 @@
   },
   "14001": {
     "name": "Crown Medal",
-    "color": null
+    "color": "Green"
   },
   "14002": {
     "name": "Blessed Iron Coin",
-    "color": null
+    "color": "Green"
   },
   "15000": {
     "name": "Torn Braided Cord",
@@ -473,7 +473,7 @@
   },
   "15002": {
     "name": "Black Claw Necklace",
-    "color": null
+    "color": "Yellow"
   },
   "16000": {
     "name": "Blade of Night Fragment",
@@ -481,11 +481,11 @@
   },
   "16001": {
     "name": "Small Makeup Brush",
-    "color": null
+    "color": "Blue"
   },
   "16002": {
     "name": "Old Portrait",
-    "color": null
+    "color": "Blue"
   },
   "17000": {
     "name": "Night Shard",
@@ -493,15 +493,15 @@
   },
   "17001": {
     "name": "Vestige of Night",
-    "color": null
+    "color": "Green"
   },
   "17002": {
     "name": "Bone-Like Stone",
-    "color": null
+    "color": "Green"
   },
   "18000": {
     "name": "Blessed Flowers",
-    "color": null
+    "color": "Green"
   },
   "18001": {
     "name": "Golden Shell",
@@ -509,7 +509,7 @@
   },
   "18002": {
     "name": "Golden Sprout",
-    "color": null
+    "color": "Red"
   },
   "20000": {
     "name": "Delicate Burning Scene",
