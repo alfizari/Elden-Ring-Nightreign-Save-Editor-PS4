@@ -22,7 +22,7 @@ Always back up your save files before making any changes.
 Thanks to [thewerthon](https://github.com/thewerthon) and [msurkein](https://github.com/msurkein) for there contribution in making the editor easier to use
 
 list of effects for overpowered character:
-Thanks to Mike D, check his channel at discord https://discord.gg/gamers-paradise
+Thanks to Mike D for the list, check his channel at discord https://discord.gg/gamers-paradise
 
 Effects that don’t show up! But works ingame
 
