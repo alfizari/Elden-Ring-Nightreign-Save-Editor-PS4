@@ -29,7 +29,7 @@ Thanks to Mike D for the list, check his channel at discord https://discord.gg/g
 ## 🧪 Effects
 
 <details>
-<summary><h4>Effects That Work In-Game But Don’t Show Visibly</h4></summary>
+<summary><h4>Effects That Don’t Show. After testing, NONE currently works</h4></summary>
 
 | Effect ID | Description                                                  |
 | --------- | ------------------------------------------------------------ |
