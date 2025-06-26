@@ -1314,11 +1314,21 @@ def apply_slot_changes():
         messagebox.showerror("Error", f"Failed to update slot: {e}")
 
 
-def export_items_to_csv():
+def export_items_to_csv(): #Modfied to export anywhere due to high demand of it. 
     if not found_slots:
         messagebox.showerror("Error", "No slots loaded. Scan for slots first.")
         return
-    with open("relics.txt", "w") as f:
+
+    save_path = filedialog.asksaveasfilename(
+        title="Export txt",
+        defaultextension=".txt",
+        initialfile="relics.txt",
+        filetypes=[("txt Files", "*.txt")]
+    )
+    if not save_path:
+        return  
+
+    with open(save_path, "w", encoding="utf-8") as f:
         f.write("item_index|item_id|item_name|effect_slot|effect_id|effect_name|relic_size|character_specific|attribute|attribute_adder|color\n")
         for ix, slot in enumerate(found_slots):
             item_id = slot.get("item_id", "")
@@ -1338,87 +1348,110 @@ def export_items_to_csv():
                 attribute_specific = ""
                 attribute_adder = ""
                 for character in ["Guardian", "Raider", "Duchess", "Recluse", "Revenant", "Executor", "Ironeye", "Wylder"]:
-                    if effect_name.find(character) != -1:
+                    if character in effect_name:
                         character_specific = character
-                for attribute in ["Mind", "Faith", "Arcane", "Strength", "Dexterity", "Intelligence", "Poise", "Endurance", "Vigor", "Holy Attack Power Up", "Character Skill Cooldown Reduction",
-                                  "Ultimate Art Gauge", "Magic Attack Power Up", "Lightning Attack Power Up", "Physical Attack Up", "Fire Attack Power Up", "Lightning Attack Power Up"]:
+                for attribute in [
+                    "Mind", "Faith", "Arcane", "Strength", "Dexterity", "Intelligence", "Poise", "Endurance", "Vigor",
+                    "Holy Attack Power Up", "Character Skill Cooldown Reduction", "Ultimate Art Gauge",
+                    "Magic Attack Power Up", "Lightning Attack Power Up", "Physical Attack Up", "Fire Attack Power Up"
+                ]:
                     if effect_name.startswith(attribute):
                         attribute_specific = attribute
-                        attribute_adder = effect_name.split(" ")[-1]
+                        parts = effect_name.split(" ")
+                        attribute_adder = parts[-1] if len(parts) > 1 else "0"
                         if attribute_adder == "Up":
                             attribute_adder = 0
                         else:
-                            attribute_adder = int(attribute_adder)
+                            try:
+                                attribute_adder = int(attribute_adder)
+                            except ValueError:
+                                attribute_adder = 0
                 f.write(f"{ix}|{item_id}|{item_name}|{effect_slot}|{effect_id}|{effect_name}|{relic_size}|{character_specific}|{attribute_specific}|{attribute_adder}|{color}\n")
 
 def import_items_from_csv():
-
     if not found_slots:
         messagebox.showerror("Error", "No slots loaded. Scan for slots first.")
         return
-    
-    csv_file_path = filedialog.askopenfilename(
-        title="Select CSV File",
-        filetypes=[("CSV files", "*.csv")]
-    )
 
+    csv_file_path = filedialog.askopenfilename(
+        title="Select Exported TXT File",
+        filetypes=[("Text Files", "*.txt")]
+    )
     if not csv_file_path:
-        return  # Cancelado
+        return
 
     try:
         with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
-            reader = csv.DictReader(csvfile, delimiter='\t')
-            
+            reader = csv.DictReader(csvfile, delimiter='|')
+
+            updated_slots = {}
+
             for row in reader:
                 try:
-                    id = int(row['id']) - 1
-                    if id < 0 or id >= len(found_slots):
-                        print(f"Order {id + 1} is out of range. Skipping.")
+                    item_index = int(row['item_index'])
+                    if item_index < 0 or item_index >= len(found_slots):
+                        print(f"Item index {item_index} out of range, skipping.")
                         continue
-                    
-                    slot = found_slots[id]
+
+                    # do it once per indec
+                    if item_index not in updated_slots:
+                        updated_slots[item_index] = {
+                            "item_id": int(row['item_id']),
+                            "effects": {}
+                        }
+
+                    effect_slot = int(row['effect_slot'])
+                    if effect_slot in [0, 1, 2]:  #effect slot, add 4 as (,3) if you like to add 4th effect. Don' think it works
+                        effect_id = int(row['effect_id'])
+                        updated_slots[item_index]['effects'][effect_slot] = effect_id
+
+                except Exception as ex:
+                    print(f"Error reading row: {row}, error: {ex}")
+
+            # Apply updates
+            for item_index, changes in updated_slots.items():
+                try:
+                    slot = found_slots[item_index]
                     new_slot_data = bytearray(slot['raw_data'])
-                    
-                    # Item ID
-                    item_id = int(row['item'])
+
+                    # Update item ID
+                    item_id = changes['item_id']
                     item_id_bytes = item_id.to_bytes(3, byteorder='little')
                     new_slot_data[4:7] = item_id_bytes
                     new_slot_data[8:11] = item_id_bytes
-                    
-                    # Effects
-                    for idx, eff_offset in enumerate(range(16, 28, 4)):
-                        effect_col = f'effect{idx+1}'
-                        effect_id = int(row.get(effect_col, 0))
+
+                    # Update effects (1–3)
+                    for effect_slot, effect_id in changes['effects'].items():
+                        offset = 16 + (effect_slot * 4)
                         effect_bytes = effect_id.to_bytes(4, byteorder='little')
-                        new_slot_data[eff_offset:eff_offset+4] = effect_bytes
-                    
+                        new_slot_data[offset:offset + 4] = effect_bytes
+
+                        slot[f'effect{effect_slot+1}_id'] = effect_id  # update in memory too
+
                     # Write to file
                     with open(file_path_var.get(), 'r+b') as file:
                         file.seek(slot['offset'])
                         file.write(new_slot_data)
-                    
-                    # Update loaded data in memory
-                    start_idx = slot['offset']
-                    end_idx = start_idx + len(new_slot_data)
-                    loaded_file_data[start_idx:end_idx] = new_slot_data
 
-                    # Update slot info
+                    # Update memory
+                    start = slot['offset']
+                    end = start + len(new_slot_data)
+                    loaded_file_data[start:end] = new_slot_data
+
                     slot['raw_data'] = new_slot_data
                     slot['data'] = new_slot_data.hex()
                     slot['item_id'] = item_id
-                    for idx in range(5):
-                        slot[f'effect{idx+1}_id'] = int(row.get(f'effect{idx+1}', 0))
-                    
-                    print(f"Updated slot {id + 1} successfully.")
-                    
-                except Exception as ex:
-                    print(f"Error processing row {row}: {ex}")
-        
-        messagebox.showinfo("Import Complete", "CSV import completed successfully.")
+
+                    print(f"Updated slot {item_index + 1} successfully.")
+
+                except Exception as e:
+                    print(f"Error updating slot {item_index + 1}: {e}")
+
+        messagebox.showinfo("Import Complete", "TXT import completed successfully.")
         update_replace_tab()
 
     except Exception as e:
-        messagebox.showerror("Error", f"Failed to import CSV: {e}")
+        messagebox.showerror("Error", f"Failed to import TXT: {e}")
 ##UI stuff
 file_open_frame = tk.Frame(window)
 file_open_frame.pack(fill="x", padx=10, pady=5)
