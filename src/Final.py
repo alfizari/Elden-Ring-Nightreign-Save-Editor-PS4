@@ -59,34 +59,36 @@ os.chdir(working_directory)
 def locate_name(file_path, offset):
     with open(file_path, 'rb') as f:
         f.seek(offset)
-        raw = f.read(10)  # Assuming names are 32 bytes max (16 UTF-16 characters)
-        try:
-            decoded = raw.split(b'\x00\x00')[0].decode('utf-16le')
-            return decoded.encode('utf-8')  # Convert back to bytes
-        except UnicodeDecodeError:
-            return raw  
+        raw = f.read(10)
+        if raw == b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00':
+            messagebox.showerror("Error", "Please make sure your character name is at least 10 letters long.")
+            return None
+        
+        return raw  
 
 
 def locate_name1(file_path, offset):
     with open(file_path, 'rb') as f:
         f.seek(offset)
-        raw = f.read(8)  # Assuming names are 32 bytes max (16 UTF-16 characters)
-        try:
-            decoded = raw.split(b'\x00\x00')[0].decode('utf-16le')
-            return decoded.encode('utf-8')  # Convert back to bytes
-        except UnicodeDecodeError:
-            return raw  
+        raw = f.read(5)
+
+        if raw == b'\x00\x00\x00\x00\x00':
+            messagebox.showerror("Error", "Please make sure your character name is at least 10 letters long.")
+            return None
+
+        return raw
+
 
     
 def locate_name2(file_path, offset):
     with open(file_path, 'rb') as f:
         f.seek(offset)
-        raw = f.read(4)  # Assuming names are 32 bytes max (16 UTF-16 characters)
-        try:
-            decoded = raw.split(b'\x00\x00')[0].decode('utf-16le')
-            return decoded.encode('utf-8')  # Convert back to bytes
-        except UnicodeDecodeError:
-            return raw  
+        raw = f.read(3)
+        if raw == b'\x00\x00\x00':
+            messagebox.showerror("Error", "Please make sure your character name is at least 10 letters long.")
+            return None
+
+        return raw  
 
 def read_file_section(file_path, start_offset, end_offset):
     try:
@@ -362,6 +364,9 @@ def load_section(section_number):
     print(file_name)
     # Now call locate_name with the correct offset
     name_bytes = locate_name(file_path_var.get(), offset)
+    if name_bytes is None:
+        messagebox.showerror("Error", "Failed to locate character name. Please ensure the file is valid.")
+        return
 
     # Do something with section_data and name_bytes...
     print(f"Loaded section {section_number} with name: {name_bytes}")
@@ -407,8 +412,6 @@ def load_section(section_number):
     else:
         current_souls_var.set("N/A")
         current_name_var.set("N/A")
-        if current_name_var.get() == "N/A":
-            messagebox.showerror("Error", "Please make sure your character name is longer than 10 letters.")
         current_sig_var.set("N/A")
 
 def write_value_at_offset(file_path, offset, value, byte_size=4):
@@ -465,7 +468,10 @@ def update_souls_value():
         name_bytes =locate_name1(file_path_var.get(), offset) # Adjust the offset as needed
         offset1 = find_hex_offset(section_data, name_bytes.hex())
         if offset1 is None:
-            name_bytes =locate_name2(file_path_var.get(), offset)  # Adjust the offset as needed
+            name_bytes =locate_name2(file_path_var.get(), offset)
+            if name_bytes is None:
+                messagebox.showerror("Pattern Not Found", "Please make sure your character name is at least 10 letters long .")
+                return
             offset1 = find_hex_offset(section_data, name_bytes.hex())
     
     if offset1 is not None:
@@ -1572,7 +1578,16 @@ effect3_entry = tk.Entry(effect3_frame, width=15)
 effect3_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
 
+# === Effect 4 ===
+ttk.Label(replace_tab, textvariable=effect4_label_var)\
+    .grid(row=6, column=2, padx=10, pady=(10, 2), sticky="w")
 
+effect4_frame = tk.Frame(replace_tab)
+effect4_frame.grid(row=7, column=2, padx=10, pady=2, sticky="ew")
+
+effect4_entry = tk.Entry(effect4_frame, width=15)
+effect4_entry.pack(side="left", padx=(0, 5))
+tk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_selector(effect4_entry)).pack(side="left")
 
 # === Apply Button ===
 tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white")\
