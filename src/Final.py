@@ -631,6 +631,8 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                         slot_data = section_data[i:i+slot_size]
                         
                         # Extract item ID (bytes 5-7 and 9-11, should be the same)
+                        slot_index= slot_data[0:2]
+                        slot_index = int.from_bytes(slot_index, byteorder='little')
                         item_id_bytes = slot_data[4:7]  # 5th, 6th, 7th bytes (0-indexed)
                         item_id = int.from_bytes(item_id_bytes, byteorder='little')
                         
@@ -638,13 +640,13 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                         effect1_bytes = slot_data[16:20]  # 17th to 20th bytes (0-indexed)
                         effect2_bytes = slot_data[20:24]  # 21st to 24th bytes
                         effect3_bytes = slot_data[24:28]  # 25th to 28th bytes
-                        effect4_bytes = slot_data[28:32]  # 29th to 32nd bytes
+                        
                     
                         
                         effect1_id = int.from_bytes(effect1_bytes, byteorder='little')
                         effect2_id = int.from_bytes(effect2_bytes, byteorder='little')
                         effect3_id = int.from_bytes(effect3_bytes, byteorder='little')
-                        effect4_id = int.from_bytes(effect4_bytes, byteorder='little')
+                        
                         
                         slot_info = {
                             'offset': start_pos + i,  # Absolute offset in file
@@ -655,19 +657,19 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                             'effect1_id': effect1_id,
                             'effect2_id': effect2_id,
                             'effect3_id': effect3_id,
-                            'effect4_id': effect4_id
+                            'sorting': slot_index
                         }
                         found_slots.append(slot_info)
                         
-                        print(f"[DEBUG] Found valid slot with b4=0xC0 at offset {i}, size {slot_size} bytes.")
-                        print(f"Item ID: {item_id}, Effects: {effect1_id}, {effect2_id}, {effect3_id}. {effect4_id}")
+                        
+                        print(f"Item ID: {item_id}, Effects: {effect1_id}, {effect2_id}, {effect3_id}. , sorting: {slot_index}")
 
                     i += slot_size
                     continue
         
         # Check for empty slots
         if i + 8 <= len(section_data) and section_data[i:i+8] == b'\x00\x00\x00\x00\xFF\xFF\xFF\xFF':
-            print(f"[DEBUG] Found empty slot at offset {i}")
+            
             i += 8  # Empty slots are typically 8 bytes
             continue
             
@@ -675,7 +677,7 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
         # Try the next byte position
         i += 1
     
-    print(f"[DEBUG] Found {len(found_slots)} slots with b4=0xC0")
+    
     
     # Update the replace tab with found slots
     update_replace_tab()
@@ -1065,7 +1067,6 @@ def update_replace_tab():
         effect1_entry.delete(0, tk.END)
         effect2_entry.delete(0, tk.END)
         effect3_entry.delete(0, tk.END)
-        effect4_entry.delete(0, tk.END)
         slot_navigation_label.config(text="No slots available")
         return
 
@@ -1073,15 +1074,43 @@ def update_replace_tab():
     if current_slot_index >= len(found_slots):
         current_slot_index = 0
 
-    # Display current slot info
-    slot = found_slots[current_slot_index]
+
+    # Get current window size
+    window.update_idletasks()
+    current_width = window.winfo_width()
+    current_height = window.winfo_height()
+    # Set minsize and maxsize to current size to lock window size
+    window.minsize(current_width, current_height)
+    window.maxsize(current_width, current_height)
+
+    if not hasattr(update_replace_tab, "order"):
+        update_replace_tab.order = "descending"  # default
+
+    if not hasattr(update_replace_tab, "order_button"):
+        def toggle_order():
+            update_replace_tab.order = (
+                "ascending" if update_replace_tab.order == "descending" else "descending"
+            )
+            update_replace_tab()
+        update_replace_tab.order_button = tk.Button(
+            replace_tab, text=f"Order: {update_replace_tab.order.capitalize()}", command=toggle_order
+        )
+        update_replace_tab.order_button.grid(row=9, column=0, columnspan=2, pady=5)
+    else:
+        # Update button text to reflect current order
+        update_replace_tab.order_button.config(text=f"Order: {update_replace_tab.order.capitalize()}")
+
+    # Sort slots based on chosen order
+    reverse = update_replace_tab.order == "descending"
+    sorted_slots = sorted(found_slots, key=lambda s: s['sorting'], reverse=reverse)
+    slot = sorted_slots[current_slot_index]
 
     # Extract IDs
     item_id = slot['item_id']
     effect1_id = slot['effect1_id']
     effect2_id = slot['effect2_id']
     effect3_id = slot['effect3_id']
-    effect4_id = slot['effect4_id']
+
 
     # Look up names
     item_name = items_json.get(str(item_id), {}).get("name", "Unknown Item")
@@ -1089,26 +1118,28 @@ def update_replace_tab():
     effect1_name = effects_json.get(str(effect1_id), {}).get("name", "None")
     effect2_name = effects_json.get(str(effect2_id), {}).get("name", "None")
     effect3_name = effects_json.get(str(effect3_id), {}).get("name", "None")
-    effect4_name = effects_json.get(str(effect4_id), {}).get("name", "None")
+
     item_label_var.set(f"Item ID:{item_id} - {item_name} - {item_color}")
     effect1_label_var.set(f"Effect 1 ID:{effect1_id} -{effect1_name}")
     effect2_label_var.set(f"Effect 2 ID:{effect2_id} -{effect2_name}" ) 
     effect3_label_var.set(f"Effect 3 ID:{effect3_id}- {effect3_name}")
-    effect4_label_var.set(f"Effect 4 ID (Hidden slot):{effect4_id }-{effect4_name}")
+
 
     # Clear and insert info
     slot_info_text.delete(1.0, tk.END)
     slot_info_text.insert(1.0, f"Slot {current_slot_index + 1} of {len(found_slots)}\n")
+    slot_info_text.insert(tk.END, f"Slot index:{slot['sorting']}\n")
     slot_info_text.insert(tk.END, f"Offset: {slot['offset']} (0x{slot['offset']:X})\n")
     slot_info_text.insert(tk.END, f"Size: {slot['size']} bytes\n")
     slot_info_text.insert(tk.END, f"Raw Data: {slot['data'][:32]}...\n\n")
+    
     
     # Insert with names
     slot_info_text.insert(tk.END, f"Item ID: {item_id} - {item_name}\n")
     slot_info_text.insert(tk.END, f"Effect 1 ID: {effect1_id} - {effect1_name}\n")
     slot_info_text.insert(tk.END, f"Effect 2 ID: {effect2_id} - {effect2_name}\n")
     slot_info_text.insert(tk.END, f"Effect 3 ID: {effect3_id} - {effect3_name}\n")
-    slot_info_text.insert(tk.END, f"Effect 4 ID: {effect4_id} - {effect4_name}\n")
+
 
     # Update entry fields
     item_id_entry.delete(0, tk.END)
@@ -1123,25 +1154,41 @@ def update_replace_tab():
     effect3_entry.delete(0, tk.END)
     effect3_entry.insert(0, str(effect3_id))
 
-    effect4_entry.delete(0, tk.END)
-    effect4_entry.insert(0, str(effect4_id))
+
 
     # Update navigation label
     slot_navigation_label.config(text=f"Slot {current_slot_index + 1} of {len(found_slots)}")
 
 
-def navigate_slot(direction):
+def navigate_slot(direction=None, slot_number=None):
     global current_slot_index
-    
+
     if not found_slots:
         return
-    
-    if direction == "prev":
+
+    if slot_number is not None:
+        try:
+            slot_number = int(slot_number)
+            if 1 <= slot_number <= len(found_slots):
+                current_slot_index = slot_number - 1
+            else:
+                messagebox.showerror("Error", f"Slot number must be between 1 and {len(found_slots)}.")
+                return
+        except ValueError:
+            messagebox.showerror("Error", "Please enter a valid slot number.")
+            return
+    elif direction == "prev":
         current_slot_index = (current_slot_index - 1) % len(found_slots)
     elif direction == "next":
         current_slot_index = (current_slot_index + 1) % len(found_slots)
-    
+
     update_replace_tab()
+
+def go_to_slot():
+    slot_num = slot_number_entry.get()
+    navigate_slot(slot_number=slot_num)
+
+
 
 def open_item_selector():
     if not items_json:
@@ -1263,7 +1310,7 @@ def apply_slot_changes():
         new_effect1_id = int(effect1_entry.get())
         new_effect2_id = int(effect2_entry.get())
         new_effect3_id = int(effect3_entry.get())
-        new_effect4_id = int(effect4_entry.get())
+
         
         current_slot = found_slots[current_slot_index]
         
@@ -1279,12 +1326,12 @@ def apply_slot_changes():
         effect1_bytes = new_effect1_id.to_bytes(4, byteorder='little')
         effect2_bytes = new_effect2_id.to_bytes(4, byteorder='little')
         effect3_bytes = new_effect3_id.to_bytes(4, byteorder='little')
-        effect4_bytes = new_effect4_id.to_bytes(4, byteorder='little')
+
         
         new_slot_data[16:20] = effect1_bytes  # 17th to 20th bytes
         new_slot_data[20:24] = effect2_bytes  # 21st to 24th bytes
         new_slot_data[24:28] = effect3_bytes  # 25th to 28th bytes
-        new_slot_data[28:32] = effect4_bytes  # 29th to 32nd bytes
+
         
         # Get file path
         file_path = file_path_var.get()
@@ -1309,7 +1356,7 @@ def apply_slot_changes():
         current_slot['effect1_id'] = new_effect1_id
         current_slot['effect2_id'] = new_effect2_id
         current_slot['effect3_id'] = new_effect3_id
-        current_slot['effect4_id'] = new_effect4_id
+
         
         # Refresh the display
         update_replace_tab()
@@ -1528,26 +1575,37 @@ slot_info_text.grid(row=2, column=0, columnspan=4, padx=10, pady=5, sticky="ew")
 # === Navigation Buttons ===
 nav_frame = tk.Frame(replace_tab)
 nav_frame.grid(row=3, column=0, columnspan=4, pady=10)
+# Add below the navigation buttons in the Replace tab UI
+slot_number_frame = tk.Frame(replace_tab)
+slot_number_frame.grid(row=3, column=4, padx=10, pady=10, sticky="w")
+tk.Label(slot_number_frame, text="Go to slot:").pack(side="left")
+slot_number_entry = tk.Entry(slot_number_frame, width=5)
+slot_number_entry.pack(side="left", padx=(0, 5))
+tk.Button(slot_number_frame, text="Go", command=go_to_slot).pack(side="left")
 
 tk.Button(nav_frame, text="← Previous", command=lambda: navigate_slot("prev")).pack(side="left", padx=5)
 slot_navigation_label = tk.Label(nav_frame, text="No slots available")
 slot_navigation_label.pack(side="left", padx=20)
 tk.Button(nav_frame, text="Next →", command=lambda: navigate_slot("next")).pack(side="left", padx=5)
 
+# Let both columns expand equally
+replace_tab.grid_columnconfigure(0, weight=1, uniform="col")
+replace_tab.grid_columnconfigure(1, weight=1, uniform="col")
+
 # === Item ID Section ===
-ttk.Label(replace_tab, textvariable=item_label_var)\
-    .grid(row=4, column=0, padx=10, pady=(10, 2), sticky="w")
+ttk.Label(replace_tab, textvariable=item_label_var, anchor="w")\
+    .grid(row=4, column=0, padx=10, pady=(10, 2), sticky="ew")
 
 item_id_frame = tk.Frame(replace_tab)
-item_id_frame.grid(row=5, column=0, padx=10, pady=2, sticky="ew")
+item_id_frame.grid(row=4, column=1, padx=10, pady=(10, 2), sticky="ew")
 
 item_id_entry = tk.Entry(item_id_frame, width=15)
 item_id_entry.pack(side="left", padx=(0, 5))
 tk.Button(item_id_frame, text="Select from JSON", command=open_item_selector).pack(side="left")
 
 # === Effect 1 ===
-ttk.Label(replace_tab, textvariable=effect1_label_var)\
-    .grid(row=4, column=1, padx=10, pady=(10, 2), sticky="w")
+ttk.Label(replace_tab, textvariable=effect1_label_var, anchor="w")\
+    .grid(row=5, column=0, padx=10, pady=(2, 2), sticky="ew")
 
 effect1_frame = tk.Frame(replace_tab)
 effect1_frame.grid(row=5, column=1, padx=10, pady=2, sticky="ew")
@@ -1557,37 +1615,30 @@ effect1_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect1_frame, text="Select from JSON", command=lambda: open_effect_selector(effect1_entry)).pack(side="left")
 
 # === Effect 2 ===
-ttk.Label(replace_tab, textvariable=effect2_label_var)\
-    .grid(row=6, column=0, padx=10, pady=(10, 2), sticky="w")
+ttk.Label(replace_tab, textvariable=effect2_label_var, anchor="w")\
+    .grid(row=6, column=0, padx=10, pady=(2, 2), sticky="ew")
 
 effect2_frame = tk.Frame(replace_tab)
-effect2_frame.grid(row=7, column=0, padx=10, pady=2, sticky="ew")
+effect2_frame.grid(row=6, column=1, padx=10, pady=2, sticky="ew")
 
 effect2_entry = tk.Entry(effect2_frame, width=15)
 effect2_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect2_frame, text="Select from JSON", command=lambda: open_effect_selector(effect2_entry)).pack(side="left")
 
 # === Effect 3 ===
-ttk.Label(replace_tab, textvariable=effect3_label_var)\
-    .grid(row=6, column=1, padx=10, pady=(10, 2), sticky="w")
+ttk.Label(replace_tab, textvariable=effect3_label_var, anchor="w")\
+    .grid(row=7, column=0, padx=10, pady=(2, 10), sticky="ew")
 
 effect3_frame = tk.Frame(replace_tab)
-effect3_frame.grid(row=7, column=1, padx=10, pady=2, sticky="ew")
+effect3_frame.grid(row=7, column=1, padx=10, pady=(2, 10), sticky="ew")
 
 effect3_entry = tk.Entry(effect3_frame, width=15)
 effect3_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
 
-# === Effect 4 ===
-ttk.Label(replace_tab, textvariable=effect4_label_var)\
-    .grid(row=6, column=2, padx=10, pady=(10, 2), sticky="w")
 
-effect4_frame = tk.Frame(replace_tab)
-effect4_frame.grid(row=7, column=2, padx=10, pady=2, sticky="ew")
 
-effect4_entry = tk.Entry(effect4_frame, width=15)
-effect4_entry.pack(side="left", padx=(0, 5))
-tk.Button(effect4_frame, text="Select from JSON", command=lambda: open_effect_selector(effect4_entry)).pack(side="left")
+
 
 # === Apply Button ===
 tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white")\
