@@ -215,6 +215,7 @@
   "7033800": {"name": "[Raider] Permanently increase attack power when performing Character Skill's final attack"},
   "7033900": {"name": "[Recluse] Extends duration of blood sigils"},
   "7034000": {"name": "[Recluse] Collecting 4 Affinity Residues Improves Affinity Attack Power"},
+  "7040201": {"name": "Improved Critical Hits +1"},
   "7034100": {"name": "[Recluse] Activating Ultimate Art raises Max HP"},
   "7034200": {"name": "[Executor] Attack power up while Ultimate Art is active"},
   "7034300": {"name": "[Executor] Improves effect of ability but lowers resistance to status ailments"},
@@ -669,5 +670,17 @@
   "9990500": {"name": "The Raider's Grief"},
   "9990600": {"name": "The Revenant's Grief"},
   "9990700": {"name": "The Recluse's Grief"},
-  "9990800": {"name": "The Executor's Grief"}
+  "9990800": {"name": "The Executor's Grief"},
+  "8500102": {"name": "[Runes] 60k at start, 30k on death"},
+  "8330104": {"name": "Raises sorcery/incantation potency"},
+  "8210700": {"name": "Raises resistance to all ailments"},
+  "8100001": {"name": "Raises physical attack power +1"},
+  "8200001": {"name": "Raises physical damage negation +1"},
+  "8200501": {"name": "Raises non-physical damage negation +1"},
+  "8330602": {"name": "Reduced spell FP cost"},
+  "8010001": {"name": "Raises maximum FP +1"},
+  "8020201": {"name": "Improved stamina recovery +1"},
+  "8340102": {"name": "Projectile damage drop-off reduced +1"}
+
+
 }
