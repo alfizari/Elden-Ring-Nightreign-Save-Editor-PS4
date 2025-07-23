@@ -341,7 +341,7 @@
   },
   "2021": {
     "name": "Dark Night of the Wise",
-    "color": null
+    "color": "Green"
   },
   "2030": {
     "name": "Night of the Fathom",
@@ -357,7 +357,7 @@
   },
   "2041": {
     "name": "Dark Night of the Demon",
-    "color": null
+    "color": "Blue"
   },
   "2050": {
     "name": "Night of the Champion",
@@ -365,7 +365,7 @@
   },
   "2051": {
     "name": "Dark Night of the Champion",
-    "color": null
+    "color": "Yellow"
   },
   "2060": {
     "name": "Night of the Miasma",
