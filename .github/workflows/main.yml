@@ -1,74 +1,51 @@
-name: BUILDBOT 
+name: BUILDBOT
 
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch
-  workflow_dispatch:  # Allow manual trigger
+      - main
+  workflow_dispatch:
 
 jobs:
-  build-windows-64bit:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      
-      - name: Setup Python (64-bit)
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          architecture: 'x64'
-      
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install cryptography
-          pip install pyinstaller
-      
-      - name: Create Windows Executable (64-bit)
-        run: |
-          pyinstaller src/build.spec
-        env:
-          PYTHONPATH: ${{ runner.workspace }}/src
-      
-      - name: Upload 64-Bit Executable
-        uses: actions/upload-artifact@v4
-        with:
-          name: Elden_Ring_Save_Editor_WIN64
-          path: dist/
- 
-  build-windows-32bit:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows 64-bit
+            os: windows-latest
+            python-architecture: 'x64'
+            spec: src/build.spec
+            artifact: Elden_Ring_Save_Editor_WIN64
+            artifact-path: dist/
 
-      - name: Setup Python (32-bit)
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          architecture: 'x86'
+          - name: Windows 32-bit
+            os: windows-latest
+            python-architecture: 'x86'
+            spec: src/build_win32.spec
+            artifact: Elden_Ring_Save_Editor_WIN32
+            artifact-path: dist/Elden_Ring_Save_Editor_WIN32.exe
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install cryptography
-          pip install pyinstaller
+          - name: Linux x86_64
+            os: ubuntu-latest
+            python-architecture: 'x64'
+            spec: src/build.spec
+            artifact: Elden_Ring_Save_Editor_LINUX_x86_64
+            artifact-path: dist/
 
-      - name: Create Windows Executable (32-bit)
-        run: |
-          pyinstaller src/build_win32.spec
-        env:
-          PYTHONPATH: ${{ runner.workspace }}/src
+          - name: macOS Silicon
+            os: macos-latest
+            python-architecture: 'arm64'
+            spec: src/build_mac.spec
+            artifact: Elden_Ring_Save_Editor_MAC-Silicon
 
-      - name: Upload 32-Bit Executable
-        uses: actions/upload-artifact@v4
-        with:
-          name: Elden_Ring_Save_Editor_WIN32
-          path: dist/Elden_Ring_Save_Editor_WIN32.exe
+          - name: macOS Intel
+            os: macos-13
+            python-architecture: 'x64'
+            spec: src/build_mac.spec
+            artifact: Elden_Ring_Save_Editor_MAC-Intel
 
-  build-linux_x86_64:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -77,134 +54,23 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          architecture: ${{ matrix.python-architecture }}
 
       - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install cryptography
-          pip install pyinstaller
+        run: pip install cryptography pyinstaller
 
-      - name: Create Linux Executable
-        run: |
-          pyinstaller src/build.spec
+      - name: Build Executable
+        run: pyinstaller ${{ matrix.spec }}
         env:
           PYTHONPATH: ${{ runner.workspace }}/src
 
-      - name: Upload Linux Executable
+      - name: Package macOS App
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          cd dist && zip -r ${{ matrix.artifact }}.zip *.app && mv ${{ matrix.artifact }}.zip ../
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Elden_Ring_Save_Editor_LINUX_x86_64
-          path: dist/
-
-  build-macos_silicon:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Dependencies
-        run: |
-          python3 -m pip install --upgrade pip setuptools wheel  # Upgrade pip globally
-          python3 -m venv venv  # Create a virtual environment
-          source venv/bin/activate  # Activate the virtual environment
-          python3 -m pip install --upgrade pip  # Ensure pip is upgraded in the virtual environment
-          python3 -m pip install cryptography  # Install cryptography library
-          python3 -m pip install pyinstaller  # Install PyInstaller inside the virtual environment
-          python3 -m pip --version  # Debug: Check pip version
-
-      - name: Create macOS Executable
-        run: |
-          source venv/bin/activate  # Activate the virtual environment
-          pyinstaller src/build_mac.spec
-          # Debug the dist directory to verify output structure
-          echo "Listing contents of dist/ directory:"
-          ls -R dist/
-        env:
-          PYTHONPATH: ${{ runner.workspace }}/src
-
-      - name: Verify .app Structure
-        run: |
-          # Check if the .app structure is correct
-          APP_BUNDLE="dist/Elden_Ring_Save_Editor_App.app"
-          if [ -d "$APP_BUNDLE" ]; then
-            echo ".app bundle exists. Listing contents of the .app bundle:"
-            ls -R "$APP_BUNDLE"
-          else
-            echo "Error: .app bundle not found!"
-            exit 1
-          fi
-
-      - name: Create ZIP of .app Bundle
-        run: |
-          # Go to the dist directory and zip the entire .app bundle (not just Contents)
-          cd dist
-          zip -r Elden_Ring_Save_Editor_MAC.zip Elden_Ring_Save_Editor_App.app
-          mv Elden_Ring_Save_Editor_MAC.zip ../Elden_Ring_Save_Editor_MAC_SILICON.zip
-
-      - name: Upload macOS Executable
-        uses: actions/upload-artifact@v4
-        with:
-          name: Elden_Ring_Save_Editor_MAC-Silicon
-          path: Elden_Ring_Save_Editor_MAC_SILICON.zip
-
-  build-macos_intel:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Dependencies
-        run: |
-          python3 -m pip install --upgrade pip setuptools wheel  # Upgrade pip globally
-          python3 -m venv venv  # Create a virtual environment
-          source venv/bin/activate  # Activate the virtual environment
-          python3 -m pip install --upgrade pip  # Ensure pip is upgraded in the virtual environment
-          python3 -m pip install cryptography  # Install cryptography library
-          python3 -m pip install pyinstaller  # Install PyInstaller inside the virtual environment
-          python3 -m pip --version  # Debug: Check pip version
-          
-      - name: Create macOS Intel Executable
-        run: |
-          source venv/bin/activate  # Activate the virtual environment
-          # Set environment variables to build for Intel architecture (x86_64)
-          arch -x86_64 pyinstaller src/build_mac.spec
-          # Debug the dist directory to verify output structure
-          echo "Listing contents of dist/ directory:"
-          ls -R dist/
-        env:
-          PYTHONPATH: ${{ runner.workspace }}/src
-
-      - name: Verify .app Structure
-        run: |
-          # Check if the .app structure is correct
-          APP_BUNDLE="dist/Elden_Ring_Save_Editor_App.app"
-          if [ -d "$APP_BUNDLE" ]; then
-            echo ".app bundle exists. Listing contents of the .app bundle:"
-            ls -R "$APP_BUNDLE"
-          else
-            echo "Error: .app bundle not found!"
-            exit 1
-          fi
-
-      - name: Create ZIP of .app Bundle
-        run: |
-          # Go to the dist directory and zip the entire .app bundle (not just Contents)
-          cd dist
-          zip -r Elden_Ring_Save_Editor_MAC.zip Elden_Ring_Save_Editor_App.app
-          mv Elden_Ring_Save_Editor_MAC.zip ../Elden_Ring_Save_Editor_MAC_INTEL.zip
-
-      - name: Upload macOS Intel Executable
-        uses: actions/upload-artifact@v4
-        with:
-          name: Elden_Ring_Save_Editor_MAC-Intel
-          path: Elden_Ring_Save_Editor_MAC_INTEL.zip
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact-path || format('{0}.zip', matrix.artifact) }}
