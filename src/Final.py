@@ -51,7 +51,7 @@ effect4_label_var = tk.StringVar()
 effect4_label_var.set("Effect 4 ID:")  # Initial label
 current_sig_var = tk.StringVar(value="N/A")
 new_sig_var = tk.StringVar()
-
+current_slots = []
 current_stemaid_var= tk.StringVar()
 
 working_directory = os.path.dirname(os.path.abspath(__file__))
@@ -662,7 +662,7 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                         found_slots.append(slot_info)
                         
                         
-                        print(f"Item ID: {item_id}, Effects: {effect1_id}, {effect2_id}, {effect3_id}. , sorting: {slot_index}")
+                    
 
                     i += slot_size
                     continue
@@ -1102,8 +1102,9 @@ def update_replace_tab():
 
     # Sort slots based on chosen order
     reverse = update_replace_tab.order == "descending"
-    sorted_slots = sorted(found_slots, key=lambda s: s['sorting'], reverse=reverse)
-    slot = sorted_slots[current_slot_index]
+    global current_slots
+    current_slots = sorted(found_slots, key=lambda s: s['sorting'], reverse=reverse)
+    slot = current_slots[current_slot_index]
 
     # Extract IDs
     item_id = slot['item_id']
@@ -1312,7 +1313,12 @@ def apply_slot_changes():
         new_effect3_id = int(effect3_entry.get())
 
         
-        current_slot = found_slots[current_slot_index]
+        global current_slots
+        if not current_slots or current_slot_index >= len(current_slots):
+            messagebox.showerror("Error", "No slot selected for editing.")
+            return
+
+        current_slot = current_slots[current_slot_index]
         
         # Create a copy of the raw data to modify
         new_slot_data = bytearray(current_slot['raw_data'])
