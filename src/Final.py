@@ -346,15 +346,15 @@ def load_section(section_number):
     if file_name == "memory.dat":
         base_offset = 0xA019DE
         if 1 <= section_number <= 10:
-            offset = base_offset + (section_number - 1) * 0x278
+            offset = base_offset + (section_number - 1) * 0x290
         else:
             messagebox.showerror("Error", f"Invalid section number: {section_number}")
             return
     elif file_name == "memory.sl2":
-        # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart
+        # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart (290 in the new update)
         base_offset = 0xA01AA2
         if 1 <= section_number <= 10:
-            offset = base_offset + (section_number - 1) * 0x278
+            offset = base_offset + (section_number - 1) * 0x290
         else:
             messagebox.showerror("Error", f"Invalid section number: {section_number}")
             return
@@ -442,15 +442,15 @@ def update_souls_value():
     if file_name == "memory.dat":
         base_offset = 0xA019DE
         if 1 <= section_number <= 10:
-            offset = base_offset + (section_number - 1) * 0x278
+            offset = base_offset + (section_number - 1) * 0x290
         else:
             messagebox.showerror("Error", f"Invalid section number: {section_number}")
             return
     elif file_name == "memory.sl2":
-        # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart
+        # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart 290 in the new update
         base_offset = 0xA01AA2
         if 1 <= section_number <= 10:
-            offset = base_offset + (section_number - 1) * 0x278
+            offset = base_offset + (section_number - 1) * 0x290
         else:
             messagebox.showerror("Error", f"Invalid section number: {section_number}")
             return
@@ -505,15 +505,15 @@ def update_sig_value():
     if file_name == "memory.dat":
         base_offset = 0xA019DE
         if 1 <= section_number <= 10:
-            offset = base_offset + (section_number - 1) * 0x278
+            offset = base_offset + (section_number - 1) * 0x290
         else:
             messagebox.showerror("Error", f"Invalid section number: {section_number}")
             return
     elif file_name == "memory.sl2":
-        # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart
+        # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart 290 in the new update
         base_offset = 0xA01AA2
         if 1 <= section_number <= 10:
-            offset = base_offset + (section_number - 1) * 0x278
+            offset = base_offset + (section_number - 1) * 0x290
         else:
             messagebox.showerror("Error", f"Invalid section number: {section_number}")
             return
@@ -770,9 +770,10 @@ def import_section():
     section_names = []
     
     if import_file_name.lower() == "memory.dat":
-        name_offsets = [0xA019DE, 0xA01C56, 0xA01ED0, 0xA0214A, 0xA023C4, 0xA0263E, 0xA028B8, 0xA02B32, 0xA02DAC, 0xA03026]
+        # There are 10 sections, each 0x290 (656) bytes apart, starting from 0xA019DE
+        name_offsets = [0xA019DE + i * 0x290 for i in range(10)]
     elif import_file_name == "NR0000.sl2":
-        name_offsets = [0xA01AA2, 0xA01D1A, 0xA01F92, 0xA0220A, 0xA02482, 0xA026FA, 0xA02972, 0xA02BEA, 0xA02E62, 0xA030DA]
+        name_offsets = [0xA01AA2 + i * 0x290 for i in range(10) ]
 
     # Store name bytes for all offsets in a list
     name_bytes_list = []
@@ -937,7 +938,7 @@ def import_section():
                             base_offset = 0xA01AA2
                             
                         if 1 <= section_number <= 10:
-                            name_offset = base_offset + (section_number - 1) * 0x278
+                            name_offset = base_offset + (section_number - 1) * 0x290
                             
                             # Get old name from the specific offset
                             old_name = find_character_name(loaded_file_data, name_offset)
@@ -1008,7 +1009,7 @@ def find_and_replace_pattern_with_aow_and_update_counters():
         if file_name == "memory.dat":
             base_offset = 0xA019DE
             if 1 <= section_number <= 10:
-                offset = base_offset + (section_number - 1) * 0x278
+                offset = base_offset + (section_number - 1) * 0x290
             else:
                 messagebox.showerror("Error", f"Invalid section number: {section_number}")
                 return
@@ -1016,7 +1017,7 @@ def find_and_replace_pattern_with_aow_and_update_counters():
             # Section 1 starts at 0xA01AA2, each section offset is 632 (0x278) bytes apart
             base_offset = 0xA01AA2
             if 1 <= section_number <= 10:
-                offset = base_offset + (section_number - 1) * 0x278
+                offset = base_offset + (section_number - 1) * 0x290
             else:
                 messagebox.showerror("Error", f"Invalid section number: {section_number}")
                 return
