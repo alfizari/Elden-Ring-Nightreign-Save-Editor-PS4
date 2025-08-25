@@ -595,6 +595,10 @@
     "name": "Blessed Flowers",
     "color": "Green"
   },
+  "18001": {
+    "name": "Golden Shell",
+    "color": null
+  },
   "18002": {
     "name": "Golden Sprout",
     "color": "Red"
