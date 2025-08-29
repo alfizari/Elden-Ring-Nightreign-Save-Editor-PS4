@@ -122,6 +122,18 @@ def find_value_at_offset(section_data, offset, byte_size=4):
         pass
     return None
 
+def find_current_steamid(section_data, offset, byte_size=8):
+    try:
+        with open(file_path_var.get(), 'rb') as file:
+            file.seek(offset)
+            value_bytes = file.read(byte_size)
+        if len(value_bytes) == byte_size:
+            print("DEBUG SteamID bytes:", value_bytes.hex(" ").upper())
+            return value_bytes
+    except Exception as e:
+        print("ERROR in find_current_steamid:", e)
+    return None
+
 
 def find_character_name(section_data, offset, byte_size=32):
     try:
@@ -253,7 +265,7 @@ def open_file():
             }
             print(f"DEBUG: file_name = '{file_name}'")
             file_path_var.set(file_path)
-        elif file_name == "NR0000.sl2": ## to be done, no decrypted file available
+        elif file_name == "NR0000.sl2":
             print(f"DEBUG: file_name = '{file_name}'")
             print('no')
 
@@ -373,13 +385,14 @@ def load_section(section_number):
     
 
     # Try to find hex pattern in the section
-    offset_steam= find_hex_offset(section_data, steam_pattern)
-    if offset_steam is not None:
-        steam_offset = offset_steam - 126
-        current_steamid = section_data[steam_offset:steam_offset + 8]
-        set_steam_id(0, current_steamid)  # Save the current Steam ID (before import)
-        current_stemaid_var.set(current_steamid)
-        print("Current SteamID:", current_steamid)
+    current_steam= find_current_steamid(file_path_var.get(), 0xA00148)
+    print("steam", current_steam)
+    if current_steam is not None:
+        current_stemaid_var.set(current_steam.hex())  # store hex string
+    else:
+        current_stemaid_var.set("N/A")
+
+    
     
 
     offset1 = find_hex_offset(section_data, name_bytes.hex())
@@ -858,35 +871,18 @@ def import_section():
                 # ✅ DEBUG: Check steam_pattern before using it
                 print(f"DEBUG: steam_pattern = {steam_pattern} (type: {type(steam_pattern)})")
                 
-                original_steam_id = steam_id(0)
+                original_steam_id = current_stemaid_var.get()
                 if original_steam_id is None:
                     messagebox.showerror("Error", "Original Steam ID not loaded. Please load a section first.")
                     return
-                    
-                imported_chunk = import_data[import_sections[s]['start']:import_sections[s]['end']+1]
                 
-                try:
-                    offset_steam = find_hex_offset(imported_chunk, steam_pattern)
-                    if offset_steam is not None:
-                        steam_offset = offset_steam - 126
-                        if 0 <= steam_offset <= len(imported_chunk) - 126:
-                            # Replace Steam ID in the imported chunk before writing it
-                            imported_chunk = (
-                                imported_chunk[:steam_offset] +
-                                original_steam_id +
-                                imported_chunk[steam_offset + 8:]
-                            )
-                            print(f"Patched Steam ID at offset {hex(steam_offset)} in imported chunk.")
-                        else:
-                            print("Steam offset out of range in imported chunk.")
-                            return  # Break out if steam offset is out of range
-                    else:
-                        print("No Steam ID pattern found in imported chunk.")
-                        return  # Break out if steam pattern not found
-                        
-                except Exception as e:
-                    print(f"ERROR in steam pattern search: {e}")
-                    return  # Break out on error
+                imported_chunk = import_data[import_sections[s]['start']:import_sections[s]['end']+1]
+                steam_offset= find_hex_offsetss(imported_chunk, original_steam_id)
+                new_steam_id= bytes.fromhex('00'*8)
+                imported_chunk = (
+                    imported_chunk[:steam_offset] +
+                    new_steam_id +
+                    imported_chunk[steam_offset + 8:])
 
                 # Replace the section in the loaded file data
                 local_start = SECTIONS[current_section]['start']
@@ -1534,7 +1530,7 @@ notebook = ttk.Notebook(window)
 import_message_var = tk.StringVar()
 import_message_label = ttk.Label(window, textvariable=import_message_var, foreground="green")
 import_message_label.pack(pady=10)
-import_btn = ttk.Button(window, text="Import Save(PC/PS4)", command=import_section)
+import_btn = ttk.Button(window, text="Import Save(From PC to PS4)", command=import_section)
 import_btn.pack(pady=5)
 # Change to ttk.Button for Azure theme
 button_width = 15
