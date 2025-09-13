@@ -19,8 +19,8 @@ hex_pattern_end= 'FF FF FF FF'
 found_slots = []  # Store found slots for editing
 current_slot_index = 0  # Track which slot is currently selected
 steam_pattern = '82 7F 30 31'
-
-
+AOB_search='00 00 00 00 ?? 00 00 00 ?? ?? 00 00 00 00 00 00 ??'
+from_aob_steam= 44 
 window = tk.Tk()
 window.title("Elden Ring NightReign Save Editor")
 
@@ -49,6 +49,16 @@ effect3_label_var = tk.StringVar()
 effect3_label_var.set("Effect 3 ID:")  # Initial label
 effect4_label_var = tk.StringVar()
 effect4_label_var.set("Effect 4 ID:")  # Initial label
+secondary_effect1_label_var=tk.StringVar()
+secondary_effect1_label_var.set("Sec Effect 1 ID:")
+
+secondary_effect2_label_var=tk.StringVar()
+secondary_effect2_label_var.set("Sec Effect 2 ID:")
+
+secondary_effect3_label_var=tk.StringVar()
+secondary_effect3_label_var.set("Sec Effect 3 ID:")
+
+
 current_sig_var = tk.StringVar(value="N/A")
 new_sig_var = tk.StringVar()
 current_slots = []
@@ -61,7 +71,6 @@ def locate_name(file_path, offset):
         f.seek(offset)
         raw = f.read(10)
         if raw == b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00':
-            messagebox.showerror("Error", "Please make sure your character name is at least 10 letters long.")
             return None
         
         return raw  
@@ -73,7 +82,6 @@ def locate_name1(file_path, offset):
         raw = f.read(5)
 
         if raw == b'\x00\x00\x00\x00\x00':
-            messagebox.showerror("Error", "Please make sure your character name is at least 10 letters long.")
             return None
 
         return raw
@@ -85,7 +93,6 @@ def locate_name2(file_path, offset):
         f.seek(offset)
         raw = f.read(3)
         if raw == b'\x00\x00\x00':
-            messagebox.showerror("Error", "Please make sure your character name is at least 10 letters long.")
             return None
 
         return raw  
@@ -134,9 +141,61 @@ def find_current_steamid(section_data, offset, byte_size=8):
         print("ERROR in find_current_steamid:", e)
     return None
 
+#AOB
+def aob_to_pattern(aob: str):
+
+    parts = aob.split()
+    pattern = bytearray()
+    mask = bytearray()
+    for p in parts:
+        if p == "??":
+            pattern.append(0x00)   # placeholder
+            mask.append(0)         # 0 = wildcard (must NOT be 0x00)
+        else:
+            pattern.append(int(p, 16))
+            mask.append(1)         # 1 = must match exactly
+    return bytes(pattern), bytes(mask)
+
+
+def aob_search(data: bytes, aob: str):
+    pattern, mask = aob_to_pattern(aob)
+    L = len(pattern)
+    matches = []
+
+    mv = memoryview(data)
+    for i in range(len(data) - L + 1):
+        ok = True
+        for j in range(L):
+            if mask[j]:
+                if mv[i + j] != pattern[j]:
+                    ok = False
+                    break
+            else:
+                if mv[i + j] == 0:
+                    ok = False
+                    break
+        if ok:
+            matches.append(i)
+            if len(matches) == 1:
+                break
+    return matches
+
+def find_steam_id(section_data):
+    offsets = aob_search(section_data, AOB_search)
+    offset = offsets[0] + 44
+    steam_id = section_data[offset:offset+8]
+
+    # Convert to hex string for Tkinter variable
+    hex_str = steam_id.hex().upper()  # e.g. "1122334455667788"
+    print('sus steam', hex_str)
+
+    current_stemaid_var.set(hex_str)
+    return hex_str
+    
 
 def find_character_name(section_data, offset, byte_size=32):
     try:
+
         value_bytes = section_data[offset:offset+byte_size]
         name_chars = []
         for i in range(0, len(value_bytes), 2):
@@ -321,27 +380,23 @@ items_json = {}  # Load from your items JSON file
 effects_json = {}  # Load from your effects JSON file
 
 def load_json_data():
-    global items_json, effects_json
+    global items_json, effects_json, ill_effects_json
     try:
         file_path = os.path.join(working_directory, "Resources/Json")
         with open(os.path.join(file_path, 'items.json'), 'r') as f:
             items_json = json.load(f)
         with open(os.path.join(file_path, 'effects.json'), 'r') as f:
             effects_json = json.load(f)
+        with open(os.path.join(file_path, 'illegal_effects.json'), 'r') as f:
+            ill_effects_json = json.load(f)
     except FileNotFoundError:
         print("JSON files not found. Manual editing only will be available.")
         items_json = {}
         effects_json = {}
+        ill_effects_json = {}
 steam_id_storage = [None, None]  # index 0 = current, index 1 = post-import
 
-def steam_id(index):
-    if 0 <= index < len(steam_id_storage):
-        return steam_id_storage[index]
-    return None
-def set_steam_id(index, value):
-    if index >= len(steam_id_storage):
-        steam_id_storage.extend([None] * (index - len(steam_id_storage) + 1))
-    steam_id_storage[index] = value
+
 
 def load_section(section_number):
     if not loaded_file_data:
@@ -384,14 +439,6 @@ def load_section(section_number):
     print(f"Loaded section {section_number} with name: {name_bytes}")
     
 
-    # Try to find hex pattern in the section
-    current_steam= find_current_steamid(file_path_var.get(), 0xA00148)
-    print("steam", current_steam)
-    if current_steam is not None:
-        current_stemaid_var.set(current_steam.hex())  # store hex string
-    else:
-        current_stemaid_var.set("N/A")
-
     
     
 
@@ -402,6 +449,8 @@ def load_section(section_number):
         if offset1 is None:
             name_bytes =locate_name2(file_path_var.get(), offset)
             offset1 = find_hex_offset(section_data, name_bytes.hex())
+    
+    find_steam_id(section_data)
         
     if offset1 is not None:
         # Display Souls value
@@ -653,12 +702,21 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                         effect1_bytes = slot_data[16:20]  # 17th to 20th bytes (0-indexed)
                         effect2_bytes = slot_data[20:24]  # 21st to 24th bytes
                         effect3_bytes = slot_data[24:28]  # 25th to 28th bytes
+
+                        sec_effect1_bytes= slot_data[56:60]
+                        sec_effect2_bytes= slot_data[60:64]
+                        sec_effect3_bytes= slot_data[64:68]
+
                         
                     
                         
                         effect1_id = int.from_bytes(effect1_bytes, byteorder='little')
                         effect2_id = int.from_bytes(effect2_bytes, byteorder='little')
                         effect3_id = int.from_bytes(effect3_bytes, byteorder='little')
+
+                        sec_effect1_id= int.from_bytes(sec_effect1_bytes, byteorder='little')
+                        sec_effect2_id= int.from_bytes(sec_effect2_bytes, byteorder='little')
+                        sec_effect3_id= int.from_bytes(sec_effect3_bytes, byteorder='little')
                         
                         
                         slot_info = {
@@ -670,6 +728,9 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
                             'effect1_id': effect1_id,
                             'effect2_id': effect2_id,
                             'effect3_id': effect3_id,
+                            'sec_effect1_id': sec_effect1_id,
+                            'sec_effect2_id': sec_effect2_id,
+                            'sec_effect3_id': sec_effect3_id,
                             'sorting': slot_index
                         }
                         found_slots.append(slot_info)
@@ -868,17 +929,13 @@ def import_section():
             def callback():
                 global loaded_file_data
                 
-                # ✅ DEBUG: Check steam_pattern before using it
-                print(f"DEBUG: steam_pattern = {steam_pattern} (type: {type(steam_pattern)})")
-                
-                original_steam_id = current_stemaid_var.get()
-                if original_steam_id is None:
-                    messagebox.showerror("Error", "Original Steam ID not loaded. Please load a section first.")
-                    return
                 
                 imported_chunk = import_data[import_sections[s]['start']:import_sections[s]['end']+1]
-                steam_offset= find_hex_offsetss(imported_chunk, original_steam_id)
-                new_steam_id= bytes.fromhex('00'*8)
+                steam_offset_list=aob_search(imported_chunk, AOB_search)
+                steam_offset=steam_offset_list[0] + 44
+                new_steam_id=current_stemaid_var.get().strip()
+                new_steam_id= bytes.fromhex(new_steam_id)
+                
                 imported_chunk = (
                     imported_chunk[:steam_offset] +
                     new_steam_id +
@@ -1053,17 +1110,27 @@ def find_and_replace_pattern_with_aow_and_update_counters():
     except Exception as e:
         messagebox.showerror("Error", f"Failed to add or update item: {e}")
 
+def mark_effect(label_widget, label_var, effect_id, effect_name):
+    if str(effect_id) in ill_effects_json:
+        label_var.set(f"ID:{effect_id} - {effect_name} (ILLEGAL)")
+        label_widget.config(fg="red")
+    else:
+        label_var.set(f"ID:{effect_id} - {effect_name}")
+        label_widget.config(fg="black")  # reset if legal
+
 def update_replace_tab():
-    global current_slot_index, item_label_var,effect1_label_var, effect2_label_var, effect3_label_var, effect4_label_var
+    global current_slot_index, item_label_var, effect1_label_var, effect2_label_var, effect3_label_var
+    global secondary_effect1_label_var, secondary_effect2_label_var, secondary_effect3_label_var
 
     if not found_slots:
-        slot_info_text.delete(1.0, tk.END)
-        slot_info_text.insert(1.0, "No slots with b4=0xC0 found.")
         # Clear all entry fields
         item_id_entry.delete(0, tk.END)
         effect1_entry.delete(0, tk.END)
         effect2_entry.delete(0, tk.END)
         effect3_entry.delete(0, tk.END)
+        sec_effect1_entry.delete(0, tk.END)
+        sec_effect2_entry.delete(0, tk.END)
+        sec_effect3_entry.delete(0, tk.END)
         slot_navigation_label.config(text="No slots available")
         return
 
@@ -1071,12 +1138,10 @@ def update_replace_tab():
     if current_slot_index >= len(found_slots):
         current_slot_index = 0
 
-
     # Get current window size
     window.update_idletasks()
     current_width = window.winfo_width()
     current_height = window.winfo_height()
-    # Set minsize and maxsize to current size to lock window size
     window.minsize(current_width, current_height)
     window.maxsize(current_width, current_height)
 
@@ -1092,12 +1157,13 @@ def update_replace_tab():
         update_replace_tab.order_button = tk.Button(
             replace_tab, text=f"Order: {update_replace_tab.order.capitalize()}", command=toggle_order
         )
-        update_replace_tab.order_button.grid(row=9, column=0, columnspan=2, pady=5)
+        update_replace_tab.order_button.grid(row=13, column=0, columnspan=2, pady=5)
     else:
-        # Update button text to reflect current order
-        update_replace_tab.order_button.config(text=f"Order: {update_replace_tab.order.capitalize()}")
+        update_replace_tab.order_button.config(
+            text=f"Order: {update_replace_tab.order.capitalize()}"
+        )
 
-    # Sort slots based on chosen order
+    # Sort slots
     reverse = update_replace_tab.order == "descending"
     global current_slots
     current_slots = sorted(found_slots, key=lambda s: s['sorting'], reverse=reverse)
@@ -1108,7 +1174,9 @@ def update_replace_tab():
     effect1_id = slot['effect1_id']
     effect2_id = slot['effect2_id']
     effect3_id = slot['effect3_id']
-
+    sec_effect1_id = slot['sec_effect1_id']
+    sec_effect2_id = slot['sec_effect2_id']
+    sec_effect3_id = slot['sec_effect3_id']
 
     # Look up names
     item_name = items_json.get(str(item_id), {}).get("name", "Unknown Item")
@@ -1116,28 +1184,45 @@ def update_replace_tab():
     effect1_name = effects_json.get(str(effect1_id), {}).get("name", "None")
     effect2_name = effects_json.get(str(effect2_id), {}).get("name", "None")
     effect3_name = effects_json.get(str(effect3_id), {}).get("name", "None")
+    sec_effect1_name = effects_json.get(str(sec_effect1_id), {}).get("name", "None")
+    sec_effect2_name = effects_json.get(str(sec_effect2_id), {}).get("name", "None")
+    sec_effect3_name = effects_json.get(str(sec_effect3_id), {}).get("name", "None")
 
+    # Item label
     item_label_var.set(f"Item ID:{item_id} - {item_name} - {item_color}")
-    effect1_label_var.set(f"Effect 1 ID:{effect1_id} -{effect1_name}")
-    effect2_label_var.set(f"Effect 2 ID:{effect2_id} -{effect2_name}" ) 
-    effect3_label_var.set(f"Effect 3 ID:{effect3_id}- {effect3_name}")
 
+    # Helper to mark illegal effects
+    def mark_effect(label_widget, label_var, effect_id, effect_name, prefix):
+        if str(effect_id) in ill_effects_json:
+            label_var.set(f"{prefix} ID:{effect_id} - {effect_name} (ILLEGAL)")
+            label_widget.config(fg="red")
+        else:
+            label_var.set(f"{prefix} ID:{effect_id} - {effect_name}")
+            label_widget.config(fg="white")
 
-    # Clear and insert info
-    slot_info_text.delete(1.0, tk.END)
-    slot_info_text.insert(1.0, f"Slot {current_slot_index + 1} of {len(found_slots)}\n")
-    slot_info_text.insert(tk.END, f"Slot index:{slot['sorting']}\n")
-    slot_info_text.insert(tk.END, f"Offset: {slot['offset']} (0x{slot['offset']:X})\n")
-    slot_info_text.insert(tk.END, f"Size: {slot['size']} bytes\n")
-    slot_info_text.insert(tk.END, f"Raw Data: {slot['data'][:32]}...\n\n")
-    
-    
-    # Insert with names
-    slot_info_text.insert(tk.END, f"Item ID: {item_id} - {item_name}\n")
-    slot_info_text.insert(tk.END, f"Effect 1 ID: {effect1_id} - {effect1_name}\n")
-    slot_info_text.insert(tk.END, f"Effect 2 ID: {effect2_id} - {effect2_name}\n")
-    slot_info_text.insert(tk.END, f"Effect 3 ID: {effect3_id} - {effect3_name}\n")
+    # Apply helper for each effect
+    mark_effect(effect1_label, effect1_label_var, effect1_id, effect1_name, "Effect 1")
+    mark_effect(effect2_label, effect2_label_var, effect2_id, effect2_name, "Effect 2")
+    mark_effect(effect3_label, effect3_label_var, effect3_id, effect3_name, "Effect 3")
+    mark_effect(secondary_effect1_label, secondary_effect1_label_var, sec_effect1_id, sec_effect1_name, "Sec Effect 1")
+    mark_effect(secondary_effect2_label, secondary_effect2_label_var, sec_effect2_id, sec_effect2_name, "Sec Effect 2")
+    mark_effect(secondary_effect3_label, secondary_effect3_label_var, sec_effect3_id, sec_effect3_name, "Sec Effect 3")
 
+    illegal_relics_exist = False
+    for slot in found_slots:
+        effects_to_check = [
+            slot['effect1_id'], slot['effect2_id'], slot['effect3_id'],
+            slot['sec_effect1_id'], slot['sec_effect2_id'], slot['sec_effect3_id']
+        ]
+        for eff_id in effects_to_check:
+            if str(eff_id) in ill_effects_json:  # Assuming keys in JSON are strings
+                illegal_relics_exist = True
+                break
+        if illegal_relics_exist:
+            break
+
+    # Update the label once
+    illegal_relics_var.set("⚠ This save contains illegal effects!" if illegal_relics_exist else "")
 
     # Update entry fields
     item_id_entry.delete(0, tk.END)
@@ -1152,10 +1237,18 @@ def update_replace_tab():
     effect3_entry.delete(0, tk.END)
     effect3_entry.insert(0, str(effect3_id))
 
+    sec_effect1_entry.delete(0, tk.END)
+    sec_effect1_entry.insert(0, str(sec_effect1_id))
 
+    sec_effect2_entry.delete(0, tk.END)
+    sec_effect2_entry.insert(0, str(sec_effect2_id))
 
-    # Update navigation label
-    slot_navigation_label.config(text=f"Slot {current_slot_index + 1} of {len(found_slots)}")
+    sec_effect3_entry.delete(0, tk.END)
+    sec_effect3_entry.insert(0, str(sec_effect3_id))
+
+    slot_navigation_label.config(
+        text=f"Slot {current_slot_index + 1} of {len(found_slots)}"
+    )
 
 
 def navigate_slot(direction=None, slot_number=None):
@@ -1309,6 +1402,9 @@ def apply_slot_changes():
         new_effect2_id = int(effect2_entry.get())
         new_effect3_id = int(effect3_entry.get())
 
+        new_sec_effect1_id = int(sec_effect1_entry.get())
+        new_sec_effect2_id = int(sec_effect2_entry.get())
+        new_sec_effect3_id = int(sec_effect3_entry.get())
         
         global current_slots
         if not current_slots or current_slot_index >= len(current_slots):
@@ -1330,10 +1426,17 @@ def apply_slot_changes():
         effect2_bytes = new_effect2_id.to_bytes(4, byteorder='little')
         effect3_bytes = new_effect3_id.to_bytes(4, byteorder='little')
 
+        sec_effect1_bytes = new_sec_effect1_id.to_bytes(4, byteorder='little')
+        sec_effect2_bytes = new_sec_effect2_id.to_bytes(4, byteorder='little')
+        sec_effect3_bytes = new_sec_effect3_id.to_bytes(4, byteorder='little')
         
         new_slot_data[16:20] = effect1_bytes  # 17th to 20th bytes
         new_slot_data[20:24] = effect2_bytes  # 21st to 24th bytes
         new_slot_data[24:28] = effect3_bytes  # 25th to 28th bytes
+
+        new_slot_data[56:60] = sec_effect1_bytes
+        new_slot_data[60:64] = sec_effect2_bytes
+        new_slot_data[64:68] = sec_effect3_bytes
 
         
         # Get file path
@@ -1360,7 +1463,11 @@ def apply_slot_changes():
         current_slot['effect2_id'] = new_effect2_id
         current_slot['effect3_id'] = new_effect3_id
 
-        
+        current_slot['sec_effect1_id'] = new_sec_effect1_id
+        current_slot['sec_effect2_id'] = new_sec_effect2_id
+        current_slot['sec_effect3_id'] = new_sec_effect3_id
+
+
         # Refresh the display
         update_replace_tab()
         
@@ -1530,7 +1637,7 @@ notebook = ttk.Notebook(window)
 import_message_var = tk.StringVar()
 import_message_label = ttk.Label(window, textvariable=import_message_var, foreground="green")
 import_message_label.pack(pady=10)
-import_btn = ttk.Button(window, text="Import Save(From PC to PS4)", command=import_section)
+import_btn = ttk.Button(window, text="Import Save(From PC/PS4)", command=import_section)
 import_btn.pack(pady=5)
 # Change to ttk.Button for Azure theme
 button_width = 15
@@ -1568,12 +1675,7 @@ notebook.add(replace_tab, text="Replace")
 tk.Button(replace_tab, text="Scan for Relics", command=find_and_replace_pattern_with_aow_and_update_counters)\
     .grid(row=0, column=0, columnspan=4, pady=10)
 
-# === Slot Info ===
-ttk.Label(replace_tab, text="Slot Information:")\
-    .grid(row=1, column=0, columnspan=4, padx=10, sticky="w")
 
-slot_info_text = tk.Text(replace_tab, height=4, width=60, state=tk.NORMAL)
-slot_info_text.grid(row=2, column=0, columnspan=4, padx=10, pady=5, sticky="ew")
 
 # === Navigation Buttons ===
 nav_frame = tk.Frame(replace_tab)
@@ -1595,6 +1697,11 @@ tk.Button(nav_frame, text="Next →", command=lambda: navigate_slot("next")).pac
 replace_tab.grid_columnconfigure(0, weight=1, uniform="col")
 replace_tab.grid_columnconfigure(1, weight=1, uniform="col")
 
+# === Illegal Relics Warning Label ===
+illegal_relics_var = tk.StringVar()
+illegal_relics_label = tk.Label(replace_tab, textvariable=illegal_relics_var, fg="red", font=("TkDefaultFont", 10, "bold"))
+illegal_relics_label.grid(row=1, column=0, columnspan=2, padx=10, pady=(5, 10), sticky="ew")
+
 # === Item ID Section ===
 ttk.Label(replace_tab, textvariable=item_label_var, anchor="w")\
     .grid(row=4, column=0, padx=10, pady=(10, 2), sticky="ew")
@@ -1607,8 +1714,8 @@ item_id_entry.pack(side="left", padx=(0, 5))
 tk.Button(item_id_frame, text="Select from JSON", command=open_item_selector).pack(side="left")
 
 # === Effect 1 ===
-ttk.Label(replace_tab, textvariable=effect1_label_var, anchor="w")\
-    .grid(row=5, column=0, padx=10, pady=(2, 2), sticky="ew")
+effect1_label = tk.Label(replace_tab, textvariable=effect1_label_var, anchor="w")
+effect1_label.grid(row=5, column=0, padx=10, pady=(2, 2), sticky="ew")
 
 effect1_frame = tk.Frame(replace_tab)
 effect1_frame.grid(row=5, column=1, padx=10, pady=2, sticky="ew")
@@ -1618,8 +1725,8 @@ effect1_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect1_frame, text="Select from JSON", command=lambda: open_effect_selector(effect1_entry)).pack(side="left")
 
 # === Effect 2 ===
-ttk.Label(replace_tab, textvariable=effect2_label_var, anchor="w")\
-    .grid(row=6, column=0, padx=10, pady=(2, 2), sticky="ew")
+effect2_label = tk.Label(replace_tab, textvariable=effect2_label_var, anchor="w")
+effect2_label.grid(row=6, column=0, padx=10, pady=(2, 2), sticky="ew")
 
 effect2_frame = tk.Frame(replace_tab)
 effect2_frame.grid(row=6, column=1, padx=10, pady=2, sticky="ew")
@@ -1629,8 +1736,8 @@ effect2_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect2_frame, text="Select from JSON", command=lambda: open_effect_selector(effect2_entry)).pack(side="left")
 
 # === Effect 3 ===
-ttk.Label(replace_tab, textvariable=effect3_label_var, anchor="w")\
-    .grid(row=7, column=0, padx=10, pady=(2, 10), sticky="ew")
+effect3_label = tk.Label(replace_tab, textvariable=effect3_label_var, anchor="w")
+effect3_label.grid(row=7, column=0, padx=10, pady=(2, 10), sticky="ew")
 
 effect3_frame = tk.Frame(replace_tab)
 effect3_frame.grid(row=7, column=1, padx=10, pady=(2, 10), sticky="ew")
@@ -1639,16 +1746,48 @@ effect3_entry = tk.Entry(effect3_frame, width=15)
 effect3_entry.pack(side="left", padx=(0, 5))
 tk.Button(effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(effect3_entry)).pack(side="left")
 
+# === Sec Effect 1 ===
+secondary_effect1_label = tk.Label(replace_tab, textvariable=secondary_effect1_label_var, anchor="w")
+secondary_effect1_label.grid(row=9, column=0, padx=10, pady=(2, 2), sticky="ew")
 
+sec_effect1_frame = tk.Frame(replace_tab)
+sec_effect1_frame.grid(row=9, column=1, padx=10, pady=2, sticky="ew")
 
+sec_effect1_entry = tk.Entry(sec_effect1_frame, width=15)
+sec_effect1_entry.pack(side="left", padx=(0, 5))
+tk.Button(sec_effect1_frame, text="Select from JSON", command=lambda: open_effect_selector(sec_effect1_entry)).pack(side="left")
 
+# === Sec Effect 2 ===
+secondary_effect2_label = tk.Label(replace_tab, textvariable=secondary_effect2_label_var, anchor="w")
+secondary_effect2_label.grid(row=10, column=0, padx=10, pady=(2, 2), sticky="ew")
 
-# === Apply Button ===
+sec_effect2_frame = tk.Frame(replace_tab)
+sec_effect2_frame.grid(row=10, column=1, padx=10, pady=2, sticky="ew")
+
+sec_effect2_entry = tk.Entry(sec_effect2_frame, width=15)
+sec_effect2_entry.pack(side="left", padx=(0, 5))
+tk.Button(sec_effect2_frame, text="Select from JSON", command=lambda: open_effect_selector(sec_effect2_entry)).pack(side="left")
+
+# === Sec Effect 3 ===
+secondary_effect3_label = tk.Label(replace_tab, textvariable=secondary_effect3_label_var, anchor="w")
+secondary_effect3_label.grid(row=11, column=0, padx=10, pady=(2, 2), sticky="ew")
+
+sec_effect3_frame = tk.Frame(replace_tab)
+sec_effect3_frame.grid(row=11, column=1, padx=10, pady=2, sticky="ew")
+
+sec_effect3_entry = tk.Entry(sec_effect3_frame, width=15)
+sec_effect3_entry.pack(side="left", padx=(0, 5))
+tk.Button(sec_effect3_frame, text="Select from JSON", command=lambda: open_effect_selector(sec_effect3_entry)).pack(side="left")
+
+# === Apply & CSV Buttons ===
 tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white")\
-    .grid(row=8, column=0, columnspan=4, padx=10, pady=20)
+    .grid(row=12, column=0, columnspan=4, padx=10, pady=20)
 
-tk.Button(replace_tab, text="Import from CSV", command=import_items_from_csv, bg="green", fg="white").grid(row=8, column=1, columnspan=2, padx=10, pady=20)
-tk.Button(replace_tab, text="Export to CSV", command=export_items_to_csv, bg="green", fg="white").grid(row=8, column=3, columnspan=2, padx=10, pady=20)
+tk.Button(replace_tab, text="Import from CSV", command=import_items_from_csv, bg="green", fg="white")\
+    .grid(row=12, column=1, columnspan=2, padx=10, pady=20)
+
+tk.Button(replace_tab, text="Export to CSV", command=export_items_to_csv, bg="green", fg="white")\
+    .grid(row=12, column=3, columnspan=2, padx=10, pady=20)
 
 # Configure column weights for resizing
 replace_tab.columnconfigure(0, weight=1)
