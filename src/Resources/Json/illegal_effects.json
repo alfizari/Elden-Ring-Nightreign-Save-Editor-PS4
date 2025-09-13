@@ -1,0 +1,902 @@
+{
+    "8882200": {
+        "name": "Relic: Acid Mist upon Charged Thrust"
+    },
+    "8210700": {
+        "name": "Relic: All Resistance Up 57"
+    },
+    "8210701": {
+        "name": "Relic: All Resistance Up 75"
+    },
+    "8310000": {
+        "name": "Relic: Attack Up when Wielding Two Armaments x1.07"
+    },
+    "8310001": {
+        "name": "Relic: Attack Up when Wielding Two Armaments x1.10"
+    },
+    "8310002": {
+        "name": "Relic: Attack Up when Wielding Two Armaments x1.13"
+    },
+    "8880200": {
+        "name": "Relic: Black Flames upon Charged Slash"
+    },
+    "321600": {
+        "name": "Relic: Blood Loss in Vicinity Increases Attack Power"
+    },
+    "8883400": {
+        "name": "Relic: Bloodflies upon Precision Aiming"
+    },
+    "8884300": {
+        "name": "Relic: Broken Stance Activates Endure"
+    },
+    "8370000": {
+        "name": "Relic: Character Skill Cooldown Reduction x0.9"
+    },
+    "8882500": {
+        "name": "Relic: Charged Thrust Invokes Sleep Mist"
+    },
+    "8330700": {
+        "name": "Relic: Communion Grants Anti-Dragon Effect"
+    },
+    "8540000": {
+        "name": "Relic: Continuous HP Recovery"
+    },
+    "8660300": {
+        "name": "Relic: Creates Holy Ground at Low HP"
+    },
+    "8640100": {
+        "name": "Relic: Critical Hit FP Restoration"
+    },
+    "8640000": {
+        "name": "Relic: Critical Hit HP Restoration"
+    },
+    "8660200": {
+        "name": "Relic: Critical Hits Inflict Blood Loss"
+    },
+    "8630100": {
+        "name": "Relic: Defeating Enemies Restores FP +1"
+    },
+    "8630101": {
+        "name": "Relic: Defeating Enemies Restores FP +2"
+    },
+    "8630102": {
+        "name": "Relic: Defeating Enemies Restores FP +3"
+    },
+    "8630000": {
+        "name": "Relic: Defeating Enemies Restores HP +1"
+    },
+    "8630001": {
+        "name": "Relic: Defeating Enemies Restores HP +2"
+    },
+    "8630002": {
+        "name": "Relic: Defeating Enemies Restores HP +3"
+    },
+    "8630400": {
+        "name": "Relic: Defeating Group Calls Vengeful Spirits"
+    },
+    "8630800": {
+        "name": "Relic: Defeating Group Fires Golden Shockwave"
+    },
+    "8630300": {
+        "name": "Relic: Defeating Group Releases Mist of Charm"
+    },
+    "8630600": {
+        "name": "Relic: Defeating Group Releases Mist of Frost"
+    },
+    "8630200": {
+        "name": "Relic: Defeating Group Summons Wraiths"
+    },
+    "8630700": {
+        "name": "Relic: Defeating Group Unleashes Lightning"
+    },
+    "8330900": {
+        "name": "Relic: Dmg Negation Up While Casting Spells +1"
+    },
+    "8330901": {
+        "name": "Relic: Dmg Negation Up While Casting Spells +2"
+    },
+    "8330902": {
+        "name": "Relic: Dmg Negation Up While Casting Spells +3"
+    },
+    "8320400": {
+        "name": "Relic: Dmg Negation Up while Charging Attacks +1"
+    },
+    "8320401": {
+        "name": "Relic: Dmg Negation Up while Charging Attacks +2"
+    },
+    "8320402": {
+        "name": "Relic: Dmg Negation Up while Charging Attacks +3"
+    },
+    "8330500": {
+        "name": "Relic: Extended Spell Duration"
+    },
+    "8885100": {
+        "name": "Relic: Failing to Cast Sorcery Restores FP"
+    },
+    "8610400": {
+        "name": "Relic: Fire Attack Follows Charge Attacks"
+    },
+    "8460200": {
+        "name": "Relic: Flame of Frenzy While Walking"
+    },
+    "8885000": {
+        "name": "Relic: Flask Healing Also Restores FP"
+    },
+    "8650100": {
+        "name": "Relic: FP Recovery From Successful Guarding"
+    },
+    "8600200": {
+        "name": "Relic: FP Restoration upon Attacks +1"
+    },
+    "8600201": {
+        "name": "Relic: FP Restoration upon Attacks +2"
+    },
+    "8600202": {
+        "name": "Relic: FP Restoration upon Attacks +3"
+    },
+    "8610100": {
+        "name": "Relic: FP Restoration upon Successive Attacks"
+    },
+    "8690300": {
+        "name": "Relic: Frostbite Produces a Mist of Frost"
+    },
+    "8440200": {
+        "name": "Relic: Gradual Restoration by Flask"
+    },
+    "8420100": {
+        "name": "Relic: Guard Counters Activate Holy Attacks"
+    },
+    "8420200": {
+        "name": "Relic: Guard Counters Launch Summoning Attack"
+    },
+    "8885200": {
+        "name": "Relic: Guarding Ups Attack & Casting Speeds"
+    },
+    "8610600": {
+        "name": "Relic: Holy Attack Follows Charge Attacks"
+    },
+    "8881000": {
+        "name": "Relic: Holy Shockwave upon Charged Strike"
+    },
+    "8650000": {
+        "name": "Relic: HP Recovery From Successful Guarding"
+    },
+    "8600100": {
+        "name": "Relic: HP Restoration upon Attacks +3"
+    },
+    "8610000": {
+        "name": "Relic: HP Restoration upon Successive Attacks"
+    },
+    "8450100": {
+        "name": "Relic: Ice Storm Surge Sprint"
+    },
+    "8880000": {
+        "name": "Relic: Ice Storm upon Charged Slash"
+    },
+    "8670000": {
+        "name": "Relic: Improved Attack Power at Full HP x1.07"
+    },
+    "8670001": {
+        "name": "Relic: Improved Attack Power at Full HP x1.10"
+    },
+    "8670002": {
+        "name": "Relic: Improved Attack Power at Full HP x1.13"
+    },
+    "8660000": {
+        "name": "Relic: Improved Attack Power at Low HP x1.07"
+    },
+    "8660001": {
+        "name": "Relic: Improved Attack Power at Low HP x1.10"
+    },
+    "8660002": {
+        "name": "Relic: Improved Attack Power at Low HP x1.13"
+    },
+    "8300000": {
+        "name": "Relic: Improved Attack Power when Two-Handing x1.07"
+    },
+    "8300001": {
+        "name": "Relic: Improved Attack Power when Two-Handing x1.10"
+    },
+    "8300002": {
+        "name": "Relic: Improved Attack Power when Two-Handing x1.13"
+    },
+    "8210100": {
+        "name": "Relic: Improved Blood Loss Resistance +1"
+    },
+    "8210101": {
+        "name": "Relic: Improved Blood Loss Resistance +2"
+    },
+    "8210102": {
+        "name": "Relic: Improved Blood Loss Resistance +3"
+    },
+    "8320000": {
+        "name": "Relic: Improved Chain Attack Finishers x1.10"
+    },
+    "8320001": {
+        "name": "Relic: Improved Chain Attack Finishers x1.15"
+    },
+    "8320002": {
+        "name": "Relic: Improved Chain Attack Finishers x1.20"
+    },
+    "8320100": {
+        "name": "Relic: Improved Charge Attacks x1.06"
+    },
+    "8320101": {
+        "name": "Relic: Improved Charge Attacks x1.09"
+    },
+    "8320102": {
+        "name": "Relic: Improved Charge Attacks x1.12"
+    },
+    "8330300": {
+        "name": "Relic: Improved Charged Incantation +1"
+    },
+    "8330301": {
+        "name": "Relic: Improved Charged Incantation +2"
+    },
+    "8330302": {
+        "name": "Relic: Improved Charged Incantation +3"
+    },
+    "8330200": {
+        "name": "Relic: Improved Charged Sorceries +1"
+    },
+    "8330201": {
+        "name": "Relic: Improved Charged Sorceries +2"
+    },
+    "8330202": {
+        "name": "Relic: Improved Charged Sorceries +3"
+    },
+    "8130001": {
+        "name": "Relic: Improved Critical Hits +1"
+    },
+    "8130002": {
+        "name": "Relic: Improved Critical Hits +2"
+    },
+    "8130003": {
+        "name": "Relic: Improved Critical Hits +3"
+    },
+    "8670101": {
+        "name": "Relic: Improved Damage Negation at Full HP"
+    },
+    "8660101": {
+        "name": "Relic: Improved Damage Negation at Low HP"
+    },
+    "8210300": {
+        "name": "Relic: Improved Death Blight Resistance +1"
+    },
+    "8210301": {
+        "name": "Relic: Improved Death Blight Resistance +2"
+    },
+    "8210302": {
+        "name": "Relic: Improved Death Blight Resistance +3"
+    },
+    "8410000": {
+        "name": "Relic: Improved Dodging"
+    },
+    "8100200": {
+        "name": "Relic: Improved Fire Attack Power x1.05"
+    },
+    "8100201": {
+        "name": "Relic: Improved Fire Attack Power x1.08"
+    },
+    "8200200": {
+        "name": "Relic: Improved Fire Damage Negation +1"
+    },
+    "8200201": {
+        "name": "Relic: Improved Fire Damage Negation +2"
+    },
+    "8200202": {
+        "name": "Relic: Improved Fire Damage Negation +3"
+    },
+    "8440000": {
+        "name": "Relic: Improved Flask HP Restoration x1.2"
+    },
+    "8440001": {
+        "name": "Relic: Improved Flask HP Restoration x1.3"
+    },
+    "8210500": {
+        "name": "Relic: Improved Frost Resistance +1"
+    },
+    "8210501": {
+        "name": "Relic: Improved Frost Resistance +2"
+    },
+    "8210502": {
+        "name": "Relic: Improved Frost Resistance +3"
+    },
+    "8140000": {
+        "name": "Relic: Improved Guard Breaking +1"
+    },
+    "8140001": {
+        "name": "Relic: Improved Guard Breaking +2"
+    },
+    "8140002": {
+        "name": "Relic: Improved Guard Breaking +3"
+    },
+    "8420000": {
+        "name": "Relic: Improved Guard Counters x1.10"
+    },
+    "8420001": {
+        "name": "Relic: Improved Guard Counters x1.15"
+    },
+    "8420002": {
+        "name": "Relic: Improved Guard Counters x1.20"
+    },
+    "8220000": {
+        "name": "Relic: Improved Guarding Ability +1"
+    },
+    "8220001": {
+        "name": "Relic: Improved Guarding Ability +2"
+    },
+    "8220002": {
+        "name": "Relic: Improved Guarding Ability +3"
+    },
+    "8100400": {
+        "name": "Relic: Improved Holy Attack Power x1.05"
+    },
+    "8100401": {
+        "name": "Relic: Improved Holy Attack Power x1.08"
+    },
+    "8200400": {
+        "name": "Relic: Improved Holy Damage Negation +1"
+    },
+    "8200401": {
+        "name": "Relic: Improved Holy Damage Negation +2"
+    },
+    "8200402": {
+        "name": "Relic: Improved Holy Damage Negation +3"
+    },
+    "8330100": {
+        "name": "Relic: Improved Incantations x1.07"
+    },
+    "8510000": {
+        "name": "Relic: Improved Item Discovery 20"
+    },
+    "8510001": {
+        "name": "Relic: Improved Item Discovery 30"
+    },
+    "8510002": {
+        "name": "Relic: Improved Item Discovery 40"
+    },
+    "8320300": {
+        "name": "Relic: Improved Jump Attacks +1"
+    },
+    "8320301": {
+        "name": "Relic: Improved Jump Attacks +2"
+    },
+    "8320302": {
+        "name": "Relic: Improved Jump Attacks +3"
+    },
+    "8100300": {
+        "name": "Relic: Improved Lightning Attack Power x1.05"
+    },
+    "8100301": {
+        "name": "Relic: Improved Lightning Attack Power x1.08"
+    },
+    "8200300": {
+        "name": "Relic: Improved Lightning Damage Negation +1"
+    },
+    "8200301": {
+        "name": "Relic: Improved Lightning Damage Negation +2"
+    },
+    "8200302": {
+        "name": "Relic: Improved Lightning Damage Negation +3"
+    },
+    "8210600": {
+        "name": "Relic: Improved Madness Resistance +1"
+    },
+    "8210601": {
+        "name": "Relic: Improved Madness Resistance +2"
+    },
+    "8210602": {
+        "name": "Relic: Improved Madness Resistance +3"
+    },
+    "8100100": {
+        "name": "Relic: Improved Magic Attack Power x1.05"
+    },
+    "8100101": {
+        "name": "Relic: Improved Magic Attack Power x1.08"
+    },
+    "8200100": {
+        "name": "Relic: Improved Magic Damage Negation +1"
+    },
+    "8200101": {
+        "name": "Relic: Improved Magic Damage Negation +2"
+    },
+    "8200102": {
+        "name": "Relic: Improved Magic Damage Negation +3"
+    },
+    "8920100": {
+        "name": "Relic: Improved Non-Physical Attack Power +1"
+    },
+    "8920101": {
+        "name": "Relic: Improved Non-Physical Attack Power +2"
+    },
+    "8920102": {
+        "name": "Relic: Improved Non-Physical Attack Power +3"
+    },
+    "8200500": {
+        "name": "Relic: Improved Non-Physical Damage Negation 12%"
+    },
+    "8200501": {
+        "name": "Relic: Improved Non-Physical Damage Negation 18%"
+    },
+    "8400000": {
+        "name": "Relic: Improved Perfuming Arts x1.2"
+    },
+    "8100000": {
+        "name": "Relic: Improved Physical Attack Power x1.06"
+    },
+    "8100001": {
+        "name": "Relic: Improved Physical Attack Power x1.09"
+    },
+    "8200000": {
+        "name": "Relic: Improved Physical Damage Negation 12%"
+    },
+    "8200001": {
+        "name": "Relic: Improved Physical Damage Negation 18%"
+    },
+    "8230001": {
+        "name": "Relic: Improved Poise x0.62"
+    },
+    "8230000": {
+        "name": "Relic: Improved Poise x0.75"
+    },
+    "8210000": {
+        "name": "Relic: Improved Poison Resistance +1"
+    },
+    "8210001": {
+        "name": "Relic: Improved Poison Resistance +2"
+    },
+    "8210002": {
+        "name": "Relic: Improved Poison Resistance +3"
+    },
+    "8340000": {
+        "name": "Relic: Improved Ranged Weapon Attacks +1"
+    },
+    "8340001": {
+        "name": "Relic: Improved Ranged Weapon Attacks +2"
+    },
+    "8340002": {
+        "name": "Relic: Improved Ranged Weapon Attacks +3"
+    },
+    "8380000": {
+        "name": "Relic: Improved Roar & Breath Attacks x1.2"
+    },
+    "8210400": {
+        "name": "Relic: Improved Rot Resistance +1"
+    },
+    "8210401": {
+        "name": "Relic: Improved Rot Resistance +2"
+    },
+    "8210402": {
+        "name": "Relic: Improved Rot Resistance +3"
+    },
+    "8350000": {
+        "name": "Relic: Improved Skill Attack Power x1.05"
+    },
+    "8350001": {
+        "name": "Relic: Improved Skill Attack Power x1.08"
+    },
+    "8350002": {
+        "name": "Relic: Improved Skill Attack Power x1.10"
+    },
+    "8210200": {
+        "name": "Relic: Improved Sleep Resistance +1"
+    },
+    "8210201": {
+        "name": "Relic: Improved Sleep Resistance +2"
+    },
+    "8210202": {
+        "name": "Relic: Improved Sleep Resistance +3"
+    },
+    "8330000": {
+        "name": "Relic: Improved Sorceries x1.07"
+    },
+    "8330400": {
+        "name": "Relic: Improved Spell Casting Speed +1"
+    },
+    "8330401": {
+        "name": "Relic: Improved Spell Casting Speed +2"
+    },
+    "8020200": {
+        "name": "Relic: Improved Stamina Recovery 4/s"
+    },
+    "8020201": {
+        "name": "Relic: Improved Stamina Recovery 6/s"
+    },
+    "8300100": {
+        "name": "Relic: Improved Stance-Breaking when Two-Handing +1"
+    },
+    "8300101": {
+        "name": "Relic: Improved Stance-Breaking when Two-Handing +2"
+    },
+    "8310100": {
+        "name": "Relic: Improved Stance-Breaking when Wielding Two Armaments +1"
+    },
+    "8310101": {
+        "name": "Relic: Improved Stance-Breaking when Wielding Two Armaments +2"
+    },
+    "8120000": {
+        "name": "Relic: Improved Stance-Breaking x1.10"
+    },
+    "8120001": {
+        "name": "Relic: Improved Stance-Breaking x1.15"
+    },
+    "8390000": {
+        "name": "Relic: Improved Throwing Pots x1.2"
+    },
+    "8430000": {
+        "name": "Relic: Improved Thrusting Counterattack x1.2"
+    },
+    "8010000": {
+        "name": "Relic: Increased Maximum FP x1.10"
+    },
+    "8010001": {
+        "name": "Relic: Increased Maximum FP x1.15"
+    },
+    "8000000": {
+        "name": "Relic: Increased Maximum HP x1.10"
+    },
+    "8000001": {
+        "name": "Relic: Increased Maximum HP x1.15"
+    },
+    "8020000": {
+        "name": "Relic: Increased Maximum Stamina x1.10"
+    },
+    "8020001": {
+        "name": "Relic: Increased Maximum Stamina x1.15"
+    },
+    "8520000": {
+        "name": "Relic: Less Likely to Be Targeted"
+    },
+    "8610500": {
+        "name": "Relic: Lightning Follows Charge Attacks"
+    },
+    "8882100": {
+        "name": "Relic: Lightning upon Charged Thrust"
+    },
+    "8410100": {
+        "name": "Relic: Lightning upon Dodging"
+    },
+    "8883100": {
+        "name": "Relic: Lightning upon Precision Aiming"
+    },
+    "8881200": {
+        "name": "Relic: Luring Enemies upon Charged Strike"
+    },
+    "8690100": {
+        "name": "Relic: Madness Produces a Flame of Frenzy"
+    },
+    "8610300": {
+        "name": "Relic: Magic Attack Follows Charge Attacks"
+    },
+    "8881600": {
+        "name": "Relic: Magic Bubbles upon Charged Strike"
+    },
+    "8450000": {
+        "name": "Relic: Magma Surge Sprint"
+    },
+    "8881500": {
+        "name": "Relic: Magma upon Charged Strike"
+    },
+    "8630500": {
+        "name": "Relic: Magma upon Defeating Multiple Enemies"
+    },
+    "8530100": {
+        "name": "Relic: Many Periodical Glintblades"
+    },
+    "8500000": {
+        "name": "Relic: More Runes From Defeated Enemies x1.1"
+    },
+    "8530000": {
+        "name": "Relic: Multiple Periodical Glintblades"
+    },
+    "8350400": {
+        "name": "Relic: Parries Activate Golden Retaliation"
+    },
+    "8530200": {
+        "name": "Relic: Periodical Giant Glintblades"
+    },
+    "8882300": {
+        "name": "Relic: Pest Threads upon Charged Thrust"
+    },
+    "8880300": {
+        "name": "Relic: Phantom Attack upon Charged Slash"
+    },
+    "8881400": {
+        "name": "Relic: Phantom Attack upon Charged Strike"
+    },
+    "8882000": {
+        "name": "Relic: Phantom Attack upon Charged Thrust"
+    },
+    "8882400": {
+        "name": "Relic: Poison Mist upon Charged Thrust"
+    },
+    "8883200": {
+        "name": "Relic: Poison Mist upon Precision Aiming"
+    },
+    "8690000": {
+        "name": "Relic: Poison Produces a Mist of Poison"
+    },
+    "9030900": {
+        "name": "Relic: Power of Dark Moon"
+    },
+    "9071000": {
+        "name": "Relic: Power of Despair"
+    },
+    "9040200": {
+        "name": "Relic: Power of Destined Death"
+    },
+    "9040800": {
+        "name": "Relic: Power of Destruction"
+    },
+    "9330900": {
+        "name": "Relic: Power of Full Moon"
+    },
+    "9031500": {
+        "name": "Relic: Power of House Marais"
+    },
+    "9021400": {
+        "name": "Relic: Power of Night and Flame"
+    },
+    "9151100": {
+        "name": "Relic: Power of the Ancestral Spirit"
+    },
+    "9031400": {
+        "name": "Relic: Power of the Blasphemous"
+    },
+    "9122000": {
+        "name": "Relic: Power of the Blasphemous"
+    },
+    "9170100": {
+        "name": "Relic: Power of the Blood Lord"
+    },
+    "9060400": {
+        "name": "Relic: Power of the Dragonlord"
+    },
+    "9230500": {
+        "name": "Relic: Power of the First Lord"
+    },
+    "9210600": {
+        "name": "Relic: Power of the Flying Dragon"
+    },
+    "9420000": {
+        "name": "Relic: Power of the General"
+    },
+    "9200600": {
+        "name": "Relic: Power of the Giant"
+    },
+    "9150400": {
+        "name": "Relic: Power of the Golden Lineage"
+    },
+    "9031700": {
+        "name": "Relic: Power of the Golden Order"
+    },
+    "9160900": {
+        "name": "Relic: Power of the Great Ancient Dragon"
+    },
+    "9031000": {
+        "name": "Relic: Power of the Greater Will"
+    },
+    "9130300": {
+        "name": "Relic: Power of the Lightless Void"
+    },
+    "9081000": {
+        "name": "Relic: Power of the Omen King"
+    },
+    "9111500": {
+        "name": "Relic: Power of the Queen"
+    },
+    "9040500": {
+        "name": "Relic: Power of the Starscourge"
+    },
+    "9090200": {
+        "name": "Relic: Power of the Undefeated"
+    },
+    "9041000": {
+        "name": "Relic: Power of Vengeance"
+    },
+    "8340100": {
+        "name": "Relic: Projectile Damage Drop-Off Reduced +1"
+    },
+    "8340101": {
+        "name": "Relic: Projectile Damage Drop-Off Reduced +2"
+    },
+    "8340102": {
+        "name": "Relic: Projectile Damage Drop-Off Reduced +3"
+    },
+    "8883000": {
+        "name": "Relic: Projectiles Launched upon Attacks"
+    },
+    "8881100": {
+        "name": "Relic: Projectiles upon Charged Strike"
+    },
+    "8010101": {
+        "name": "Relic: Reduced FP Consumption x0.85"
+    },
+    "8010100": {
+        "name": "Relic: Reduced FP Consumption x0.90"
+    },
+    "8350200": {
+        "name": "Relic: Reduced Skill FP Cost +1"
+    },
+    "8350201": {
+        "name": "Relic: Reduced Skill FP Cost +2"
+    },
+    "8350202": {
+        "name": "Relic: Reduced Skill FP Cost +3"
+    },
+    "8330600": {
+        "name": "Relic: Reduced Spell FP Cost +1"
+    },
+    "8330601": {
+        "name": "Relic: Reduced Spell FP Cost +2"
+    },
+    "8330602": {
+        "name": "Relic: Reduced Spell FP Cost +3"
+    },
+    "8880100": {
+        "name": "Relic: Ring of Light upon Charged Slash"
+    },
+    "8880400": {
+        "name": "Relic: Roaring Flames upon Charged Slash"
+    },
+    "8883300": {
+        "name": "Relic: Rot Mist upon Precision Aiming"
+    },
+    "8690200": {
+        "name": "Relic: Rot Produces a Mist of Scarlet Rot"
+    },
+    "8500100": {
+        "name": "Relic: Rune of the Strong 10000"
+    },
+    "8500101": {
+        "name": "Relic: Rune of the Strong 20000"
+    },
+    "8500102": {
+        "name": "Relic: Rune of the Strong 30000"
+    },
+    "8460100": {
+        "name": "Relic: Savage Flames Roar While Walking"
+    },
+    "8884200": {
+        "name": "Relic: Shielding Creates Holy Ground"
+    },
+    "8884000": {
+        "name": "Relic: Shielding Improves Damage Negation"
+    },
+    "8884100": {
+        "name": "Relic: Shielding Invokes Indomitable Vow"
+    },
+    "8881300": {
+        "name": "Relic: Shockwave upon Charged Strike"
+    },
+    "8690400": {
+        "name": "Relic: Sleep Produces a Mist of Sleep"
+    },
+    "8460500": {
+        "name": "Relic: Storm of Red Lightning While Walking"
+    },
+    "8652100": {
+        "name": "Relic: Successful Guarding Ups Dmg Negation +1"
+    },
+    "8652101": {
+        "name": "Relic: Successful Guarding Ups Dmg Negation +2"
+    },
+    "8652102": {
+        "name": "Relic: Successful Guarding Ups Dmg Negation +3"
+    },
+    "8652000": {
+        "name": "Relic: Successful Guarding Ups Poise +1"
+    },
+    "8652001": {
+        "name": "Relic: Successful Guarding Ups Poise +2"
+    },
+    "8652002": {
+        "name": "Relic: Successful Guarding Ups Poise +3"
+    },
+    "8610700": {
+        "name": "Relic: Successive Attacks Negate Damage +1"
+    },
+    "8610701": {
+        "name": "Relic: Successive Attacks Negate Damage +2"
+    },
+    "8610702": {
+        "name": "Relic: Successive Attacks Negate Damage +3"
+    },
+    "8600300": {
+        "name": "Relic: Sudden Enemy Death upon Attacks"
+    },
+    "8620100": {
+        "name": "Relic: Taking Damage Boosts Damage Negation +1"
+    },
+    "8620101": {
+        "name": "Relic: Taking Damage Boosts Damage Negation +2"
+    },
+    "8620102": {
+        "name": "Relic: Taking Damage Boosts Damage Negation +3"
+    },
+    "8620000": {
+        "name": "Relic: Taking Damage Restores FP +1"
+    },
+    "8620001": {
+        "name": "Relic: Taking Damage Restores FP +2"
+    },
+    "8620002": {
+        "name": "Relic: Taking Damage Restores FP +3"
+    },
+    "9990400": {
+        "name": "Relic: The Duchess' Grief +1"
+    },
+    "9990800": {
+        "name": "Relic: The Executor's Grief +1"
+    },
+    "9990801": {
+        "name": "Relic: The Executor's Grief +2"
+    },
+    "9990802": {
+        "name": "Relic: The Executor's Grief +3"
+    },
+    "9990200": {
+        "name": "Relic: The Guardian's Grief +1"
+    },
+    "9990201": {
+        "name": "Relic: The Guardian's Grief +2"
+    },
+    "9990202": {
+        "name": "Relic: The Guardian's Grief +3"
+    },
+    "9990300": {
+        "name": "Relic: The Ironeye's Grief +1"
+    },
+    "9990301": {
+        "name": "Relic: The Ironeye's Grief +2"
+    },
+    "9990302": {
+        "name": "Relic: The Ironeye's Grief +3"
+    },
+    "9990500": {
+        "name": "Relic: The Raider's Grief +1"
+    },
+    "9990501": {
+        "name": "Relic: The Raider's Grief +2"
+    },
+    "9990502": {
+        "name": "Relic: The Raider's Grief +3"
+    },
+    "9990700": {
+        "name": "Relic: The Recluse's Grief +1"
+    },
+    "9990701": {
+        "name": "Relic: The Recluse's Grief +2"
+    },
+    "9990702": {
+        "name": "Relic: The Recluse's Grief +3"
+    },
+    "9990600": {
+        "name": "Relic: The Revenant's Grief +1"
+    },
+    "9990601": {
+        "name": "Relic: The Revenant's Grief +2"
+    },
+    "9990602": {
+        "name": "Relic: The Revenant's Grief +3"
+    },
+    "9990100": {
+        "name": "Relic: The Wylder's Grief +1"
+    },
+    "9990101": {
+        "name": "Relic: The Wylder's Grief +2"
+    },
+    "9990102": {
+        "name": "Relic: The Wylder's Grief +3"
+    },
+    "8360000": {
+        "name": "Relic: Ultimate Art Gauge Charge Speed Up x1.06"
+    },
+    "8460400": {
+        "name": "Relic: Vicious Star Rain Pours While Walking"
+    },
+    "8460300": {
+        "name": "Relic: Wraiths While Walking"
+    }
+}
