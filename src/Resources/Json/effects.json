@@ -286,6 +286,114 @@
   "6610701": {"name": "Reduced FP Consumption +1"},
   "6610702": {"name": "Reduced FP Consumption +2"},
   "6611000": {"name": "Improved Physical Damage Negation"},
+  "6800000": {
+      "name": "Relic: Reduced Vigor"
+  },
+  "6800200": {
+      "name": "Relic: Reduced Endurance"
+  },
+  "6810100": {
+      "name": "Relic: Impaired Damage Negation"
+  },
+  "6820000": {
+      "name": "Relic: Taking Damage Causes Poison Buildup"
+  },
+  "6820100": {
+      "name": "Relic: Taking Damage Causes Rot Buildup"
+  },
+  "6820200": {
+      "name": "Relic: Taking Damage Causes Frost Buildup"
+  },
+  "6820300": {
+      "name": "Relic: Taking Damage Causes Blood Loss Buildup"
+  },
+  "6820400": {
+      "name": "Relic: Taking Damage Causes Madness Buildup"
+  },
+  "6820500": {
+      "name": "Relic: Taking Damage Causes Sleep Buildup"
+  },
+  "6820600": {
+      "name": "Relic: Taking Damage Causes Death Buildup"
+  },
+  "6830000": {
+      "name": "Relic: Reduced Strength and Intelligence"
+  },
+  "6830100": {
+      "name": "Relic: Reduced Dexterity and Faith"
+  },
+  "6830200": {
+      "name": "Relic: Reduced Intelligence and Dexterity"
+  },
+  "6830300": {
+      "name": "Relic: Reduced Faith and Strength"
+  },
+  "6830400": {
+      "name": "Relic: Reduced Vigor and Arcane"
+  },
+  "6840000": {
+      "name": "Relic: Reduced Rune Acquisition"
+  },
+  "6840100": {
+      "name": "Relic: Reduced Flask HP Restoration"
+  },
+  "6840200": {
+      "name": "Relic: Ultimate Art Charging Impaired"
+  },
+  "6850000": {
+      "name": "Relic: Lowers maximum HP"
+  },
+  "6850100": {
+      "name": "Relic: Lowers maximum FP"
+  },
+  "6850200": {
+      "name": "Relic: Lowers maximum stamina"
+  },
+  "6850300": {
+      "name": "Relic: Reduced ability to block physical damage"
+  },
+  "6850400": {
+      "name": "Relic: Surge Sprinting Drains More Stamina"
+  },
+  "6850500": {
+      "name": "Relic: Lowers resistance to all ailments"
+  },
+  "6850600": {
+      "name": "Relic: Lowers HP restoration from flasks"
+  },
+  "6850700": {
+      "name": "Relic: Surge sprinting consumes more stamina"
+  },
+  "6850800": {
+      "name": "Relic: Slows the charging speed of Ultimate Art gauge"
+  },
+  "6850900": {
+      "name": "Relic: Slowly lowers HP"
+  },
+  "6851000": {
+      "name": "Relic: Sleep Buildup for Flask Usages"
+  },
+  "6851100": {
+      "name": "Relic: Receive more damage just after evading"
+  },
+  "6851200": {
+      "name": "Relic: Lower Attack When Below Max HP"
+  },
+  "6851300": {
+      "name": "Relic: Using flask reduces damage negation"
+  },
+  "6851400": {
+      "name": "Relic: Using flask causes sleep buildup"
+  },
+  "6851500": {
+      "name": "Relic: Using flask causes madness buildup"
+  },
+  "6851600": {
+      "name": "Relic: Near Death Spills Flask"
+  },
+  "6851700": {
+      "name": "Relic: Slower charging of Ultimate Art when below max HP level"
+  },
   "7000000": {"name": "Vigor +1"},
   "7000001": {"name": "Vigor +2"},
   "7000002": {"name": "Vigor +3"},
