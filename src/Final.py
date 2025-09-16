@@ -160,10 +160,13 @@ def aob_to_pattern(aob: str):
 def aob_search(data: bytes, aob: str):
     pattern, mask = aob_to_pattern(aob)
     L = len(pattern)
-    matches = []
-
     mv = memoryview(data)
+
     for i in range(len(data) - L + 1):
+        # skip offsets below 0x58524
+        if i < 0x58524:
+            continue
+
         ok = True
         for j in range(L):
             if mask[j]:
@@ -171,14 +174,17 @@ def aob_search(data: bytes, aob: str):
                     ok = False
                     break
             else:
+                # wildcard but must not be 0x00
                 if mv[i + j] == 0:
                     ok = False
                     break
+
         if ok:
-            matches.append(i)
-            if len(matches) == 1:
-                break
-    return matches
+            print([i])  # debug print
+            return [i]  # return first valid match only
+
+    print([])  # no matches found
+    return []
 
 def find_steam_id(section_data):
     offsets = aob_search(section_data, AOB_search)
@@ -1807,3 +1813,4 @@ we_label.pack(side="bottom", anchor="nw", padx=10, pady=5)
 messagebox.showinfo("Info", "Contribute by adding the relics id's and effects's id to the json files at /src/Resources/Json in https://github.com/alfizari/Elden-Ring-Nightreign .")
 # Run 
 window.mainloop()
+
