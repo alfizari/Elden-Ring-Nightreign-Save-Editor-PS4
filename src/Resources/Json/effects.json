@@ -346,30 +346,14 @@
   "6850100": {
       "name": "Relic: Lowers maximum FP"
   },
-  "6850200": {
-      "name": "Relic: Lowers maximum stamina"
-  },
+
   "6850300": {
       "name": "Relic: Reduced ability to block physical damage"
   },
   "6850400": {
       "name": "Relic: Surge Sprinting Drains More Stamina"
   },
-  "6850500": {
-      "name": "Relic: Lowers resistance to all ailments"
-  },
-  "6850600": {
-      "name": "Relic: Lowers HP restoration from flasks"
-  },
-  "6850700": {
-      "name": "Relic: Surge sprinting consumes more stamina"
-  },
-  "6850800": {
-      "name": "Relic: Slows the charging speed of Ultimate Art gauge"
-  },
-  "6850900": {
-      "name": "Relic: Slowly lowers HP"
-  },
+
   "6851000": {
       "name": "Relic: Sleep Buildup for Flask Usages"
   },
@@ -378,21 +362,6 @@
   },
   "6851200": {
       "name": "Relic: Lower Attack When Below Max HP"
-  },
-  "6851300": {
-      "name": "Relic: Using flask reduces damage negation"
-  },
-  "6851400": {
-      "name": "Relic: Using flask causes sleep buildup"
-  },
-  "6851500": {
-      "name": "Relic: Using flask causes madness buildup"
-  },
-  "6851600": {
-      "name": "Relic: Near Death Spills Flask"
-  },
-  "6851700": {
-      "name": "Relic: Slower charging of Ultimate Art when below max HP level"
   },
   "7000000": {"name": "Vigor +1"},
   "7000001": {"name": "Vigor +2"},
@@ -1004,7 +973,15 @@
   "8330602": {"name": "Reduced spell FP cost"},
   "8010001": {"name": "Raises maximum FP +1"},
   "8020201": {"name": "Improved stamina recovery +1"},
-  "8340102": {"name": "Projectile damage drop-off reduced +1"}
+  "8340102": {"name": "Projectile damage drop-off reduced +1"},
+  "6850900": { "name": "Reduced damage negation for flask usages" },
+  "6850800": { "name": "Repeated evasions lower damage negation" },
+  "6850700": { "name": "More damage taken after evasion" },
+  "6850500": { "name": "Continuous HP loss" },
+  "6850200": { "name": "All resistances down" },
+  "6851300": { "name": "Poison buildup when below max HP" },
+  "6851400": { "name": "Rot buildup when below max HP" },
+  "6851700": { "name": "Near death reduces max HP" }
 
 
 }
