@@ -1787,7 +1787,7 @@ tk.Button(sec_effect3_frame, text="Select from JSON", command=lambda: open_effec
 
 # === Apply & CSV Buttons ===
 tk.Button(replace_tab, text="Apply Changes", command=apply_slot_changes, bg="orange", fg="white")\
-    .grid(row=12, column=0, columnspan=4, padx=10, pady=20)
+    .grid(row=2, column=0, columnspan=4, padx=10, pady=20)
 
 tk.Button(replace_tab, text="Import from CSV", command=import_items_from_csv, bg="green", fg="white")\
     .grid(row=12, column=1, columnspan=2, padx=10, pady=20)
@@ -1813,4 +1813,5 @@ we_label.pack(side="bottom", anchor="nw", padx=10, pady=5)
 messagebox.showinfo("Info", "Contribute by adding the relics id's and effects's id to the json files at /src/Resources/Json in https://github.com/alfizari/Elden-Ring-Nightreign .")
 # Run 
 window.mainloop()
+
 
