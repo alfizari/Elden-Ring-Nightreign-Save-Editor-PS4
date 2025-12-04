@@ -63,7 +63,7 @@ class BND4Entry:
             decrypted_raw = decryptor.update(self._encrypted_payload) + decryptor.finalize()
             
             self._clean_data = decrypted_raw 
-            print(f"Entry {self._index}: Decrypted {len(decrypted_raw)} bytes")
+
             
             if self._decrypted_slot_path:
                 os.makedirs(self._decrypted_slot_path, exist_ok=True)
@@ -102,10 +102,8 @@ import json
 def process_entries_in_order(entries):
         # Sort entries by index to ensure consistent processing order
         sorted_entries = sorted(entries, key=lambda e: e.index)
-        debug(f"Processing {len(sorted_entries)} entries in index order")
         
         for entry in sorted_entries:
-            debug(f"Processing entry {entry.index}: {entry._name}")
             entry.decrypt()
         
         return sorted_entries
@@ -119,7 +117,6 @@ def save_index_mapping(entries, output_path):
     mapping_file = os.path.join(output_path, "index_mapping.json")
     with open(mapping_file, 'w') as f:
         json.dump(mapping, f)
-    debug(f"Saved index mapping to {mapping_file}")
 def get_input() -> Optional[str]:
     return filedialog.askopenfilename(
         title="Select Decrypted SL2 File",
@@ -210,7 +207,7 @@ def decrypt_ds2_sl2(input_file, log_callback=None) -> Dict[int, str]:
             log(f"Warning: Entry #{i} has invalid name offset: {entry_name_offset} - skipping")
             continue
 
-        log(f"Processing Entry #{i} (Size: {entry_size}, Offset: {entry_data_offset})")
+
 
         try:
             entry = BND4Entry(
@@ -228,7 +225,6 @@ def decrypt_ds2_sl2(input_file, log_callback=None) -> Dict[int, str]:
                 entry.decrypt()
                 bnd4_entries.append(entry)
                 successful_decryptions += 1
-                log(f"Successfully decrypted entry #{i}: {entry._name}")
             except Exception as e:
                 log(f"Error decrypting entry #{i}: {str(e)}")
                 continue
@@ -237,7 +233,7 @@ def decrypt_ds2_sl2(input_file, log_callback=None) -> Dict[int, str]:
             log(f"Error processing entry #{i}: {str(e)}")
             continue
         
-    log(f"\nDONE! Successfully decrypted {successful_decryptions} of {num_bnd4_entries} entries.")
+
     save_index_mapping(bnd4_entries, input_decrypted_path)
 
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "decrypted_output")
@@ -281,11 +277,10 @@ def read_input():
         debug("Found BND4 header.")
 
     num_bnd4_entries = struct.unpack("<i", raw[12:16])[0]
-    debug("Number of BND4 entries: %u" % num_bnd4_entries)
+
 
     unicode_flag = (raw[48] == 1)
-    debug("Unicode flag: %r" % unicode_flag)
-    debug()
+
 
     return raw, num_bnd4_entries, unicode_flag
 
@@ -301,11 +296,11 @@ def encrypt_modified_files(output_sl2_file):
     # Load original SL2 file
     with open(original_sl2_path, 'rb') as f:
         original_data = f.read()
-    print(f"Original file size: {len(original_data)} bytes")
+
     
     new_data = bytearray(original_data)
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_folder = os.path.join(script_dir, "split_userdata")
+    output_folder = os.path.join(script_dir, "decrypted_output")
     
     for entry in bnd4_entries:
         filename = f"USERDATA_{entry.index:02d}"
@@ -314,22 +309,21 @@ def encrypt_modified_files(output_sl2_file):
         if not os.path.exists(file_path):
             continue
         
-        print(f"\nProcessing {filename}:")
+
         
         # Load the modified decrypted data
         with open(file_path, 'rb') as f:
             modified_data = f.read()
-        print(f"  Modified data size: {len(modified_data)} bytes")
+
         
         # Update the entry's clean data with the modified data
         entry._clean_data = bytearray(modified_data)
         #Checksum on the data
         entry.patch_checksum()
-        print(f"  New checksum calculated and patched")
         
 
         encrypted_entry_data = entry.encrypt_sl2_data()
-        print(f"  Encrypted data size: {len(encrypted_entry_data)} bytes")
+
         
 
         if len(encrypted_entry_data) != entry.size:
@@ -339,16 +333,8 @@ def encrypt_modified_files(output_sl2_file):
         data_start = entry.data_offset
         new_data[data_start:data_start + len(encrypted_entry_data)] = encrypted_entry_data
         
-        print(f"  ✓ Successfully processed {filename}")
+
     
     with open(output_sl2_file, 'wb') as f:
         f.write(new_data)
     
-    print(f"\n=== Final Result ===")
-    print(f"Original size: {len(original_data)} bytes")
-    print(f"New size: {len(new_data)} bytes")
-    print(f"Saved to: {output_sl2_file}")
-    if len(new_data) == len(original_data):
-        print("✓ Perfect size match!")
-    else:
-        print("⚠ Size difference detected")
