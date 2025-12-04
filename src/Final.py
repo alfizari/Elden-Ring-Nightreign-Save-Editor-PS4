@@ -43,15 +43,23 @@ def load_json_data():
     global items_json, effects_json, ill_effects_json
     try:
         file_path = os.path.join(working_directory, "Resources/Json")
-        with open(os.path.join(file_path, 'items.json'), 'r') as f:
+
+        with open(os.path.join(file_path, 'items.json'), 'r', encoding='utf-8') as f:
             items_json = json.load(f)
-        with open(os.path.join(file_path, 'effects.json'), 'r') as f:
+
+        with open(os.path.join(file_path, 'effects.json'), 'r', encoding='utf-8') as f:
             effects_json = json.load(f)
-        with open(os.path.join(file_path, 'illegal_effects.json'), 'r') as f:
+
+        with open(os.path.join(file_path, 'illegal_effects.json'), 'r', encoding='utf-8') as f:
             ill_effects_json = json.load(f)
+
         return True
+
     except FileNotFoundError as e:
-        messagebox.showerror("Error", f"JSON files not found: {str(e)}\nManual editing only available.")
+        messagebox.showerror(
+            "Error",
+            f"JSON files not found: {str(e)}\nManual editing only available."
+        )
         return False
 
 
@@ -1856,3 +1864,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
