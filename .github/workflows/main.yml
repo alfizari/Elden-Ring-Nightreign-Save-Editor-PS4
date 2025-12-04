@@ -1,11 +1,9 @@
 name: BUILDBOT
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build:
     strategy:
@@ -18,57 +16,47 @@ jobs:
             spec: src/build.spec
             artifact: Elden_Ring_Save_Editor_WIN64
             artifact-path: dist/
-
           - name: Windows 32-bit
             os: windows-latest
             python-architecture: 'x86'
             spec: src/build_win32.spec
             artifact: Elden_Ring_Save_Editor_WIN32
             artifact-path: dist/Elden_Ring_Save_Editor_WIN32.exe
-
           - name: Linux x86_64
             os: ubuntu-latest
             python-architecture: 'x64'
             spec: src/build.spec
             artifact: Elden_Ring_Save_Editor_LINUX_x86_64
             artifact-path: dist/
-
           - name: macOS Silicon
             os: macos-latest
             python-architecture: 'arm64'
             spec: src/build_mac.spec
             artifact: Elden_Ring_Save_Editor_MAC-Silicon
-
           - name: macOS Intel
             os: macos-13
             python-architecture: 'x64'
             spec: src/build_mac.spec
             artifact: Elden_Ring_Save_Editor_MAC-Intel
-
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           architecture: ${{ matrix.python-architecture }}
-
       - name: Install Dependencies
-        run: pip install cryptography pyinstaller
-
+        run: pip install cryptography pyinstaller openpyxl
       - name: Build Executable
         run: pyinstaller ${{ matrix.spec }}
         env:
           PYTHONPATH: ${{ runner.workspace }}/src
-
       - name: Package macOS App
         if: startsWith(matrix.os, 'macos')
         run: |
           cd dist && zip -r ${{ matrix.artifact }}.zip *.app && mv ${{ matrix.artifact }}.zip ../
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
