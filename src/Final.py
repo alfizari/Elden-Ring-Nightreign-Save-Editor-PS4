@@ -937,8 +937,21 @@ class SaveEditorGUI:
                   style='Danger.TButton').pack(side='left', padx=5)
         
         # Info label
-        self.illegal_count_label = ttk.Label(controls_frame, text="", foreground='red', font=('Arial', 9, 'bold'))
+        self.illegal_count_label = ttk.Label(
+            controls_frame,
+            text="",
+            foreground='red',
+            font=('Arial', 9, 'bold')
+        )
         self.illegal_count_label.pack(side='right', padx=10)
+
+        legend_frame = ttk.Frame(controls_frame)
+        legend_frame.pack(side='right', padx=10)
+
+        ttk.Label(legend_frame, text="Blue = Red + Orange", foreground="blue").pack(side='left', padx=5)
+        ttk.Label(legend_frame, text="Red = Illegal", foreground="red").pack(side='left', padx=5)
+        ttk.Label(legend_frame, text="Orange = Shop Relic (don't edit)", foreground="#FF8C00").pack(side='left', padx=5)
+
         
         # Search frame
         search_frame = ttk.Frame(self.inventory_tab)
@@ -1203,7 +1216,7 @@ class SaveEditorGUI:
         
         # Update illegal count label
         if illegal_count > 0:
-            self.illegal_count_label.config(text=f"⚠️ {illegal_count} Illegal Relic(s) Found")
+            self.illegal_count_label.config(text=f"⚠️ {illegal_count} possible (test) Illegal Relic(s) Found")
         else:
             self.illegal_count_label.config(text="✓ All Relics Valid")
         
@@ -1239,7 +1252,9 @@ class SaveEditorGUI:
             
             # Determine tag
             tag_list = [ga, real_id]
-            if is_forbidden:
+            if is_forbidden and is_illegal:
+                tag_list.append('both')
+            elif is_forbidden:
                 tag_list.append('forbidden')
             elif is_illegal:
                 tag_list.append('illegal')
@@ -1253,7 +1268,8 @@ class SaveEditorGUI:
                 'effect_names': effect_names,
                 'tag_list': tuple(tag_list),
                 'is_forbidden': is_forbidden,
-                'is_illegal': is_illegal
+                'is_illegal': is_illegal,
+                'both': is_forbidden and is_illegal
             })
         
         # Apply current filter (if any)
@@ -1290,7 +1306,10 @@ class SaveEditorGUI:
                            tags=relic['tag_list'])
             
             # Color forbidden relics orange (priority over illegal)
-            if relic['is_forbidden']:
+            if relic['is_forbidden'] and relic['is_illegal']:
+                print('both lol')
+                self.tree.tag_configure('both', foreground='blue', font=('Arial', 9, 'bold'))
+            elif relic['is_forbidden']:
                 self.tree.tag_configure('forbidden', foreground='#FF8C00', font=('Arial', 9, 'bold'))
             # Color illegal relics red
             elif relic['is_illegal']:
