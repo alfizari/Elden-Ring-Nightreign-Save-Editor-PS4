@@ -95,5 +95,7 @@ Thanks to Mike D, check his channel at discord https://discord.gg/gamers-paradis
 
 </details>
 
+Effects list from Cissa90 at :https://www.nexusmods.com/eldenringnightreign/mods/125
+
 
 
