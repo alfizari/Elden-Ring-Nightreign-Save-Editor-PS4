@@ -1,11 +1,7 @@
 import json
 import os
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox, simpledialog, Scrollbar
-from functools import wraps
-from time import time
-import hashlib
-import binascii
+from tkinter import ttk, filedialog, messagebox
 import shutil
 from main_file import decrypt_ds2_sl2, encrypt_modified_files
 import csv
@@ -620,11 +616,11 @@ def empty_slot_finder_aow(file_path, pattern_offset_start, pattern_offset_end):
     
     def get_slot_size(b4):
         if b4 == 0xC0:
-            return 72
+            return 80
         elif b4 == 0x90:
             return 16
         elif b4 == 0x80:
-            return 80
+            return 88
         else:
             return None
     
