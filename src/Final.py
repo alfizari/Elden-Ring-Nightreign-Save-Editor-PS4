@@ -236,40 +236,61 @@ def save_file():
         encrypt_modified_files(output_sl2_file)
 
     if MODE=='PS4': ### HERE
-        split_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'decrypted_output')
-        output_file = filedialog.asksaveasfilename(initialfile="memory.dat", title="Save PS4 save as")
-        if not output_file:
-            return
+        try:
+            split_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'decrypted_output')
+            output_file = filedialog.asksaveasfilename(initialfile="memory.dat",
+                                                    title="Save PS4 save as")
+            if not output_file:
+                return
 
-        with open(output_file, "wb") as out:
-            # 1. Header
-            header_path = os.path.join(split_dir, "header")
-            if os.path.exists(header_path):
+            with open(output_file, "wb") as out:
+
+                # 1. HEADER
+                header_path = os.path.join(split_dir, "header")
+                if not os.path.exists(header_path):
+                    messagebox.showerror("Error", f"Header file not found in {split_dir}.")
+                    return
+
                 with open(header_path, "rb") as f:
                     out.write(f.read())
-            else:
-                print(f"Header file not found in {split_dir}.")
-                return
-            for i in range(10):
-                userdata_path = os.path.join(split_dir, f"userdata{i}")
-                with open (userdata_path, 'rb') as s:
-                    padded=s.read()
-                    padded=padded[4:]
-                with open (userdata_path, "wb") as e:
-                    e.write(padded)
 
-                if os.path.exists(userdata_path):
+                # 2. USERDATA 0–9
+                for i in range(10):
+                    userdata_path = os.path.join(split_dir, f"userdata{i}")
+
+                    if not os.path.exists(userdata_path):
+                        messagebox.showerror("Error", f"{userdata_path} not found, stopping merge.")
+                        return
+
+                    # Read original
                     with open(userdata_path, "rb") as f:
+                        block = f.read()
+
+                    # PS4 USERDATA always starts with 4 bytes length → strip them
+                    block = block[4:]
+
+                    # Write padded block to output (do NOT overwrite the source!)
+                    out.write(block)
+
+                # 3. REGULATION
+                regulation_path = os.path.join(split_dir, "regulation")
+                if os.path.exists(regulation_path):
+                    with open(regulation_path, "rb") as f:
                         out.write(f.read())
-                else:
-                    print(f"{userdata_path} not found, stopping merge.")
-                    break
+
+            # 4. SIZE VALIDATION
+            final_size = os.path.getsize(output_file)
+            print('size', final_size)
+            if final_size != 0x12A00A0:
+                messagebox.showerror('ERROR',
+                                    f'Error while saving: invalid size {hex(final_size)}. '
+                                    'File is corrupt. Reopen the editor.')
+                return
+
+        except Exception as e:
+            messagebox.showerror("Exception", str(e))
+
             
-            # 3. Regulation
-            regulation_path = os.path.join(split_dir, "regulation")
-            if os.path.exists(regulation_path):
-                with open(regulation_path, "rb") as f:
-                    out.write(f.read())
 
 def name_to_path():
     global char_name_list, MODE
@@ -1069,6 +1090,7 @@ class SaveEditorGUI:
         # Determine mode
         if file_name.lower() == 'memory.dat':
             MODE = 'PS4'
+            
         elif file_name == 'NR0000.sl2':
             MODE = 'PC'
         else:
@@ -1171,6 +1193,10 @@ class SaveEditorGUI:
         if data is None:
             messagebox.showwarning("Warning", "No character loaded")
             return
+
+        confrim = messagebox.askyesno("Confirm", "Modifying Murks would get you banned. Are you sure you want to proceed?")
+        if not confrim:
+            return
         
         new_value = simpledialog.askinteger("Modify Murks", 
                                            f"Current Murks: {current_murks}\n\nEnter new value (decimal):",
@@ -1184,6 +1210,7 @@ class SaveEditorGUI:
         if data is None:
             messagebox.showwarning("Warning", "No character loaded")
             return
+        
         
         new_value = simpledialog.askinteger("Modify Sigs", 
                                            f"Current Sigs: {current_sigs}\n\nEnter new value (decimal):",
