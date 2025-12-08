@@ -155,6 +155,54 @@
     "name": "Grand Tranquil Scene",
     "color": "Green"
   },
+  "202": {
+    "name": "Grand Burning Scene",
+    "color": "Red"
+  },
+  "205": {
+    "name": "Grand Burning Scene",
+    "color": "Red"
+  },
+  "208": {
+    "name": "Grand Burning Scene",
+    "color": "Red"
+  },
+  "211": {
+    "name": "Grand Drizzly Scene",
+    "color": "Blue"
+  },
+  "214": {
+    "name": "Grand Drizzly Scene",
+    "color": "Blue"
+  },
+  "217": {
+    "name": "Grand Drizzly Scene",
+    "color": "Blue"
+  },
+  "220": {
+    "name": "Grand Luminous Scene",
+    "color": "Yellow"
+  },
+  "223": {
+    "name": "Grand Luminous Scene",
+    "color": "Yellow"
+  },
+  "226": {
+    "name": "Grand Luminous Scene",
+    "color": "Yellow"
+  },
+  "229": {
+    "name": "Grand Tranquil Scene",
+    "color": "Green"
+  },
+  "232": {
+    "name": "Grand Tranquil Scene",
+    "color": "Green"
+  },
+  "235": {
+    "name": "Grand Tranquil Scene",
+    "color": "Green"
+  },
   "1000": {
     "name": "Delicate Burning Scene",
     "color": "Red"
@@ -267,6 +315,14 @@
     "name": "Grand Tranquil Scene",
     "color": "Green"
   },
+  "1300": {
+    "name": "Grand Burning Scene",
+    "color": "Red"
+  },
+  "1310": {
+    "name": "Grand Tranquil Scene",
+    "color": "Green"
+  },
   "1400": {
     "name": "Grand Drizzly Scene",
     "color": "Blue"
@@ -374,6 +430,10 @@
   "2061": {
     "name": "Dark Night of the Miasma",
     "color": "Green"
+  },
+  "2070": {
+    "name": "The Will of the Balancers",
+    "color": "Blue"
   },
   "2100": {
     "name": "Night of the Lord",
@@ -689,6 +749,10 @@
   },
   "18982": {
     "name": "Grand Burning Scene",
+    "color": "Red"
+  },
+  "19000": {
+    "name": "Cleansing Tear",
     "color": "Red"
   },
   "19062": {
@@ -2431,6 +2495,22 @@
     "name": "Grand Tranquil Scene",
     "color": "Green"
   },
+  "1008012": {
+    "name": "Grand Burning Scene",
+    "color": "Red"
+  },
+  "1008022": {
+    "name": "Grand Burning Scene",
+    "color": "Red"
+  },
+  "1008112": {
+    "name": "Grand Drizzly Scene",
+    "color": "Blue"
+  },
+  "1008312": {
+    "name": "Grand Tranquil Scene",
+    "color": "Green"
+  },
   "2000001": {
     "name": "Deep Polished Burning Scene",
     "color": "Red"
@@ -2551,6 +2631,10 @@
     "name": "Deep Polished Burning Scene",
     "color": "Red"
   },
+  "2001022": {
+    "name": "Deep Grand Burning Scene",
+    "color": "Red"
+  },
   "2001101": {
     "name": "Deep Polished Drizzly Scene",
     "color": "Blue"
@@ -2587,6 +2671,10 @@
     "name": "Deep Polished Tranquil Scene",
     "color": "Green"
   },
+  "2001302": {
+    "name": "Deep Grand Tranquil Scene",
+    "color": "Green"
+  },
   "2001311": {
     "name": "Deep Polished Tranquil Scene",
     "color": "Green"
@@ -2598,6 +2686,10 @@
   "2002002": {
     "name": "Deep Grand Burning Scene",
     "color": "Red"
+  },
+  "2002102": {
+    "name": "Deep Grand Drizzly Scene",
+    "color": "Blue"
   },
   "2002202": {
     "name": "Deep Grand Luminous Scene",
@@ -2716,6 +2808,46 @@
     "color": "Green"
   },
   "2003322": {
+    "name": "Deep Grand Tranquil Scene",
+    "color": "Green"
+  },
+  "2010012": {
+    "name": "Deep Grand Burning Scene",
+    "color": "Red"
+  },
+  "2010112": {
+    "name": "Deep Grand Drizzly Scene",
+    "color": "Blue"
+  },
+  "2010222": {
+    "name": "Deep Grand Luminous Scene",
+    "color": "Yellow"
+  },
+  "2010312": {
+    "name": "Deep Grand Tranquil Scene",
+    "color": "Green"
+  },
+  "2011112": {
+    "name": "Deep Grand Drizzly Scene",
+    "color": "Blue"
+  },
+  "2011302": {
+    "name": "Deep Grand Tranquil Scene",
+    "color": "Green"
+  },
+  "2013022": {
+    "name": "Deep Grand Burning Scene",
+    "color": "Red"
+  },
+  "2013202": {
+    "name": "Deep Grand Luminous Scene",
+    "color": "Yellow"
+  },
+  "2013222": {
+    "name": "Deep Grand Luminous Scene",
+    "color": "Yellow"
+  },
+  "2013302": {
     "name": "Deep Grand Tranquil Scene",
     "color": "Green"
   }
