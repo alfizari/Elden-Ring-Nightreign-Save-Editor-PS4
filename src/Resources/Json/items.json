@@ -159,6 +159,14 @@
     "name": "Grand Burning Scene",
     "color": "Red"
   },
+  "203": {
+    "name": "Delicate Burning Scene",
+    "color": "Red"
+  },
+  "204": {
+    "name": "Polished Burning Scene",
+    "color": "Red"
+  },
   "205": {
     "name": "Grand Burning Scene",
     "color": "Red"
@@ -167,12 +175,20 @@
     "name": "Grand Burning Scene",
     "color": "Red"
   },
+  "209": {
+    "name": "Delicate Drizzly Scene",
+    "color": "Blue"
+  },
   "211": {
     "name": "Grand Drizzly Scene",
     "color": "Blue"
   },
   "214": {
     "name": "Grand Drizzly Scene",
+    "color": "Blue"
+  },
+  "216": {
+    "name": "Polished Drizzly Scene",
     "color": "Blue"
   },
   "217": {
@@ -183,8 +199,16 @@
     "name": "Grand Luminous Scene",
     "color": "Yellow"
   },
+  "221": {
+    "name": "Delicate Luminous Scene",
+    "color": "Yellow"
+  },
   "223": {
     "name": "Grand Luminous Scene",
+    "color": "Yellow"
+  },
+  "225": {
+    "name": "Polished Luminous Scene",
     "color": "Yellow"
   },
   "226": {
@@ -193,6 +217,14 @@
   },
   "229": {
     "name": "Grand Tranquil Scene",
+    "color": "Green"
+  },
+  "230": {
+    "name": "Delicate Tranquil Scene",
+    "color": "Green"
+  },
+  "231": {
+    "name": "Polished Tranquil Scene",
     "color": "Green"
   },
   "232": {
@@ -434,6 +466,10 @@
   "2070": {
     "name": "The Will of the Balancers",
     "color": "Blue"
+  },
+  "2080": {
+    "name": "The Night of Dregs",
+    "color": "Red"
   },
   "2100": {
     "name": "Night of the Lord",
@@ -754,6 +790,10 @@
   "19000": {
     "name": "Cleansing Tear",
     "color": "Red"
+  },
+  "19001": {
+    "name": "Note \"My Dear Successor\"",
+    "color": "Yellow"
   },
   "19062": {
     "name": "Grand Drizzly Scene",
@@ -2607,6 +2647,10 @@
     "name": "Deep Grand Tranquil Scene",
     "color": "Green"
   },
+  "2000320": {
+    "name": "Deep Delicate Tranquil Scene",
+    "color": "Green"
+  },
   "2000321": {
     "name": "Deep Polished Tranquil Scene",
     "color": "Green"
@@ -2715,6 +2759,10 @@
     "name": "Deep Polished Burning Scene",
     "color": "Red"
   },
+  "2003010": {
+    "name": "Deep Delicate Burning Scene",
+    "color": "Red"
+  },
   "2003011": {
     "name": "Deep Polished Burning Scene",
     "color": "Red"
@@ -2819,6 +2867,10 @@
     "name": "Deep Grand Drizzly Scene",
     "color": "Blue"
   },
+  "2010210": {
+    "name": "Deep Delicate Luminous Scene",
+    "color": "Yellow"
+  },
   "2010222": {
     "name": "Deep Grand Luminous Scene",
     "color": "Yellow"
@@ -2827,27 +2879,71 @@
     "name": "Deep Grand Tranquil Scene",
     "color": "Green"
   },
+  "2010320": {
+    "name": "Deep Delicate Tranquil Scene",
+    "color": "Green"
+  },
   "2011112": {
     "name": "Deep Grand Drizzly Scene",
     "color": "Blue"
+  },
+  "2011222": {
+    "name": "Deep Grand Luminous Scene",
+    "color": "Yellow"
   },
   "2011302": {
     "name": "Deep Grand Tranquil Scene",
     "color": "Green"
   },
+  "2012102": {
+    "name": "Deep Grand Drizzly Scene",
+    "color": "Blue"
+  },
+  "2013011": {
+    "name": "Deep Polished Burning Scene",
+    "color": "Red"
+  },
+  "2013012": {
+    "name": "Deep Grand Burning Scene",
+    "color": "Red"
+  },
+  "2013020": {
+    "name": "Deep Delicate Burning Scene",
+    "color": "Red"
+  },
   "2013022": {
     "name": "Deep Grand Burning Scene",
     "color": "Red"
   },
+  "2013100": {
+    "name": "Deep Delicate Drizzly Scene",
+    "color": "Blue"
+  },
+  "2013121": {
+    "name": "Deep Polished Drizzly Scene",
+    "color": "Blue"
+  },
   "2013202": {
     "name": "Deep Grand Luminous Scene",
+    "color": "Yellow"
+  },
+  "2013211": {
+    "name": "Deep Polished Luminous Scene",
     "color": "Yellow"
   },
   "2013222": {
     "name": "Deep Grand Luminous Scene",
     "color": "Yellow"
   },
+  "2013301": {
+    "name": "Deep Polished Tranquil Scene",
+    "color": "Green"
+  },
   "2013302": {
+    "name": "Deep Grand Tranquil Scene",
+    "color": "Green"
+  },
+  "2013322": {
     "name": "Deep Grand Tranquil Scene",
     "color": "Green"
   }
