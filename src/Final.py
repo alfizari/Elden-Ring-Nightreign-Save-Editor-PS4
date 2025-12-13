@@ -235,60 +235,151 @@ def save_file():
         
         encrypt_modified_files(output_sl2_file)
 
-    if MODE=='PS4': ### HERE
+    if MODE == 'PS4':  ### HERE
+        print('data length', len(data))
+        
+        # Validate data length before proceeding
+        expected_length = 0x100004
+        if len(data) != expected_length:
+            messagebox.showerror('Error', 
+                            f'Modified userdata size is invalid. '
+                            f'Expected {hex(expected_length)}, got {hex(len(data))}. Cannot save.')
+            return
+        
         try:
             split_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'decrypted_output')
-            output_file = filedialog.asksaveasfilename(initialfile="memory.dat",
-                                                    title="Save PS4 save as")
+            
+            # Validate split directory exists
+            if not os.path.exists(split_dir):
+                messagebox.showerror("Error", f"Directory not found: {split_dir}")
+                return
+            
+            output_file = filedialog.asksaveasfilename(
+                initialfile="memory.dat",
+                title="Save PS4 save as",
+                defaultextension=".dat",
+                filetypes=[("DAT files", "*.dat"), ("All files", "*.*")]
+            )
+            
             if not output_file:
                 return
-
+            
+            # Track total bytes written for validation
+            total_bytes_written = 0
+            
             with open(output_file, "wb") as out:
-
                 # 1. HEADER
                 header_path = os.path.join(split_dir, "header")
                 if not os.path.exists(header_path):
-                    messagebox.showerror("Error", f"Header file not found in {split_dir}.")
+                    messagebox.showerror("Error", f"Header file not found: {header_path}")
                     return
-
+                
                 with open(header_path, "rb") as f:
-                    out.write(f.read())
-
+                    header_data = f.read()
+                    if len(header_data) != 0x80:
+                        messagebox.showerror("Error", 
+                                        f"Invalid header size: {hex(len(header_data))}. "
+                                        f"Expected {hex(0x80)} bytes.")
+                        return
+                    out.write(header_data)
+                    total_bytes_written += len(header_data)
+                
+                print(f"Written header: {hex(total_bytes_written)} bytes")
+                
                 # 2. USERDATA 0–9
+                check_padding = (0x00100010).to_bytes(4, "little")
+                userdata_chunks_found = 0
+                
                 for i in range(10):
                     userdata_path = os.path.join(split_dir, f"userdata{i}")
-
+                    
                     if not os.path.exists(userdata_path):
-                        messagebox.showerror("Error", f"{userdata_path} not found, stopping merge.")
-                        return
-
+                        # Check if this is expected (some saves may have fewer chunks)
+                        if i == 0:
+                            messagebox.showerror("Error", 
+                                            f"Required file not found: {userdata_path}")
+                            return
+                        else:
+                            print(f"Warning: userdata{i} not found, stopping at {i} chunks")
+                            break
+                    
                     # Read original
                     with open(userdata_path, "rb") as f:
                         block = f.read()
-
-                    # PS4 USERDATA always starts with 4 bytes length → strip them
-                    block = block[4:]
-
-                    # Write padded block to output (do NOT overwrite the source!)
+                    
+                    # Validate block has data
+                    if len(block) < 4:
+                        messagebox.showerror("Error", 
+                                        f"userdata{i} is too small ({len(block)} bytes)")
+                        return
+                    
+                    # PS4 USERDATA should start with 4 bytes padding
+                    if block[:4] == check_padding:
+                        # Strip the padding
+                        block = block[4:]
+                    else:
+                        # Padding missing - this is suspicious but warn and continue
+                        print(f"Warning: userdata{i} does not start with expected padding {check_padding.hex()}")
+                        print(f"         Got: {block[:4].hex()}")
+                        # Don't add padding, just use as-is
+                    
+                    # Validate chunk size (should be 0x100000 for full chunks)
+                    expected_chunk_size = 0x100000
+                    if len(block) != expected_chunk_size and i < 9:  # Last chunk might be smaller
+                        print(f"Warning: userdata{i} has unexpected size {hex(len(block))}, "
+                            f"expected {hex(expected_chunk_size)}")
+                    
+                    # Write block to output
                     out.write(block)
-
+                    total_bytes_written += len(block)
+                    userdata_chunks_found += 1
+                
+                print(f"Written {userdata_chunks_found} userdata chunks: {hex(total_bytes_written)} bytes total")
+                
                 # 3. REGULATION
                 regulation_path = os.path.join(split_dir, "regulation")
                 if os.path.exists(regulation_path):
                     with open(regulation_path, "rb") as f:
-                        out.write(f.read())
-
+                        regulation_data = f.read()
+                        if regulation_data:
+                            out.write(regulation_data)
+                            total_bytes_written += len(regulation_data)
+                            print(f"Written regulation: {len(regulation_data)} bytes")
+                        else:
+                            print("Warning: regulation file is empty")
+                else:
+                    print("Warning: regulation file not found, skipping")
+            
             # 4. SIZE VALIDATION
             final_size = os.path.getsize(output_file)
-            print('size', final_size)
-            if final_size != 0x12A00A0:
+            expected_final_size = 0x12A00A0
+            
+            print(f"Final file size: {hex(final_size)} (expected: {hex(expected_final_size)})")
+            
+            if final_size != expected_final_size:
                 messagebox.showerror('ERROR',
-                                    f'Error while saving: invalid size {hex(final_size)}. '
-                                    'File is corrupt. Reopen the editor.')
+                                f'Invalid output file size!\n'
+                                f'Expected: {hex(expected_final_size)} ({expected_final_size:,} bytes)\n'
+                                f'Got: {hex(final_size)} ({final_size:,} bytes)\n'
+                                f'Difference: {final_size - expected_final_size:+,} bytes\n\n'
+                                f'File may be corrupt. Check the source files in {split_dir}')
                 return
-
+            
+            messagebox.showinfo('Success', f'File saved successfully to:\n{output_file}')
+            print(f"Successfully saved to: {output_file}")
+            
+        except PermissionError as e:
+            messagebox.showerror("Permission Error", 
+                            f"Cannot write to file. Check permissions.\n{str(e)}")
+        except IOError as e:
+            messagebox.showerror("I/O Error", 
+                            f"Error reading/writing files.\n{str(e)}")
         except Exception as e:
-            messagebox.showerror("Exception", str(e))
+            messagebox.showerror("Exception", 
+                            f"Unexpected error occurred:\n{str(e)}\n\n"
+                            f"Check console for details.")
+            import traceback
+            traceback.print_exc()
 
             
 
@@ -1334,7 +1425,6 @@ class SaveEditorGUI:
             
             # Color forbidden relics orange (priority over illegal)
             if relic['is_forbidden'] and relic['is_illegal']:
-                print('both lol')
                 self.tree.tag_configure('both', foreground='blue', font=('Arial', 9, 'bold'))
             elif relic['is_forbidden']:
                 self.tree.tag_configure('forbidden', foreground='#FF8C00', font=('Arial', 9, 'bold'))
