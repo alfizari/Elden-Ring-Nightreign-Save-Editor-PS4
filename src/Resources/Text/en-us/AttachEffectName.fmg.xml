@@ -1,0 +1,1264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fmg>
+<filename>AttachEffectName.fmg</filename>
+<compression>None</compression>
+<version>DarkSouls3</version>
+<bigendian>False</bigendian>
+<entries>
+<text id="1">%null%</text>
+<text id="2">%null%</text>
+<text id="3">%null%</text>
+<text id="100">%null%</text>
+<text id="310000">Increased Maximum HP</text>
+<text id="310100">Increased Maximum FP</text>
+<text id="310200">Increased Maximum Stamina</text>
+<text id="310400">Increased Maximum HP</text>
+<text id="310401">Increased Maximum Stamina</text>
+<text id="311000">Improved Item Discovery</text>
+<text id="311100">More Runes From Defeated Enemies</text>
+<text id="311500">Improved Stamina Recovery</text>
+<text id="311600">Improved Blood Loss Resistance</text>
+<text id="311601">Improved Frost Resistance</text>
+<text id="311700">Improved Poison Resistance</text>
+<text id="311701">Improved Rot Resistance</text>
+<text id="311800">Improved Sleep Resistance</text>
+<text id="311801">Improved Madness Resistance</text>
+<text id="311900">Improved Death Blight Resistance</text>
+<text id="312000">Improved Poison &amp; Rot Resistance</text>
+<text id="312001">Improved Blood Loss &amp; Frost Resistance</text>
+<text id="312002">Improved Sleep &amp; Madness Resistance</text>
+<text id="312100">Improved Poise</text>
+<text id="312300">Improved Skill Attack Power</text>
+<text id="312500">Improved Dexterity</text>
+<text id="312501">Successive Attacks Boost Attack Power</text>
+<text id="320000">Improved Magic Attack Power</text>
+<text id="320001">Impaired Physical Damage Negation</text>
+<text id="320100">Improved Lightning Attack Power</text>
+<text id="320101">Impaired Physical Damage Negation</text>
+<text id="320200">Improved Fire Attack Power</text>
+<text id="320201">Impaired Physical Damage Negation</text>
+<text id="320300">Improved Holy Attack Power</text>
+<text id="320301">Impaired Physical Damage Negation</text>
+<text id="320400">Improved Attack Power at Low HP</text>
+<text id="320500">Improved Attack Power at Full HP</text>
+<text id="320600">Improved Thrusting Counterattack</text>
+<text id="320700">Improved Guard Breaking</text>
+<text id="320800">Successive Attacks Boost Attack Power</text>
+<text id="320900">Improved Critical Hits</text>
+<text id="321000">Projectile Damage Drop-Off Reduced</text>
+<text id="321200">Improved Chain Attack Finishers</text>
+<text id="321300">Improved Charge Attacks</text>
+<text id="321500">Improved Ranged Weapon Attacks</text>
+<text id="321600">Blood Loss in Vicinity Increases Attack Power</text>
+<text id="321700">Poison &amp; Rot in Vicinity Increases Attack Power</text>
+<text id="321800">Improved Jump Attacks</text>
+<text id="321900">Improved Roar &amp; Breath Attacks</text>
+<text id="322000">Improved Guard Counters</text>
+<text id="322100">Improved Throwing Pots</text>
+<text id="322200">Improved Perfuming Arts</text>
+<text id="330000">Improved Sorceries</text>
+<text id="330400">Improved Incantations</text>
+<text id="330600">Extended Spell Duration</text>
+<text id="330700">Improved Spell Casting Speed</text>
+<text id="330800">Reduced Spell FP Cost</text>
+<text id="330801">Reduced Maximum HP</text>
+<text id="330900">Improved Charged Spells &amp; Skills</text>
+<text id="340000">Improved Physical Damage Negation</text>
+<text id="340100">Improved Magic Damage Negation</text>
+<text id="340200">Improved Fire Damage Negation</text>
+<text id="340300">Improved Lightning Damage Negation</text>
+<text id="340400">Improved Holy Damage Negation</text>
+<text id="340500">Improved Affinity Damage Negation</text>
+<text id="340700">Improved Dodging</text>
+<text id="340701">Impaired Damage Negation</text>
+<text id="340800">Improved Damage Negation at Low HP</text>
+<text id="340900">Improved Damage Negation at Full HP</text>
+<text id="341000">Improved Guarding Ability</text>
+<text id="350000">Improved Flask HP Restoration</text>
+<text id="350200">Continuous HP Recovery</text>
+<text id="350300">Defeating Enemies Restores HP</text>
+<text id="350400">Successive Attack HP Restoration</text>
+<text id="350500">Critical Hit HP Restoration</text>
+<text id="350600">Critical Hit FP Restoration</text>
+<text id="360200">Reduced Skill FP Cost</text>
+<text id="360700">No Rune Loss or Level Down Upon Death</text>
+<text id="361100">Defeating Enemies Restores FP</text>
+<text id="370000">Improved Item Discovery</text>
+<text id="370001">More Runes From Defeated Enemies</text>
+<text id="370002">Continuous HP Loss</text>
+<text id="6000800">Character Skill Cooldown Reduction +4</text>
+<text id="6000801">Character Skill Cooldown Reduction +5</text>
+<text id="6000900">Ultimate Art Auto Charge +4</text>
+<text id="6000901">Ultimate Art Auto Charge +5</text>
+<text id="6001000">Poise +4</text>
+<text id="6001001">Poise +5</text>
+<text id="6001400">Physical Attack Up +4
+</text>
+<text id="6001401">%null%</text>
+<text id="6001500">Magic Attack Power Up +3
+</text>
+<text id="6001501">Magic Attack Power Up +4
+</text>
+<text id="6001600">Fire Attack Power Up +3
+</text>
+<text id="6001601">Fire Attack Power Up +4
+</text>
+<text id="6001700">Lightning Attack Power Up +3
+</text>
+<text id="6001701">Lightning Attack Power Up +4
+</text>
+<text id="6001800">Holy Attack Power Up +3
+</text>
+<text id="6001801">Holy Attack Power Up +4
+</text>
+<text id="6002600">Improved Magic Damage Negation +1
+</text>
+<text id="6002601">Improved Magic Damage Negation +2
+</text>
+<text id="6002700">Improved Fire Damage Negation +1
+</text>
+<text id="6002701">Improved Fire Damage Negation +2
+</text>
+<text id="6002800">Improved Lightning Damage Negation +1
+</text>
+<text id="6002801">Improved Lightning Damage Negation +2
+</text>
+<text id="6002900">Improved Holy Damage Negation +1
+</text>
+<text id="6002901">Improved Holy Damage Negation +2
+</text>
+<text id="6003000">Improved Poison Resistance +1
+</text>
+<text id="6003001">Improved Poison Resistance +2
+</text>
+<text id="6003100">Improved Blood Loss Resistance +1
+</text>
+<text id="6003101">Improved Blood Loss Resistance +2
+</text>
+<text id="6003200">Improved Sleep Resistance +1
+</text>
+<text id="6003201">Improved Sleep Resistance +2
+</text>
+<text id="6003300">Improved Death Blight Resistance +1
+</text>
+<text id="6003301">Improved Death Blight Resistance +2
+</text>
+<text id="6003400">Improved Rot Resistance +1
+</text>
+<text id="6003401">Improved Rot Resistance +2
+</text>
+<text id="6003500">Improved Frost Resistance +1
+</text>
+<text id="6003501">Improved Frost Resistance +2
+</text>
+<text id="6003600">Improved Madness Resistance +1
+</text>
+<text id="6003601">Improved Madness Resistance +2
+</text>
+<text id="6005600">Partial HP Restoration upon Post-Damage Attacks +1
+</text>
+<text id="6005601">Partial HP Restoration upon Post-Damage Attacks +2
+</text>
+<text id="6006000">Improved Stance-Breaking when Two-Handing +1</text>
+<text id="6006001">Improved Stance-Breaking when Two-Handing +2</text>
+<text id="6006100">Improved Stance-Breaking when Wielding Two Armaments +1</text>
+<text id="6006101">Improved Stance-Breaking when Wielding Two Armaments +2</text>
+<text id="6012300">Improved Damage Negation at Low HP +1</text>
+<text id="6012301">Improved Damage Negation at Low HP +2</text>
+<text id="6030200">HP restored when using medicinal boluses, etc. +1
+</text>
+<text id="6030201">HP restored when using medicinal boluses, etc. +2
+</text>
+<text id="6030600">Successful guarding fills more of the Art gauge +1
+</text>
+<text id="6030601">Successful guarding fills more of the Art gauge +2
+</text>
+<text id="6030800">Critical hits fill more of the Art gauge +1
+</text>
+<text id="6030801">Critical hits fill more of the Art gauge +2
+</text>
+<text id="6030900">Physical attack power increases after using grease items +1
+</text>
+<text id="6030901">Physical attack power increases after using grease items +2
+</text>
+<text id="6031900">Critical Hits Earn Runes +1</text>
+<text id="6031901">Critical Hits Earn Runes +2</text>
+<text id="6032200">Taking attacks improves attack power +1</text>
+<text id="6032201">Taking attacks improves attack power +2</text>
+<text id="6035100">Critical Hit Boosts Stamina Recovery Speed +1</text>
+<text id="6035101">Critical Hit Boosts Stamina Recovery Speed +2</text>
+<text id="6040000">Improved Initial Standard Attack +1</text>
+<text id="6040001">Improved Initial Standard Attack +2</text>
+<text id="6040100">Improved Guard Counters +1
+</text>
+<text id="6040101">Improved Guard Counters +2
+</text>
+<text id="6040300">Improved Throwing Pot Damage +1</text>
+<text id="6040301">Improved Throwing Pot Damage +2</text>
+<text id="6040400">Improved Throwing Knife Damage +1</text>
+<text id="6040401">Improved Throwing Knife Damage +2</text>
+<text id="6040500">Improved Glintstone and Gravity Stone Damage +1</text>
+<text id="6040501">Improved Glintstone and Gravity Stone Damage +2</text>
+<text id="6043000">Improved Roar &amp; Breath Attacks +1</text>
+<text id="6043001">Improved Roar &amp; Breath Attacks +2</text>
+<text id="6043100">Improved Perfuming Arts +1</text>
+<text id="6043101">Improved Perfuming Arts +2</text>
+<text id="6060300">Max HP increased for each great enemy defeated at a Great Church.</text>
+<text id="6060400">Runes and Item Discovery increased for each great enemy defeated at a Fort</text>
+<text id="6060500">Arcane increased for each great enemy defeated at a Ruin</text>
+<text id="6060600">Max stamina increased for each great enemy defeated at a Great Encampment</text>
+<text id="6090000">Defeating enemies fills more of the Art gauge +1
+</text>
+<text id="6090001">Defeating enemies fills more of the Art gauge +2
+</text>
+<text id="6160000">HP Restoration upon Thrusting Counterattack +1
+</text>
+<text id="6160001">HP Restoration upon Thrusting Counterattack +2
+</text>
+<text id="6260000">Attack power up when facing poison-afflicted enemy +1
+</text>
+<text id="6260001">Attack power up when facing poison-afflicted enemy +2
+</text>
+<text id="6260300">Attack power up when facing scarlet rot-afflicted enemy +1
+</text>
+<text id="6260301">Attack power up when facing scarlet rot-afflicted enemy +2
+</text>
+<text id="6260400">Attack power up when facing frostbite-afflicted enemy +1
+</text>
+<text id="6260401">Attack power up when facing frostbite-afflicted enemy +2
+</text>
+<text id="6500000">[Wylder] Character Skill inflicts Blood Loss</text>
+<text id="6500100">[Guardian] Character Skill Boosts Damage Negation of Nearby Allies</text>
+<text id="6500200">[Ironeye] Character Skill Inflicts Heavy Poison Damage on Poisoned Enemies</text>
+<text id="6500300">[Duchess] Use Character Skill for Brief Invulnerability</text>
+<text id="6500400">[Raider] Hit With Character Skill to Reduce Enemy Attack Power</text>
+<text id="6500500">[Revenant] Increased Max FP upon Ability Activation</text>
+<text id="6500600">[Recluse] Collect Affinity Residues to Negate Affinity</text>
+<text id="6500700">[Executor] Slowly Restore HP upon Ability Activation</text>
+<text id="6600000">Sleep in Vicinity Improves Attack Power
+</text>
+<text id="6600001">Sleep in Vicinity Improves Attack Power +1
+</text>
+<text id="6600002">Sleep in Vicinity Improves Attack Power +2
+</text>
+<text id="6600100">Madness in Vicinity Improves Attack Power
+</text>
+<text id="6600101">Madness in Vicinity Improves Attack Power +1
+</text>
+<text id="6600102">Madness in Vicinity Improves Attack Power +2
+</text>
+<text id="6610400">Increased Maximum HP
+</text>
+<text id="6610500">Increased Maximum FP
+</text>
+<text id="6610600">Increased Maximum Stamina
+</text>
+<text id="6610700">Reduced FP Consumption</text>
+<text id="6610701">Reduced FP Consumption +1</text>
+<text id="6610702">Reduced FP Consumption +2</text>
+<text id="6610800">Improved Affinity Attack Power</text>
+<text id="6610801">Improved Affinity Attack Power +1
+</text>
+<text id="6610802">Improved Affinity Attack Power +2
+</text>
+<text id="6611000">Improved Physical Damage Negation</text>
+<text id="6611001">Improved Physical Damage Negation +1
+</text>
+<text id="6611002">Improved Physical Damage Negation +2
+</text>
+<text id="6611100">Improved Affinity Damage Negation</text>
+<text id="6611101">Improved Affinity Damage Negation +1
+</text>
+<text id="6611102">Improved Affinity Damage Negation +2
+</text>
+<text id="6611200">Improved Sorceries</text>
+<text id="6611201">Improved Sorceries +1
+</text>
+<text id="6611202">Improved Sorceries +2
+</text>
+<text id="6611300">Improved Incantations</text>
+<text id="6611301">Improved Incantations +1
+</text>
+<text id="6611302">Improved Incantations +2
+</text>
+<text id="6611400">Improved Flask HP Restoration</text>
+<text id="6621000">Crimsonspill Crystal Tear in possession at start of expedition</text>
+<text id="6621100">Crimson Crystal Tear in possession at start of expedition</text>
+<text id="6621200">Cerulean Crystal Tear in possession at start of expedition</text>
+<text id="6621300">Speckled Hardtear in possession at start of expedition</text>
+<text id="6621400">Crimson Bubbletear in possession at start of expedition</text>
+<text id="6621500">Opaline Bubbletear in possession at start of expedition</text>
+<text id="6621600">Crimsonburst Crystal Tear in possession at start of expedition</text>
+<text id="6621700">Greenburst Crystal Tear in possession at start of expedition</text>
+<text id="6621800">Opaline Hardtear in possession at start of expedition</text>
+<text id="6621900">Thorny Cracked Tear in possession at start of expedition</text>
+<text id="6622000">Spiked Cracked Tear in possession at start of expedition</text>
+<text id="6622100">Windy Crystal Tear in possession at start of expedition</text>
+<text id="6622200">Ruptured Crystal Tear in possession at start of expedition</text>
+<text id="6622300">Leaden Hardtear in possession at start of expedition</text>
+<text id="6622400">Twiggy Cracked Tear in possession at start of expedition</text>
+<text id="6622500">Crimsonwhorl Bubbletear in possession at start of expedition</text>
+<text id="6622600">Cerulean Hidden Tear in possession at start of expedition</text>
+<text id="6622700">Stonebarb Cracked Tear in possession at start of expedition</text>
+<text id="6622800">Flame-Shrouding Cracked Tear in possession at start of expedition</text>
+<text id="6622900">Magic-Shrouding Cracked Tear in possession at start of expedition</text>
+<text id="6623000">Lightning-Shrouding Cracked Tear in possession at start of expedition</text>
+<text id="6623100">Holy-Shrouding Cracked Tear in possession at start of expedition</text>
+<text id="6624000">Uplifting Aromatic in possession at start of expedition</text>
+<text id="6624100">Spark Aromatic in possession at start of expedition</text>
+<text id="6624200">Ironjar Aromatic in possession at start of expedition</text>
+<text id="6624300">Bloodboil Aromatic in possession at start of expedition</text>
+<text id="6624400">Poison Spraymist in possession at start of expedition</text>
+<text id="6624500">Acid Spraymist in possession at start of expedition</text>
+<text id="6630000">Dormant Power Helps Discover Daggers</text>
+<text id="6630100">Dormant Power Helps Discover Straight Swords</text>
+<text id="6630200">Dormant Power Helps Discover Greatswords</text>
+<text id="6630300">Dormant Power Helps Discover Colossal Swords</text>
+<text id="6630400">Dormant Power Helps Discover Curved Swords</text>
+<text id="6630500">Dormant Power Helps Discover Curved Greatswords</text>
+<text id="6630600">Dormant Power Helps Discover Katana</text>
+<text id="6630700">Dormant Power Helps Discover Twinblades</text>
+<text id="6630800">Dormant Power Helps Discover Thrusting Swords</text>
+<text id="6630900">Dormant Power Helps Discover Heavy Thrusting Swords</text>
+<text id="6631000">Dormant Power Helps Discover Axes</text>
+<text id="6631100">Dormant Power Helps Discover Greataxes</text>
+<text id="6631200">Dormant Power Helps Discover Hammers</text>
+<text id="6631300">Dormant Power Helps Discover Great Hammers</text>
+<text id="6631400">Dormant Power Helps Discover Flails</text>
+<text id="6631500">Dormant Power Helps Discover Spears</text>
+<text id="6631600">Dormant Power Helps Discover Great Spears</text>
+<text id="6631700">Dormant Power Helps Discover Halberds</text>
+<text id="6631800">Dormant Power Helps Discover Reapers</text>
+<text id="6631900">Dormant Power Helps Discover Fists</text>
+<text id="6632000">Dormant Power Helps Discover Claws</text>
+<text id="6632100">Dormant Power Helps Discover Whips</text>
+<text id="6632200">Dormant Power Helps Discover Colossal Weapons</text>
+<text id="6632300">Dormant Power Helps Discover Bows</text>
+<text id="6632400">Dormant Power Helps Discover Greatbows</text>
+<text id="6632500">Dormant Power Helps Discover Crossbows</text>
+<text id="6632600">Dormant Power Helps Discover Ballistas</text>
+<text id="6632700">Dormant Power Helps Discover Small Shields</text>
+<text id="6632800">Dormant Power Helps Discover Medium Shields</text>
+<text id="6632900">Dormant Power Helps Discover Greatshields</text>
+<text id="6633000">Dormant Power Helps Discover Staves</text>
+<text id="6633100">Dormant Power Helps Discover Sacred Seals</text>
+<text id="6633200">Dormant Power Helps Discover Torches</text>
+<text id="6640000">[Wylder] Improved Mind, Reduced Vigor</text>
+<text id="6640100">[Wylder] Improved Intelligence and Faith, Reduced Strength and Dexterity</text>
+<text id="6641000">[Guardian] Improved Strength and Dexterity, Reduced Vigor</text>
+<text id="6641100">[Guardian] Improved Mind and Faith, Reduced Vigor</text>
+<text id="6642000">[Ironeye] Improved Arcane, Reduced Dexterity</text>
+<text id="6642100">[Ironeye] Improved Vigor and Strength, Reduced Dexterity</text>
+<text id="6643000">[Duchess] Improved Vigor and Strength, Reduced Mind</text>
+<text id="6643100">[Duchess] Improved Mind and Faith, Reduced Intelligence</text>
+<text id="6644000">[Raider] Improved Mind and Intelligence, Reduced Vigor and Endurance</text>
+<text id="6644100">[Raider] Improved Arcane, Reduced Vigor</text>
+<text id="6645000">[Revenant] Improved Vigor and Endurance, Reduced Mind</text>
+<text id="6645100">[Revenant] Improved Strength, Reduced Faith</text>
+<text id="6646000">[Recluse] Improved Vigor, Endurance, and Dexterity, Reduced Intelligence and Faith</text>
+<text id="6646100">[Recluse] Improved Intelligence and Faith, Reduced Mind</text>
+<text id="6647000">[Executor] Improved Vigor and Endurance, Reduced Arcane</text>
+<text id="6647100">[Executor] Improved Dexterity and Arcane, Reduced Vigor</text>
+<text id="6800000">Reduced Vigor</text>
+<text id="6800200">Reduced Endurance</text>
+<text id="6810100">Impaired Damage Negation</text>
+<text id="6820000">Taking Damage Causes Poison Buildup</text>
+<text id="6820100">Taking Damage Causes Rot Buildup</text>
+<text id="6820200">Taking Damage Causes Frost Buildup</text>
+<text id="6820300">Taking Damage Causes Blood Loss Buildup</text>
+<text id="6820400">Taking Damage Causes Madness Buildup</text>
+<text id="6820500">Taking Damage Causes Sleep Buildup</text>
+<text id="6820600">Taking Damage Causes Death Buildup</text>
+<text id="6830000">Reduced Strength and Intelligence</text>
+<text id="6830100">Reduced Dexterity and Faith</text>
+<text id="6830200">Reduced Intelligence and Dexterity</text>
+<text id="6830300">Reduced Faith and Strength</text>
+<text id="6830400">Reduced Vigor and Arcane</text>
+<text id="6840000">Reduced Rune Acquisition</text>
+<text id="6840100">Reduced Flask HP Restoration</text>
+<text id="6840200">Ultimate Art Charging Impaired</text>
+<text id="6850000">Impaired Physical Damage Negation</text>
+<text id="6850100">Impaired Affinity Damage Negation</text>
+<text id="6850200">All Resistances Down</text>
+<text id="6850300">Reduced Flask HP Restoration</text>
+<text id="6850400">Surge Sprinting Drains More Stamina</text>
+<text id="6850500">Continuous HP Loss</text>
+<text id="6850600">Increased Drain on Stamina for Evasion</text>
+<text id="6850700">Reduced Damage Negation After Evading</text>
+<text id="6850800">Repeated Evasions Lower Damage Negation</text>
+<text id="6850900">Reduced Damage Negation for Flask Usages</text>
+<text id="6851000">Sleep Buildup for Flask Usages</text>
+<text id="6851100">Madness Buildup for Flask Usages</text>
+<text id="6851200">Lower Attack When Below Max HP</text>
+<text id="6851300">Poison Buildup When Below Max HP</text>
+<text id="6851400">Rot Buildup When Below Max HP</text>
+<text id="6851500">Max HP Reduces Attack Power</text>
+<text id="6851600">Near Death Spills Flask</text>
+<text id="6851700">Near Death Reduces Max HP</text>
+<text id="7000000">Vigor +1</text>
+<text id="7000001">Vigor +2</text>
+<text id="7000002">Vigor +3</text>
+<text id="7000090">Increased Maximum HP</text>
+<text id="7000091">%null%</text>
+<text id="7000092">%null%</text>
+<text id="7000093">%null%</text>
+<text id="7000094">%null%</text>
+<text id="7000095">%null%</text>
+<text id="7000096">%null%</text>
+<text id="7000097">%null%</text>
+<text id="7000098">%null%</text>
+<text id="7000099">%null%</text>
+<text id="7000100">Mind +1</text>
+<text id="7000101">Mind +2</text>
+<text id="7000102">Mind +3</text>
+<text id="7000190">Increased Maximum FP</text>
+<text id="7000191">%null%</text>
+<text id="7000192">%null%</text>
+<text id="7000193">%null%</text>
+<text id="7000194">%null%</text>
+<text id="7000195">%null%</text>
+<text id="7000196">%null%</text>
+<text id="7000197">%null%</text>
+<text id="7000198">%null%</text>
+<text id="7000199">%null%</text>
+<text id="7000200">Endurance +1</text>
+<text id="7000201">Endurance +2</text>
+<text id="7000202">Endurance +3</text>
+<text id="7000290">Increased Maximum Stamina</text>
+<text id="7000291">%null%</text>
+<text id="7000292">%null%</text>
+<text id="7000293">%null%</text>
+<text id="7000294">%null%</text>
+<text id="7000295">%null%</text>
+<text id="7000296">%null%</text>
+<text id="7000297">%null%</text>
+<text id="7000298">%null%</text>
+<text id="7000299">%null%</text>
+<text id="7000300">Strength +1</text>
+<text id="7000301">Strength +2</text>
+<text id="7000302">Strength +3</text>
+<text id="7000400">Dexterity +1</text>
+<text id="7000401">Dexterity +2</text>
+<text id="7000402">Dexterity +3</text>
+<text id="7000500">Intelligence +1</text>
+<text id="7000501">Intelligence +2</text>
+<text id="7000502">Intelligence +3</text>
+<text id="7000600">Faith +1</text>
+<text id="7000601">Faith +2</text>
+<text id="7000602">Faith +3</text>
+<text id="7000700">Arcane +1</text>
+<text id="7000701">Arcane +2</text>
+<text id="7000702">Arcane +3</text>
+<text id="7000800">Character Skill Cooldown Reduction +1</text>
+<text id="7000801">Character Skill Cooldown Reduction +2</text>
+<text id="7000802">Character Skill Cooldown Reduction +3</text>
+<text id="7000900">Ultimate Art Auto Charge +1</text>
+<text id="7000901">Ultimate Art Auto Charge +2</text>
+<text id="7000902">Ultimate Art Auto Charge +3</text>
+<text id="7001000">Poise +1</text>
+<text id="7001001">Poise +2</text>
+<text id="7001002">Poise +3</text>
+<text id="7001400">Physical Attack Up</text>
+<text id="7001401">Physical Attack Up +1</text>
+<text id="7001402">Physical Attack Up +2</text>
+<text id="7001403">Physical Attack Up +3</text>
+<text id="7001500">Magic Attack Power Up</text>
+<text id="7001501">Magic Attack Power Up +1</text>
+<text id="7001502">Magic Attack Power Up +2</text>
+<text id="7001600">Fire Attack Power Up</text>
+<text id="7001601">Fire Attack Power Up +1</text>
+<text id="7001602">Fire Attack Power Up +2</text>
+<text id="7001700">Lightning Attack Power Up</text>
+<text id="7001701">Lightning Attack Power Up +1</text>
+<text id="7001702">Lightning Attack Power Up +2</text>
+<text id="7001800">Holy Attack Power Up</text>
+<text id="7001801">Holy Attack Power Up +1</text>
+<text id="7001802">Holy Attack Power Up +2</text>
+<text id="7001900">Attacks Inflict Poison</text>
+<text id="7001901">Attacks Inflict Poison +1</text>
+<text id="7001902">Attacks Inflict Poison +2</text>
+<text id="7002000">Attacks Inflict Blood Loss</text>
+<text id="7002001">Attacks Inflict Blood Loss +1</text>
+<text id="7002002">Attacks Inflict Blood Loss +2</text>
+<text id="7002100">Attacks Inflict Sleep</text>
+<text id="7002101">Attacks Inflict Sleep +1</text>
+<text id="7002102">Attacks Inflict Sleep +2</text>
+<text id="7002103">Attacks Inflict Sleep +3</text>
+<text id="7002200">Attacks Inflict Death Blight</text>
+<text id="7002300">Attacks Inflict Scarlet Rot</text>
+<text id="7002301">Attacks Inflict Scarlet Rot +1</text>
+<text id="7002302">Attacks Inflict Scarlet Rot +2</text>
+<text id="7002400">Attacks Inflict Frost</text>
+<text id="7002401">Attacks Inflict Frost +1</text>
+<text id="7002402">Attacks Inflict Frost +2</text>
+<text id="7002403">Attacks Inflict Frost +3</text>
+<text id="7002500">Attacks Inflict Madness</text>
+<text id="7002600">Magic Damage Negation Up</text>
+<text id="7002700">Fire Damage Negation Up</text>
+<text id="7002800">Lightning Damage Negation Up</text>
+<text id="7002900">Holy Damage Negation Up</text>
+<text id="7003000">Improved Poison Resistance</text>
+<text id="7003100">Improved Blood Loss Resistance</text>
+<text id="7003200">Improved Sleep Resistance</text>
+<text id="7003300">Improved Death Blight Resistance</text>
+<text id="7003400">Improved Rot Resistance</text>
+<text id="7003500">Improved Frost Resistance</text>
+<text id="7003600">Improved Madness Resistance</text>
+<text id="7005600">Partial HP Restoration upon Post-Damage Attacks</text>
+<text id="7010000">[Guardian] Improved Character Skill range</text>
+<text id="7010200">Flask Also Heals Allies</text>
+<text id="7010500">[Wylder] Art activation spreads fire in area</text>
+<text id="7010700">[Duchess] Successive dagger attack reprises event upon
+nearby enemies</text>
+<text id="7010800">[Raider] Character Skill damage up, damage negation
+impaired during use</text>
+<text id="7010900">[Revenant] Expend own HP to fully heal nearby allies
+when activating Art</text>
+<text id="7011000">[Guardian] Increased duration for Character Skill</text>
+<text id="7011100">[Guardian] Damage negation for allies improved when
+using Ultimate Art</text>
+<text id="7011200">[Revenant] Trigger ghostflame explosion during
+Ultimate Art activation</text>
+<text id="7011400">[Guardian] Restores allies' HP when Character Skill
+is used</text>
+<text id="7011500">[Wylder] Character Skill inflicts Blood Loss</text>
+<text id="7011600">[Guardian] Creates whirlwind when charging halberd
+attacks</text>
+<text id="7011700">[Executor] Roaring restores HP while Art is active</text>
+<text id="7011900">[Guardian] Character Skill inflicts Holy damage</text>
+<text id="7012000">[Guardian] Slowly restores nearby allies' HP
+while Art is active</text>
+<text id="7012200">Slowly restore HP for self and nearby allies when HP
+is low</text>
+<text id="7012300">Improved Damage Negation at Low HP</text>
+<text id="7012400">Strong Attack Creates Wide Wave of Heat</text>
+<text id="7012500">Jumping Conjures Magic Projectiles</text>
+<text id="7012600">Attack Boost from Nearby Allies</text>
+<text id="7012700">Guard Counters Cast Light Pillar</text>
+<text id="7020000">[Wylder] Standard attacks enhanced with fiery
+follow-ups when using Character Skill (greatsword only)</text>
+<text id="7030000">Improved Poise Near Totem Stela</text>
+<text id="7030200">HP restored when using medicinal boluses, etc.</text>
+<text id="7030500">[Wylder] Impaired damage negation, improved attack
+power &amp; stamina after Art activation</text>
+<text id="7030600">Successful guarding fills more of the Art gauge</text>
+<text id="7030700">Draw enemy attention while guarding</text>
+<text id="7030800">Critical hits fill more of the Art gauge</text>
+<text id="7030900">Physical attack power increases after using grease items</text>
+<text id="7031200">[Revenant] Strengthens family and allies when Ultimate Art is activated</text>
+<text id="7031300">[Raider] Damage taken while using Character Skill
+improves attack power and stamina</text>
+<text id="7031400">[Wylder] Reduced cooldown time for Character Skill</text>
+<text id="7031600">Performing consecutive successful guards
+improves guard ability and deflects big attacks</text>
+<text id="7031700">Shockwave Produced From Successful Guarding</text>
+<text id="7031800">[Duchess] Become difficult to spot and silence
+footsteps after landing critical from behind</text>
+<text id="7031900">Critical Hits Earn Runes</text>
+<text id="7032200">Taking attacks improves attack power</text>
+<text id="7032300">[Wylder] Improved attack power
+when Character Skill is activated</text>
+<text id="7032400">[Wylder] Art gauge greatly filled when ability is
+activated</text>
+<text id="7032700">[Duchess] Defeating enemies while Art is active ups
+attack power</text>
+<text id="7032800">[Recluse] Collecting affinity residue activates
+Terra Magica</text>
+<text id="7032900">[Recluse] Suffer blood loss and increase attack
+power upon Art activation</text>
+<text id="7033000">[Wylder] Improved attack power when ability is
+activated</text>
+<text id="7033100">%null%</text>
+<text id="7033200">[Wylder] +1 additional Character Skill use</text>
+<text id="7033300">[Guardian] Become the target of enemy aggression
+when ability is activated</text>
+<text id="7033400">[Guardian] Successful guards send out shockwaves while
+ability is active</text>
+<text id="7033600">[Duchess] Duration of Ultimate Art extended</text>
+<text id="7033700">Colossal armaments are coated in rock
+when performing charged attacks</text>
+<text id="7033800">[Raider] Permanently increase attack power when
+performing Character Skill's final attack</text>
+<text id="7033900">[Recluse] Extends duration of blood sigils</text>
+<text id="7034000">[Recluse] Collecting 4 Affinity Residues Improves
+Affinity Attack Power</text>
+<text id="7034100">[Recluse] Activating Ultimate Art raises Max HP</text>
+<text id="7034200">[Executor] Attack power up while Ultimate Art is
+active</text>
+<text id="7034300">[Executor] Improves effect of ability but lowers
+resistance to status ailments</text>
+<text id="7034400">[Executor] Character Skill Boosts Attack but Attacking Drains HP</text>
+<text id="7034500">[Executor] While Character Skill is active,
+unlocking use of cursed sword restores HP</text>
+<text id="7034600">[Ironeye] Art Charge Activation Adds Poison Effect</text>
+<text id="7034700">[Ironeye] Boosts thrusting counterattacks after executing Art</text>
+<text id="7034800">Fire Critical Hit Grants Max Stamina Boost</text>
+<text id="7034900">Critical Hit HP Restoration</text>
+<text id="7035000">Critical Hit Adds Lightning Effect</text>
+<text id="7035100">Critical Hit Boosts Stamina Recovery Speed</text>
+<text id="7035200">Consecutive Guards Harden Skin</text>
+<text id="7035300">Critical Hit Creates Sleep Mist</text>
+<text id="7035400">Gesture "Crossed Legs" Builds Up Madness</text>
+<text id="7035500">Madness Continually Recovers FP</text>
+<text id="7035600">Surge Sprint Landings Split Earth</text>
+<text id="7035700">Switching Weapons Adds an Affinity Attack</text>
+<text id="7035800">Boosts Attack Power of Added Affinity Attacks</text>
+<text id="7035900">Switching Weapons Boosts Attack Power</text>
+<text id="7040000">Improved Initial Standard Attack</text>
+<text id="7040100">Improved Guard Counters</text>
+<text id="7040200">Improved Critical Hits</text>
+<text id="7040290">Improved Critical Hits +1</text>
+<text id="7040291">%null%</text>
+<text id="7040292">%null%</text>
+<text id="7040293">%null%</text>
+<text id="7040294">%null%</text>
+<text id="7040295">%null%</text>
+<text id="7040296">%null%</text>
+<text id="7040297">%null%</text>
+<text id="7040298">%null%</text>
+<text id="7040299">%null%</text>
+<text id="7040300">Improved Throwing Pot Damage</text>
+<text id="7040400">Improved Throwing Knife Damage</text>
+<text id="7040500">Improved Glintstone and Gravity Stone Damage</text>
+<text id="7043200">Improved Stonedigger Sorcery</text>
+<text id="7043300">Improved Carian Sword Sorcery</text>
+<text id="7043400">Improved Glintblade Sorcery</text>
+<text id="7043500">Improved Invisibility Sorcery</text>
+<text id="7043600">Improved Crystalian sorcery</text>
+<text id="7043700">Improved Gravity Sorcery</text>
+<text id="7043800">Improved Thorn Sorcery</text>
+<text id="7043900">Improved Night Sorcery</text>
+<text id="7044000">Improved Fundamentalist Incantations</text>
+<text id="7044100">Improved Dragon Cult Incantations</text>
+<text id="7044200">Improved Giants' Flame Incantations</text>
+<text id="7044300">Improved Godslayer Incantations</text>
+<text id="7044400">Improved Bestial Incantations</text>
+<text id="7044500">Improved Frenzied Flame Incantations</text>
+<text id="7044600">Improved Dragon Communion Incantations</text>
+<text id="7050000">Raised stamina recovery for nearby allies, but not
+for self</text>
+<text id="7050100">Items confer effect to all nearby allies</text>
+<text id="7060000">Attack power increased for each evergaol prisoner defeated</text>
+<text id="7060100">Max FP increased for each Sorcerer's Rise unlocked</text>
+<text id="7060200">Attack power increased for each Night Invader defeated</text>
+<text id="7070000">Treasure marked upon map</text>
+<text id="7080000">Improved Attack Power with 3+ Daggers Equipped</text>
+<text id="7080100">Improved Attack Power with 3+ Straight Swords Equipped</text>
+<text id="7080200">Improved Attack Power with 3+ Greatswords Equipped</text>
+<text id="7080300">Improved Attack Power with 3+ Colossal Swords Equipped</text>
+<text id="7080400">Improved Attack Power with 3+ Curved Swords Equipped</text>
+<text id="7080500">Improved Attack Power with 3+ Curved Greatswords Equipped</text>
+<text id="7080600">Improved Attack Power with 3+ Katana Equipped</text>
+<text id="7080700">Improved Attack Power with 3+ Twinblades Equipped</text>
+<text id="7080800">Improved Attack Power with 3+ Thrusting Swords Equipped</text>
+<text id="7080900">Improved Attack Power with 3+ Heavy Thrusting Swords Equipped</text>
+<text id="7081000">Improved Attack Power with 3+ Axes Equipped</text>
+<text id="7081100">Improved Attack Power with 3+ Greataxes Equipped</text>
+<text id="7081200">Improved Attack Power with 3+ Hammers Equipped</text>
+<text id="7081300">Improved Attack Power with 3+ Great Hammers Equipped</text>
+<text id="7081400">Improved Attack Power with 3+ Flails Equipped</text>
+<text id="7081500">Improved Attack Power with 3+ Spears Equipped</text>
+<text id="7081700">Improved Attack Power with 3+ Great Spears Equipped</text>
+<text id="7081800">Improved Attack Power with 3+ Halberds Equipped</text>
+<text id="7081900">Improved Attack Power with 3+ Reapers Equipped</text>
+<text id="7082000">Improved Attack Power with 3+ Fists Equipped</text>
+<text id="7082100">Improved Attack Power with 3+ Claws Equipped</text>
+<text id="7082200">Improved Attack Power with 3+ Whips Equipped</text>
+<text id="7082300">Improved Attack Power with 3+ Colossal Weapons Equipped</text>
+<text id="7082400">Improved Attack Power with 3+ Bows Equipped</text>
+<text id="7082500">Max FP Up with 3+ Staves Equipped</text>
+<text id="7082600">Max FP Up with 3+ Sacred Seals Equipped</text>
+<text id="7082700">Max HP Up with 3+ Small Shields Equipped</text>
+<text id="7082800">Max HP Up with 3+ Medium Shields Equipped</text>
+<text id="7082900">Max HP Up with 3+ Greatshields Equipped</text>
+<text id="7090000">Defeating enemies fills more of the Art gauge</text>
+<text id="7090100">Defeating enemies restores HP for allies but not for
+self</text>
+<text id="7090300">Defeating enemies near Totem Stela restores HP</text>
+<text id="7100000">Critical hits deal huge damage on poisoned enemies</text>
+<text id="7100100">Stamina Recovery upon Landing Attacks</text>
+<text id="7100190">Stamina Recovery upon Landing Attacks +1</text>
+<text id="7110000">Increased rune acquisition for self and allies</text>
+<text id="7120000">Starting armament deals magic damage</text>
+<text id="7120100">Starting armament deals fire damage</text>
+<text id="7120101">Armament deals fire damage +1 at start of expedition</text>
+<text id="7120200">Starting armament deals lightning damage</text>
+<text id="7120300">Starting armament deals holy damage</text>
+<text id="7120400">Starting armament inflicts frost</text>
+<text id="7120500">Starting armament inflicts poison</text>
+<text id="7120600">Starting armament inflicts blood loss</text>
+<text id="7120700">Starting armament inflicts scarlet rot</text>
+<text id="7120900">Stonesword Key in possession at start of expedition</text>
+<text id="7121000">Small Pouch in possession at start of expedition</text>
+<text id="7121100">Fire Pots in possession at start of expedition</text>
+<text id="7121200">Magic Pots in possession at start of expedition</text>
+<text id="7121300">Lightning Pots in possession at start of expedition</text>
+<text id="7121400">Holy Water Pots in possession at start of expedition</text>
+<text id="7121500">Poisonbone Darts in possession at start of
+expedition</text>
+<text id="7121600">Crystal Darts in possession at start of expedition</text>
+<text id="7121700">Throwing Daggers in possession at start of
+expedition</text>
+<text id="7121800">Glintstone Scraps in possession at start of
+expedition</text>
+<text id="7121900">Gravity Stone Chunks in possession at start of
+expedition</text>
+<text id="7122000">Bewitching Branches in possession at start of
+expedition</text>
+<text id="7122100">Wraith Calling Bell in possession at start of
+expedition</text>
+<text id="7122200">Fire Grease in possession at start of expedition</text>
+<text id="7122300">Magic Grease in possession at start of expedition</text>
+<text id="7122400">Lightning Grease in possession at start of
+expedition</text>
+<text id="7122500">Holy Grease in possession at start of expedition</text>
+<text id="7122600">Shield Grease in possession at start of expedition</text>
+<text id="7122700">Changes compatible armament's skill to Glintblade
+Phalanx at start of expedition</text>
+<text id="7122800">Changes compatible armament's skill to Gravitas at
+start of expedition</text>
+<text id="7122900">Changes compatible armament's skill to Flaming
+Strike at start of expedition</text>
+<text id="7123000">Changes compatible armament's skill to
+Eruption at start of expedition</text>
+<text id="7123100">Changes compatible armament's skill to Thunderbolt
+at start of expedition</text>
+<text id="7123200">Changes compatible armament's skill to Lightning
+Slash at start of expedition</text>
+<text id="7123300">Changes compatible armament's skill to Sacred Blade
+at start of expedition</text>
+<text id="7123400">Changes compatible armament's skill to Prayerful
+Strike at start of expedition</text>
+<text id="7123500">Changes compatible armament's skill to Poisonous
+Mist at start of expedition</text>
+<text id="7123600">Changes compatible armament's skill to Poison Moth
+Flight at start of expedition</text>
+<text id="7123700">Changes compatible armament's skill to Blood Blade
+at start of expedition</text>
+<text id="7123800">Changes compatible armament's skill to Seppuku at
+start of expedition</text>
+<text id="7123900">Changes compatible armament's skill to Chilling Mist
+at start of expedition</text>
+<text id="7124000">Changes compatible armament's skill to Hoarfrost
+Stomp at start of expedition</text>
+<text id="7124100">Changes compatible armament's skill to White
+Shadow's Lure at start of expedition</text>
+<text id="7124300">Changes compatible armament's skill to Endure at
+start of expedition</text>
+<text id="7124400">Changes compatible armament's skill to Quickstep at
+start of expedition</text>
+<text id="7124500">Changes compatible armament's skill to Storm Stomp
+at start of expedition</text>
+<text id="7124600">Changes compatible armament's skill to Determination
+at start of expedition</text>
+<text id="7124700">Changes compatible armament's skill to Rain of
+Arrows at start of expedition</text>
+<text id="7126000">Starlight Shards in possession at start of expedition</text>
+<text id="7150000">Guard counter is given a boost based on current HP</text>
+<text id="7160000">HP Restoration upon Thrusting Counterattack</text>
+<text id="7200000">HP Restoration with Head Shots</text>
+<text id="7200100">Improved Stance-Breaking with Head Shots</text>
+<text id="7220000">[Revenant] Power up while fighting alongside family</text>
+<text id="7230000">Rune discount for shop purchases while on expedition</text>
+<text id="7230001">Huge rune discount for shop purchases while on
+expedition</text>
+<text id="7240000">Improved Poise &amp; Damage Negation When Knocked Back
+by Damage</text>
+<text id="7260000">Attack power up when facing poison-afflicted enemy</text>
+<text id="7260200">Attack power up when facing sleep-afflicted enemy</text>
+<text id="7260300">Attack power up when facing scarlet rot-afflicted
+enemy</text>
+<text id="7260400">Attack power up when facing frostbite-afflicted
+enemy</text>
+<text id="7260600">Attacks Create Magic Bursts Versus Sleeping Enemies</text>
+<text id="7260700">Frostbite in Vicinity Conceals Self</text>
+<text id="7260701">%null%</text>
+<text id="7260702">%null%</text>
+<text id="7260703">%null%</text>
+<text id="7260704">%null%</text>
+<text id="7260705">%null%</text>
+<text id="7260706">%null%</text>
+<text id="7260707">%null%</text>
+<text id="7260708">%null%</text>
+<text id="7260709">%null%</text>
+<text id="7260710">Poison &amp; Rot in Vicinity Increases Attack Power</text>
+<text id="7270100">[Ironeye] +1 additional Character Skill use</text>
+<text id="7280000">[Ironeye] Extends duration of weak point</text>
+<text id="7290000">[Duchess] Improved Character Skill Attack Power</text>
+<text id="7300000">[Duchess] Character Skill inflicts sleep upon
+enemies</text>
+<text id="7310000">[Raider] Duration of Ultimate Art extended</text>
+<text id="7320000">[Revenant] Ability activation chance increased</text>
+<text id="7330000">Improved Dagger Attack Power</text>
+<text id="7330100">Improved Straight Sword Attack Power</text>
+<text id="7330200">Improved Greatsword Attack Power</text>
+<text id="7330300">Improved Colossal Sword Attack Power</text>
+<text id="7330400">Improved Curved Sword Attack Power</text>
+<text id="7330500">Improved Curved Greatsword Attack Power</text>
+<text id="7330600">Improved Katana Attack Power</text>
+<text id="7330700">Improved Twinblade Attack Power</text>
+<text id="7330800">Improved Thrusting Sword Attack Power</text>
+<text id="7330900">Improved Heavy Thrusting Sword Attack Power</text>
+<text id="7331000">Improved Axe Attack Power</text>
+<text id="7331100">Improved Greataxe Attack Power</text>
+<text id="7331200">Improved Hammer Attack Power</text>
+<text id="7331300">Improved Great Hammer Attack Power</text>
+<text id="7331400">Improved Flail Attack Power</text>
+<text id="7331500">Improved Spear Attack Power</text>
+<text id="7331600">Improved Pike Attack Power</text>
+<text id="7331700">Improved Great Spear Attack Power</text>
+<text id="7331800">Improved Halberd Attack Power</text>
+<text id="7331900">Improved Reaper Attack Power</text>
+<text id="7332000">Improved Fist Attack Power</text>
+<text id="7332100">Improved Claw Attack Power</text>
+<text id="7332200">Improved Whip Attack Power</text>
+<text id="7332300">Improved Colossal Weapon Attack Power</text>
+<text id="7332400">Improved Bow Attack Power</text>
+<text id="7332500">Improved Greatbow Attack Power</text>
+<text id="7332600">Improved Crossbow Attack Power</text>
+<text id="7332700">Improved Ballista Attack Power</text>
+<text id="7340000">HP Restoration upon Dagger Attacks</text>
+<text id="7340100">HP Restoration upon Straight Sword Attacks</text>
+<text id="7340200">HP Restoration upon Greatsword Attacks</text>
+<text id="7340300">HP Restoration upon Colossal Sword Attacks</text>
+<text id="7340400">HP Restoration upon Curved Sword Attacks</text>
+<text id="7340500">HP Restoration upon Curved Greatsword Attacks</text>
+<text id="7340600">HP Restoration upon Katana Attacks</text>
+<text id="7340700">HP Restoration upon Twinblade Attacks</text>
+<text id="7340800">HP Restoration upon Thrusting Sword Attacks</text>
+<text id="7340900">HP Restoration upon Heavy Thrusting Sword Attacks</text>
+<text id="7341000">HP Restoration upon Axe Attacks</text>
+<text id="7341100">HP Restoration upon Greataxe Attacks</text>
+<text id="7341200">HP Restoration upon Hammer Attacks</text>
+<text id="7341300">HP Restoration upon Great Hammer Attacks</text>
+<text id="7341400">HP Restoration upon Flail Attacks</text>
+<text id="7341500">HP Restoration upon Spear Attacks</text>
+<text id="7341600">HP Restoration upon Pike Attacks</text>
+<text id="7341700">HP Restoration upon Great Spear Attacks</text>
+<text id="7341800">HP Restoration upon Halberd Attacks</text>
+<text id="7341900">HP Restoration upon Reaper Attacks</text>
+<text id="7342000">HP Restoration upon Fist Attacks</text>
+<text id="7342100">HP Restoration upon Claw Attacks</text>
+<text id="7342200">HP Restoration upon Whip Attacks</text>
+<text id="7342300">HP Restoration upon Colossal Weapon Attacks</text>
+<text id="7342400">HP Restoration upon Bow Attacks</text>
+<text id="7342500">HP Restoration upon Greatbow Attacks</text>
+<text id="7342600">HP Restoration upon Crossbow Attacks</text>
+<text id="7342700">HP Restoration upon Ballista Attacks</text>
+<text id="7350000">FP Restoration upon Dagger Attacks</text>
+<text id="7350100">FP Restoration upon Straight Sword Attacks</text>
+<text id="7350200">FP Restoration upon Greatsword Attacks</text>
+<text id="7350300">FP Restoration upon Colossal Sword Attacks</text>
+<text id="7350400">FP Restoration upon Curved Sword Attacks</text>
+<text id="7350500">FP Restoration upon Curved Greatsword Attacks</text>
+<text id="7350600">FP Restoration upon Katana Attacks</text>
+<text id="7350700">FP Restoration upon Twinblade Attacks</text>
+<text id="7350800">FP Restoration upon Thrusting Sword Attacks</text>
+<text id="7350900">FP Restoration upon Heavy Thrusting Sword Attacks</text>
+<text id="7351000">FP Restoration upon Axe Attacks</text>
+<text id="7351100">FP Restoration upon Greataxe Attacks</text>
+<text id="7351200">FP Restoration upon Hammer Attacks</text>
+<text id="7351300">FP Restoration upon Great Hammer Attacks</text>
+<text id="7351400">FP Restoration upon Flail Attacks</text>
+<text id="7351500">FP Restoration upon Spear Attacks</text>
+<text id="7351600">FP Restoration upon Pike Attacks</text>
+<text id="7351700">FP Restoration upon Great Spear Attacks</text>
+<text id="7351800">FP Restoration upon Halberd Attacks</text>
+<text id="7351900">FP Restoration upon Reaper Attacks</text>
+<text id="7352000">FP Restoration upon Fist Attacks</text>
+<text id="7352100">FP Restoration upon Claw Attacks</text>
+<text id="7352200">FP Restoration upon Whip Attacks</text>
+<text id="7352300">FP Restoration upon Colossal Weapon Attacks</text>
+<text id="7352400">FP Restoration upon Bow Attacks</text>
+<text id="7352500">FP Restoration upon Greatbow Attacks</text>
+<text id="7352600">FP Restoration upon Crossbow Attacks</text>
+<text id="7352700">FP Restoration upon Ballista Attacks</text>
+<text id="8000000">Increased Maximum HP</text>
+<text id="8010000">Increased Maximum FP</text>
+<text id="8010100">Reduced FP Consumption</text>
+<text id="8020000">Increased Maximum Stamina</text>
+<text id="8020100">Reduced Stamina Consumption</text>
+<text id="8020200">Improved Stamina Recovery</text>
+<text id="8100000">Improved Physical Attack Power</text>
+<text id="8100100">Improved Magic Attack Power</text>
+<text id="8100200">Improved Fire Attack Power</text>
+<text id="8100300">Improved Lightning Attack Power</text>
+<text id="8100400">Improved Holy Attack Power</text>
+<text id="8110000">Attacks Inflict Poison</text>
+<text id="8110100">Attacks Inflict Blood Loss</text>
+<text id="8110200">Attacks Inflict Sleep</text>
+<text id="8110300">Attacks Inflict Death Blight</text>
+<text id="8110400">Attacks Inflict Rot</text>
+<text id="8110500">Attacks Inflict Frost</text>
+<text id="8110600">Attacks Inflict Madness</text>
+<text id="8110700">Add Fire to Weapon</text>
+<text id="8110800">Add Magic to Weapon</text>
+<text id="8110900">Add Lightning to Weapon</text>
+<text id="8111000">Add Holy to Weapon</text>
+<text id="8120000">Improved Stance-Breaking</text>
+<text id="8130000">Improved Critical Hits</text>
+<text id="8140000">Improved Guard Breaking</text>
+<text id="8150000">Attack Boost [Lifeforms Born of Falling Stars]</text>
+<text id="8150100">Attack Boost [Those Who Live in Death]</text>
+<text id="8150300">Attack Boost [Dragons]</text>
+<text id="8200000">Improved Physical Damage Negation</text>
+<text id="8200100">Improved Magic Damage Negation</text>
+<text id="8200200">Improved Fire Damage Negation</text>
+<text id="8200300">Improved Lightning Damage Negation</text>
+<text id="8200400">Improved Holy Damage Negation</text>
+<text id="8200500">Improved Affinity Damage Negation</text>
+<text id="8210000">Improved Poison Resistance</text>
+<text id="8210100">Improved Blood Loss Resistance</text>
+<text id="8210200">Improved Sleep Resistance</text>
+<text id="8210300">Improved Death Blight Resistance</text>
+<text id="8210400">Improved Rot Resistance</text>
+<text id="8210500">Improved Frost Resistance</text>
+<text id="8210600">Improved Madness Resistance</text>
+<text id="8220000">Improved Guarding Ability</text>
+<text id="8220001">Improved Guarding Ability +1</text>
+<text id="8220002">Improved Guarding Ability +2</text>
+<text id="8230000">Improved Poise</text>
+<text id="8300000">Improved Attack Power when Two-Handing</text>
+<text id="8300100">Improved Stance-Breaking when Two-Handing</text>
+<text id="8310000">Attack Up when Wielding Two Armaments</text>
+<text id="8310100">Improved Stance-Breaking when Wielding Two Armaments</text>
+<text id="8320000">Improved Chain Attack Finishers</text>
+<text id="8320100">Improved Charge Attacks</text>
+<text id="8320200">Strong Attacks Improve Poise</text>
+<text id="8320300">Improved Jump Attacks</text>
+<text id="8320400">Dmg Negation Up upon Landing Charge Attacks</text>
+<text id="8330000">Improved Sorceries</text>
+<text id="8330100">Improved Incantations</text>
+<text id="8330200">Improved Charged Sorceries</text>
+<text id="8330300">Improved Charged Incantation</text>
+<text id="8330400">Improved Spell Casting Speed</text>
+<text id="8330500">Extended Spell Duration</text>
+<text id="8330600">Reduced Spell FP Cost</text>
+<text id="8330700">Communion Grants Anti-Dragon Effect</text>
+<text id="8330900">Dmg Negation Up While Casting Spells</text>
+<text id="8340000">Improved Ranged Weapon Attacks</text>
+<text id="8340100">Projectile Damage Drop-Off Reduced</text>
+<text id="8350000">Improved Skill Attack Power</text>
+<text id="8350100">Improved Charged Skill Attack Power</text>
+<text id="8350200">Reduced Skill FP Cost</text>
+<text id="8350300">Skill Activation Improves Poise</text>
+<text id="8350400">Parries Activate Golden Retaliation</text>
+<text id="8360000">Faster Art Gauge Buildup</text>
+<text id="8370000">Character Skill Cooldown Reduction</text>
+<text id="8380000">Improved Roar &amp; Breath Attacks</text>
+<text id="8390000">Improved Throwing Pots</text>
+<text id="8400000">Improved Perfuming Arts</text>
+<text id="8410000">Improved Dodging</text>
+<text id="8410100">Lightning upon Dodging</text>
+<text id="8420000">Improved Guard Counters</text>
+<text id="8420100">Guard Counters Activate Holy Attacks</text>
+<text id="8420200">Guard Counters Launch Summoning Attack</text>
+<text id="8430000">Improved Thrusting Counterattack</text>
+<text id="8440000">Improved Flask HP Restoration</text>
+<text id="8440100">Flask Also Heals Allies</text>
+<text id="8440200">Gradual Restoration by Flask</text>
+<text id="8450000">Magma Surge Sprint</text>
+<text id="8450100">Ice Storm Surge Sprint</text>
+<text id="8460000">Darkness Conceals Caster While Walking</text>
+<text id="8460100">Savage Pillars of Flame Rise While Walking</text>
+<text id="8460200">Flame of Frenzy While Walking</text>
+<text id="8460300">Wraiths While Walking</text>
+<text id="8460400">Vicious Star Rain Pours While Walking</text>
+<text id="8460500">Storm of Red Lightning While Walking</text>
+<text id="8500000">More Runes From Defeated Enemies</text>
+<text id="8510000">Improved Item Discovery</text>
+<text id="8520000">Less Likely to Be Targeted</text>
+<text id="8530000">Multiple Periodical Glintblades</text>
+<text id="8530100">Many Periodical Glintblades</text>
+<text id="8530200">Periodical Giant Glintblades</text>
+<text id="8540000">Continuous HP Recovery</text>
+<text id="8600100">HP Restoration upon Landing Attacks</text>
+<text id="8600200">FP Restoration upon Landing Attacks</text>
+<text id="8600300">Sudden Enemy Death upon Landing Attacks</text>
+<text id="8610000">HP Restoration upon Successive Attacks</text>
+<text id="8610100">FP Restoration upon Successive Attacks</text>
+<text id="8610200">Successive Attacks Boost Attack Power</text>
+<text id="8610300">Magic Attack Follows Charge Attacks that Land</text>
+<text id="8610400">Fire Attack Follows Charge Attacks that Land</text>
+<text id="8610500">Lightning Follows Charge Attacks that Land</text>
+<text id="8610600">Holy Attack Follows Charge Attacks that Land</text>
+<text id="8610700">Successive Attacks Negate Damage</text>
+<text id="8620000">Taking Damage Restores FP</text>
+<text id="8620100">Taking Damage Boosts Damage Negation</text>
+<text id="8630000">Defeating Enemies Restores HP</text>
+<text id="8630100">Defeating Enemies Restores FP</text>
+<text id="8630200">Attacks Summon Wraiths</text>
+<text id="8630300">Attacks Release Mist of Charm</text>
+<text id="8630400">Attacks Call Vengeful Spirits</text>
+<text id="8630500">Attacks Generate Lava</text>
+<text id="8630600">Attacks Release Mist of Frost</text>
+<text id="8630700">Attacks Unleash Lightning</text>
+<text id="8630800">Attacks Generate Golden Shockwave</text>
+<text id="8640000">Critical Hit HP Restoration</text>
+<text id="8640100">Critical Hit FP Restoration</text>
+<text id="8640200">Increased Damage After Critical Hit</text>
+<text id="8640300">Sacred Order upon Holy Critical Hit</text>
+<text id="8640400">Magma upon Fire Critical Hit</text>
+<text id="8640500">Lightning Critical Hit Imbues Armament</text>
+<text id="8640600">Crystal Shards upon Magic Critical Hit</text>
+<text id="8640700">Poison Mist upon Poison Critical Hit</text>
+<text id="8640800">Blood Loss Crit: Thorns of Punishment</text>
+<text id="8640900">Rot Critical Hit Fires Pest Threads</text>
+<text id="8641000">Ice Storm upon Critical Hit with Frost</text>
+<text id="8641100">Madness Crit. Hit Fires Frenzied Flame</text>
+<text id="8641200">Death Crit. Hit Calls Death Lightning</text>
+<text id="8650000">HP Recovery From Successful Guarding</text>
+<text id="8650100">FP Recovery From Successful Guarding</text>
+<text id="8652000">Successful Guarding Ups Poise</text>
+<text id="8652100">Successful Guarding Ups Dmg Negation</text>
+<text id="8660000">Improved Attack Power at Low HP</text>
+<text id="8660101">Improved Damage Negation at Low HP</text>
+<text id="8660200">Critical Hits Inflict Blood Loss</text>
+<text id="8660300">Creates Holy Ground at Low HP</text>
+<text id="8660400">Low HP Crit. Hit Fully Restores HP</text>
+<text id="8670000">Improved Attack Power at Full HP</text>
+<text id="8670101">Improved Damage Negation at Full HP</text>
+<text id="8690000">Poison Produces a Mist of Poison</text>
+<text id="8690100">Madness Produces a Frenzied Burst</text>
+<text id="8690200">Rot Produces a Mist of Scarlet Rot</text>
+<text id="8690300">Frostbite Produces a Mist of Frost</text>
+<text id="8690400">Sleep Produces a Mist of Sleep</text>
+<text id="8700000">Poison Increases Attack Power</text>
+<text id="8710000">Blood Loss Increases Attack Power</text>
+<text id="8720000">Sleep Increases Attack Power</text>
+<text id="8740000">Frostbite Increases Attack Power</text>
+<text id="8750000">Madness Increases Attack Power</text>
+<text id="8760000">Reduced Maximum HP</text>
+<text id="8760100">Reduced Maximum FP</text>
+<text id="8760200">Reduced Maximum Stamina</text>
+<text id="8761000">Impaired Physical Damage Negation</text>
+<text id="8761100">Impaired Affinity Damage Negation</text>
+<text id="8762000">All Resistances Down</text>
+<text id="8763000">Reduced Flask HP Restoration</text>
+<text id="8764000">Surge Sprinting Drains More Stamina</text>
+<text id="8765000">Ultimate Art Charging Impaired</text>
+<text id="8766000">Continuous HP Loss</text>
+<text id="8770000">Night's Tide Damage Increased</text>
+<text id="8771000">Damage Increased by Night's Encroachment</text>
+<text id="8800000">Increased Drain on Stamina for Evasion</text>
+<text id="8800100">Reduced Damage Negation After Evading</text>
+<text id="8800200">Repeated Evasions Lower Damage Negation</text>
+<text id="8801000">Reduced Damage Negation for Flask Usages</text>
+<text id="8801100">Sleep Buildup for Flask Usages</text>
+<text id="8801200">Madness Buildup for Flask Usages</text>
+<text id="8810000">Lower Attack When Below Max HP</text>
+<text id="8810200">Slower Art Gauge When Below Max HP</text>
+<text id="8810300">Poison Buildup When Below Max HP</text>
+<text id="8810400">Rot Buildup When Below Max HP</text>
+<text id="8811000">Max HP Reduces Attack Power</text>
+<text id="8811200">Max HP Slows Ultimate Art Gauge</text>
+<text id="8813100">Lower Stamina Impairs Dmg Negation</text>
+<text id="8821000">Attacks Impaired on Occasion</text>
+<text id="8821100">Landed Attacks Build Up Frost</text>
+<text id="8821200">Landed Attacks Build Up Blood Loss</text>
+<text id="8830000">Ailments Cause Increased Damage</text>
+<text id="8831000">Near Death Reduces Art Gauge</text>
+<text id="8831100">Near Death Spills Flask</text>
+<text id="8831200">Near Death Reduces Max HP</text>
+<text id="8880000">Ice Storm upon Charge Attacks</text>
+<text id="8880100">Ring of Light upon Charged Slash</text>
+<text id="8880200">Black Flames upon Charge Attacks</text>
+<text id="8880300">Phantom Attack upon Charge Attacks</text>
+<text id="8880400">Roaring Flames upon Charged Slash</text>
+<text id="8881000">Holy Shockwave upon Charge Attacks</text>
+<text id="8881100">Projectiles upon Charged Strike</text>
+<text id="8881200">Luring Enemies upon Charge Attacks</text>
+<text id="8881300">Shockwave upon Charged Strike</text>
+<text id="8881400">Phantom Attack upon Charged Strike</text>
+<text id="8881500">Magma upon Charge Attacks</text>
+<text id="8881600">Magic Bubbles upon Charged Strike</text>
+<text id="8882000">Phantom Attack upon Charged Thrust</text>
+<text id="8882100">Lightning upon Charge Attacks</text>
+<text id="8882200">Acid Mist upon Charged Thrust</text>
+<text id="8882300">Pest Threads upon Charged Thrust</text>
+<text id="8882400">Poison Mist upon Charged Thrust</text>
+<text id="8882500">Charge Attacks Invoke Sleep Mist</text>
+<text id="8883000">Projectiles Launched upon Charge Attacks</text>
+<text id="8883100">Lightning upon Precision Aiming</text>
+<text id="8883200">Poison Mist upon Precision Aiming</text>
+<text id="8883300">Rot Mist upon Precision Aiming</text>
+<text id="8883400">Bloodflies upon Precision Aiming</text>
+<text id="8884000">Shielding Improves Damage Negation</text>
+<text id="8884100">Shielding Invokes Indomitable Vow</text>
+<text id="8884200">Shielding Creates Holy Ground</text>
+<text id="8884300">Broken Stance Activates Endure</text>
+<text id="8885000">Flask Healing Also Restores FP</text>
+<text id="8885100">Failing to Cast Spell Restores FP</text>
+<text id="8885200">Guarding Ups Sorceries &amp; Incantations</text>
+<text id="8920100">Improved Affinity Attack Power</text>
+<text id="8921400">Critical Hits Boost Attack Power</text>
+<text id="8960100">Changed Strong Attacks</text>
+<text id="8960200">Strong Jump Attacks Create Shockwave</text>
+<text id="9021400">Power of Night and Flame</text>
+<text id="9030900">Power of Dark Moon</text>
+<text id="9031000">Power of the Greater Will</text>
+<text id="9031400">Power of the Blasphemous</text>
+<text id="9031500">Power of House Marais</text>
+<text id="9031700">Power of the Golden Order</text>
+<text id="9040200">Power of Destined Death</text>
+<text id="9040500">Power of the Starscourge</text>
+<text id="9040800">Power of Destruction</text>
+<text id="9041000">Power of Vengeance</text>
+<text id="9060400">Power of the Dragonlord</text>
+<text id="9071000">Power of Despair</text>
+<text id="9081000">Power of the Omen King</text>
+<text id="9090200">Power of the Undefeated</text>
+<text id="9111500">Power of the Queen</text>
+<text id="9122000">Power of the Blasphemous</text>
+<text id="9130300">Power of the Lightless Void</text>
+<text id="9150400">Power of the Golden Lineage</text>
+<text id="9151100">Power of the Ancestral Spirit</text>
+<text id="9160900">Power of the Great Ancient Dragon</text>
+<text id="9170100">Power of the Blood Lord</text>
+<text id="9200600">Power of the Giant</text>
+<text id="9210600">Power of the Flying Dragon</text>
+<text id="9230500">Power of the First Lord</text>
+<text id="9330900">Power of Full Moon</text>
+<text id="9420000">Power of the General</text>
+<text id="9990100">The Wylder's Grief</text>
+<text id="9990200">The Guardian's Grief</text>
+<text id="9990300">The Ironeye's Grief</text>
+<text id="9990400">The Duchess' Grief</text>
+<text id="9990500">The Raider's Grief</text>
+<text id="9990600">The Revenant's Grief</text>
+<text id="9990700">The Recluse's Grief</text>
+<text id="9990800">The Executor's Grief</text>
+<text id="18000000">Increased Maximum HP</text>
+<text id="18010000">Increased Maximum FP</text>
+<text id="18010100">Reduced FP Consumption</text>
+<text id="18020000">Increased Maximum Stamina</text>
+<text id="18020200">Improved Stamina Recovery</text>
+<text id="18100000">Physical Attack Up</text>
+<text id="18100500">Improved Affinity Attack Power</text>
+<text id="18120000">Improved Stance-Breaking</text>
+<text id="18200000">Improved Physical Damage Negation</text>
+<text id="18200500">Improved Affinity Damage Negation</text>
+<text id="18210700">All Resistances Up</text>
+<text id="18230000">Improved Poise</text>
+<text id="18330103">Improved Sorceries &amp; Incantations</text>
+<text id="18330500">Increased Sorcery &amp; Incantation Duration</text>
+<text id="18330700">Communion Grants Anti-Dragon Effect</text>
+<text id="18350400">Successful Parries Activate Golden Retaliation</text>
+<text id="18420100">Guard Counters Activate Holy Attacks</text>
+<text id="18420200">Guard Counters Launch Summoning Attack</text>
+<text id="18430000">Improved Thrusting Counterattack</text>
+<text id="18440000">Improved Flask HP Restoration</text>
+<text id="18500000">More Runes From Defeated Enemies</text>
+<text id="18640000">Critical Hit HP Restoration</text>
+<text id="18640100">Critical Hit FP Restoration</text>
+<text id="18640200">Increased Damage After Critical Hit</text>
+<text id="18650000">HP Recovery From Successful Guarding</text>
+<text id="18650100">FP Recovery From Successful Guarding</text>
+<text id="18660200">Critical Hits Inflict Blood Loss</text>
+<text id="18660300">Creates Holy Ground at Low HP</text>
+<text id="18700000">Poison &amp; Rot Trigger Continuous HP Recovery</text>
+<text id="18710000">Blood Loss in Vicinity Increases Attack Power</text>
+<text id="19700000">Vigor</text>
+<text id="19700001">%null%</text>
+<text id="19700002">%null%</text>
+<text id="19700003">%null%</text>
+<text id="19700004">%null%</text>
+<text id="19700005">%null%</text>
+<text id="19700006">%null%</text>
+<text id="19700007">%null%</text>
+<text id="19700008">%null%</text>
+<text id="19700009">%null%</text>
+<text id="19700010">Mind</text>
+<text id="19700011">%null%</text>
+<text id="19700012">%null%</text>
+<text id="19700013">%null%</text>
+<text id="19700014">%null%</text>
+<text id="19700015">%null%</text>
+<text id="19700016">%null%</text>
+<text id="19700017">%null%</text>
+<text id="19700018">%null%</text>
+<text id="19700019">%null%</text>
+<text id="19700020">Endurance</text>
+<text id="19700021">%null%</text>
+<text id="19700022">%null%</text>
+<text id="19700023">%null%</text>
+<text id="19700024">%null%</text>
+<text id="19700025">%null%</text>
+<text id="19700026">%null%</text>
+<text id="19700027">%null%</text>
+<text id="19700028">%null%</text>
+<text id="19700029">%null%</text>
+<text id="19700030">Strength</text>
+<text id="19700031">%null%</text>
+<text id="19700032">%null%</text>
+<text id="19700033">%null%</text>
+<text id="19700034">%null%</text>
+<text id="19700035">%null%</text>
+<text id="19700036">%null%</text>
+<text id="19700037">%null%</text>
+<text id="19700038">%null%</text>
+<text id="19700039">%null%</text>
+<text id="19700040">Dexterity</text>
+<text id="19700041">%null%</text>
+<text id="19700042">%null%</text>
+<text id="19700043">%null%</text>
+<text id="19700044">%null%</text>
+<text id="19700045">%null%</text>
+<text id="19700046">%null%</text>
+<text id="19700047">%null%</text>
+<text id="19700048">%null%</text>
+<text id="19700049">%null%</text>
+<text id="19700050">Intelligence</text>
+<text id="19700051">%null%</text>
+<text id="19700052">%null%</text>
+<text id="19700053">%null%</text>
+<text id="19700054">%null%</text>
+<text id="19700055">%null%</text>
+<text id="19700056">%null%</text>
+<text id="19700057">%null%</text>
+<text id="19700058">%null%</text>
+<text id="19700059">%null%</text>
+<text id="19700060">Faith</text>
+<text id="19700061">%null%</text>
+<text id="19700062">%null%</text>
+<text id="19700063">%null%</text>
+<text id="19700064">%null%</text>
+<text id="19700065">%null%</text>
+<text id="19700066">%null%</text>
+<text id="19700067">%null%</text>
+<text id="19700068">%null%</text>
+<text id="19700069">%null%</text>
+<text id="19700070">Arcane</text>
+<text id="19700071">%null%</text>
+<text id="19700072">%null%</text>
+<text id="19700073">%null%</text>
+<text id="19700074">%null%</text>
+<text id="19700075">%null%</text>
+<text id="19700076">%null%</text>
+<text id="19700077">%null%</text>
+<text id="19700078">%null%</text>
+<text id="19700079">%null%</text>
+<text id="19700080">Character Skill Cooldown Reduction</text>
+<text id="19700081">%null%</text>
+<text id="19700082">%null%</text>
+<text id="19700083">%null%</text>
+<text id="19700084">%null%</text>
+<text id="19700085">%null%</text>
+<text id="19700086">%null%</text>
+<text id="19700087">%null%</text>
+<text id="19700088">%null%</text>
+<text id="19700089">%null%</text>
+<text id="19700090">Ultimate Art Auto Charge</text>
+<text id="19700091">%null%</text>
+<text id="19700092">%null%</text>
+<text id="19700093">%null%</text>
+<text id="19700094">%null%</text>
+<text id="19700095">%null%</text>
+<text id="19700096">%null%</text>
+<text id="19700097">%null%</text>
+<text id="19700098">%null%</text>
+<text id="19700099">%null%</text>
+<text id="19700100">Poise</text>
+<text id="19799999">All Options</text>
+</entries>
+</fmg>
