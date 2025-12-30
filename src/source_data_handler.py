@@ -17,16 +17,20 @@ class SourceDataHandler:
     ]
 
     def __init__(self, language: str = "en-us"):
-        self.effect_params = pd.read_csv(self.PARAM_DIR / "AttachEffectParam.csv")
+        self.effect_params = \
+            pd.read_csv(self.PARAM_DIR / "AttachEffectParam.csv")
         self.effect_params: pd.DataFrame = self.effect_params[
             ["ID", "compatibilityId", "attachTextId", "overrideEffectId"]
         ]
         self.effect_params.set_index("ID", inplace=True)
 
-        self.effect_table = pd.read_csv(self.PARAM_DIR / "AttachEffectTableParam.csv")
-        self.effect_table: pd.DataFrame = self.effect_table[["ID", "attachEffectId"]]
+        self.effect_table = \
+            pd.read_csv(self.PARAM_DIR / "AttachEffectTableParam.csv")
+        self.effect_table: pd.DataFrame = \
+            self.effect_table[["ID", "attachEffectId"]]
 
-        self.relic_table = pd.read_csv(self.PARAM_DIR / "EquipParamAntique.csv")
+        self.relic_table = \
+            pd.read_csv(self.PARAM_DIR / "EquipParamAntique.csv")
         self.relic_table: pd.DataFrame = self.relic_table[
             [
                 "ID",
@@ -59,7 +63,8 @@ class SourceDataHandler:
         _relic_names: Optional[pd.DataFrame] = None
         for file_name in SourceDataHandler.RELIC_TEXT_FILE_NAME:
             _df = pd.read_xml(
-                SourceDataHandler.TEXT_DIR / _lng / file_name, xpath="/fmg/entries/text"
+                SourceDataHandler.TEXT_DIR / _lng / file_name,
+                xpath="/fmg/entries/text"
             )
             if _relic_names is None:
                 _relic_names = _df
@@ -71,7 +76,8 @@ class SourceDataHandler:
         _effect_names: Optional[pd.DataFrame] = None
         for file_name in SourceDataHandler.EFFECT_NAME_FILE_NAMES:
             _df = pd.read_xml(
-                SourceDataHandler.TEXT_DIR / _lng / file_name, xpath="/fmg/entries/text"
+                SourceDataHandler.TEXT_DIR / _lng / file_name,
+                xpath="/fmg/entries/text"
             )
             if _effect_names is None:
                 _effect_names = _df
@@ -79,6 +85,17 @@ class SourceDataHandler:
                 _effect_names = pd.concat([_effect_names, _df])
         self.relic_name = _relic_names
         self.effect_name = _effect_names
+
+    def reload_text(self, language: str = "en-us"):
+        try:
+            self._load_text(language=language)
+            return True
+        except FileNotFoundError:
+            self._load_text()
+            return False
+        except KeyError:
+            self._load_text()
+            return False
 
     def get_relic_origin_structure(self):
         if self.relic_name is None:
@@ -91,7 +108,9 @@ class SourceDataHandler:
             try:
                 _result[str(index)] = {
                     "name": _copy_df.loc[index, "name"],
-                    "color": COLOR_MAP[int(self.relic_table.loc[index, "relicColor"])],
+                    "color": COLOR_MAP[
+                        int(self.relic_table.loc[index, "relicColor"])
+                        ],
                 }
             except KeyError:
                 _result[str(index)] = {"name": "Unset", "color": "Red"}
@@ -154,12 +173,33 @@ class SourceDataHandler:
                 _reslut[str(index)] = {"name": "Unknown"}
         return _reslut
 
+    def get_relic_pools_seq(self, relic_id: int):
+        _pool_ids = self.relic_table.loc[relic_id,
+                                         ["attachEffectTableId_1",
+                                          "attachEffectTableId_2",
+                                          "attachEffectTableId_3",
+                                          "attachEffectTableId_curse1",
+                                          "attachEffectTableId_curse2",
+                                          "attachEffectTableId_curse3"]]
+        return _pool_ids.values.tolist()
+
+    def get_effect_conflict_id(self, effect_id: int):
+        _conflict_id = self.effect_params.loc[effect_id, "compatibilityId"]
+        return _conflict_id
+
+    def get_sort_id(self, effect_id: int):
+        _sort_id = self.effect_params.loc[effect_id, "overrideEffectId"]
+        return _sort_id
+
+    def get_pool_effects(self, pool_id: int):
+        if pool_id == -1:
+            return []
+        _effects = self.effect_table[self.effect_table["ID"] == pool_id]
+        _effects = _effects["attachEffectId"].values.tolist()
+        return _effects
+
 
 if __name__ == "__main__":
     source_data_handler = SourceDataHandler("zh-tw")
-    relic_datas = source_data_handler.get_relic_datas()
-    effect_datas = source_data_handler.get_effect_datas()
-    relic_datas.to_csv(pathlib.Path.cwd() / "relic_datas.csv",
-                       encoding="utf-8")
-    effect_datas.to_csv(pathlib.Path.cwd() / "effect_datas.csv",
-                        encoding="utf-8")
+    t = source_data_handler.get_relic_pools_seq(202)
+    print(t)
