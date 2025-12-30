@@ -6,6 +6,8 @@ from tkinter import ttk, filedialog, messagebox, simpledialog
 from pathlib import Path
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
+from relic_checker import RelicChecker
+from source_data_handler import SourceDataHandler
 
 
 # Global variables
@@ -14,6 +16,7 @@ working_directory = Path(working_directory)
 os.chdir(working_directory)
 
 # Data storage
+data_source = SourceDataHandler()
 items_json = {}
 effects_json = {}
 ill_effects_json = {}
@@ -28,7 +31,8 @@ ga_relic = []
 ga_items = []
 current_murks = 0
 current_sigs = 0
-AOB_search='00 00 00 00 ?? 00 00 00 ?? ?? 00 00 00 00 00 00 ??'
+# AOB_search='00 00 00 00 ?? 00 00 00 ?? ?? 00 00 00 00 00 00 ??'
+AOB_search='00 00 00 00 0A 00 00 00 ?? ?? 00 00 00 00 00 00 06'
 from_aob_steam= 44 
 steam_id=None
 
@@ -493,77 +497,76 @@ def modify_relic(ga_index, item_id, new_effects, new_item_id=None):
 
 
 def check_illegal_relics():
-    illegal_relics = []
-    
-    for ga, relic_id, e1, e2, e3, e4, e5, e6, offset, size in ga_relic:
-        # Skip relic entirely if its ID is invalid
-        if relic_id in (0, -1, 4294967295):
-            continue
+    relic_checker = RelicChecker(ga_relic, data_source)
+    illegal_relics = relic_checker.get_illegal_relics()
+    # for ga, relic_id, e1, e2, e3, e4, e5, e6, offset, size in ga_relic:
+    #     # Skip relic entirely if its ID is invalid
+    #     if relic_id in (0, -1, 4294967295):
+    #         continue
 
-        effects = [e1, e2, e3, e4, e5, e6]
-        used_ids = set()
-        used_base_names = {}
-        is_illegal = False
+    #     effects = [e1, e2, e3, e4, e5, e6]
+    #     used_ids = set()
+    #     used_base_names = {}
+    #     is_illegal = False
 
-        for idx, eff in enumerate(effects, start=1):
-            # Treat unknown effects as empty
-            if eff in (0, -1, 4294967295):
-                continue
+    #     for idx, eff in enumerate(effects, start=1):
+    #         # Treat unknown effects as empty
+    #         if eff in (0, -1, 4294967295):
+    #             continue
 
-            eff_key = str(eff)
+    #         eff_key = str(eff)
 
-            # Rule 1 — in illegal JSON
-            if eff_key in ill_effects_json:
-                is_illegal = True
-                break
+    #         # Rule 1 — in illegal JSON
+    #         if eff_key in ill_effects_json:
+    #             is_illegal = True
+    #             break
 
-            # Lookup in main effects DB
-            eff_name = effects_json.get(eff_key, {}).get("name", f"Unknown({eff})")
+    #         # Lookup in main effects DB
+    #         eff_name = effects_json.get(eff_key, {}).get("name", f"Unknown({eff})")
 
-            # Rule 2 — duplicate ID
-            if eff in used_ids:
-                is_illegal = True
-                break
-            used_ids.add(eff)
+    #         # Rule 2 — duplicate ID
+    #         if eff in used_ids:
+    #             is_illegal = True
+    #             break
+    #         used_ids.add(eff)
 
-            # Rule 3 — conflicting tiers
-            base_name = eff_name.rsplit(" +", 1)[0] if " +" in eff_name else eff_name
-            if base_name in used_base_names:
-                is_illegal = True
-                break
+    #         # Rule 3 — conflicting tiers
+    #         base_name = eff_name.rsplit(" +", 1)[0] if " +" in eff_name else eff_name
+    #         if base_name in used_base_names:
+    #             is_illegal = True
+    #             break
 
-            used_base_names[base_name] = eff_name
+    #         used_base_names[base_name] = eff_name
 
-        if is_illegal:
-            illegal_relics.append(ga)
-    
+    #     if is_illegal:
+    #         illegal_relics.append(ga)
+
     return illegal_relics
 
 
 def get_forbidden_relics():
-    forbidden_relic_ids = {
-        1000, 1010, 1020, 1030, 1040, 1050, 1060, 1070, 1080, 1090,
-        1100, 1110, 1120, 1130, 1140, 1150, 1160, 1170, 1180, 1190,
-        1200, 1210, 1220, 1230, 1240, 1250, 1260, 1270, 11004, 10001,
-        1400, 1410, 1420, 1430, 1440, 1450, 1460, 1470, 1480, 1490,
-        1500, 1510, 1520
-    }
+    forbidden_relic_ids = RelicChecker.UNIQUENESS_IDS
+    # forbidden_relic_ids = {
+    #     1000, 1010, 1020, 1030, 1040, 1050, 1060, 1070, 1080, 1090,
+    #     1100, 1110, 1120, 1130, 1140, 1150, 1160, 1170, 1180, 1190,
+    #     1200, 1210, 1220, 1230, 1240, 1250, 1260, 1270, 11004, 10001,
+    #     1400, 1410, 1420, 1430, 1440, 1450, 1460, 1470, 1480, 1490,
+    #     1500, 1510, 1520
+    # }
     return forbidden_relic_ids
-
-
 
 
 def split_files_import(file_path, folder_name):
     global IMPORT_MODE
     file_name = os.path.basename(file_path)
     split_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), folder_name)
-    #clean current dir
+    # clean current dir
     if os.path.exists(split_dir):
         shutil.rmtree(split_dir)  # delete folder and everything inside
     os.makedirs(split_dir, exist_ok=True)
 
     if file_name.lower() == 'memory.dat':
-        IMPORT_MODE='PS4'   
+        IMPORT_MODE = 'PS4'
         with open(file_path, "rb") as f:
             header = f.read(0x80)
             with open(os.path.join(split_dir, "header"), "wb") as out:
@@ -848,6 +851,7 @@ def aob_to_pattern(aob: str):
             mask.append(1)         # 1 = must match exactly
     return bytes(pattern), bytes(mask)
 
+
 def aob_search(data: bytes, aob: str):
     pattern, mask = aob_to_pattern(aob)
     L = len(pattern)
@@ -868,10 +872,13 @@ def aob_search(data: bytes, aob: str):
                 if b != pattern[j]:
                     break
 
-            # Wildcard: but must NOT be 0x00
+            # Wildcard: 
+            # 2025-12-28: Allow 0x00 to resolve Steam ID detection issues.
+            # Narrowed down AOB_str (bytes 5 & 17 fixed) to prevent false positives.
             else:
-                if b == 0:
-                    break
+                # if b == 0:  # Removed this restriction
+                #     break
+                continue
 
         else:
             # Inner loop did not break → MATCH FOUND
@@ -881,11 +888,27 @@ def aob_search(data: bytes, aob: str):
 
 
 def find_steam_id(section_data):
+    # # 假設你的 Steam ID 是 '76561198000000000' (17位數字)
+    # # 先將它轉為 8 byte 的 little-endian 二進制格式 (這是 Steam ID 常見的儲存方式)
+    # import struct
+    # target_steam_id_hex = struct.pack('<Q', int(76561198013358313)).hex().upper() 
+    # # 或者直接用你已知的 16進位 字串搜尋
+
+    # # 搜尋 section_data 中你 ID 出現的所有位置
+    # target_bytes = struct.pack('<Q', int(76561198013358313))
+    # index = section_data.find(target_bytes)
+    # print(f"你的 Steam ID 出現在偏移量: {hex(index)}")
+    # if index != -1:
+    #     search_start = index - 44
+    #     actual_aob = section_data[search_start : search_start + 17].hex(' ').upper()
+    #     print(f"預期 AOB 位置的實際數據為: {actual_aob}")
+    #     print(f"原本定義的 AOB 模式為: 00 00 00 00 ?? 00 00 00 ?? ?? 00 00 00 00 00 00 ??")
+
     offsets = aob_search(section_data, AOB_search)
     offset = offsets[0] + 44
     steam_id = section_data[offset:offset+8]
 
-    hex_str = steam_id.hex().upper()  
+    hex_str = steam_id.hex().upper()
 
     return hex_str
 
@@ -1062,7 +1085,7 @@ class SaveEditorGUI:
 
         ttk.Label(legend_frame, text="Blue = Red + Orange", foreground="blue").pack(side='left', padx=5)
         ttk.Label(legend_frame, text="Red = Illegal", foreground="red").pack(side='left', padx=5)
-        ttk.Label(legend_frame, text="Orange = Shop Relic (don't edit)", foreground="#FF8C00").pack(side='left', padx=5)
+        ttk.Label(legend_frame, text="Orange = Unique Relic (don't edit)", foreground="#FF8C00").pack(side='left', padx=5)
 
         
         # Search frame
@@ -1245,7 +1268,6 @@ class SaveEditorGUI:
         # Load character
         self.load_character(path)
 
-    
     def load_character(self, path):
         global data, userdata_path, steam_id
         
@@ -1261,10 +1283,8 @@ class SaveEditorGUI:
             # Read stats
             read_murks_and_sigs(data)
 
-            steam_id=find_steam_id(data)
-            
+            steam_id = find_steam_id(data)
 
-            
             # Refresh all tabs
             self.refresh_inventory()
             self.refresh_stats()

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fmg>
+<filename>AttachEffectName_dlc01.fmg</filename>
+<compression>None</compression>
+<version>DarkSouls3</version>
+<bigendian>False</bigendian>
+<entries>
+<text id="6500800">[Scholar] Reduced FP consumption when using Character Skill on self</text>
+<text id="6500900">[Undertaker] Executing Art readies Character Skill</text>
+<text id="6623200">Greenspill Crystal Tear in possession at start of expedition</text>
+<text id="6647200">[Scholar] Improved Mind, Reduced Vigor</text>
+<text id="6647300">[Scholar] Improved Endurance and Dexterity, Reduced Intelligence and Arcane</text>
+<text id="6647400">[Undertaker] Improved Dexterity, Reduced Vigor and Faith</text>
+<text id="6647500">[Undertaker] Improved Mind and Faith, Reduced Strength</text>
+<text id="7006500">Continuous FP Recovery</text>
+<text id="7006600">Improved Melee Attack Power</text>
+<text id="7006700">Improved Skill Attack Power</text>
+<text id="7036200">[Scholar] Prevent slowing of Character Skill progress</text>
+<text id="7036300">[Scholar] Allies targeted by Character Skill gain boosted attack</text>
+<text id="7036400">[Scholar] Continuous damage inflicted on targets threaded by Ultimate Art</text>
+<text id="7036500">[Scholar] Earn runes for each additional specimen acquired with Character Skill</text>
+<text id="7036800">[Undertaker] Activating Ultimate Art increases attack power</text>
+<text id="7036900">[Undertaker] Attack power increased by landing the final blow of a chain attack</text>
+<text id="7037000">[Undertaker] Physical attacks boosted while assist effect from incantation is active for self</text>
+<text id="7037300">[Undertaker] Contact with allies restores their HP while Ultimate Art is activated</text>
+<text id="7037700">Status Ailment Gauges Slowly Increase Attack Power</text>
+<text id="7037800">Occasionally Nullify Attacks When Damage Negation is Lowered</text>
+<text id="7170100">Attacks Inflict Rot when Damage is Taken</text>
+<text id="7260900">Rot in Vicinity Causes Continuous HP Recovery</text>
+<text id="7360600">Changes compatible armament's sorcery to Magic
+Glintblade at start of expedition</text>
+<text id="7360900">Changes compatible armament's sorcery to Carian
+Greatsword at start of expedition</text>
+<text id="7361200">Changes compatible armament's sorcery to Night
+Shard at start of expedition</text>
+<text id="7361300">Changes compatible armament's sorcery to Magma
+Shot at start of expedition</text>
+<text id="7361500">Changes compatible armament's sorcery to Glintstone
+Icecrag at start of expedition</text>
+<text id="7361800">Changes compatible armament's sorcery to Gravity
+Well at start of expedition</text>
+<text id="7362100">Changes compatible armament's sorcery to Briars of
+Punishment at start of expedition</text>
+<text id="7370000">Changes compatible armament's incantation to
+Blessing's Boon at start of expedition</text>
+<text id="7370200">Changes compatible armament's incantation to
+Aspects of the Crucible: Horns at start of expedition</text>
+<text id="7370300">Changes compatible armament's incantation to
+Wrath of Gold at start of expedition</text>
+<text id="7370400">Changes compatible armament's incantation to
+Lightning Spear at start of expedition</text>
+<text id="7370500">Changes compatible armament's incantation to
+Lightning Strike at start of expedition</text>
+<text id="7370600">Changes compatible armament's incantation to
+O, Flame! at start of expedition</text>
+<text id="7370800">Changes compatible armament's incantation to
+Black Flame at start of expedition</text>
+<text id="7370900">Changes compatible armament's incantation to
+Beast Claw at start of expedition</text>
+<text id="7371200">Changes compatible armament's incantation to
+Swarm of Flies at start of expedition</text>
+<text id="7371500">Changes compatible armament's incantation to
+Dragonfire at start of expedition</text>
+<text id="8320500">Improved Melee Attack Power</text>
+<text id="8320600">Improved Dash Attacks</text>
+<text id="8320700">Improved Rolling Attacks</text>
+<text id="8360000">Faster Art Gauge Buildup</text>
+<text id="8880000">Ice Storm upon Charge Attacks</text>
+<text id="8880200">Black Flames upon Charge Attacks</text>
+<text id="8880300">Phantom Attack upon Charge Attacks</text>
+<text id="8881000">Holy Shockwave upon Charge Attacks</text>
+<text id="8881200">Luring Enemies upon Charge Attacks</text>
+<text id="8881500">Magma upon Charge Attacks</text>
+<text id="8882100">Lightning upon Charge Attacks</text>
+<text id="8882500">Charge Attacks Invoke Sleep Mist</text>
+<text id="8885200">Continued Guarding Grants Increased Potency of Sorceries/Incantations and Faster Casting</text>
+<text id="9990900">The Scholar's Grief</text>
+<text id="9991000">The Undertaker's Grief</text>
+</entries>
+</fmg>
