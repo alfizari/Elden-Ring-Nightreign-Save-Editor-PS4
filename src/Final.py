@@ -7,6 +7,7 @@ from pathlib import Path
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 from relic_checker import RelicChecker
+from source_data_handler import SourceDataHandler
 
 
 # Global variables
@@ -15,6 +16,7 @@ working_directory = Path(working_directory)
 os.chdir(working_directory)
 
 # Data storage
+data_source = SourceDataHandler()
 items_json = {}
 effects_json = {}
 ill_effects_json = {}
@@ -495,7 +497,7 @@ def modify_relic(ga_index, item_id, new_effects, new_item_id=None):
 
 
 def check_illegal_relics():
-    relic_checker = RelicChecker(ga_relic)
+    relic_checker = RelicChecker(ga_relic, data_source)
     illegal_relics = relic_checker.get_illegal_relics()
     # for ga, relic_id, e1, e2, e3, e4, e5, e6, offset, size in ga_relic:
     #     # Skip relic entirely if its ID is invalid
@@ -544,7 +546,6 @@ def check_illegal_relics():
 
 def get_forbidden_relics():
     forbidden_relic_ids = RelicChecker.UNIQUENESS_IDS
-    forbidden_relic_ids = set([int(i) for i in forbidden_relic_ids])
     # forbidden_relic_ids = {
     #     1000, 1010, 1020, 1030, 1040, 1050, 1060, 1070, 1080, 1090,
     #     1100, 1110, 1120, 1130, 1140, 1150, 1160, 1170, 1180, 1190,
