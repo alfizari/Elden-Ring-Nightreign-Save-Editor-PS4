@@ -1,130 +1,7 @@
-import json
-import pathlib
+from source_data_handler import SourceDataHandler
 
 
 class RelicChecker:
-    UNIQUENESS_IDS: set[str] = {
-        "1000",
-        "1010",
-        "1020",
-        "1030",
-        "1040",
-        "1050",
-        "1060",
-        "1070",
-        "1080",
-        "1090",
-        "1100",
-        "1110",
-        "1120",
-        "1130",
-        "1140",
-        "1150",
-        "1160",
-        "1170",
-        "1180",
-        "1190",
-        "1200",
-        "1210",
-        "1220",
-        "1230",
-        "1240",
-        "1250",
-        "1260",
-        "1270",
-        "1300",
-        "1310",
-        "1400",
-        "1410",
-        "1420",
-        "1430",
-        "1440",
-        "1450",
-        "1460",
-        "1470",
-        "1480",
-        "1490",
-        "1500",
-        "1510",
-        "1520",
-        "1600",
-        "1610",
-        "1620",
-        "1630",
-        "1640",
-        "1650",
-        "1660",
-        "1670",
-        "1680",
-        "1690",
-        "1700",
-        "1710",
-        "1720",
-        "1730",
-        "1740",
-        "1750",
-        "1800",
-        "1820",
-        "1830",
-        "1850",
-        "1860",
-        "1870",
-        "1880",
-        "1890",
-        "1900",
-        "1920",
-        "2000",
-        "2001",
-        "2010",
-        "2011",
-        "2020",
-        "2021",
-        "2030",
-        "2031",
-        "2040",
-        "2041",
-        "2050",
-        "2051",
-        "2060",
-        "2061",
-        "2070",
-        "2071",
-        "2080",
-        "2100",
-        "10000",
-        "10001",
-        "10002",
-        "11000",
-        "11001",
-        "11002",
-        "11003",
-        "11004",
-        "12000",
-        "12001",
-        "12002",
-        "12003",
-        "12004",
-        "12005",
-        "12006",
-        "12007",
-        "13001",
-        "13002",
-        "14000",
-        "14001",
-        "14002",
-        "15000",
-        "15002",
-        "16001",
-        "16002",
-        "17001",
-        "17002",
-        "18000",
-        "18002",
-        "19000",
-        "19001",
-        "19050",
-        "19051",
-    }
     ILLEGAL_RELIC_IDS: set[str] = {
         "20000",
         "20001",
@@ -200,33 +77,50 @@ class RelicChecker:
         "30035",
     }
     RELIC_RANGE: tuple[int, int] = (100, 2013322)
+    RELIC_GROUPS: dict[str, tuple[int, int]] = {"store_102": (100, 199),
+                                                "store_103": (200, 299),
+                                                "unique_1": (1000, 2100),
+                                                "unique_2": (10000, 19999),
+                                                "illegal": (20000, 30035),
+                                                "reward_0": (1000000, 1000999),
+                                                "reward_1": (1001000, 1001999),
+                                                "reward_2": (1002000, 1002999),
+                                                "reward_3": (1003000, 1003999),
+                                                "reward_4": (1004000, 1004999),
+                                                "reward_5": (1005000, 1005999),
+                                                "reward_6": (1006000, 1006999),
+                                                "reward_7": (1007000, 1007999),
+                                                "reward_8": (1008000, 1008999),
+                                                "reward_9": (1009000, 1009999),
+                                                "deep_102": (2000000, 2009999),
+                                                "deep_103": (2010000, 2019999)
+                                                }
+    UNIQUENESS_IDS: set[int] = \
+        set(i for i in range(RELIC_GROUPS['unique_1'][0],
+                             RELIC_GROUPS['unique_1'][1] + 1)) |\
+        set(i for i in range(RELIC_GROUPS['unique_2'][0],
+                             RELIC_GROUPS['unique_2'][1] + 1))
 
-    def __init__(self, ga_relic, json_dir="Resources/Json"):
-        self.json_dir = pathlib.Path(json_dir)
+    def __init__(self, ga_relic, data_source: SourceDataHandler):
         self.ga_relic = ga_relic
-        self.items_json = self._load_json("items.json")
-        self.effects_json = self._load_json("effects.json")
-        self.relic_effects_pool = self._load_json("relic_eff_pool.json")
-        self.relic_eff_table_map = self._load_json("relic_eff_table_map.json")
+        self.data_source = data_source
 
-    def _load_json(self, filename):
-        with open(self.json_dir / filename, "r", encoding="utf-8") as f:
-            return json.load(f)
-
-    def _check_relic_effects_in_pool(self, relic_id: str, effects: list[str]):
+    def _check_relic_effects_in_pool(self, relic_id: int, effects: list[int]):
         """
         Check that all relic effects are in the relic effects pool.
         """
-        # Check each effect is in pool
-        relic_pool_mapped = self.relic_eff_table_map.get(relic_id, {})
-        pools = [
-            relic_pool_mapped.get("attachEffectTableId_1", "-1"),
-            relic_pool_mapped.get("attachEffectTableId_2", "-1"),
-            relic_pool_mapped.get("attachEffectTableId_3", "-1"),
-            relic_pool_mapped.get("attachEffectTableId_curse1", "-1"),
-            relic_pool_mapped.get("attachEffectTableId_curse2", "-1"),
-            relic_pool_mapped.get("attachEffectTableId_curse3", "-1"),
-        ]
+        # Load relic effects pool data
+        try:
+            pools = self.data_source.get_relic_pools_seq(relic_id)
+        except KeyError:
+            return False
+        # There are 6 effects: 3 normal effects and 3 curse effects
+        # The first 3 are normal effects, the last 3 are curse effects
+        # Each effect corresponds to a pool ID
+        # If pool ID is -1, the effect must be empty (4294967295)
+        # If pool ID is not -1, the effect must be in the pool
+        # Try all possible sequences of effects
+        # Because we don't know the original order of effects
         possible_sequences = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0],
                               [2, 0, 1], [2, 1, 0]]
         test_results = []
@@ -235,65 +129,66 @@ class RelicChecker:
             cur_effects.extend([effects[i+3] for i in seq])
             test_result = []
             for idx, eff in enumerate(cur_effects):
-                if pools[idx] == "-1":
-                    if eff != "4294967295":  # 4294967295 means Empty
+                if pools[idx] == -1:
+                    if eff != 4294967295:  # 4294967295 means Empty
                         test_result.append(False)
                     else:
                         test_result.append(True)
                 else:
-                    if eff not in self.relic_effects_pool[pools[idx]]:
+                    if eff not in self.data_source.get_pool_effects(pools[idx]):
                         test_result.append(False)
                     else:
                         test_result.append(True)
                 if idx == 5:
                     test_results.append(all(test_result))
                     test_result = []
-        if not any(test_results):
-            print("pause")
         return any(test_results)
 
-    def _is_illegal(self, relic_id: str, effects: list[str]):
+    def _is_illegal(self, relic_id: int, effects: list[int]):
 
         # Rule 1
-        if relic_id in self.ILLEGAL_RELIC_IDS:
+        if relic_id in range(self.RELIC_GROUPS['illegal'][0],
+                             self.RELIC_GROUPS['illegal'][1] + 1):
             return True
         # Rule 2
         if not self._check_relic_effects_in_pool(relic_id, effects):
             return True
 
-        if int(relic_id) not in range(self.RELIC_RANGE[0],
-                                      self.RELIC_RANGE[1]+1):
+        if relic_id not in range(self.RELIC_RANGE[0],
+                                 self.RELIC_RANGE[1]+1):
             return True
-        if relic_id in self.UNIQUENESS_IDS:
-            # Exclude Unique Relic apply general rules
-            return False
         else:
-            used_ids = set()
-            used_base_names = {}
-            for idx, eff in enumerate(effects, start=1):
-                # Treat unknown effects as empty
-                if eff in ("0", "-1", "4294967295"):
+            # Rule: The compatibilityId (conflict ID) should not be duplicated.
+            conflict_ids = []
+            for effect_id in effects:
+                # Skip empty effects
+                if effect_id in [-1, 0, 4294967295]:
                     continue
-
-                eff_key = eff
-
-                # Lookup in main effects DB
-                eff_name = self.effects_json.get(
-                    eff_key, {}).get(
-                        "name", f"Unknown({eff})")
-
-                # Rule 3 — duplicate ID
-                if eff in used_ids:
+                conflict_id = \
+                    self.data_source.get_effect_conflict_id(effect_id)
+                # conflict id -1 is allowed to be duplicated
+                if conflict_id in conflict_ids and conflict_id != -1:
                     return True
-                used_ids.add(eff)
-
-                # Rule 4 — conflicting tiers
-                base_name = eff_name.rsplit(" +", 1)[0] \
-                    if " +" in eff_name else eff_name
-                if base_name in used_base_names:
+                conflict_ids.append(conflict_id)
+            # Rule: Effect order
+            # Effects are sorted in ascending order by overrideEffectId.
+            # If overrideEffectId values are identical,
+            # compare the effect IDs themselves.
+            # Sorting considers only the top three positive effects.
+            # Curse effects are bound to their corresponding positive effects.
+            sort_ids = []
+            for effect_id in effects[:3]:
+                # Skip empty effects
+                if effect_id in [-1, 0, 4294967295]:
+                    sort_ids.append(float('inf'))
+                else:
+                    sort_id = self.data_source.get_sort_id(effect_id)
+                    sort_ids.append(sort_id)
+            sort_tuple = zip(sort_ids, effects[:3])
+            sorted_effects = sorted(sort_tuple, key=lambda x: (x[0], x[1]))
+            for i in range(len(sorted_effects)):
+                if sorted_effects[i][1] != effects[i]:
                     return True
-
-                used_base_names[base_name] = eff_name
             return False
 
     def get_illegal_relics(self):
@@ -305,12 +200,12 @@ class RelicChecker:
             if str(real_id) not in relic_group_by_id.keys():
                 relic_group_by_id[str(real_id)] = []
             relic_group_by_id[str(real_id)].append(relic)
-            if self._is_illegal(str(real_id), [str(e1), str(e2), str(e3),
-                                               str(e4), str(e5), str(e6)]):
+            if self._is_illegal(real_id, [e1, e2, e3,
+                                          e4, e5, e6]):
                 illegal_relics.append(ga)
 
         for real_id, relics in relic_group_by_id.items():
-            if real_id in self.UNIQUENESS_IDS:
+            if int(real_id) in self.UNIQUENESS_IDS:
                 if len(relics) > 1:
                     legal_found = False
                     for relic in relics:
