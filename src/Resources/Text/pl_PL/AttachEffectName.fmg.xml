@@ -1,0 +1,1286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fmg>
+<filename>AttachEffectName.fmg</filename>
+<compression>None</compression>
+<version>DarkSouls3</version>
+<bigendian>False</bigendian>
+<entries>
+<text id="1">%null%</text>
+<text id="2">%null%</text>
+<text id="3">%null%</text>
+<text id="100">%null%</text>
+<text id="310000">Zwiększa maksymalne PŻ</text>
+<text id="310100">Zwiększa maksymalne PS</text>
+<text id="310200">Zwiększa maksymalną energię</text>
+<text id="310400">Zwiększa maksymalne PŻ</text>
+<text id="310401">Zwiększa maksymalną energię</text>
+<text id="311000">Zwiększenie odkrywania przedmiotów</text>
+<text id="311100">Więcej runów z pokonanych wrogów</text>
+<text id="311500">Zwiększenie odzyskiwania energii</text>
+<text id="311600">Zwiększenie odporności na krwawienie</text>
+<text id="311601">Zwiększenie odporności na mróz</text>
+<text id="311700">Zwiększenie odporności na truciznę</text>
+<text id="311701">Zwiększenie odporności na zgniliznę</text>
+<text id="311800">Zwiększenie odporności na sen</text>
+<text id="311801">Zwiększenie odporności na szaleństwo</text>
+<text id="311900">Zwiększenie odporności na śmiertelną zarazę</text>
+<text id="312000">Zwiększenie odporności na zgniliznę i truciznę</text>
+<text id="312001">Zwiększenie odporności na mróz i krwawienie</text>
+<text id="312002">Zwiększenie odporności na szaleństwo i sen</text>
+<text id="312100">Zwiększenie równowagi</text>
+<text id="312300">Zwiększenie siły ataku umiejętności</text>
+<text id="312500">Zwiększenie zręczności</text>
+<text id="312501">Kolejne ataki zwiększają siłę ataku</text>
+<text id="320000">Zwiększenie siły ataku magicznego</text>
+<text id="320001">Osłabia negację obrażeń fizycznych</text>
+<text id="320100">Zwiększenie siły ataku błyskawicą</text>
+<text id="320101">Osłabia negację obrażeń fizycznych</text>
+<text id="320200">Zwiększenie siły ataku ogniem</text>
+<text id="320201">Osłabia negację obrażeń fizycznych</text>
+<text id="320300">Zwiększenie siły świętego ataku</text>
+<text id="320301">Osłabia negację obrażeń fizycznych</text>
+<text id="320400">Zwiększenie siły ataku, gdy masz mało PŻ</text>
+<text id="320500">Zwiększenie siły ataku, gdy masz maksymalne PŻ</text>
+<text id="320600">Zwiększenie siły kontrataku pchnięciem</text>
+<text id="320700">Zwiększenie przełamywania zasłony</text>
+<text id="320800">Kolejne ataki zwiększają siłę ataku</text>
+<text id="320900">Zwiększenie trafień krytycznych</text>
+<text id="321000">Redukcja spadku obrażeń pocisków</text>
+<text id="321200">Wzmocnienie kończących ataków serii</text>
+<text id="321300">Wzmocnienie ładowanych ataków</text>
+<text id="321500">Wzmocnienie ataków bronią dystansową</text>
+<text id="321600">Zwiększa siłę ataku, jeśli w pobliżu ktoś krwawi</text>
+<text id="321700">Trucizna i zgnilizna w pobliżu zwiększają siłę ataku</text>
+<text id="321800">Wzmocnienie ataków z wyskoku</text>
+<text id="321900">Wzmocnienie ataków rykiem i zionięciem</text>
+<text id="322000">Wzmocnienie kontr po zasłonach</text>
+<text id="322100">Wzmocnienie garnków do rzucania</text>
+<text id="322200">Wzmocnienie sztuki perfumiarstwa</text>
+<text id="330000">Wzmocnienie czarów</text>
+<text id="330400">Wzmocnienie inkantacji</text>
+<text id="330600">Wydłuża działanie czarów</text>
+<text id="330700">Przyspiesza rzucanie czarów</text>
+<text id="330800">Zmniejsza koszt PS rzucania zaklęć</text>
+<text id="330801">Zmniejsza maksymalne PŻ</text>
+<text id="330900">Wzmocnienie ładowanych zaklęć i umiejętności</text>
+<text id="340000">Zwiększenie negacji obrażeń fizycznych</text>
+<text id="340100">Zwiększenie negacji obrażeń magicznych</text>
+<text id="340200">Zwiększenie negacji obrażeń od ognia</text>
+<text id="340300">Zwiększenie negacji obrażeń od błyskawic</text>
+<text id="340400">Zwiększenie negacji świętych obrażeń</text>
+<text id="340500">Zwiększenie negacji obrażeń od właściwości</text>
+<text id="340700">Wzmocnienie uników</text>
+<text id="340701">Osłabia negację obrażeń</text>
+<text id="340800">Zwiększenie negacji obrażeń, gdy masz mało PŻ</text>
+<text id="340900">Zwiększenie negacji obrażeń, gdy masz maks. PŻ</text>
+<text id="341000">Zwiększenie zdolności zasłaniania się</text>
+<text id="350000">Zwiększenie odnawiania PŻ butelki</text>
+<text id="350200">Nieustanne odzyskiwanie PŻ</text>
+<text id="350300">Pokonywanie przeciwników przywraca PŻ</text>
+<text id="350400">Kolejne ataki przywracają PŻ</text>
+<text id="350500">Trafienia krytyczne przywracają PŻ</text>
+<text id="350600">Trafienia krytyczne przywracają PS</text>
+<text id="360200">Mniejszy koszt PS umiejętności</text>
+<text id="360700">Brak redukcji poziomu i utraty runów po śmierci</text>
+<text id="361100">Pokonywanie przeciwników przywraca PS</text>
+<text id="370000">Zwiększenie odkrywania przedmiotów</text>
+<text id="370001">Więcej runów z pokonanych wrogów</text>
+<text id="370002">Nieustanna utrata PŻ</text>
+<text id="6000800">Zmniejszenie odnawiania umiejętności postaci +4</text>
+<text id="6000801">Zmniejszenie odnawiania umiejętności postaci +5</text>
+<text id="6000900">Autom. ładowanie zdol. ostatecznej +4</text>
+<text id="6000901">Autom. ładowanie zdol. ostatecznej +5</text>
+<text id="6001000">Równowaga +4</text>
+<text id="6001001">Równowaga +5</text>
+<text id="6001400">Wzmocnienie ataku fizycznego +4
+</text>
+<text id="6001401">%null%</text>
+<text id="6001500">Wzmocnienie ataku magicznego +3
+</text>
+<text id="6001501">Wzmocnienie ataku magicznego +4
+</text>
+<text id="6001600">Wzmocnienie ataku ogniem +3
+</text>
+<text id="6001601">Wzmocnienie ataku ogniem +4
+</text>
+<text id="6001700">Wzmocnienie ataku błyskawicami +3
+</text>
+<text id="6001701">Wzmocnienie ataku błyskawicami +4
+</text>
+<text id="6001800">Wzmocnienie świętego ataku +3
+</text>
+<text id="6001801">Wzmocnienie świętego ataku +4
+</text>
+<text id="6002600">Zwiększa negację obrażeń magicznych +1
+</text>
+<text id="6002601">Zwiększa negację obrażeń magicznych +2
+</text>
+<text id="6002700">Zwiększa negację obrażeń od ognia +1
+</text>
+<text id="6002701">Zwiększa negację obrażeń od ognia +2
+</text>
+<text id="6002800">Zwiększa negację obrażeń od błyskawic +1
+</text>
+<text id="6002801">Zwiększa negację obrażeń od błyskawic +2
+</text>
+<text id="6002900">Zwiększa negację świętych obrażeń +1
+</text>
+<text id="6002901">Zwiększa negację świętych obrażeń +2
+</text>
+<text id="6003000">Zwiększa odporność na truciznę +1
+</text>
+<text id="6003001">Zwiększa odporność na truciznę +2
+</text>
+<text id="6003100">Zwiększa odporność na krwawienie +1
+</text>
+<text id="6003101">Zwiększa odporność na krwawienie +2
+</text>
+<text id="6003200">Zwiększa odporność na sen +1
+</text>
+<text id="6003201">Zwiększa odporność na sen +2
+</text>
+<text id="6003300">Zwiększa odporność na śmiertelną zarazę +1
+</text>
+<text id="6003301">Zwiększa odporność na śmiertelną zarazę +2
+</text>
+<text id="6003400">Zwiększa odporność na zgniliznę +1
+</text>
+<text id="6003401">Zwiększa odporność na zgniliznę +2
+</text>
+<text id="6003500">Zwiększa odporność na mróz +1
+</text>
+<text id="6003501">Zwiększa odporność na mróz +2
+</text>
+<text id="6003600">Zwiększa odporność na szaleństwo +1
+</text>
+<text id="6003601">Zwiększa odporność na szaleństwo +2
+</text>
+<text id="6005600">Częściowe odnowienie PŻ po atakach wykonanych po otrzymaniu obrażeń +1
+</text>
+<text id="6005601">Częściowe odnowienie PŻ po atakach wykonanych po otrzymaniu obrażeń +2
+</text>
+<text id="6006000">Wzmocnienie przełamywania postawy, gdy używasz oręża dwuręcznego +1</text>
+<text id="6006001">Wzmocnienie przełamywania postawy, gdy używasz oręża dwuręcznego +2</text>
+<text id="6006100">Zwiększa przełamywanie postawy, gdy używasz dwóch oręży +1</text>
+<text id="6006101">Zwiększa przełamywanie postawy, gdy używasz dwóch oręży +2</text>
+<text id="6012300">Zwiększa neg. obrażeń, gdy masz mało PŻ +1</text>
+<text id="6012301">Zwiększa neg. obrażeń, gdy masz mało PŻ +2</text>
+<text id="6030200">Odzyskiwanie PŻ podczas używania piguł leczniczych itp. +1
+</text>
+<text id="6030201">Odzyskiwanie PŻ podczas używania piguł leczniczych itp. +2
+</text>
+<text id="6030600">Udane zasłony wypełniają więcej wskaźnika zdolności ostatecznej +1
+</text>
+<text id="6030601">Udane zasłony wypełniają więcej wskaźnika zdolności ostatecznej +2
+</text>
+<text id="6030800">Trafienia krytyczne wypełniają więcej wskaźnika zdolności ostatecznej +1
+</text>
+<text id="6030801">Trafienia krytyczne wypełniają więcej wskaźnika zdolności ostatecznej +2
+</text>
+<text id="6030900">Zwiększa siłę ataku fizycznego po użyciu przedmiotów ze smarem +1
+</text>
+<text id="6030901">Zwiększa siłę ataku fizycznego po użyciu przedmiotów ze smarem +2
+</text>
+<text id="6031900">Runy zdobywane za trafienia krytyczne +1</text>
+<text id="6031901">Runy zdobywane za trafienia krytyczne +2</text>
+<text id="6032200">Wykonywanie ataków zwiększa siłę ataku +1</text>
+<text id="6032201">Wykonywanie ataków zwiększa siłę ataku +2</text>
+<text id="6035100">Traf. krytyczne zwiększa tempo odzyskiwania energii +1</text>
+<text id="6035101">Traf. krytyczne zwiększa tempo odzyskiwania energii +2</text>
+<text id="6040000">Zwiększa siłę początkowego zwykłego ataku +1</text>
+<text id="6040001">Zwiększa siłę początkowego zwykłego ataku +2</text>
+<text id="6040100">Wzmacnia kontry po zasłonie +1
+</text>
+<text id="6040101">Wzmacnia kontry po zasłonie +2
+</text>
+<text id="6040300">Wzmacnia obrażenia zadawane przez garnki do rzucania +1</text>
+<text id="6040301">Wzmacnia obrażenia zadawane przez garnki do rzucania +2</text>
+<text id="6040400">Wzmacnia obrażenia zadawane przez noże do rzucania +1</text>
+<text id="6040401">Wzmacnia obrażenia zadawane przez noże do rzucania +2</text>
+<text id="6040500">Zwiększa obrażenia błyskamieniem i grawigłazem +1</text>
+<text id="6040501">Zwiększa obrażenia błyskamieniem i grawigłazem +2</text>
+<text id="6043000">Wzmacnia ataki rykiem i zionięciem +1</text>
+<text id="6043001">Wzmacnia ataki rykiem i zionięciem +2</text>
+<text id="6043100">Wzmacnia sztuki perfumiarstwa +1</text>
+<text id="6043101">Wzmacnia sztuki perfumiarstwa +2</text>
+<text id="6060300">Zwiększone maksymalne PŻ za każdego pokonanego wielkiego wroga w Wielkim Kościele</text>
+<text id="6060400">Zwiększone runy i odkrywanie przedmiotów za każdego pokonanego wielkiego wroga w Forcie</text>
+<text id="6060500">Zwiększony Mistycyzm za każdego pokonanego wielkiego wroga w Ruinach</text>
+<text id="6060600">Zwiększona maksymalna energia za każdego pokonanego wielkiego wroga w Głównym Obozowisku</text>
+<text id="6090000">Pokonywanie wrogów napełnia więcej wskaźnika zdolności ostatecznej +1
+</text>
+<text id="6090001">Pokonywanie wrogów napełnia więcej wskaźnika zdolności ostatecznej +2
+</text>
+<text id="6160000">Odnowienie PŻ po kontrataku pchnięciem +1
+</text>
+<text id="6160001">Odnowienie PŻ po kontrataku pchnięciem +2
+</text>
+<text id="6260000">Wzmocnienie ataku w walce z otrutym wrogiem +1
+</text>
+<text id="6260001">Wzmocnienie ataku w walce z otrutym wrogiem +2
+</text>
+<text id="6260300">Wzmocnienie ataku w walce z wrogiem dotkniętym szkarłatną zgnilizną +1
+</text>
+<text id="6260301">Wzmocnienie ataku w walce z wrogiem dotkniętym szkarłatną zgnilizną +2
+</text>
+<text id="6260400">Wzmocnienie ataku w walce z wrogiem dotkniętym odmrożeniem +1
+</text>
+<text id="6260401">Wzmocnienie ataku w walce z wrogiem dotkniętym odmrożeniem +2
+</text>
+<text id="6500000">[Wilczan] Umiejętność postaci wywołuje krwawienie</text>
+<text id="6500100">[Stróż] Umiejętność postaci zwiększa negację obrażeń pobliskich sojuszników</text>
+<text id="6500200">[Żelazne Oko] Umiejętność postaci zadaje otrutym wrogom duże obrażenia od trucizny</text>
+<text id="6500300">[Księżna] Użyj umiejętności postaci, by uzyskać tymczasową nietykalność</text>
+<text id="6500400">[Najeźdźca] Trafiaj za pomocą umiejętności postaci, by zmniejszyć siłę ataku wroga</text>
+<text id="6500500">[Zjawa] Zwiększone maksymalne PS podczas aktywacji zdolności</text>
+<text id="6500600">[Rekluza] Zbierz pozostałości właściwości, aby zanegować właściwość</text>
+<text id="6500700">[Egzekutor] Powoli przywraca PŻ, podczas aktywacji zdolności</text>
+<text id="6600000">Sen w pobliżu zwiększa siłę ataku
+</text>
+<text id="6600001">Sen w pobliżu zwiększa siłę ataku +1
+</text>
+<text id="6600002">Sen w pobliżu zwiększa siłę ataku +2
+</text>
+<text id="6600100">Szaleństwo w pobliżu zwiększa siłę ataku
+</text>
+<text id="6600101">Szaleństwo w pobliżu zwiększa siłę ataku +1
+</text>
+<text id="6600102">Szaleństwo w pobliżu zwiększa siłę ataku +2
+</text>
+<text id="6610400">Zwiększa maksymalne PŻ
+</text>
+<text id="6610500">Zwiększa maksymalne PS
+</text>
+<text id="6610600">Zwiększa maksymalną energię
+</text>
+<text id="6610700">Zmniejsza zużycie PS</text>
+<text id="6610701">Zmniejsza zużycie PS +1</text>
+<text id="6610702">Zmniejsza zużycie PS +2</text>
+<text id="6610800">Zwiększa siłę ataku właściwością</text>
+<text id="6610801">Zwiększa siłę ataku właściwością +1
+</text>
+<text id="6610802">Zwiększa siłę ataku właściwością +2
+</text>
+<text id="6611000">Zwiększa negację obrażeń fizycznych</text>
+<text id="6611001">Zwiększa negację obrażeń fizycznych +1
+</text>
+<text id="6611002">Zwiększa negację obrażeń fizycznych +2
+</text>
+<text id="6611100">Zwiększa negację obrażeń właściwości</text>
+<text id="6611101">Zwiększa negację obrażeń właściwości +1
+</text>
+<text id="6611102">Zwiększa negację obrażeń właściwości +2
+</text>
+<text id="6611200">Wzmacnia czary</text>
+<text id="6611201">Wzmacnia czary +1
+</text>
+<text id="6611202">Wzmacnia czary +2
+</text>
+<text id="6611300">Wzmacnia inkantacje</text>
+<text id="6611301">Wzmacnia inkantacje +1
+</text>
+<text id="6611302">Wzmacnia inkantacje +2
+</text>
+<text id="6611400">Zwiększa odnawianie PŻ butelki</text>
+<text id="6621000">Na początku wyprawy postać ma szkarłatnociekłą kryształową łzę</text>
+<text id="6621100">Na początku wyprawy postać ma szkarłatną kryształową łzę</text>
+<text id="6621200">Na początku wyprawy postać ma modrą kryształową łzę</text>
+<text id="6621300">Na początku wyprawy postać ma cętkowaną twardołzę</text>
+<text id="6621400">Na początku wyprawy postać ma szkarłatną bańkołzę</text>
+<text id="6621500">Na początku wyprawy postać ma opalizującą bańkołzę</text>
+<text id="6621600">Na początku wyprawy postać ma szkarłatnopęką kryształową łzę</text>
+<text id="6621700">Na początku wyprawy postać ma zielonopęką kryształową łzę</text>
+<text id="6621800">Na początku wyprawy postać ma opalizującą twardołzę</text>
+<text id="6621900">Na początku wyprawy postać ma cierniową pękniętą łzę</text>
+<text id="6622000">Na początku wyprawy postać ma kolczastą pękniętą łzę</text>
+<text id="6622100">Na początku wyprawy postać ma wietrzną kryształową łzę</text>
+<text id="6622200">Na początku wyprawy postać ma popękaną kryształową łzę</text>
+<text id="6622300">Na początku wyprawy postać ma ziemistą twardołzę</text>
+<text id="6622400">Na początku wyprawy postać ma szczapowatą pękniętą łzę</text>
+<text id="6622500">Na początku wyprawy postać ma szkarłatnowzorną bańkołzę</text>
+<text id="6622600">Na początku wyprawy postać ma modrą ukrytą łzę</text>
+<text id="6622700">Na początku wyprawy postać ma kamiennołuską pękniętą łzę</text>
+<text id="6622800">Na początku wyprawy postać ma pękniętą łzę całunu płomieni</text>
+<text id="6622900">Na początku wyprawy postać ma pękniętą łzę całunu magii</text>
+<text id="6623000">Na początku wyprawy postać ma pękniętą łzę całunu błyskawic</text>
+<text id="6623100">Na początku wyprawy postać ma pękniętą łzę całunu świętości</text>
+<text id="6624000">Na początku wyprawy postać ma pokrzepiający aromat</text>
+<text id="6624100">Na początku wyprawy postać ma aromat iskry</text>
+<text id="6624200">Na początku wyprawy postać ma aromat żelaznego naczynia</text>
+<text id="6624300">Na początku wyprawy postać ma aromat wrzącej krwi</text>
+<text id="6624400">Na początku wyprawy postać ma trującą mgiełkę</text>
+<text id="6624500">Na początku wyprawy postać ma mgiełkę z kwasem</text>
+<text id="6630000">Drzemiąca siła pomaga znajdować sztylety</text>
+<text id="6630100">Drzemiąca siła pomaga znajdować proste miecze</text>
+<text id="6630200">Drzemiąca siła pomaga znajdować wielkie miecze</text>
+<text id="6630300">Drzemiąca siła pomaga znajdować olbrzymie miecze</text>
+<text id="6630400">Drzemiąca siła pomaga znajdować zakrzywione miecze</text>
+<text id="6630500">Drzemiąca siła pomaga znajdować zakrzywione wielkie miecze</text>
+<text id="6630600">Drzemiąca siła pomaga znajdować katany</text>
+<text id="6630700">Drzemiąca siła pomaga znajdować podwójne ostrza</text>
+<text id="6630800">Drzemiąca siła pomaga znajdować miecze do pchnięć</text>
+<text id="6630900">Drzemiąca siła pomaga znajdować ciężkie miecze do pchnięć</text>
+<text id="6631000">Drzemiąca siła pomaga znajdować topory</text>
+<text id="6631100">Drzemiąca siła pomaga znajdować wielkie topory</text>
+<text id="6631200">Drzemiąca siła pomaga znajdować młoty</text>
+<text id="6631300">Drzemiąca siła pomaga znajdować wielkie młoty</text>
+<text id="6631400">Drzemiąca siła pomaga znajdować korbacze</text>
+<text id="6631500">Drzemiąca siła pomaga znajdować włócznie</text>
+<text id="6631600">Drzemiąca siła pomaga znajdować wielkie włócznie</text>
+<text id="6631700">Drzemiąca siła pomaga znajdować halabardy</text>
+<text id="6631800">Drzemiąca siła pomaga znajdować kosy</text>
+<text id="6631900">Drzemiąca siła pomaga znajdować bronie na pięści</text>
+<text id="6632000">Drzemiąca siła pomaga znajdować szpony</text>
+<text id="6632100">Drzemiąca siła pomaga znajdować bicze</text>
+<text id="6632200">Drzemiąca siła pomaga znajdować olbrzymie oręże</text>
+<text id="6632300">Drzemiąca siła pomaga znajdować łuki</text>
+<text id="6632400">Drzemiąca siła pomaga znajdować wielkie łuki</text>
+<text id="6632500">Drzemiąca siła pomaga znajdować kusze</text>
+<text id="6632600">Drzemiąca siła pomaga znajdować balisty</text>
+<text id="6632700">Drzemiąca siła pomaga znajdować małe tarcze</text>
+<text id="6632800">Drzemiąca siła pomaga znajdować średnie tarcze</text>
+<text id="6632900">Drzemiąca siła pomaga znajdować wielkie tarcze</text>
+<text id="6633000">Drzemiąca siła pomaga znajdować kostury</text>
+<text id="6633100">Drzemiąca siła pomaga znajdować święte pięczęcie</text>
+<text id="6633200">Drzemiąca siła pomaga znajdować pochodnie</text>
+<text id="6640000">[Wilczan] Zwiększony Umysł, zmniejszona Witalność</text>
+<text id="6640100">[Wilczan] Zwiększona Inteligencja i Wiara, zmniejszona Siła i Zręczność</text>
+<text id="6641000">[Strażnik] Zwiększona Siła i Zręczność, zmniejszona Witalność</text>
+<text id="6641100">[Strażnik] Zwiększony Umysł i Wiara, zmniejszona Witalność</text>
+<text id="6642000">[Żelazne Oko] Zwiększony Mistycyzm, zmniejszona Zręczność</text>
+<text id="6642100">[Żelazne Oko] Zwiększona Witalność i Siła, zmniejszona Zręczność</text>
+<text id="6643000">[Księżna] Zwiększona Witalność i Siła, zmniejszony Umysł</text>
+<text id="6643100">[Księżna] Zwiększony Umysł i Wiara, zmniejszona Inteligencja</text>
+<text id="6644000">[Najeźdźca] Zwiększony Umysł i Inteligencja, zmniejszona Witalność i Wytrzymałość</text>
+<text id="6644100">[Najeźdźca] Zwiększony Mistycyzm, zmniejszona Wytrzymałość</text>
+<text id="6645000">[Zjawa] Zwiększona Witalność i Wytrzymałość, zmniejszony Umysł</text>
+<text id="6645100">[Zjawa] Zwiększona Siła, zmniejszona Wiara</text>
+<text id="6646000">[Rekluza] Zwiększona Witalność, Wytrzymałość i Zręczność, zmniejszona Inteligencja i Wiara</text>
+<text id="6646100">[Rekluza] Zwiększona Inteligencja i Wiara, zmniejszony Umysł</text>
+<text id="6647000">[Egzekutor] Zwiększona Witalność i Wytrzymałość, zmniejszony Mistycyzm</text>
+<text id="6647100">[Egzekutor] Zwiększona Zręczność i Mistycyzm, zmniejszona Witalność</text>
+<text id="6800000">Zmniejsza żywotność</text>
+<text id="6800200">Zmniejsza wytrzymałość</text>
+<text id="6810100">Osłabia negację obrażeń</text>
+<text id="6820000">Otrzymywanie obrażeń powoduje nagromadzenie trucizny</text>
+<text id="6820100">Otrzymywanie obrażeń powoduje nagromadzenie zgnilizny</text>
+<text id="6820200">Otrzymywanie obrażeń powoduje nagromadzenie mrozu</text>
+<text id="6820300">Otrzymywanie obrażeń powoduje nagromadzenie krwawienia</text>
+<text id="6820400">Otrzymywanie obrażeń powoduje nagromadzenie szaleństwa</text>
+<text id="6820500">Otrzymywanie obrażeń powoduje nagromadzenie snu</text>
+<text id="6820600">Otrzymywanie obrażeń powoduje nagromadzenie śmierci</text>
+<text id="6830000">Zmniejsza siłę i inteligencję</text>
+<text id="6830100">Zmniejsza zręczność i wiarę</text>
+<text id="6830200">Zmniejsza inteligencję i zręczność</text>
+<text id="6830300">Zmniejsza wiarę i siłę</text>
+<text id="6830400">Zmniejsza żywotność i mistycyzm</text>
+<text id="6840000">Zmniejsza liczbę zdobywanych runów</text>
+<text id="6840100">Zmniejsza odnawianie PŻ butelki</text>
+<text id="6840200">Osłabia ładowanie wskaźnika zdolności ostatecznej </text>
+<text id="6850000">Osłabia negację obrażeń fizycznych</text>
+<text id="6850100">Zwiększa negację obrażeń właściwości</text>
+<text id="6850200">Zmniejsza wszystkie odporności</text>
+<text id="6850300">Zmniejsza odnawianie PŻ butelki</text>
+<text id="6850400">Nagły bieg zużywa więcej energii</text>
+<text id="6850500">Nieustanna utrata PŻ</text>
+<text id="6850600">Zwiększa zuż. energii przez uniki</text>
+<text id="6850700">Zmniejsza negację obrażeń po uniku</text>
+<text id="6850800">Wielokrotne uniki zmniejszają negację obr.</text>
+<text id="6850900">Zmniejsza negację obrażeń z użyć butelki</text>
+<text id="6851000">Nagromadzenie snu z użyć butelki</text>
+<text id="6851100">Nagromadzenie szaleństwa z użyć butelki</text>
+<text id="6851200">Zmniejsza atak, gdy masz mniej niż maks. PŻ</text>
+<text id="6851300">Nagromadzenie trucizny, gdy masz mniej niż maks. PŻ</text>
+<text id="6851400">Nagromadzenie zgnilizny, gdy masz mniej niż maks. PŻ</text>
+<text id="6851500">Maks. PŻ zmniejsza siłę ataku</text>
+<text id="6851600">Znalezienie się na skraju śmierci powoduje wylanie zawartości butelki</text>
+<text id="6851700">Znalezienie się na skraju śmierci zmniejsza maks. PŻ</text>
+<text id="7000000">Witalność +1</text>
+<text id="7000001">Witalność +2</text>
+<text id="7000002">Witalność +3</text>
+<text id="7000090">Zwiększenie maksymalnych PŻ</text>
+<text id="7000091">%null%</text>
+<text id="7000092">%null%</text>
+<text id="7000093">%null%</text>
+<text id="7000094">%null%</text>
+<text id="7000095">%null%</text>
+<text id="7000096">%null%</text>
+<text id="7000097">%null%</text>
+<text id="7000098">%null%</text>
+<text id="7000099">%null%</text>
+<text id="7000100">Umysł +1</text>
+<text id="7000101">Umysł +2</text>
+<text id="7000102">Umysł +3</text>
+<text id="7000190">Zwiększenie maksymalnych PS</text>
+<text id="7000191">%null%</text>
+<text id="7000192">%null%</text>
+<text id="7000193">%null%</text>
+<text id="7000194">%null%</text>
+<text id="7000195">%null%</text>
+<text id="7000196">%null%</text>
+<text id="7000197">%null%</text>
+<text id="7000198">%null%</text>
+<text id="7000199">%null%</text>
+<text id="7000200">Wytrzymałość +1</text>
+<text id="7000201">Wytrzymałość +2</text>
+<text id="7000202">Wytrzymałość +3</text>
+<text id="7000290">Zwiększenie maksymalnej energii</text>
+<text id="7000291">%null%</text>
+<text id="7000292">%null%</text>
+<text id="7000293">%null%</text>
+<text id="7000294">%null%</text>
+<text id="7000295">%null%</text>
+<text id="7000296">%null%</text>
+<text id="7000297">%null%</text>
+<text id="7000298">%null%</text>
+<text id="7000299">%null%</text>
+<text id="7000300">Siła +1</text>
+<text id="7000301">Siła +2</text>
+<text id="7000302">Siła +3</text>
+<text id="7000400">Zręczność +1</text>
+<text id="7000401">Zręczność +2</text>
+<text id="7000402">Zręczność +3</text>
+<text id="7000500">Inteligencja +1</text>
+<text id="7000501">Inteligencja +2</text>
+<text id="7000502">Inteligencja +3</text>
+<text id="7000600">Wiara +1</text>
+<text id="7000601">Wiara +2</text>
+<text id="7000602">Wiara +3</text>
+<text id="7000700">Mistycyzm +1</text>
+<text id="7000701">Mistycyzm +2</text>
+<text id="7000702">Mistycyzm +3</text>
+<text id="7000800">Skrócenie odnawiania umiejętności postaci +1</text>
+<text id="7000801">Skrócenie odnawiania umiejętności postaci +2</text>
+<text id="7000802">Skrócenie odnawiania umiejętności postaci +3</text>
+<text id="7000900">Autom. ładowanie zdol. ostatecznej +1</text>
+<text id="7000901">Autom. ładowanie zdol. ostatecznej +2</text>
+<text id="7000902">Autom. ładowanie zdol. ostatecznej +3</text>
+<text id="7001000">Równowaga +1</text>
+<text id="7001001">Równowaga +2</text>
+<text id="7001002">Równowaga +3</text>
+<text id="7001400">Wzmocnienie ataku fizycznego</text>
+<text id="7001401">Wzmocnienie ataku fizycznego +1</text>
+<text id="7001402">Wzmocnienie ataku fizycznego +2</text>
+<text id="7001403">Wzmocnienie ataku fizycznego +3</text>
+<text id="7001500">Wzmocnienie ataku magicznego</text>
+<text id="7001501">Wzmocnienie ataku magicznego +1</text>
+<text id="7001502">Wzmocnienie ataku magicznego +2</text>
+<text id="7001600">Wzmocnienie ataku ogniem</text>
+<text id="7001601">Wzmocnienie ataku ogniem +1</text>
+<text id="7001602">Wzmocnienie ataku ogniem +2</text>
+<text id="7001700">Wzmocnienie ataku błyskawicami</text>
+<text id="7001701">Wzmocnienie ataku błyskawicami +1</text>
+<text id="7001702">Wzmocnienie ataku błyskawicami +2</text>
+<text id="7001800">Wzmocnienie świętego ataku</text>
+<text id="7001801">Wzmocnienie świętego ataku +1</text>
+<text id="7001802">Wzmocnienie świętego ataku +2</text>
+<text id="7001900">Ataki wywołujące zatrucie</text>
+<text id="7001901">Ataki wywołujące zatrucie +1</text>
+<text id="7001902">Ataki wywołujące zatrucie +2</text>
+<text id="7002000">Ataki wywołujące krwawienie</text>
+<text id="7002001">Ataki wywołujące krwawienie +1</text>
+<text id="7002002">Ataki wywołujące krwawienie +2</text>
+<text id="7002100">Ataki wywołujące sen</text>
+<text id="7002101">Ataki wywołujące sen +1</text>
+<text id="7002102">Ataki wywołujące sen +2</text>
+<text id="7002103">Ataki wywołujące sen +3</text>
+<text id="7002200">Ataki wywołujące śmiertelną zarazę</text>
+<text id="7002300">Ataki wywołujące szkarłatną zgniliznę</text>
+<text id="7002301">Ataki wywołujące szkarłatną zgniliznę +1</text>
+<text id="7002302">Ataki wywołujące szkarłatną zgniliznę +2</text>
+<text id="7002400">Ataki wywołujące mróz</text>
+<text id="7002401">Ataki wywołujące mróz +1</text>
+<text id="7002402">Ataki wywołujące mróz +2</text>
+<text id="7002403">Ataki wywołujące mróz +3</text>
+<text id="7002500">Ataki wywołujące szaleństwo</text>
+<text id="7002600">Zwiększenie negacji obrażeń magicznych</text>
+<text id="7002700">Zwiększenie negacji obrażeń od ognia</text>
+<text id="7002800">Zwiększenie negacji obrażeń od błyskawic</text>
+<text id="7002900">Zwiększenie negacji świętych obrażeń</text>
+<text id="7003000">Zwiększenie odporności na truciznę</text>
+<text id="7003100">Zwiększenie odporności na krwawienie</text>
+<text id="7003200">Zwiększenie odporności na sen</text>
+<text id="7003300">Zwiększenie odporności na śmiertelną zarazę</text>
+<text id="7003400">Zwiększenie odporności na zgniliznę</text>
+<text id="7003500">Zwiększenie odporności na mróz</text>
+<text id="7003600">Zwiększenie odporności na szaleństwo</text>
+<text id="7005600">Częściowe odnowienie PŻ po atakach wykonanych po otrzymaniu obrażeń</text>
+<text id="7010000">[Strażnik] Zwiększa zasięg umiejętności postaci</text>
+<text id="7010200">Butelka leczy też sojuszników</text>
+<text id="7010500">[Wilczan] Aktywacja zdolności ostatecznej podpala
+obszar</text>
+<text id="7010700">[Księżna] Seria ataków sztyletem
+powtarza wydarzenie dla pobliskich wrogów</text>
+<text id="7010800">[Najeźdźca] Zwiększenie obr. postaci od umiejętności,
+słabsza neg. obr. podczas używania</text>
+<text id="7010900">[Zjawa] Wydaj własne PŻ, aby całkowicie
+wyleczyć pobliskich sojuszników podczas aktywacji zdolności ostatecznej</text>
+<text id="7011000">[Strażnik] Wydłużenie działania umiejętności postaci</text>
+<text id="7011100">[Strażnik] Zwiększa negację obrażeń sojuszników,
+gdy używasz zdolności ostatecznej</text>
+<text id="7011200">[Zjawa] Aktywuje wybuch ognia duchów podczas aktywacji
+zdolności ostatecznej</text>
+<text id="7011400">[Strażnik] Odnawia PŻ sojuszników, gdy używasz 
+umiejętności postaci</text>
+<text id="7011500">[Wilczan] Umiejętność postaci wywołuje krwawienie</text>
+<text id="7011600">[Strażnik] Tworzy wicher podczas ładowania ataków 
+halabardą</text>
+<text id="7011700">[Egzekutor] Ryk przywraca PŻ, gdy działa zdolność
+ostateczna</text>
+<text id="7011900">[Strażnik] Umiejętność postaci zadaje święte obrażenia</text>
+<text id="7012000">[Strażnik] Powoli przywraca PŻ pobliskim sojusznikom,
+gdy działa zdolność ostateczna</text>
+<text id="7012200">Gdy masz niskie zdrowie, powoli przywraca PŻ tobie 
+i pobliskim sojusznikom</text>
+<text id="7012300">Zwiększa negację obrażeń, gdy masz mało PŻ</text>
+<text id="7012400">Silne ataki wywołują szeroką falę gorąca</text>
+<text id="7012500">Skakanie przyzywa magiczne pociski</text>
+<text id="7012600">Wzmocnienie ataku od pobliskich sojuszników</text>
+<text id="7012700">Kontra rzuca kolumnę światła</text>
+<text id="7020000">[Wilczan] Standardowe ataki są wzmacniane ognistymi
+podczas korzystania z umiej. postaci (tylko wielki miecz)</text>
+<text id="7030000">Zwiększa równowagę w pobliżu totemicznej steli</text>
+<text id="7030200">Odzyskiwanie PŻ podczas używania piguł leczniczych itp.</text>
+<text id="7030500">[Wilczan] Osłabia negację obrażeń,
+zwiększa siłę ataku i energię po aktywacji zdolności ostatecznej</text>
+<text id="7030600">Udane zasłony wypełniają więcej wskaźnika zdolności ostatecznej</text>
+<text id="7030700">Zasłony przyciągają uwagę wroga</text>
+<text id="7030800">Trafienia krytyczne wypełniają więcej wskaźnika zdolności ostatecznej</text>
+<text id="7030900">Zwiększa siłę ataku fizycznego po użyciu przedmiotów ze smarem</text>
+<text id="7031200">[Zjawa] Wzmacnia rodzinę i sojuszników po aktywacji
+zdolności ostatecznej</text>
+<text id="7031300">[Najeźdźca] Obrażenia odniesione podczas używania
+umiejętności postaci zwiększa siłę ataku i energię</text>
+<text id="7031400">[Wilczan] Skraca czas odnawiania
+umiejętności postaci</text>
+<text id="7031600">Wykonanie serii udanych zasłon
+zwiększa zdolność zasłaniania się i pozwala odbijać silne ataki</text>
+<text id="7031700">Wytwarza falę uderzeniową po udanych zasłonach</text>
+<text id="7031800">[Księżna] Utrudnia zauważenie i wycisza
+kroki w czasie marszu po zadaniu trafienia krytycznego od tyłu</text>
+<text id="7031900">Runy zdobywane za trafienia krytyczne</text>
+<text id="7032200">Wykonywanie ataków zwiększa siłę ataku</text>
+<text id="7032300">[Wilczan] Zwiększa siłę ataku, gdy działa
+umiejętnośc postaci</text>
+<text id="7032400">[Wilczan] Używanie zdolności znacząco napełnia wskaźnik 
+zdolności ostatecznej</text>
+<text id="7032700">[Księżna] Pokonywanie wrogów zwiększa siłę ataku, 
+gdy działa zdolność ostateczna</text>
+<text id="7032800">[Rekluza] Zbieranie pozostałości właściwości
+aktywuje Terra Magica</text>
+<text id="7032900">[Rekluza] Aktywacja zdolności ostatecznej wywołuje 
+krwawienie i zwiększa siłę ataku</text>
+<text id="7033000">[Wilczan] Zwiększa siłę ataku,
+gdy zdolność jest aktywna</text>
+<text id="7033100">%null%</text>
+<text id="7033200">[Wilczan] +1 dodatkowe użycie umiejętności postaci</text>
+<text id="7033300">[Strażnik] Stajesz się celem agresji wroga, gdy używasz 
+zdolności</text>
+<text id="7033400">[Stróż] Udane zasłony wysyłają fale uderzeniowe,
+gdy zdolność jest aktywna</text>
+<text id="7033600">[Księżna] Wydłuża działanie
+zdolności ostatecznej</text>
+<text id="7033700">Podczas ataków ładowanych olbrzymia broń
+zostaje pokryta kamieniami</text>
+<text id="7033800">[Najeźdźca] Trwale zwiększa siłę ataku
+podczas wykonywania ostatniego ataku umiejętnością postaci</text>
+<text id="7033900">[Rekluza] Przedłuża działanie
+krwawych znaków</text>
+<text id="7034000">[Rekluza] Zebranie 4 pozostałości właściwości
+zwiększa siłę ataku właściwością</text>
+<text id="7034100">[Rekluza] Aktywacja zdolności ostatecznej zwiększa 
+maksymalne PŻ </text>
+<text id="7034200">[Egzekutor] Zwiększa siłę ataku,
+gdy działa zdolność ostateczna</text>
+<text id="7034300">[Egzekutor] Zwiększa efekty zdolności,
+ale zmniejsza odporność na przypadłości</text>
+<text id="7034400">[Egzekutor] Umiejętność postaci zwiększa atak, który odbiera PŻ</text>
+<text id="7034500">[Egzekutor] Kiedy działa umiejętność postaci,
+odblokowywanie korzystania z przeklętego miecza przywraca PŻ</text>
+<text id="7034600">[Żelazne Oko] Aktywacja szarży zdolności ostatecznej dodaje efekt trucizny</text>
+<text id="7034700">[Żelazne Oko] Wzmacnia kontrataki z pchnięciem
+po zdolności ostatecznej</text>
+<text id="7034800">Ogniste trafienia krytyczne maksymalnie wzmacniają
+energię</text>
+<text id="7034900">Trafienia krytyczne przywracają PŻ</text>
+<text id="7035000">Trafienie krytyczne dodaje efekt błyskawic</text>
+<text id="7035100">Trafienie krytyczne zwiększa tempo odzyskiwania energii</text>
+<text id="7035200">Kolejne zasłony wzmacniają skórę</text>
+<text id="7035300">Trafienie krytyczne tworzy usypiającą mgłę</text>
+<text id="7035400">Gest „Skrzyżowane nogi” nagromadza szaleństwo</text>
+<text id="7035500">Szaleństwo stale przywraca PS</text>
+<text id="7035600">Trafienia podczas nagłego biegu powodują rozstąpienie ziemi</text>
+<text id="7035700">Przełączanie broni dodaje atak właściwością</text>
+<text id="7035800">Wzmacnia siłę ataku dodanych ataków właściwością</text>
+<text id="7035900">Przełączanie broni zwiększa siłę ataku</text>
+<text id="7040000">Wzmacnia siłę zwykłego ataku</text>
+<text id="7040100">Wzmacnia kontry po zasłonie</text>
+<text id="7040200">Zwiększa trafienia krytyczne</text>
+<text id="7040290">Wzmacnia trafienia krytyczne +1</text>
+<text id="7040291">%null%</text>
+<text id="7040292">%null%</text>
+<text id="7040293">%null%</text>
+<text id="7040294">%null%</text>
+<text id="7040295">%null%</text>
+<text id="7040296">%null%</text>
+<text id="7040297">%null%</text>
+<text id="7040298">%null%</text>
+<text id="7040299">%null%</text>
+<text id="7040300">Wzmacnia obrażenia zadawane przez garnki do rzucania</text>
+<text id="7040400">Wzmacnia obrażenia zadawane przez noże do rzucania</text>
+<text id="7040500">Zwiększa obrażenia błyskamieniem i grawigłazem</text>
+<text id="7043200">Wzmacnia czary kamiennego kopacza</text>
+<text id="7043300">Wzmacnia karyjskie czary miecza</text>
+<text id="7043400">Wzmacnia czary błyskostrzy</text>
+<text id="7043500">Wzmacnia czary niewidzialności</text>
+<text id="7043600">Wzmacnia czary krysztalników</text>
+<text id="7043700">Wzmacnia czary grawitacyjne</text>
+<text id="7043800">Wzmacnia czary cierni</text>
+<text id="7043900">Wzmacnia czary nocy</text>
+<text id="7044000">Wzmacnia inkantacje fundamentalistów</text>
+<text id="7044100">Wzmacnia inkantacje kultu smoków</text>
+<text id="7044200">Wzmacnia ogniste inkantacje olbrzymów</text>
+<text id="7044300">Wzmacnia inkantacje zabójcy bogów</text>
+<text id="7044400">Wzmacnia inkantacje bestii</text>
+<text id="7044500">Wzmacnia inkantacje oszalałego płomienia</text>
+<text id="7044600">Wzmacnia inkantacje smoczej komunii</text>
+<text id="7050000">Zwiększa odnawianie energii pobliskich sojuszników, 
+ale nie tej postaci</text>
+<text id="7050100">Przedmioty działają na wszystkich sojuszników w pobliżu</text>
+<text id="7060000">Zwiększona siła ataku za każdego pokonanego więźnia z wiecznego więzienia</text>
+<text id="7060100">Zwiększone maksymalne PS za każde odblokowane Wzniesienie Czarodzieja</text>
+<text id="7060200">Zwiększona siła ataku za każdego pokonanego nocnego najeźdźcę</text>
+<text id="7070000">Zaznacza skarb na mapie</text>
+<text id="7080000">Zwiększa siłę ataku gdy posiadasz 3 lub więcej sztyletów</text>
+<text id="7080100">Zwiększa siłę ataku gdy posiadasz 3 lub więcej
+prostych mieczy</text>
+<text id="7080200">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+wielkich mieczy</text>
+<text id="7080300">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+olbrzymich mieczy</text>
+<text id="7080400">Zwiększa siłę ataku gdy posiadasz 3 lub więcej
+zakrzywionych mieczy</text>
+<text id="7080500">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+wielkich zakrzywionych mieczy</text>
+<text id="7080600">Zwiększa siłę ataku gdy posiadasz 3 lub więcej katan</text>
+<text id="7080700">Zwiększa siłę ataku gdy posiadasz 3 lub więcej
+podwójnych ostrzy</text>
+<text id="7080800">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+mieczy do pchnięć</text>
+<text id="7080900">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+ciężkich mieczy do pchnięć</text>
+<text id="7081000">Zwiększa siłę ataku gdy posiadasz 3 lub więcej toporów</text>
+<text id="7081100">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+wielkich toporów</text>
+<text id="7081200">Zwiększa siłę ataku gdy posiadasz 3 lub więcej młotów</text>
+<text id="7081300">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+wielkich młotów</text>
+<text id="7081400">Zwiększa siłę ataku gdy posiadasz 3 lub więcej korbaczy</text>
+<text id="7081500">Zwiększa siłę ataku gdy posiadasz 3 lub więcej włóczni</text>
+<text id="7081700">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+wielkich włóczni</text>
+<text id="7081800">Zwiększa siłę ataku gdy posiadasz 3 lub więcej halabard</text>
+<text id="7081900">Zwiększa siłę ataku gdy posiadasz 3 lub więcej kos</text>
+<text id="7082000">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+broni na pięści</text>
+<text id="7082100">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+broni typu szpony</text>
+<text id="7082200">Zwiększa siłę ataku gdy posiadasz 3 lub więcej biczy</text>
+<text id="7082300">Zwiększa siłę ataku gdy posiadasz 3 lub więcej 
+olbrzymich oręży</text>
+<text id="7082400">Zwiększa siłę ataku gdy posiadasz 3 lub więcej łuków</text>
+<text id="7082500">Zwiększa maks. PS gdy posiadasz 3 lub więcej kosturów</text>
+<text id="7082600">Zwiększa maks. PS gdy posiadasz 3 lub więcej 
+świętych pieczęci</text>
+<text id="7082700">Zwiększa maks. PŻ gdy posiadasz 3 lub więcej 
+małych tarcz</text>
+<text id="7082800">Zwiększa maks. PŻ gdy posiadasz 3 lub więcej 
+średnich tarcz</text>
+<text id="7082900">Zwiększa maks. PŻ gdy posiadasz 3 lub więcej 
+wielkich tarcz</text>
+<text id="7090000">Pokonywanie wrogów szybciej napełnia wskaźnik zdolności ostatecznej</text>
+<text id="7090100">Pokonywanie wrogów przywraca PŻ sojusznikom, 
+ale nie tej postaci</text>
+<text id="7090300">Pokonywanie wrogów przy totemicznej steli przywraca PŻ</text>
+<text id="7100000">Trafienia krytyczne zadają ogromne obrażenia otrutym wrogom</text>
+<text id="7100100">Odzyskiwanie energii po celnych atakach</text>
+<text id="7100190">Odzyskiwanie energii po celnych atakach +1</text>
+<text id="7110000">Zwiększa ilość runów zdobywanych przez postać 
+i sojuszników</text>
+<text id="7120000">Oręż początkowy zadaje obrażenia magiczne</text>
+<text id="7120100">Oręż początkowy zadaje obrażenia od ognia</text>
+<text id="7120101">Oręż początkowy zadaje obrażenia od ognia +1</text>
+<text id="7120200">Oręż początkowy zadaje obrażenia od błyskawic</text>
+<text id="7120300">Oręż początkowy zadaje święte obrażenia</text>
+<text id="7120400">Oręż początkowy wywołuje mróz</text>
+<text id="7120500">Oręż początkowy wywołuje zatrucie</text>
+<text id="7120600">Oręż początkowy wywołuje krwawienie</text>
+<text id="7120700">Oręż początkowy wywołuje szkarłatną zgniliznę</text>
+<text id="7120900">Na początku wyprawy postać ma klucz kamiennego miecza</text>
+<text id="7121000">Na początku wyprawy postać ma małą sakwę</text>
+<text id="7121100">Na początku wyprawy postać ma ogniste garnki</text>
+<text id="7121200">Na początku wyprawy postać ma magiczne garnki</text>
+<text id="7121300">Na początku wyprawy postać ma garnki błyskawic</text>
+<text id="7121400">Na początku wyprawy postać ma garnki z wodą święconą</text>
+<text id="7121500">Na początku wyprawy postać ma zatrute strzałki z kości</text>
+<text id="7121600">Na początku wyprawy postać ma kryształowe strzałki</text>
+<text id="7121700">Na początku wyprawy postać ma sztylety do rzucania</text>
+<text id="7121800">Na początku wyprawy postać ma odłamki błyskamienia</text>
+<text id="7121900">Na początku wyprawy postać ma odłamki kamienia 
+grawitacyjnego</text>
+<text id="7122000">Na początku wyprawy postać ma czarujące gałęzie</text>
+<text id="7122100">Na początku wyprawy postać ma dzwonek przyzwania upiorów</text>
+<text id="7122200">Na początku wyprawy postać ma palący smar</text>
+<text id="7122300">Na początku wyprawy postać ma magiczny smar</text>
+<text id="7122400">Na początku wyprawy postać ma elektryczny smar</text>
+<text id="7122500">Na początku wyprawy postać ma święty smar</text>
+<text id="7122600">Na początku wyprawy postać ma smar do tarczy</text>
+<text id="7122700">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na falangę błyskostrza</text>
+<text id="7122800">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na gravitas</text>
+<text id="7122900">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na płonące uderzenie</text>
+<text id="7123000">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na erupcję</text>
+<text id="7123100">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na grom</text>
+<text id="7123200">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na cięcie błyskawicy</text>
+<text id="7123300">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na święte ostrze</text>
+<text id="7123400">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na modlitewne uderzenie</text>
+<text id="7123500">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na trującą mgłę</text>
+<text id="7123600">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na lot trującej ćmy</text>
+<text id="7123700">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na krwawe ostrze</text>
+<text id="7123800">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na seppuku</text>
+<text id="7123900">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na chłodną mgłę</text>
+<text id="7124000">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na szronowe stąpnięcie</text>
+<text id="7124100">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na przynętę białego cienia</text>
+<text id="7124300">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na wytrwałość</text>
+<text id="7124400">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na szybki odskok</text>
+<text id="7124500">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na burzowe stąpnięcie</text>
+<text id="7124600">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na gorliwość</text>
+<text id="7124700">Na początku wyprawy zmienia umiejętność kompatybilnego 
+oręża na deszcz strzał</text>
+<text id="7126000">Na początku wyprawy postać ma odłamki światła gwiazd</text>
+<text id="7150000">Kontra po zasłonie otrzymuje wzmocnienie zależne od aktualnych PŻ</text>
+<text id="7160000">Odnowienie PŻ po kontrataku pchnięciem</text>
+<text id="7200000">Strzały w glowę odnawiają PŻ</text>
+<text id="7200100">Lepsze przełamywanie postawy strzałami w głowę</text>
+<text id="7220000">[Zjawa] Wzmocnienie w czasie walki u boku rodziny</text>
+<text id="7230000">Rabat na zakupy za runy w sklepie podczas wyprawy</text>
+<text id="7230001">Duży rabat na zakupy za runy w sklepie podczas wyprawy</text>
+<text id="7240000">Zwiększa równowagę i negację obrażeń po odepchnięciu 
+po otrzymaniu obrażeń</text>
+<text id="7260000">Wzmocnienie ataku w walce z otrutym wrogiem</text>
+<text id="7260200">Wzmocnienie ataku w walce z wrogiem dotkniętym snem</text>
+<text id="7260300">Wzmocnienie ataku w walce z wrogiem dotkniętym 
+szkarłatną zgnilizną</text>
+<text id="7260400">Wzmocnienie ataku w walce z wrogiem dotkniętym 
+odmrożeniem</text>
+<text id="7260600">Ataki na śpiących wrogów tworzą magiczne wybuchy</text>
+<text id="7260700">Pobliskie odmrożenie skrywa gracza</text>
+<text id="7260701">%null%</text>
+<text id="7260702">%null%</text>
+<text id="7260703">%null%</text>
+<text id="7260704">%null%</text>
+<text id="7260705">%null%</text>
+<text id="7260706">%null%</text>
+<text id="7260707">%null%</text>
+<text id="7260708">%null%</text>
+<text id="7260709">%null%</text>
+<text id="7260710">Trucizna i zgnilizna w pobliżu zwiększają siłę ataku</text>
+<text id="7270100">[Żelazne Oko] +1 dodatkowe użycie umiejętności postaci</text>
+<text id="7280000">[Żelazne Oko] Wydłuża czas trwania słabego punktu</text>
+<text id="7290000">[Księżna] Zwiększa siłę ataku umiejętności postaci</text>
+<text id="7300000">[Księżna] Umiejętność postaci zsyła sen na wrogów</text>
+<text id="7310000">[Najeźdźca] Wydłuża czas działania zdolności ostatecznej</text>
+<text id="7320000">[Zjawa] Zwiększa szansę aktywacji zdolności</text>
+<text id="7330000">Zwiększa siłę ataku sztyletami</text>
+<text id="7330100">Zwiększa siłę ataku prostymi mieczami</text>
+<text id="7330200">Zwiększa siłę ataku wielkimi mieczami</text>
+<text id="7330300">Zwiększa siłę ataku olbrzymimi mieczami</text>
+<text id="7330400">Zwiększa siłę ataku zakrzywionymi mieczami</text>
+<text id="7330500">Zwiększa siłę ataku wielkimi zakrzywionymi mieczami</text>
+<text id="7330600">Zwiększa siłę ataku katanami</text>
+<text id="7330700">Zwiększa siłę ataku podwójnymi ostrzami</text>
+<text id="7330800">Zwiększa siłę ataku mieczami do pchnięć</text>
+<text id="7330900">Zwiększa siłę ataku ciężkimi mieczami do pchnięć</text>
+<text id="7331000">Zwiększa siłę ataku toporami</text>
+<text id="7331100">Zwiększa siłę ataku wielkimi toporami</text>
+<text id="7331200">Zwiększa siłę ataku młotami</text>
+<text id="7331300">Zwiększa siłę ataku wielkimi młotami</text>
+<text id="7331400">Zwiększa siłę ataku korbaczami</text>
+<text id="7331500">Zwiększa siłę ataku włóczniami</text>
+<text id="7331600">Zwiększa siłę ataku pikami</text>
+<text id="7331700">Zwiększa siłę ataku wielkimi włóczniami</text>
+<text id="7331800">Zwiększa siłę ataku halabardami</text>
+<text id="7331900">Zwiększa siłę ataku kosami</text>
+<text id="7332000">Zwiększa siłę ataku pięściami</text>
+<text id="7332100">Zwiększa siłę ataku szponami</text>
+<text id="7332200">Zwiększa siłę ataku biczami</text>
+<text id="7332300">Zwiększa siłę ataku olbrzymimi broniami</text>
+<text id="7332400">Zwiększa siłę ataku łukami</text>
+<text id="7332500">Zwiększa siłę ataku wielkim łukiem</text>
+<text id="7332600">Zwiększa siłę ataku kuszą</text>
+<text id="7332700">Zwiększa siłę ataku balistą</text>
+<text id="7340000">Odnowienie PŻ po atakach sztyletem</text>
+<text id="7340100">Odnowienie PŻ po atakach prostymi mieczami</text>
+<text id="7340200">Odnowienie PŻ po atakach wielkimi mieczami</text>
+<text id="7340300">Odnowienie PŻ po atakach olbrzymimi mieczami</text>
+<text id="7340400">Odnowienie PŻ po atakach zakrzywionymi mieczami</text>
+<text id="7340500">Odnowienie PŻ po atakach wielkimi zakrzywionymi mieczami</text>
+<text id="7340600">Odnowienie PŻ po atakach katanami</text>
+<text id="7340700">Odnowienie PŻ po atakach podwójnymi ostrzami</text>
+<text id="7340800">Odnowienie PŻ po atakach mieczami do pchnięć</text>
+<text id="7340900">Odnowienie PŻ po atakach ciężkimi mieczami do pchnięć</text>
+<text id="7341000">Odnowienie PŻ po atakach toporami</text>
+<text id="7341100">Odnowienie PŻ po atakach wielkimi toporami</text>
+<text id="7341200">Odnowienie PŻ po atakach młotami</text>
+<text id="7341300">Odnowienie PŻ po atakach wielkimi młotami</text>
+<text id="7341400">Odnowienie PŻ po atakach korbaczami</text>
+<text id="7341500">Odnowienie PŻ po atakach włóczniami</text>
+<text id="7341600">Odnowienie PŻ po atakach pikami</text>
+<text id="7341700">Odnowienie PŻ po atakach wielkimi włóczniami</text>
+<text id="7341800">Odnowienie PŻ po atakach halabardami</text>
+<text id="7341900">Odnowienie PŻ po atakach kosami</text>
+<text id="7342000">Odnowienie PŻ po atakach pięściami</text>
+<text id="7342100">Odnowienie PŻ po atakach szponami</text>
+<text id="7342200">Odnowienie PŻ po atakach biczami</text>
+<text id="7342300">Odnowienie PŻ po atakach olbrzymią bronią</text>
+<text id="7342400">Odnowienie PŻ po atakach łukami</text>
+<text id="7342500">Odnowienie PŻ po atakach wielkim łukiem</text>
+<text id="7342600">Odnowienie PŻ po atakach kuszą</text>
+<text id="7342700">Odnowienie PŻ po atakach balistą</text>
+<text id="7350000">Odnowienie PS po atakach sztyletami</text>
+<text id="7350100">Odnowienie PS po atakach prostymi mieczami</text>
+<text id="7350200">Odnowienie PS po atakach wielkimi mieczami</text>
+<text id="7350300">Odnowienie PS po atakach olbrzymimi mieczami</text>
+<text id="7350400">Odnowienie PS po atakach zakrzywionymi mieczami</text>
+<text id="7350500">Odnowienie PS po atakach wielkimi zakrzywionymi mieczami</text>
+<text id="7350600">Odnowienie PS po atakach katanami</text>
+<text id="7350700">Odnowienie PS po atakach podwójnymi ostrzami</text>
+<text id="7350800">Odnowienie PS po atakach mieczami do pchnięć</text>
+<text id="7350900">Odnowienie PS po atakach ciężkimi mieczami do pchnięć</text>
+<text id="7351000">Odnowienie PS po atakach toporami</text>
+<text id="7351100">Odnowienie PS po atakach wielkimi toporami</text>
+<text id="7351200">Odnowienie PS po atakach młotami</text>
+<text id="7351300">Odnowienie PS po atakach wielkimi młotami</text>
+<text id="7351400">Odnowienie PS po atakach korbaczami</text>
+<text id="7351500">Odnowienie PS po atakach włóczniami</text>
+<text id="7351600">Odnowienie PS po atakach pikami</text>
+<text id="7351700">Odnowienie PS po atakach wielkimi włóczniami</text>
+<text id="7351800">Odnowienie PS po atakach halabardami</text>
+<text id="7351900">Odnowienie PS po atakach kosami</text>
+<text id="7352000">Odnowienie PS po atakach pięściami</text>
+<text id="7352100">Odnowienie PS po atakach szponami</text>
+<text id="7352200">Odnowienie PS po atakach biczami</text>
+<text id="7352300">Odnowienie PS po atakach olbrzymią bronią</text>
+<text id="7352400">Odnowienie PS po atakach łukami</text>
+<text id="7352500">Odnowienie PS po atakach wielkim łukiem</text>
+<text id="7352600">Odnowienie PS po atakach kuszą</text>
+<text id="7352700">Odnowienie PS po atakach balistą</text>
+<text id="8000000">Zwiększenie maksymalnego PŻ</text>
+<text id="8010000">Zwiększenie maksymalnego PS</text>
+<text id="8010100">Zmniejsza zużycie PS</text>
+<text id="8020000">Zwiększenie maksymalnej energii</text>
+<text id="8020100">Zmniejsza zużycie energii</text>
+<text id="8020200">Zwiększenie odzyskiwania energii</text>
+<text id="8100000">Zwiększenie siły ataku fizycznego</text>
+<text id="8100100">Zwiększenie siły ataku magicznego</text>
+<text id="8100200">Zwiększenie siły ataku ogniem</text>
+<text id="8100300">Zwiększenie siły ataku błyskawicą</text>
+<text id="8100400">Zwiększenie siły świętego ataku</text>
+<text id="8110000">Ataki wywołujące zatrucie</text>
+<text id="8110100">Ataki wywołujące krwawienie</text>
+<text id="8110200">Ataki wywołujące sen</text>
+<text id="8110300">Ataki wywołujące śmiertelną zarazę</text>
+<text id="8110400">Ataki wywołujące zgniliznę</text>
+<text id="8110500">Ataki wywołujące mróz</text>
+<text id="8110600">Ataki wywołujące szaleństwo</text>
+<text id="8110700">Dodaje orężowi ognistą właściwość</text>
+<text id="8110800">Dodaje orężowi magiczną właściwość</text>
+<text id="8110900">Dodaje orężowi właściwość błyskawic</text>
+<text id="8111000">Dodaje orężowi świętą właściwość</text>
+<text id="8120000">Zwiększenie przełamywania postawy</text>
+<text id="8130000">Zwiększenie trafień krytycznych</text>
+<text id="8140000">Zwiększenie przełamywania zasłony</text>
+<text id="8150000">Premia ataku [zrodzeni ze spadających gwiazd]</text>
+<text id="8150100">Premia ataku [ci, którzy żyją w śmierci]</text>
+<text id="8150300">Premia ataku [smoki]</text>
+<text id="8200000">Zwiększenie negacji obrażeń fizycznych</text>
+<text id="8200100">Zwiększenie negacji obrażeń magicznych</text>
+<text id="8200200">Zwiększenie negacji obrażeń od ognia</text>
+<text id="8200300">Zwiększenie negacji obrażeń od błyskawic</text>
+<text id="8200400">Zwiększenie negacji świętych obrażeń</text>
+<text id="8200500">Zwiększa negację obrażeń właściwości</text>
+<text id="8210000">Zwiększenie odporności na truciznę</text>
+<text id="8210100">Zwiększenie odporności na krwawienie</text>
+<text id="8210200">Zwiększenie odporności na sen</text>
+<text id="8210300">Zwiększenie odporności na śmiertelną zarazę</text>
+<text id="8210400">Zwiększenie odporności na zgniliznę</text>
+<text id="8210500">Zwiększenie odporności na mróz</text>
+<text id="8210600">Zwiększenie odporności na szaleństwo</text>
+<text id="8220000">Zwiększenie zdolności zasłaniania się</text>
+<text id="8220001">Zwiększenie zdolności zasłaniania się +1</text>
+<text id="8220002">Zwiększenie zdolności zasłaniania się +2</text>
+<text id="8230000">Zwiększenie równowagi</text>
+<text id="8300000">Zwiększenie siły ataku, po użyciu oręża dwuręcznego</text>
+<text id="8300100">Zwiększenie przełamania postawy, po użyciu oręża 
+dwuręcznego</text>
+<text id="8310000">Zwiększenie ataku po użyciu dwóch oręży</text>
+<text id="8310100">Zwiększenie przełamania postawy, po użyciu dwóch oręży</text>
+<text id="8320000">Wzmocnienie kończących ataków serii</text>
+<text id="8320100">Wzmocnienie ładowanych ataków</text>
+<text id="8320200">Silne ataki zwiększają równowagę</text>
+<text id="8320300">Wzmocnienie ataków z wyskoku</text>
+<text id="8320400">Zwiększa neg. obrażeń po udanych atakach ład.</text>
+<text id="8330000">Wzmocnienie czarów</text>
+<text id="8330100">Wzmocnienie inkantacji</text>
+<text id="8330200">Wzmocnienie czarów ładowanych</text>
+<text id="8330300">Wzmocnienie inkantacji ładowanych</text>
+<text id="8330400">Przyspiesza rzucanie czarów</text>
+<text id="8330500">Wydłuża działanie czarów</text>
+<text id="8330600">Zmniejsza koszt PS rzucania zaklęć</text>
+<text id="8330700">Smocza komunia zwiększa obrażenia przeciwko smokom</text>
+<text id="8330900">Negacja obrażeń podczas rzucania czarów</text>
+<text id="8340000">Wzmocnienie ataków bronią dystansową</text>
+<text id="8340100">Redukcja spadku obrażeń pocisków</text>
+<text id="8350000">Zwiększenie siły ataku umiejętności</text>
+<text id="8350100">Zwiększenie siły ataku umiejętności ładowanej</text>
+<text id="8350200">Mniejszy koszt PS umiejętności</text>
+<text id="8350300">Aktywacja umiejętności zwiększa równowagę</text>
+<text id="8350400">Parowanie aktywuje złoty odwet</text>
+<text id="8360000">Szybsze wypełnianie wskaźnika zdolności ostatecznej
+</text>
+<text id="8370000">Skrócenie odnawiania umiejętności postaci</text>
+<text id="8380000">Wzmocnienie ataków rykiem i zionięciem</text>
+<text id="8390000">Wzmocnienie garnków do rzucania</text>
+<text id="8400000">Wzmocnienie sztuk perfumiarstwa</text>
+<text id="8410000">Wzmocnienie uników</text>
+<text id="8410100">Błyskawica po uniku</text>
+<text id="8420000">Wzmocnienie kontr po zasłonach</text>
+<text id="8420100">Kontry po zasłonie aktywują święte ataki</text>
+<text id="8420200">Kontry zasłon aktywują atak przyzwania</text>
+<text id="8430000">Zwiększenie siły kontrataku pchnięciem</text>
+<text id="8440000">Zwiększenie odnawiania PŻ butelki</text>
+<text id="8440100">Butelka leczy też sojuszników</text>
+<text id="8440200">Stopniowa odnowa z butelki</text>
+<text id="8450000">Nagły bieg magmy</text>
+<text id="8450100">Nagły bieg lodowej burzy</text>
+<text id="8460000">Ciemność kryje użytkownika podczas marszu</text>
+<text id="8460100">Chodzenie tworzy kolumny ognia</text>
+<text id="8460200">Płomień szału podczas marszu</text>
+<text id="8460300">Upiory podczas marszu</text>
+<text id="8460400">Gwałtowna gwiezdna ulewa podczas marszu</text>
+<text id="8460500">Burza czerwonych błyskawic podczas marszu</text>
+<text id="8500000">Więcej runów z pokonanych wrogów</text>
+<text id="8510000">Zwiększenie odkrywania przedmiotów</text>
+<text id="8520000">Mniejsza szansa stania się celem</text>
+<text id="8530000">Kilka błyskostrzy tymczasowych</text>
+<text id="8530100">Wiele błyskostrzy tymczasowych</text>
+<text id="8530200">Olbrzymie błyskostrza tymczasowe</text>
+<text id="8540000">Nieustanne odzyskiwanie PŻ</text>
+<text id="8600100">Odnowienie PŻ po celnych atakach</text>
+<text id="8600200">Odnowienie PS po celnych atakach</text>
+<text id="8600300">Nagła śmierć wroga po celnych atakach</text>
+<text id="8610000">Odnowienie PŻ po kolejnych atakach</text>
+<text id="8610100">Odnowienie PS po kolejnych atakach</text>
+<text id="8610200">Kolejne ataki zwiększają siłę ataku</text>
+<text id="8610300">Udane ataki ład. wywołują atak magiczny</text>
+<text id="8610400">Udane ataki ład. wywołują atak ognisty</text>
+<text id="8610500">Udane ataki ład. wywołują atak błyskawicami</text>
+<text id="8610600">Udane ataki ład. wywołują święty atak</text>
+<text id="8610700">Kolejne ataki zapewniają negację obrażeń</text>
+<text id="8620000">Otrzymywanie obrażeń przywraca PS</text>
+<text id="8620100">Otrzymywanie obrażeń zwiększa negację obrażeń</text>
+<text id="8630000">Pokonywanie przeciwników przywraca PŻ</text>
+<text id="8630100">Pokonywanie przeciwników przywraca PS</text>
+<text id="8630200">Ataki przywołują upiory</text>
+<text id="8630300">Ataki przywołują mgłę uroku</text>
+<text id="8630400">Ataki przywołują duchy zemsty</text>
+<text id="8630500">Ataki przywołują lawę</text>
+<text id="8630600">Ataki przywołują mroźną mgłę</text>
+<text id="8630700">Ataki przywołują piorun</text>
+<text id="8630800">Ataki tworzą złotą falę uderzeniową</text>
+<text id="8640000">Trafienia krytyczne przywracają PŻ</text>
+<text id="8640100">Trafienia krytyczne przywracają PS</text>
+<text id="8640200">Zwiększa obrażenia po traf. kryt.</text>
+<text id="8640300">Święty Porządek po świętym trafieniu krytycznym</text>
+<text id="8640400">Magma po trafieniu krytycznym ogniem</text>
+<text id="8640500">Trafienia krytyczne błyskawicą nasycają oręż</text>
+<text id="8640600">Odłamki kryształu po trafieniu krytycznym magią</text>
+<text id="8640700">Trująca mgła po trafieniu krytycznym trucizną</text>
+<text id="8640800">Trafienia krytyczne z krwawieniem: Ciernie kary</text>
+<text id="8640900">Trafienia krytyczne zgnilizną: Nici szkodników</text>
+<text id="8641000">Burza lodowa po trafieniu krytycznym mrozem</text>
+<text id="8641100">Trafienie krytyczne szaleństwa: Oszalały płomień</text>
+<text id="8641200">Trafienie krytyczne przywołuje piorun śmierci</text>
+<text id="8650000">Odzyskiwanie PŻ dzięki udanym zasłonom</text>
+<text id="8650100">Odzyskiwanie PS dzięki udanym zasłonom</text>
+<text id="8652000">Udane zasłony zwiększają równowagę</text>
+<text id="8652100">Udane zasłony zwiększają negację obrażeń</text>
+<text id="8660000">Zwiększenie siły ataku, gdy masz mało PŻ</text>
+<text id="8660101">Zwiększenie negacji obrażeń, gdy masz mało PŻ</text>
+<text id="8660200">Trafienia krytyczne wywołują krwawienie</text>
+<text id="8660300">Tworzy uświęconą ziemię, gdy masz mało PŻ</text>
+<text id="8660400">Mało PŻ: trafienia krytyczne w pełni odnawiają PŻ</text>
+<text id="8670000">Zwiększenie siły ataku, gdy masz maksymalne PŻ</text>
+<text id="8670101">Zwiększenie negacji obrażeń, gdy masz maksymalne PŻ</text>
+<text id="8690000">Trucizna wytwarza trującą mgłę</text>
+<text id="8690100">Szaleństwo tworzy oszalały wybuch</text>
+<text id="8690200">Zgnilizna wytwarza mgłę szkarłatnej zgnilizny</text>
+<text id="8690300">Odmrożenie wytwarza mroźną mgłę</text>
+<text id="8690400">Sen wytwarza mgłę snu</text>
+<text id="8700000">Trucizna zwiększa siłę ataku</text>
+<text id="8710000">Krwawienie zwiększa siłę ataku</text>
+<text id="8720000">Sen zwiększa siłę ataku</text>
+<text id="8740000">Odmrożenie zwiększa siłę ataku</text>
+<text id="8750000">Szaleństwo zwiększa siłę ataku</text>
+<text id="8760000">Zmniejsza maksymalne PŻ</text>
+<text id="8760100">Zmniejsza maksymalne PS</text>
+<text id="8760200">Zmniejsza maksymalną energię</text>
+<text id="8761000">Osłabia negację obrażeń fizycznych</text>
+<text id="8761100">Osłabia negację obrażeń właściwości</text>
+<text id="8762000">Zmniejsza wszystkie odporności</text>
+<text id="8763000">Zmniejsza odnawianie PŻ butelki</text>
+<text id="8764000">Nagły bieg zużywa więcej energii</text>
+<text id="8765000">Osłabia ładowanie wskaźnika zdolności ostatecznej </text>
+<text id="8766000">Nieustanna utrata PŻ</text>
+<text id="8770000">Zwiększone obrażenia z Przypływu Nocy</text>
+<text id="8771000">Zwiększone obrażenia z Naporu Nocy</text>
+<text id="8800000">Zwiększa zużycie energii przez uniki</text>
+<text id="8800100">Zmniejsza negację obrażeń po uniku</text>
+<text id="8800200">Wielokrotne uniki zmniejszają negację obr.</text>
+<text id="8801000">Zmniejsza negację obrażeń z użyć butelki</text>
+<text id="8801100">Nagromadzenie snu z użyć butelki</text>
+<text id="8801200">Nagromadzenie szaleństwa z użyć butelki</text>
+<text id="8810000">Zmniejsza atak, gdy masz mniej niż maksimum PŻ</text>
+<text id="8810200">Spowalnia wskaźnik zdol., gdy masz mniej niż maks. PŻ</text>
+<text id="8810300">Nagromadzenie trucizny, gdy masz mniej niż maks. PŻ</text>
+<text id="8810400">Nagromadzenie zgnilizny, gdy masz mniej niż maks. PŻ</text>
+<text id="8811000">Maksimum PŻ zmniejsza siłę ataku</text>
+<text id="8811200">Maks. PŻ spowalnia wskaźnik zdol. ostat.</text>
+<text id="8813100">Mniejsza energia osłabia negację obrażeń</text>
+<text id="8821000">Czasami osłabia ataki</text>
+<text id="8821100">Celne ataki powodują nagromadzenie mrozu</text>
+<text id="8821200">Celne ataki powodują nagromadzenie krwawienia</text>
+<text id="8830000">Przypadłości powodują zwiększenie obrażeń</text>
+<text id="8831000">Znalezienie się na skraju śmierci powoduje częściowe wyczerpanie wskaź. zdol.</text>
+<text id="8831100">Znalezienie się na skraju śmierci powoduje wylanie zawartości butelki</text>
+<text id="8831200">Znalezienie się na skraju śmierci zmniejsza maks. PŻ</text>
+<text id="8880000">Burza lodowa po ładowanych atakach</text>
+<text id="8880100">Pierścień światła po ładowanym cięciu</text>
+<text id="8880200">Czarne płomienie po ładowanych atakach</text>
+<text id="8880300">Widmowy atak po ładowanych atakach</text>
+<text id="8880400">Buchające płomienie po ładowanym cięciu</text>
+<text id="8881000">Święta fala uderzeniowa po ładowanych atakach</text>
+<text id="8881100">Pociski po ładowanym uderzeniu</text>
+<text id="8881200">Wabienie wrogów po ładowanych atakach</text>
+<text id="8881300">Fala uderzeniowa po ładowanym uderzeniu</text>
+<text id="8881400">Widmowy atak po ładowanym uderzeniu</text>
+<text id="8881500">Magma po ładowanych atakach</text>
+<text id="8881600">Magiczne bąble po ładowanym uderzeniu</text>
+<text id="8882000">Widmowy atak po ładowanym pchnięciu</text>
+<text id="8882100">Błyskawica po ładowanych atakach</text>
+<text id="8882200">Żrąca mgła po ładowanym pchnięciu</text>
+<text id="8882300">Nici szkodników po ładowanym pchnięciu</text>
+<text id="8882400">Trująca mgła po ładowanym pchnięciu</text>
+<text id="8882500">Ładowane ataki wyzwalają usypiającą mgłę</text>
+<text id="8883000">Pociski wystrzeliwane po ładowanych atakach</text>
+<text id="8883100">Błyskawica po precyzyjnym celowaniu</text>
+<text id="8883200">Trująca mgła po precyzyjnym celowaniu</text>
+<text id="8883300">Mgła zgnilizny po precyzyjnym celowaniu</text>
+<text id="8883400">Krwawe muchy po precyzyjnym celowaniu</text>
+<text id="8884000">Obrona tarczą zwiększa negatywne obrażenia</text>
+<text id="8884100">Obrona tarczą aktywuje przysięgę niezłomnych</text>
+<text id="8884200">Obrona tarczą tworzy świętą ziemię</text>
+<text id="8884300">Przełamana postawa aktywuje wytrwałość</text>
+<text id="8885000">Butelki przywracają także PS</text>
+<text id="8885100">Nieudane rzucenie zaklęcia przywraca PS</text>
+<text id="8885200">Zasłona wzmacnia czary i inkantacje</text>
+<text id="8920100">Zwiększa siłę ataku właściwością</text>
+<text id="8921400">Trafienia krytyczne wzmacniają siłę ataku</text>
+<text id="8960100">Zmienia silne ataki</text>
+<text id="8960200">Silny atak z wyskoku wywołuje falę uderzeniową</text>
+<text id="9021400">Moc Nocy i Ognia</text>
+<text id="9030900">Moc Ciemnego Księżyca</text>
+<text id="9031000">Moc Wyższej Woli</text>
+<text id="9031400">Moc Bluźniercy</text>
+<text id="9031500">Moc Rodu Marais</text>
+<text id="9031700">Moc Złotego Porządku</text>
+<text id="9040200">Moc Przeznaczonej Śmierci</text>
+<text id="9040500">Moc Gwiezdnej Plagi</text>
+<text id="9040800">Moc Zniszczenia</text>
+<text id="9041000">Moc Zemsty</text>
+<text id="9060400">Moc Władcy Smoków</text>
+<text id="9071000">Moc Rozpaczy</text>
+<text id="9081000">Moc Króla Omenów</text>
+<text id="9090200">Moc Niepokonanego</text>
+<text id="9111500">Moc Królowej</text>
+<text id="9122000">Moc Bluźniercy</text>
+<text id="9130300">Moc Ciemnej Pustki</text>
+<text id="9150400">Moc Złotego Rodu</text>
+<text id="9151100">Moc Ducha Przodków</text>
+<text id="9160900">Moc Olbrzymiego Starożytnego Smoka</text>
+<text id="9170100">Moc Pana Krwi</text>
+<text id="9200600">Moc Olbrzyma</text>
+<text id="9210600">Moc Latającego Smoka</text>
+<text id="9230500">Moc Pierwszego Władcy</text>
+<text id="9330900">Moc Pełni Księżyca</text>
+<text id="9420000">Moc Generała</text>
+<text id="9990100">Rozpacz Wilczana</text>
+<text id="9990200">Rozpacz Strażnika</text>
+<text id="9990300">Rozpacz Żelaznego Oka</text>
+<text id="9990400">Rozpacz Księżnej</text>
+<text id="9990500">Rozpacz Najeźdźcy</text>
+<text id="9990600">Rozpacz Zjawy</text>
+<text id="9990700">Rozpacz Rekluzy</text>
+<text id="9990800">Rozpacz Egzekutora</text>
+<text id="18000000">Zwiększa maksymalne PŻ</text>
+<text id="18010000">Zwiększa maksymalne PS</text>
+<text id="18010100">Zmniejsza zużycie PS</text>
+<text id="18020000">Zwiększa maksymalną energię</text>
+<text id="18020200">Zwiększa odzyskiwanie energii</text>
+<text id="18100000">Wzmocnienie ataku fizycznego</text>
+<text id="18100500">Zwiększa siłę ataku właściwością</text>
+<text id="18120000">Wzmocnienie przełamywania postawy</text>
+<text id="18200000">Zwiększa negację obrażeń fizycznych</text>
+<text id="18200500">Zwiększa negację obrażeń od właściwości</text>
+<text id="18210700">Zwiększenie wszystkich odporności</text>
+<text id="18230000">Zwiększa równowagę</text>
+<text id="18330103">Wzmocnienie czarów i inkantacji</text>
+<text id="18330500">Wydłuża działanie czarów i inkantacji</text>
+<text id="18330700">Komunia daje właściwości antysmocze</text>
+<text id="18350400">Udane bloki aktywują złoty odwet</text>
+<text id="18420100">Kontry po zasłonie aktywują święte ataki</text>
+<text id="18420200">Kontry zasłon aktywują atak przyzwania</text>
+<text id="18430000">Zwiększa siłę kontrataku pchnięciem</text>
+<text id="18440000">Zwiększa odnawianie PŻ butelki</text>
+<text id="18500000">Więcej runów z pokonanych wrogów</text>
+<text id="18640000">Przywracanie PŻ traf. krytycznymi</text>
+<text id="18640100">Przywracanie PS traf. krytycznymi</text>
+<text id="18640200">Zwiększa obrażenia po traf. krytycznym</text>
+<text id="18650000">Odzyskiwanie PŻ dzięki udanym zasłonom</text>
+<text id="18650100">Odzyskiwanie PS dzięki udanym zasłonom</text>
+<text id="18660200">Trafienia krytyczne wywołują krwawienie</text>
+<text id="18660300">Tworzy uświęconą ziemię, gdy masz mało PŻ</text>
+<text id="18700000">Trucizna i zgnilizna aktywują ciągłe przywracanie PŻ</text>
+<text id="18710000">Krwawienie w pobliżu zwiększa siłę ataku</text>
+<text id="19700000">Witalność</text>
+<text id="19700001">%null%</text>
+<text id="19700002">%null%</text>
+<text id="19700003">%null%</text>
+<text id="19700004">%null%</text>
+<text id="19700005">%null%</text>
+<text id="19700006">%null%</text>
+<text id="19700007">%null%</text>
+<text id="19700008">%null%</text>
+<text id="19700009">%null%</text>
+<text id="19700010">Umysł</text>
+<text id="19700011">%null%</text>
+<text id="19700012">%null%</text>
+<text id="19700013">%null%</text>
+<text id="19700014">%null%</text>
+<text id="19700015">%null%</text>
+<text id="19700016">%null%</text>
+<text id="19700017">%null%</text>
+<text id="19700018">%null%</text>
+<text id="19700019">%null%</text>
+<text id="19700020">Wytrzymałość</text>
+<text id="19700021">%null%</text>
+<text id="19700022">%null%</text>
+<text id="19700023">%null%</text>
+<text id="19700024">%null%</text>
+<text id="19700025">%null%</text>
+<text id="19700026">%null%</text>
+<text id="19700027">%null%</text>
+<text id="19700028">%null%</text>
+<text id="19700029">%null%</text>
+<text id="19700030">Siła</text>
+<text id="19700031">%null%</text>
+<text id="19700032">%null%</text>
+<text id="19700033">%null%</text>
+<text id="19700034">%null%</text>
+<text id="19700035">%null%</text>
+<text id="19700036">%null%</text>
+<text id="19700037">%null%</text>
+<text id="19700038">%null%</text>
+<text id="19700039">%null%</text>
+<text id="19700040">Zręczność</text>
+<text id="19700041">%null%</text>
+<text id="19700042">%null%</text>
+<text id="19700043">%null%</text>
+<text id="19700044">%null%</text>
+<text id="19700045">%null%</text>
+<text id="19700046">%null%</text>
+<text id="19700047">%null%</text>
+<text id="19700048">%null%</text>
+<text id="19700049">%null%</text>
+<text id="19700050">Inteligencja</text>
+<text id="19700051">%null%</text>
+<text id="19700052">%null%</text>
+<text id="19700053">%null%</text>
+<text id="19700054">%null%</text>
+<text id="19700055">%null%</text>
+<text id="19700056">%null%</text>
+<text id="19700057">%null%</text>
+<text id="19700058">%null%</text>
+<text id="19700059">%null%</text>
+<text id="19700060">Wiara</text>
+<text id="19700061">%null%</text>
+<text id="19700062">%null%</text>
+<text id="19700063">%null%</text>
+<text id="19700064">%null%</text>
+<text id="19700065">%null%</text>
+<text id="19700066">%null%</text>
+<text id="19700067">%null%</text>
+<text id="19700068">%null%</text>
+<text id="19700069">%null%</text>
+<text id="19700070">Mistycyzm</text>
+<text id="19700071">%null%</text>
+<text id="19700072">%null%</text>
+<text id="19700073">%null%</text>
+<text id="19700074">%null%</text>
+<text id="19700075">%null%</text>
+<text id="19700076">%null%</text>
+<text id="19700077">%null%</text>
+<text id="19700078">%null%</text>
+<text id="19700079">%null%</text>
+<text id="19700080">Skrócenie odnawiania umiejętności postaci</text>
+<text id="19700081">%null%</text>
+<text id="19700082">%null%</text>
+<text id="19700083">%null%</text>
+<text id="19700084">%null%</text>
+<text id="19700085">%null%</text>
+<text id="19700086">%null%</text>
+<text id="19700087">%null%</text>
+<text id="19700088">%null%</text>
+<text id="19700089">%null%</text>
+<text id="19700090">Autom. ładowanie zdol. ostatecznej</text>
+<text id="19700091">%null%</text>
+<text id="19700092">%null%</text>
+<text id="19700093">%null%</text>
+<text id="19700094">%null%</text>
+<text id="19700095">%null%</text>
+<text id="19700096">%null%</text>
+<text id="19700097">%null%</text>
+<text id="19700098">%null%</text>
+<text id="19700099">%null%</text>
+<text id="19700100">Równowaga</text>
+<text id="19799999">Wszystkie opcje</text>
+</entries>
+</fmg>
