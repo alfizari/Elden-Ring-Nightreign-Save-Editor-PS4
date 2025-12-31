@@ -16,7 +16,7 @@ class SourceDataHandler:
         "AttachEffectName_dlc01.fmg.xml",
     ]
 
-    def __init__(self, language: str = "en-us"):
+    def __init__(self, language: str = "en_US"):
         self.effect_params = \
             pd.read_csv(self.PARAM_DIR / "AttachEffectParam.csv")
         self.effect_params: pd.DataFrame = self.effect_params[
@@ -49,7 +49,7 @@ class SourceDataHandler:
         self.effect_name: Optional[pd.DataFrame] = None
         self._load_text(language)
 
-    def _load_text(self, language: str = "en-us"):
+    def _load_text(self, language: str = "en_US"):
         language_dir_list = []
         # search and list subfolders name that are supported language
         for lang_dir in SourceDataHandler.TEXT_DIR.iterdir():
@@ -57,7 +57,7 @@ class SourceDataHandler:
                 language_dir_list.append(lang_dir.name)
         _lng = language
         if language not in language_dir_list:
-            _lng = "en-us"
+            _lng = "en_US"
         # Deal with Relic text
         # Read all Relic xml from language subfolder
         _relic_names: Optional[pd.DataFrame] = None
@@ -86,7 +86,7 @@ class SourceDataHandler:
         self.relic_name = _relic_names
         self.effect_name = _effect_names
 
-    def reload_text(self, language: str = "en-us"):
+    def reload_text(self, language: str = "en_US"):
         try:
             self._load_text(language=language)
             return True
@@ -200,6 +200,6 @@ class SourceDataHandler:
 
 
 if __name__ == "__main__":
-    source_data_handler = SourceDataHandler("zh-tw")
+    source_data_handler = SourceDataHandler("zh_TW")
     t = source_data_handler.get_relic_pools_seq(202)
     print(t)

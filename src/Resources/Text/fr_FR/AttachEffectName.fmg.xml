@@ -1,0 +1,1254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fmg>
+<filename>AttachEffectName.fmg</filename>
+<compression>None</compression>
+<version>DarkSouls3</version>
+<bigendian>False</bigendian>
+<entries>
+<text id="1">%null%</text>
+<text id="2">%null%</text>
+<text id="3">%null%</text>
+<text id="100">%null%</text>
+<text id="310000">PV maximums augmentés</text>
+<text id="310100">PC maximums augmentés</text>
+<text id="310200">Endurance maximum augmentée</text>
+<text id="310400">PV maximums augmentés</text>
+<text id="310401">Endurance maximum augmentée</text>
+<text id="311000">Découverte d'objets améliorée</text>
+<text id="311100">Plus de runes par ennemi vaincu</text>
+<text id="311500">Récupération d'endurance augmentée</text>
+<text id="311600">Résistance au saignement augmentée</text>
+<text id="311601">Résistance à la congélation augmentée</text>
+<text id="311700">Résistance au poison augmentée</text>
+<text id="311701">Résistance à la putréfaction augmentée</text>
+<text id="311800">Résistance au sommeil augmentée</text>
+<text id="311801">Résistance à la démence augmentée</text>
+<text id="311900">Résistance à la malemort augmentée</text>
+<text id="312000">Résistance au poison et à la putréfaction augmentée</text>
+<text id="312001">Résistance au saignement et à la congélation augmentée</text>
+<text id="312002">Résistance au sommeil et à la démence augmentée</text>
+<text id="312100">Équilibre amélioré</text>
+<text id="312300">Puissance d'attaque des compétences augmentée</text>
+<text id="312500">Dextérité augmentée</text>
+<text id="312501">Les attaques successives augmentent la puissance d'attaque</text>
+<text id="320000">Puissance d'attaque magique augmentée</text>
+<text id="320001">Résistance aux dégâts physiques réduite</text>
+<text id="320100">Puissance d'attaque de foudre augmentée</text>
+<text id="320101">Résistance aux dégâts physiques réduite</text>
+<text id="320200">Puissance d'attaque de feu augmentée</text>
+<text id="320201">Résistance aux dégâts physiques réduite</text>
+<text id="320300">Puissance d'attaque sacrée augmentée</text>
+<text id="320301">Résistance aux dégâts physiques réduite</text>
+<text id="320400">Puissance d'attaque augmentée lorsque les PV sont bas</text>
+<text id="320500">Puissance d'attaque augmentée quand les PV sont au max</text>
+<text id="320600">Contre-attaques d'estoc améliorées</text>
+<text id="320700">Brise-garde améliorée</text>
+<text id="320800">Les attaques successives augmentent la puissance d'attaque</text>
+<text id="320900">Coups critiques améliorés</text>
+<text id="321000">Perte de dégâts des coups longue distance réduite</text>
+<text id="321200">Coup final des enchaînements d'attaques amélioré</text>
+<text id="321300">Attaques chargées améliorées</text>
+<text id="321500">Attaques avec des armes à distance améliorées</text>
+<text id="321600">Attaque augmentée en cas de saignement à proximité</text>
+<text id="321700">Attaque augmentée en cas d'empoisonnement ou de putréfaction à proximité</text>
+<text id="321800">Attaques sautées améliorées</text>
+<text id="321900">Cris et souffles améliorés</text>
+<text id="322000">Contre-attaques améliorées</text>
+<text id="322100">Pots à lancer améliorés</text>
+<text id="322200">Techniques de parfums améliorées</text>
+<text id="330000">Sorcelleries améliorées</text>
+<text id="330400">Incantations améliorées</text>
+<text id="330600">Durée des sorts augmentée</text>
+<text id="330700">Canalisation des sorts accélérée</text>
+<text id="330800">Coût en PC des sorcelleries réduit</text>
+<text id="330801">PV maximum réduits.</text>
+<text id="330900">Compétences et sorts chargés améliorés</text>
+<text id="340000">Résistance aux dégâts physiques augmentée</text>
+<text id="340100">Résistance aux dégâts magiques augmentée</text>
+<text id="340200">Résistance aux dégâts de feu augmentée</text>
+<text id="340300">Résistance aux dégâts de foudre augmentée</text>
+<text id="340400">Résistance aux dégâts sacrés augmentée</text>
+<text id="340500">Résistance aux dégâts d'affinité augmentée</text>
+<text id="340700">Esquive améliorée</text>
+<text id="340701">Résistance aux dégâts réduite</text>
+<text id="340800">Résistance aux dégâts améliorée quand les PV sont bas</text>
+<text id="340900">Résistance aux dégâts améliorée quand les PV sont au max</text>
+<text id="341000">Garde renforcée</text>
+<text id="350000">PV rendus par la fiole augmentés</text>
+<text id="350200">Récupération de PV continue</text>
+<text id="350300">PV récupérés à chaque ennemi vaincu</text>
+<text id="350400">PV récupérés lors des attaques successives</text>
+<text id="350500">PV récupérés lors des coups critiques</text>
+<text id="350600">PC récupérés lors des coups critiques</text>
+<text id="360200">Coût en PC des compétences réduit</text>
+<text id="360700">Ni rune, ni niveau perdu à la mort</text>
+<text id="361100">PC récupérés à chaque ennemi vaincu</text>
+<text id="370000">Découverte d'objets améliorée</text>
+<text id="370001">Plus de runes par ennemi vaincu</text>
+<text id="370002">Drain de PV continu</text>
+<text id="6000800">Réduction de temps de recharge de compétence de personnage +4</text>
+<text id="6000801">Réduction de temps de recharge de compétence de personnage +5</text>
+<text id="6000900">Rechargement auto. de technique ultime +4</text>
+<text id="6000901">Rechargement auto. de technique ultime +5</text>
+<text id="6001000">Équilibre +4</text>
+<text id="6001001">Équilibre +5</text>
+<text id="6001400">Attaque physique augmentée +4
+</text>
+<text id="6001401">%null%</text>
+<text id="6001500">Puissance d'attaque magique augmentée +3
+</text>
+<text id="6001501">Puissance d'attaque magique augmentée +4
+</text>
+<text id="6001600">Puissance d'attaque de feu augmentée +3
+</text>
+<text id="6001601">Puissance d'attaque de feu augmentée +4
+</text>
+<text id="6001700">Puissance d'attaque de foudre augmentée +3
+</text>
+<text id="6001701">Puissance d'attaque de foudre augmentée +4
+</text>
+<text id="6001800">Puissance d'attaque sacrée augmentée +3
+</text>
+<text id="6001801">Puissance d'attaque sacrée augmentée +4
+</text>
+<text id="6002600">Résistance aux dégâts magiques augmentée +1
+</text>
+<text id="6002601">Résistance aux dégâts magiques augmentée +2
+</text>
+<text id="6002700">Résistance aux dégâts de feu augmentée +1
+</text>
+<text id="6002701">Résistance aux dégâts de feu augmentée +2
+</text>
+<text id="6002800">Résistance aux dégâts de foudre augmentée +1
+</text>
+<text id="6002801">Résistance aux dégâts de foudre augmentée +2
+</text>
+<text id="6002900">Résistance aux dégâts sacrés augmentée +1
+</text>
+<text id="6002901">Résistance aux dégâts sacrés augmentée +2
+</text>
+<text id="6003000">Résistance au poison augmentée +1
+</text>
+<text id="6003001">Résistance au poison augmentée +2
+</text>
+<text id="6003100">Résistance au saignement augmentée +1
+</text>
+<text id="6003101">Résistance au saignement augmentée +2
+</text>
+<text id="6003200">Résistance au sommeil augmentée +1
+</text>
+<text id="6003201">Résistance au sommeil augmentée +2
+</text>
+<text id="6003300">Résistance à la malemort augmentée +1
+</text>
+<text id="6003301">Résistance à la malemort augmentée +2
+</text>
+<text id="6003400">Résistance à la putréfaction augmentée +1
+</text>
+<text id="6003401">Résistance à la putréfaction augmentée +2
+</text>
+<text id="6003500">Résistance à la congélation augmentée +1
+</text>
+<text id="6003501">Résistance à la congélation augmentée +2
+</text>
+<text id="6003600">Résistance à la démence augmentée +1
+</text>
+<text id="6003601">Résistance à la démence augmentée +2
+</text>
+<text id="6005600">Récupération de PV sur les attaques après dégâts +1
+</text>
+<text id="6005601">Récupération de PV sur les attaques après dégâts +2
+</text>
+<text id="6006000">Brise-posture augmentée en maniant une arme à deux mains +1</text>
+<text id="6006001">Brise-posture augmentée en maniant une arme à deux mains +2</text>
+<text id="6006100">Brise-posture augmentée en maniant deux armes +1</text>
+<text id="6006101">Brise-posture augmentée en maniant deux armes +2</text>
+<text id="6012300">Résistance aux dégâts améliorée quand les PV sont bas +1</text>
+<text id="6012301">Résistance aux dégâts améliorée quand les PV sont bas +2</text>
+<text id="6030200">PV restaurés par les boulettes médicinales, etc. +1
+</text>
+<text id="6030201">PV restaurés par les boulettes médicinales, etc. +2
+</text>
+<text id="6030600">Les gardes réussies chargent un peu plus la jauge de technique +1
+</text>
+<text id="6030601">Les gardes réussies chargent un peu plus la jauge de technique +2
+</text>
+<text id="6030800">Les coups critiques chargent un peu plus la jauge de technique +1
+</text>
+<text id="6030801">Les coups critiques chargent un peu plus la jauge de technique +2
+</text>
+<text id="6030900">Utiliser une graisse augmente la puissance d'attaque physique +1
+</text>
+<text id="6030901">Utiliser une graisse augmente la puissance d'attaque physique +2
+</text>
+<text id="6031900">Les coups critiques rapportent des runes +1</text>
+<text id="6031901">Les coups critiques rapportent des runes +2</text>
+<text id="6032200">Subir des attaques augmente la puissance d'attaque +1</text>
+<text id="6032201">Subir des attaques augmente la puissance d'attaque +2</text>
+<text id="6035100">Récupération d'endurance accélérée après un coup critique +1</text>
+<text id="6035101">Récupération d'endurance accélérée après un coup critique +2</text>
+<text id="6040000">Attaque ordinaire initiale augmentée +1</text>
+<text id="6040001">Attaque ordinaire initiale augmentée +2</text>
+<text id="6040100">Contre-attaques améliorées +1
+</text>
+<text id="6040101">Contre-attaques améliorées +2
+</text>
+<text id="6040300">Dégâts des pots à lancer augmentés +1</text>
+<text id="6040301">Dégâts des pots à lancer augmentés +2</text>
+<text id="6040400">Dégâts des couteaux de lancer augmentés +1</text>
+<text id="6040401">Dégâts des couteaux de lancer augmentés +2</text>
+<text id="6040500">Dégâts des pierres d'éclat et des pierres gravitationnelles améliorés +1</text>
+<text id="6040501">Dégâts des pierres d'éclat et des pierres gravitationnelles améliorés +2</text>
+<text id="6043000">Cris et souffles améliorés +1</text>
+<text id="6043001">Cris et souffles améliorés +2</text>
+<text id="6043100">Techniques de parfums améliorées +1</text>
+<text id="6043101">Techniques de parfums améliorées +2</text>
+<text id="6060300">PV maximums augmentés pour chaque enemi majeur vaincu dans une grande église</text>
+<text id="6060400">Runes et découverte d'objets augmentées pour chaque enemi majeur vaincu dans un fort</text>
+<text id="6060500">Ésotérisme augmenté pour chaque enemi majeur vaincu dans des ruines</text>
+<text id="6060600">Endurance maximum augmentée pour chaque enemi majeur vaincu dans un camp principal</text>
+<text id="6090000">Les ennemis vaincus chargent plus la jauge de technique +1
+</text>
+<text id="6090001">Les ennemis vaincus chargent plus la jauge de technique +2
+</text>
+<text id="6160000">Les contre-attaques d'estoc restituent des PV +1
+</text>
+<text id="6160001">Les contre-attaques d'estoc restituent des PV +2
+</text>
+<text id="6260000">Puissance d'attaque augmentée contre les ennemis empoisonnés +1
+</text>
+<text id="6260001">Puissance d'attaque augmentée contre les ennemis empoisonnés +2
+</text>
+<text id="6260300">Puissance d'attaque augmentée contre les ennemis putréfiés +1
+</text>
+<text id="6260301">Puissance d'attaque augmentée contre les ennemis putréfiés +2
+</text>
+<text id="6260400">Puissance d'attaque augmentée contre les ennemis congelés +1
+</text>
+<text id="6260401">Puissance d'attaque augmentée contre les ennemis congelés +2
+</text>
+<text id="6500000">[Rôdeur] La compétence de personnage inflige du saignement</text>
+<text id="6500100">[Gardien] La compétence de personnage augmente la résistance aux dégâts des alliés à proximité</text>
+<text id="6500200">[Œil perçant] La compétence de personnage inflige d'importants dégâts de poison aux ennemis empoisonnés</text>
+<text id="6500300">[Duchesse] La compétence de personnage octroie une brève invulnérabilité</text>
+<text id="6500400">[Forban] La compétence de personnage réduit la puissance d'attaque de l'ennemi touché</text>
+<text id="6500500">[Revenante] L'activation de la capacité passive augmente les PC maximums</text>
+<text id="6500600">[Anachorète] Collecter des résidus d'affinité augmente la résistance aux dégâts d'affinité</text>
+<text id="6500700">[Exécuteur] L'activation de la capacité passive restitue progressivement des PV</text>
+<text id="6600000">Attaque augmentée en cas de sommeil à proximité
+</text>
+<text id="6600001">Attaque augmentée en cas de sommeil à proximité +1
+</text>
+<text id="6600002">Attaque augmentée en cas de sommeil à proximité +2
+</text>
+<text id="6600100">Attaque augmentée en cas de démence à proximité
+</text>
+<text id="6600101">Attaque augmentée en cas de démence à proximité +1
+</text>
+<text id="6600102">Attaque augmentée en cas de démence à proximité +2
+</text>
+<text id="6610400">PV maximums augmentés
+</text>
+<text id="6610500">PC maximums augmentés
+</text>
+<text id="6610600">Endurance maximum augmentée
+</text>
+<text id="6610700">Consommation de PC réduite</text>
+<text id="6610701">Consommation de PC réduite +1</text>
+<text id="6610702">Consommation de PC réduite +2</text>
+<text id="6610800">Puissance d'attaque d'affinité augmentée</text>
+<text id="6610801">Puissance d'attaque d'affinité augmentée +1
+</text>
+<text id="6610802">Puissance d'attaque d'affinité augmentée +2
+</text>
+<text id="6611000">Résistance aux dégâts physiques augmentée</text>
+<text id="6611001">Résistance aux dégâts physiques augmentée +1
+</text>
+<text id="6611002">Résistance aux dégâts physiques augmentée +2
+</text>
+<text id="6611100">Résistance aux dégâts d'affinité augmentée</text>
+<text id="6611101">Résistance aux dégâts d'affinité augmentée +1
+</text>
+<text id="6611102">Résistance aux dégâts d'affinité augmentée +2
+</text>
+<text id="6611200">Sorcelleries améliorées</text>
+<text id="6611201">Sorcelleries améliorées +1
+</text>
+<text id="6611202">Sorcelleries améliorées +2
+</text>
+<text id="6611300">Incantations améliorées</text>
+<text id="6611301">Incantations améliorées +1
+</text>
+<text id="6611302">Incantations améliorées +2
+</text>
+<text id="6611400">PV rendus par la fiole augmentés</text>
+<text id="6621000">Débutez l'expédition avec une larme de cristal pourpre fendue</text>
+<text id="6621100">Débutez l'expédition avec une larme de cristal pourpre</text>
+<text id="6621200">Débutez l'expédition avec une larme de cristal céruléenne</text>
+<text id="6621300">Débutez l'expédition avec une larme solidifiée tachetée</text>
+<text id="6621400">Débutez l'expédition avec une perle de cristal pourpre</text>
+<text id="6621500">Débutez l'expédition avec une perle de cristal opaline</text>
+<text id="6621600">Débutez l'expédition avec une larme de cristal pourpre fissurée</text>
+<text id="6621700">Débutez l'expédition avec une larme de cristal verte fissurée</text>
+<text id="6621800">Débutez l'expédition avec une larme solidifiée opaline</text>
+<text id="6621900">Débutez l'expédition avec une larme fissurée épineuse</text>
+<text id="6622000">Débutez l'expédition avec une larme fissurée à pointes</text>
+<text id="6622100">Débutez l'expédition avec une larme de cristal venteuse</text>
+<text id="6622200">Débutez l'expédition avec une larme de cristal fissurée</text>
+<text id="6622300">Débutez l'expédition avec une larme solidifiée grise</text>
+<text id="6622400">Débutez l'expédition avec une larme fissurée à rameaux</text>
+<text id="6622500">Débutez l'expédition avec une perle de cristal aux volutes pourpres</text>
+<text id="6622600">Débutez l'expédition avec une larme secrète céruléenne</text>
+<text id="6622700">Débutez l'expédition avec une larme fissurée à aiguillons de pierre</text>
+<text id="6622800">Débutez l'expédition avec une larme fissurée voilée de flammes</text>
+<text id="6622900">Débutez l'expédition avec une larme fissurée voilée de magie</text>
+<text id="6623000">Débutez l'expédition avec une larme fissurée voilée de foudre</text>
+<text id="6623100">Débutez l'expédition avec une larme fissurée voilée de sacre</text>
+<text id="6624000">Débutez l'expédition avec un arôme galvanisant</text>
+<text id="6624100">Débutez l'expédition avec un arôme étincelant</text>
+<text id="6624200">Débutez l'expédition avec un arôme jarrefer</text>
+<text id="6624300">Débutez l'expédition avec un arôme bouillesang</text>
+<text id="6624400">Débutez l'expédition avec un diffuseur de poison</text>
+<text id="6624500">Débutez l'expédition avec un diffuseur d'acide</text>
+<text id="6630000">Chance de trouver des dagues grâce aux pouvoirs latents augmentée</text>
+<text id="6630100">Chance de trouver des épées droites grâce aux pouvoirs latents augmentée</text>
+<text id="6630200">Chance de trouver des espadons grâce aux pouvoirs latents augmentée</text>
+<text id="6630300">Chance de trouver des épées colossales grâce aux pouvoirs latents augmentée</text>
+<text id="6630400">Chance de trouver des épées courbées grâce aux pouvoirs latents augmentée</text>
+<text id="6630500">Chance de trouver des espadons courbés grâce aux pouvoirs latents augmentée</text>
+<text id="6630600">Chance de trouver des katanas grâce aux pouvoirs latents augmentée</text>
+<text id="6630700">Chance de trouver des lames doubles grâce aux pouvoirs latents augmentée</text>
+<text id="6630800">Chance de trouver des épées d'estoc grâce aux pouvoirs latents augmentée</text>
+<text id="6630900">Chance de trouver des épées d'estoc lourdes grâce aux pouvoirs latents augmentée</text>
+<text id="6631000">Chance de trouver des haches grâce aux pouvoirs latents augmentée</text>
+<text id="6631100">Chance de trouver des grandes haches grâce aux pouvoirs latents augmentée</text>
+<text id="6631200">Chance de trouver des marteaux grâce aux pouvoirs latents augmentée</text>
+<text id="6631300">Chance de trouver des grands marteaux grâce aux pouvoirs latents augmentée</text>
+<text id="6631400">Chance de trouver des fléaux d'armes grâce aux pouvoirs latents augmentée</text>
+<text id="6631500">Chance de trouver des lances grâce aux pouvoirs latents augmentée</text>
+<text id="6631600">Chance de trouver des grandes lances grâce aux pouvoirs latents augmentée</text>
+<text id="6631700">Chance de trouver des hallebardes grâce aux pouvoirs latents augmentée</text>
+<text id="6631800">Chance de trouver des fauchards grâce aux pouvoirs latents augmentée</text>
+<text id="6631900">Chance de trouver des poings grâce aux pouvoirs latents augmentée</text>
+<text id="6632000">Chance de trouver des griffes grâce aux pouvoirs latents augmentée</text>
+<text id="6632100">Chance de trouver des fouets grâce aux pouvoirs latents augmentée</text>
+<text id="6632200">Chance de trouver des armes colossales grâce aux pouvoirs latents augmentée</text>
+<text id="6632300">Chance de trouver des arcs grâce aux pouvoirs latents augmentée</text>
+<text id="6632400">Chance de trouver des arcs géants grâce aux pouvoirs latents augmentée</text>
+<text id="6632500">Chance de trouver des arbalètes grâce aux pouvoirs latents augmentée</text>
+<text id="6632600">Chance de trouver des balistes grâce aux pouvoirs latents augmentée</text>
+<text id="6632700">Chance de trouver des petits boucliers grâce aux pouvoirs latents augmentée</text>
+<text id="6632800">Chance de trouver des boucliers grâce aux pouvoirs latents augmentée</text>
+<text id="6632900">Chance de trouver des pavois grâce aux pouvoirs latents augmentée</text>
+<text id="6633000">Chance de trouver des bâtons grâce aux pouvoirs latents augmentée</text>
+<text id="6633100">Chance de trouver des sceaux sacrés grâce aux pouvoirs latents augmentée</text>
+<text id="6633200">Chance de trouver des torches grâce aux pouvoirs latents augmentée</text>
+<text id="6640000">[Rôdeur] Esprit augmenté, vigueur réduite</text>
+<text id="6640100">[Rôdeur] Intelligence et foi augmentées, force et dextérité réduites</text>
+<text id="6641000">[Gardien] Force et dextérité augmentées, vigueur réduite</text>
+<text id="6641100">[Gardien] Esprit et foi augmentés, vigueur réduite</text>
+<text id="6642000">[Œil perçant] Ésotérisme augmenté, dextérité réduite</text>
+<text id="6642100">[Œil perçant] Vigueur et force augmentées, dextérité réduite</text>
+<text id="6643000">[Duchesse] Vigueur et force augmentées, esprit réduit</text>
+<text id="6643100">[Duchesse] Esprit et foi augmentés, intelligence réduite</text>
+<text id="6644000">[Forban] Esprit et intelligence augmentées, vigueur et endurance réduites</text>
+<text id="6644100">[Forban] Ésotérisme augmenté, vigueur réduite</text>
+<text id="6645000">[Revenante] Vigueur et endurance augmentées, esprit réduit</text>
+<text id="6645100">[Revenante] Force augmentée, foi réduite</text>
+<text id="6646000">[Anachorète] Vigueur, endurance et dextérité augmentées, intelligence et foi réduites</text>
+<text id="6646100">[Anachorète] Intelligence et foi augmentées, esprit réduit</text>
+<text id="6647000">[Exécuteur] Vigueur et endurance augmentées, ésotérisme réduit</text>
+<text id="6647100">[Exécuteur] Dextérité et ésotérisme augmentés, vigueur réduite</text>
+<text id="6800000">Vigueur réduite</text>
+<text id="6800200">Endurance réduite</text>
+<text id="6810100">Résistance aux dégâts réduite</text>
+<text id="6820000">Subir des dégâts accumule du poison</text>
+<text id="6820100">Subir des dégâts accumule de la putréfaction écarlate</text>
+<text id="6820200">Subir des dégâts accumule de la congélation</text>
+<text id="6820300">Subir des dégâts accumule du saignement</text>
+<text id="6820400">Subir des dégâts accumule de la démence</text>
+<text id="6820500">Subir des dégâts accumule du sommeil</text>
+<text id="6820600">Subir des dégâts accumule de la malemort</text>
+<text id="6830000">Force et intelligence réduites</text>
+<text id="6830100">Dextérité et foi réduites</text>
+<text id="6830200">Intelligence et dextérité réduites</text>
+<text id="6830300">Foi et force réduites</text>
+<text id="6830400">Vigueur et ésotérisme réduits</text>
+<text id="6840000">Moins de runes par ennemi vaincu</text>
+<text id="6840100">PV rendus par la fiole réduits</text>
+<text id="6840200">Chargement de la jauge de technique ultime réduit </text>
+<text id="6850000">Résistance aux dégâts physiques réduite</text>
+<text id="6850100">Résistance aux dégâts d'affinité réduite</text>
+<text id="6850200">Résistance aux altérations réduite</text>
+<text id="6850300">PV rendus par la fiole réduits</text>
+<text id="6850400">Ruée offensive consomme davantage d'endurance</text>
+<text id="6850500">Drain de PV en continu</text>
+<text id="6850600">Esquiver requiert plus d'endurance</text>
+<text id="6850700">Résistance aux dégâts réduite après une esquive</text>
+<text id="6850800">Esquiver en chaîne réduit la résistance aux dégâts</text>
+<text id="6850900">Utiliser une fiole réduit la résistance aux dégâts</text>
+<text id="6851000">Utiliser une fiole accumule du sommeil</text>
+<text id="6851100">Utiliser une fiole accumule de la démence</text>
+<text id="6851200">Attaque réduite si les PV ne sont pas au maximum</text>
+<text id="6851300">Accumule du poison si les PV ne sont pas au maximum</text>
+<text id="6851400">Accumule de la putréfaction si les PV ne sont pas au maximum</text>
+<text id="6851500">Attaque réduite si les PV sont au maximum</text>
+<text id="6851600">La mort imminente retire une dose de fiole</text>
+<text id="6851700">La mort imminente réduit vos PV maximums</text>
+<text id="7000000">Vigueur +1</text>
+<text id="7000001">Vigueur +2</text>
+<text id="7000002">Vigueur +3</text>
+<text id="7000090">PV maximums augmentés</text>
+<text id="7000091">%null%</text>
+<text id="7000092">%null%</text>
+<text id="7000093">%null%</text>
+<text id="7000094">%null%</text>
+<text id="7000095">%null%</text>
+<text id="7000096">%null%</text>
+<text id="7000097">%null%</text>
+<text id="7000098">%null%</text>
+<text id="7000099">%null%</text>
+<text id="7000100">Esprit +1</text>
+<text id="7000101">Esprit +2</text>
+<text id="7000102">Esprit +3</text>
+<text id="7000190">PC maximums augmentés</text>
+<text id="7000191">%null%</text>
+<text id="7000192">%null%</text>
+<text id="7000193">%null%</text>
+<text id="7000194">%null%</text>
+<text id="7000195">%null%</text>
+<text id="7000196">%null%</text>
+<text id="7000197">%null%</text>
+<text id="7000198">%null%</text>
+<text id="7000199">%null%</text>
+<text id="7000200">Endurance +1</text>
+<text id="7000201">Endurance +2</text>
+<text id="7000202">Endurance +3</text>
+<text id="7000290">Endurance maximum augmentée</text>
+<text id="7000291">%null%</text>
+<text id="7000292">%null%</text>
+<text id="7000293">%null%</text>
+<text id="7000294">%null%</text>
+<text id="7000295">%null%</text>
+<text id="7000296">%null%</text>
+<text id="7000297">%null%</text>
+<text id="7000298">%null%</text>
+<text id="7000299">%null%</text>
+<text id="7000300">Force +1</text>
+<text id="7000301">Force +2</text>
+<text id="7000302">Force +3</text>
+<text id="7000400">Dextérité +1</text>
+<text id="7000401">Dextérité +2</text>
+<text id="7000402">Dextérité +3</text>
+<text id="7000500">Intelligence +1</text>
+<text id="7000501">Intelligence +2</text>
+<text id="7000502">Intelligence +3</text>
+<text id="7000600">Foi +1</text>
+<text id="7000601">Foi +2</text>
+<text id="7000602">Foi +3</text>
+<text id="7000700">Ésotérisme +1</text>
+<text id="7000701">Ésotérisme +2</text>
+<text id="7000702">Ésotérisme +3</text>
+<text id="7000800">Réduction du temps de recharge de compétence de personnage +1</text>
+<text id="7000801">Réduction du temps de recharge de compétence de personnage +2</text>
+<text id="7000802">Réduction du temps de recharge de compétence de personnage +3</text>
+<text id="7000900">Rechargement auto. de technique ultime +1</text>
+<text id="7000901">Rechargement auto. de technique ultime +2</text>
+<text id="7000902">Rechargement auto. de technique ultime +3</text>
+<text id="7001000">Équilibre +1</text>
+<text id="7001001">Équilibre +2</text>
+<text id="7001002">Équilibre +3</text>
+<text id="7001400">Attaque physique augmentée</text>
+<text id="7001401">Attaque physique augmentée +1</text>
+<text id="7001402">Attaque physique augmentée +2</text>
+<text id="7001403">Attaque physique augmentée +3</text>
+<text id="7001500">Puissance d'attaque magique augmentée</text>
+<text id="7001501">Puissance d'attaque magique augmentée +1</text>
+<text id="7001502">Puissance d'attaque magique augmentée +2</text>
+<text id="7001600">Puissance d'attaque de feu augmentée</text>
+<text id="7001601">Puissance d'attaque de feu augmentée +1</text>
+<text id="7001602">Puissance d'attaque de feu augmentée +2</text>
+<text id="7001700">Puissance d'attaque de foudre augmentée</text>
+<text id="7001701">Puissance d'attaque de foudre augmentée +1</text>
+<text id="7001702">Puissance d'attaque de foudre augmentée +2</text>
+<text id="7001800">Puissance d'attaque sacrée augmentée</text>
+<text id="7001801">Puissance d'attaque sacrée augmentée +1</text>
+<text id="7001802">Puissance d'attaque sacrée augmentée +2</text>
+<text id="7001900">Poison sur les attaques</text>
+<text id="7001901">Poison sur les attaques +1</text>
+<text id="7001902">Poison sur les attaques +2</text>
+<text id="7002000">Saignement sur les attaques</text>
+<text id="7002001">Saignement sur les attaques +1</text>
+<text id="7002002">Saignement sur les attaques +2</text>
+<text id="7002100">Sommeil sur les attaques</text>
+<text id="7002101">Sommeil sur les attaques +1</text>
+<text id="7002102">Sommeil sur les attaques +2</text>
+<text id="7002103">Sommeil sur les attaques +3</text>
+<text id="7002200">Malemort sur les attaques</text>
+<text id="7002300">Putréfaction écarlate sur les attaques</text>
+<text id="7002301">Putréfaction écarlate sur les attaques +1</text>
+<text id="7002302">Putréfaction écarlate sur les attaques +2</text>
+<text id="7002400">Congélation sur les attaques</text>
+<text id="7002401">Congélation sur les attaques +1</text>
+<text id="7002402">Congélation sur les attaques +2</text>
+<text id="7002403">Congélation sur les attaques +3</text>
+<text id="7002500">Démence sur les attaques</text>
+<text id="7002600">Résistance aux dégâts magiques augmentée</text>
+<text id="7002700">Résistance aux dégâts de feu augmentée</text>
+<text id="7002800">Résistance aux dégâts de foudre augmentée</text>
+<text id="7002900">Résistance aux dégâts sacrés augmentée</text>
+<text id="7003000">Résistance au poison augmentée</text>
+<text id="7003100">Résistance au saignement augmentée</text>
+<text id="7003200">Résistance au sommeil augmentée</text>
+<text id="7003300">Résistance à la malemort augmentée</text>
+<text id="7003400">Résistance à la putréfaction augmentée</text>
+<text id="7003500">Résistance à la congélation augmentée</text>
+<text id="7003600">Résistance à la démence augmentée</text>
+<text id="7005600">Récupération de PV sur les attaques après dégâts</text>
+<text id="7010000">[Gardien] Portée de compétence de personnage augmentée</text>
+<text id="7010200">La fiole soigne également les alliés</text>
+<text id="7010500">[Rôdeur] L'activation de la technique ultime répand du feu</text>
+<text id="7010700">[Duchesse] Un enchaînement d'attaques à la dague
+déclenche une répétition sur les ennemis proches</text>
+<text id="7010800">[Forban] Augmente les dégâts de la compétence de personnage.
+Résistance aux dégâts réduite pendant utilisation</text>
+<text id="7010900">[Revenante] L'activation de la technique sacrifie vos PV
+pour soigner entièrement les alliés proches</text>
+<text id="7011000">[Gardien] Augmente la durée de la compétence de personnage</text>
+<text id="7011100">[Gardien] Améliore la résistance aux dégâts des alliés
+lors de l'utilisation de la technique ultime</text>
+<text id="7011200">[Revenante] Déclenche une explosion de flamme spectrale
+lors de l'utilisation de la technique ultime</text>
+<text id="7011400">[Gardien] Rend des PV aux alliés lors de 
+l'utilisation de compétence de personnage</text>
+<text id="7011500">[Rôdeur] La compétence de personnage inflige saignement</text>
+<text id="7011600">[Gardien] Les attaques chargées à la hallebarde
+génèrent une tornade</text>
+<text id="7011700">[Exécuteur] Après l'activation de la technique ultime, les cris rendent des PV</text>
+<text id="7011900">[Gardien] La compétence de personnage cause des dégats sacrés</text>
+<text id="7012000">[Gardien] Quand la technique est activée, restitue
+des PV à vos alliés proches</text>
+<text id="7012200">En cas de PV faibles, restitue lentement des PV
+à vos alliés proches et vous-même</text>
+<text id="7012300">Résistance aux dégâts améliorée quand les PV sont bas</text>
+<text id="7012400">Les attaques puissantes créent des ondes de chaleur</text>
+<text id="7012500">Sauter conjure des projectiles magiques</text>
+<text id="7012600">Attaques améliorées en cas d'alliés proches</text>
+<text id="7012700">Les contre-attaques créent des piliers de lumière</text>
+<text id="7020000">[Rôdeur] La compétence de personnage imprègne de feu l'arme
+si enchaînée avec une attaque ordinaire (espadon uniquement)</text>
+<text id="7030000">Équilibre amélioré près d'une stèle totémique</text>
+<text id="7030200">PV restaurés par les boulettes médicinales, etc.</text>
+<text id="7030500">[Rôdeur] Résistance aux dégâts réduite, puissance d'attaque
+et endurance améliorées après activation de la technique</text>
+<text id="7030600">Les gardes réussies chargent un peu plus la jauge de technique</text>
+<text id="7030700">La posture de garde attire l'attention des ennemis</text>
+<text id="7030800">Les coups critiques chargent un peu plus la jauge de technique</text>
+<text id="7030900">Utiliser une graisse augmente la puissance d'attaque physique</text>
+<text id="7031200">[Revenante] Renforce la famille et les alliés à l'activation de la technique ultime</text>
+<text id="7031300">[Forban] Les dégâts subis pendant l'utilisation de la compétence de
+personnage augmentent la puissance d'attaque et l'endurance</text>
+<text id="7031400">[Rôdeur] Réduit le temps de recharge de la compétence de personnage</text>
+<text id="7031600">Réussir plusieurs gardes d'affilée
+renforce la garde et dévie les attaques puissantes</text>
+<text id="7031700">Les gardes réussies émettent une onde de choc</text>
+<text id="7031800">[Duchesse] Après un coup critique dans le dos,
+vous êtes difficile à repérer et vos pas sont silencieux</text>
+<text id="7031900">Les coups critiques rapportent des runes</text>
+<text id="7032200">Subir des attaques augmente la puissance d'attaque</text>
+<text id="7032300">[Rôdeur] Puissance d'attaque améliorée
+quand la compétence de personnage est activée</text>
+<text id="7032400">[Rôdeur] Les capacités activées remplissent grandement la jauge de technique</text>
+<text id="7032700">[Duchesse] Les ennemis vaincus pendant que la technique
+est active augmentent la puissance d'attaque</text>
+<text id="7032800">[Anachorète] Collecter des résidus d'affinité 
+déclenche Domaine magique</text>
+<text id="7032900">[Anachorète] Inflige un saignement à soi-même et augmente la 
+puissance d'attaque en activant la technique ultime</text>
+<text id="7033000">[Rôdeur] Puissance d'attaque améliorée
+quand la capacité est activée</text>
+<text id="7033100">%null%</text>
+<text id="7033200">[Rôdeur] +1 utilisation de compétence de personnage</text>
+<text id="7033300">[Gardien] Quand vous activez une capacité,
+les ennemis vous prennent pour cible</text>
+<text id="7033400">[Gardien] Tant que la capacité est active,
+les gardes réussies déclenchent des ondes de choc</text>
+<text id="7033600">[Duchesse] Durée de la technique ultime augmentée</text>
+<text id="7033700">Les armes colossales sont enveloppées de roche
+pendant les attaques chargées</text>
+<text id="7033800">[Forban] Porter le coup final d'une compétence de personnage
+augmente de façon permanente la puissance d'attaque</text>
+<text id="7033900">[Anachorète] Augmente la durée des sceaux sanglants</text>
+<text id="7034000">[Anachorète] Collecter 4 résidus d'affinité augmente la puissance 
+d'attaque d'affinité</text>
+<text id="7034100">[Anachorète] Activer la technique ultime augmente les PV maximums</text>
+<text id="7034200">[Exécuteur] Puissance d'attaque améliorée
+quand la technique ultime est activée</text>
+<text id="7034300">[Exécuteur] Amplifie l'effet de la capacité
+mais réduit la résistance aux altérations</text>
+<text id="7034400">[Exécuteur] La compétence de personnage améliore les attaques, mais ces dernières drainent les PV</text>
+<text id="7034500">[Exécuteur] Quand une compétence de personnage est activée,
+les attaques d'épée maudite restituent des PV</text>
+<text id="7034600">[Œil perçant] Charger la technique ultime octroie un effet de poison</text>
+<text id="7034700">[Œil perçant] L'activation de la technique ultime améliore les contre-attaques d'estoc</text>
+<text id="7034800">Infliger un coup critique augmente l'endurance max</text>
+<text id="7034900">PV récupérés lors des coups critiques</text>
+<text id="7035000">Effet de foudre lors de coups critiques</text>
+<text id="7035100">Récupération d'endurance accélérée après un coup critique</text>
+<text id="7035200">Les gardes consécutives renforcent votre résistance</text>
+<text id="7035300">Brume soporifique générée lors de coups critiques</text>
+<text id="7035400">Émote « S'asseoir en tailleur » génère de la démence</text>
+<text id="7035500">La démence rend continuellement des PC</text>
+<text id="7035600">À l'atterrissage, la ruée offensive scinde la terre</text>
+<text id="7035700">Changer d'arme octroie une attaque d'affinité</text>
+<text id="7035800">Puissance d'attaque améliorée pour les affinités</text>
+<text id="7035900">Changer d'arme augmente la puissance d'attaque</text>
+<text id="7040000">Attaque ordinaire initiale augmentée</text>
+<text id="7040100">Contre-attaques améliorées</text>
+<text id="7040200">Coups critiques améliorés</text>
+<text id="7040290">Coups critiques améliorés (+1)</text>
+<text id="7040291">%null%</text>
+<text id="7040292">%null%</text>
+<text id="7040293">%null%</text>
+<text id="7040294">%null%</text>
+<text id="7040295">%null%</text>
+<text id="7040296">%null%</text>
+<text id="7040297">%null%</text>
+<text id="7040298">%null%</text>
+<text id="7040299">%null%</text>
+<text id="7040300">Dégâts des pots à lancer augmentés</text>
+<text id="7040400">Dégâts des couteaux de lancer augmentés</text>
+<text id="7040500">Dégâts des pierres d'éclat et des pierres gravitationnelles améliorés</text>
+<text id="7043200">Sorcelleries telluriques améliorées</text>
+<text id="7043300">Sorcelleries de Caria améliorées</text>
+<text id="7043400">Sorcelleries de laméclat améliorées</text>
+<text id="7043500">Sorcelleries d'invisibilité améliorées</text>
+<text id="7043600">Sorcelleries cristaliennes améliorées</text>
+<text id="7043700">Sorcelleries gravitationnelles améliorées</text>
+<text id="7043800">Sorcelleries d'épines améliorées</text>
+<text id="7043900">Sorcelleries nocturnes améliorées</text>
+<text id="7044000">Incantations de l'Ordre d'or améliorées</text>
+<text id="7044100">Incantations draconiques améliorées</text>
+<text id="7044200">Incantations de la Flamme des Géants améliorées</text>
+<text id="7044300">Incantations déicides améliorées</text>
+<text id="7044400">Incantations bestiales améliorées</text>
+<text id="7044500">Incantations de la Flamme exaltée améliorées</text>
+<text id="7044600">Incantations de la communion draconique améliorées</text>
+<text id="7050000">Récupération d'endurance pour les alliés proches augmentée,
+mais pas pour vous</text>
+<text id="7050100">Les objets appliquent leur effet aux alliés proches</text>
+<text id="7060000">Puissance d'attaque augmentée pour chaque prisonnier d'une geôle éternelle vaincu</text>
+<text id="7060100">PC maximums augmentés pour chaque tour du sorcier débloquée</text>
+<text id="7060200">Puissance d'attaque augmentée pour chaque envahisseur nocturne vaincu</text>
+<text id="7070000">Trésor indiqué sur la carte</text>
+<text id="7080000">Puissance d'attaque augmentée avec 3 dagues ou plus équipées</text>
+<text id="7080100">Puissance d'attaque augmentée avec 3 épées droites ou plus équipées</text>
+<text id="7080200">Puissance d'attaque augmentée avec 3 espadons ou plus équipés</text>
+<text id="7080300">Puissance d'attaque augmentée avec 3 épées colossales ou plus équipées</text>
+<text id="7080400">Puissance d'attaque augmentée avec 3 épées courbées ou plus équipées</text>
+<text id="7080500">Puissance d'attaque augmentée avec 3 espadons courbés ou plus équipés</text>
+<text id="7080600">Puissance d'attaque augmentée avec 3 katanas ou plus équipés</text>
+<text id="7080700">Puissance d'attaque augmentée avec 3 lames doubles ou plus équipées</text>
+<text id="7080800">Puissance d'attaque augmentée avec 3 épées d'estoc ou plus équipées</text>
+<text id="7080900">Puissance d'attaque augmentée avec 3 épées d'estoc lourdes ou plus équipées</text>
+<text id="7081000">Puissance d'attaque augmentée avec 3 haches ou plus équipées</text>
+<text id="7081100">Puissance d'attaque augmentée avec 3 grandes haches ou plus équipées</text>
+<text id="7081200">Puissance d'attaque augmentée avec 3 marteaux ou plus équipés</text>
+<text id="7081300">Puissance d'attaque augmentée avec 3 grands marteaux ou plus équipés</text>
+<text id="7081400">Puissance d'attaque augmentée avec 3 fléaux d'armes ou plus équipés</text>
+<text id="7081500">Puissance d'attaque augmentée avec 3 lances ou plus équipées</text>
+<text id="7081700">Puissance d'attaque augmentée avec 3 grandes lances ou plus équipées</text>
+<text id="7081800">Puissance d'attaque augmentée avec 3 hallebardes ou plus équipées</text>
+<text id="7081900">Puissance d'attaque augmentée avec 3 fauchards ou plus équipés</text>
+<text id="7082000">Puissance d'attaque augmentée avec 3 poings ou plus équipés</text>
+<text id="7082100">Puissance d'attaque augmentée avec 3 griffes ou plus équipées</text>
+<text id="7082200">Puissance d'attaque augmentée avec 3 fouets ou plus équipés</text>
+<text id="7082300">Puissance d'attaque augmentée avec 3 armes colossales ou plus équipées</text>
+<text id="7082400">Puissance d'attaque augmentée avec 3 arcs ou plus équipés</text>
+<text id="7082500">PC maximums augmentés avec 3 bâtons ou plus équipés</text>
+<text id="7082600">PC maximums augmentés avec 3 sceaux sacrés ou plus équipés</text>
+<text id="7082700">PV maximums augmentés avec 3 petits boucliers ou plus équipés</text>
+<text id="7082800">PV maximums augmentés avec 3 boucliers ou plus équipés</text>
+<text id="7082900">PV maximums augmentés avec 3 pavois ou plus équipés</text>
+<text id="7090000">Les ennemis vaincus chargent plus la jauge de technique</text>
+<text id="7090100">PV récupérés à chaque ennemi vaincu
+pour les alliés, mais pas pour vous</text>
+<text id="7090300">PV récupérés en vainquant un ennemi près d'une stèle totémique</text>
+<text id="7100000">Coups critiques dévastateurs contre les ennemis empoisonnés</text>
+<text id="7100100">Récupération d'endurance en cas d'attaques réussies</text>
+<text id="7100190">Récupération d'endurance en cas d'attaques réussies +1</text>
+<text id="7110000">Plus de runes par ennemi vaincu pour vous et vos alliés</text>
+<text id="7120000">L'arme de départ inflige des dégâts magiques</text>
+<text id="7120100">L'arme de départ inflige des dégâts de feu</text>
+<text id="7120101">L'arme de départ inflige des dégâts de feu +1</text>
+<text id="7120200">L'arme de départ inflige des dégâts de foudre</text>
+<text id="7120300">L'arme de départ inflige des dégâts sacrés</text>
+<text id="7120400">L'arme de départ accumule de la congélation</text>
+<text id="7120500">L'arme de départ accumule du poison</text>
+<text id="7120600">L'arme de départ accumule du saignement</text>
+<text id="7120700">L'arme de départ accumule de la putréfaction écarlate</text>
+<text id="7120900">Débutez l'expédition avec une clé-lame de pierre</text>
+<text id="7121000">Débutez l'expédition avec une petite sacoche</text>
+<text id="7121100">Débutez l'expédition avec des pots incendiaires</text>
+<text id="7121200">Débutez l'expédition avec des pots magiques</text>
+<text id="7121300">Débutez l'expédition avec des pots de foudre</text>
+<text id="7121400">Débutez l'expédition avec des pots d'eau bénite</text>
+<text id="7121500">Débutez l'expédition avec des fléchettes en os empoisonnées</text>
+<text id="7121600">Débutez l'expédition avec des fléchettes de cristal</text>
+<text id="7121700">Débutez l'expédition avec des dagues de lancer</text>
+<text id="7121800">Débutez l'expédition avec des morceaux de pierre d'éclat</text>
+<text id="7121900">Débutez l'expédition avec des pierres gravitationnelles massives</text>
+<text id="7122000">Débutez l'expédition avec des branches envoûtantes</text>
+<text id="7122100">Débutez l'expédition avec une cloche mande-spectre</text>
+<text id="7122200">Débutez l'expédition avec de la graisse incendiaire</text>
+<text id="7122300">Débutez l'expédition avec de la graisse magique</text>
+<text id="7122400">Débutez l'expédition avec de la graisse électrifiée</text>
+<text id="7122500">Débutez l'expédition avec de la graisse sacrée</text>
+<text id="7122600">Débutez l'expédition avec de la graisse protectrice</text>
+<text id="7122700">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Phalange de laméclats</text>
+<text id="7122800">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Gravité</text>
+<text id="7122900">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Frappe ardente</text>
+<text id="7123000">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Éruption</text>
+<text id="7123100">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Éclair</text>
+<text id="7123200">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Entaille foudroyante</text>
+<text id="7123300">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Lame sacrée</text>
+<text id="7123400">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Frappe pieuse</text>
+<text id="7123500">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Brume empoisonnée</text>
+<text id="7123600">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Envol venimeux</text>
+<text id="7123700">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Lame de sang</text>
+<text id="7123800">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Seppuku</text>
+<text id="7123900">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Brume de givre</text>
+<text id="7124000">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Piétinement givrant</text>
+<text id="7124100">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Leurre blanc</text>
+<text id="7124300">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Résilience</text>
+<text id="7124400">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Pas vif</text>
+<text id="7124500">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Piétinement orageux</text>
+<text id="7124600">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Détermination</text>
+<text id="7124700">Au début de l'expédition, remplace la compétence
+d'une arme compatible par Pluie de flèches</text>
+<text id="7126000">Débutez l'expédition avec des éclats de lumière stellaire</text>
+<text id="7150000">Les contre-attaques bénéficient d'un bonus en fonction de vos PV actuels</text>
+<text id="7160000">Les contre-attaques d'estoc restituent des PV</text>
+<text id="7200000">Les tirs à la tête restituent des PV</text>
+<text id="7200100">Brise-posture augmentée avec des tirs à la tête</text>
+<text id="7220000">[Revenante] Puissance accrue aux côtés de votre famille</text>
+<text id="7230000">Remise sur les achats en expédition à la boutique de runes</text>
+<text id="7230001">Énorme remise sur les achats en expédition à la boutique de runes</text>
+<text id="7240000">Équilibre et résistance aux dégâts augmentés si des dégâts
+vous repoussent</text>
+<text id="7260000">Puissance d'attaque augmentée contre les ennemis empoisonnés</text>
+<text id="7260200">Puissance d'attaque augmentée contre les ennemis endormis</text>
+<text id="7260300">Puissance d'attaque augmentée contre les ennemis putréfiés</text>
+<text id="7260400">Puissance d'attaque augmentée contre les ennemis congelés</text>
+<text id="7260600">Attaquer un ennemi endormi crée une explosion de magie</text>
+<text id="7260700">Camouflage en cas de congélation à proximité</text>
+<text id="7260701">%null%</text>
+<text id="7260702">%null%</text>
+<text id="7260703">%null%</text>
+<text id="7260704">%null%</text>
+<text id="7260705">%null%</text>
+<text id="7260706">%null%</text>
+<text id="7260707">%null%</text>
+<text id="7260708">%null%</text>
+<text id="7260709">%null%</text>
+<text id="7260710">Attaque augmentée en cas d'empoisonnement ou de putréfaction à proximité</text>
+<text id="7270100">[Œil perçant] +1 utilisation de compétence de personnage</text>
+<text id="7280000">[Œil perçant] Allonge la durée des points faibles</text>
+<text id="7290000">[Duchesse] Puissance d'attaque de la compétence de personnage augmentée</text>
+<text id="7300000">[Duchesse] La compétence de personnage
+endort les ennemis</text>
+<text id="7310000">[Forban] Durée de la technique ultime augmentée</text>
+<text id="7320000">[Revenante] Chances d'activation de la capacité passive augmentées</text>
+<text id="7330000">Puissance d'attaque des dagues augmentée</text>
+<text id="7330100">Puissance d'attaque des épées droites augmentée</text>
+<text id="7330200">Puissance d'attaque des espadons augmentée</text>
+<text id="7330300">Puissance d'attaque des épées colossales augmentée</text>
+<text id="7330400">Puissance d'attaque des épées courbées augmentée</text>
+<text id="7330500">Puissance d'attaque des espadons courbés augmentée</text>
+<text id="7330600">Puissance d'attaque des katanas augmentée</text>
+<text id="7330700">Puissance d'attaque des lames doubles augmentée</text>
+<text id="7330800">Puissance d'attaque des épées d'estoc augmentée</text>
+<text id="7330900">Puissance d'attaque des épées d'estoc lourdes augmentée</text>
+<text id="7331000">Puissance d'attaque des haches augmentée</text>
+<text id="7331100">Puissance d'attaque des grandes haches augmentée</text>
+<text id="7331200">Puissance d'attaque des marteaux augmentée</text>
+<text id="7331300">Puissance d'attaque des grands marteaux augmentée</text>
+<text id="7331400">Puissance d'attaque des fléaux d'armes augmentée</text>
+<text id="7331500">Puissance d'attaque des lances augmentée</text>
+<text id="7331600">Puissance d'attaque des piques augmentée</text>
+<text id="7331700">Puissance d'attaque des grandes lances augmentée</text>
+<text id="7331800">Puissance d'attaque des hallebardes augmentée</text>
+<text id="7331900">Puissance d'attaque des fauchards augmentée</text>
+<text id="7332000">Puissance d'attaque des poings augmentée</text>
+<text id="7332100">Puissance d'attaque des griffes augmentée</text>
+<text id="7332200">Puissance d'attaque des fouets augmentée</text>
+<text id="7332300">Puissance d'attaque des armes colossales augmentée</text>
+<text id="7332400">Puissance d'attaque des arcs augmentée</text>
+<text id="7332500">Puissance d'attaque des arcs géants augmentée</text>
+<text id="7332600">Puissance d'attaque des arbalètes augmentée</text>
+<text id="7332700">Puissance d'attaque des balistes augmentée</text>
+<text id="7340000">Attaquer à la dague rend des PV</text>
+<text id="7340100">Attaquer à l'épée droite rend des PV</text>
+<text id="7340200">Attaquer à l'espadon rend des PV</text>
+<text id="7340300">Attaquer à l'épée colossale rend des PV</text>
+<text id="7340400">Attaquer à l'épée courbée rend des PV</text>
+<text id="7340500">Attaquer à l'espadon courbé rend des PV</text>
+<text id="7340600">Attaquer au katana rend des PV</text>
+<text id="7340700">Attaquer à la lame double rend des PV</text>
+<text id="7340800">Attaquer à l'épée d'estoc rend des PV</text>
+<text id="7340900">Attaquer à l'épée d'estoc lourde rend des PV</text>
+<text id="7341000">Attaquer à la hache rend des PV</text>
+<text id="7341100">Attaquer à la grande hache rend des PV</text>
+<text id="7341200">Attaquer au marteau rend des PV</text>
+<text id="7341300">Attaquer au grand marteau rend des PV</text>
+<text id="7341400">Attaquer au fléau d'armes rend des PV</text>
+<text id="7341500">Attaquer à la lance rend des PV</text>
+<text id="7341600">Attaquer à la pique rend des PV</text>
+<text id="7341700">Attaquer à la grande lance rend des PV</text>
+<text id="7341800">Attaquer à la hallebarde rend des PV</text>
+<text id="7341900">Attaquer au fauchard rend des PV</text>
+<text id="7342000">Attaquer au poing rend des PV</text>
+<text id="7342100">Attaquer à la griffe rend des PV</text>
+<text id="7342200">Attaquer au fouet rend des PV</text>
+<text id="7342300">Attaquer à l'arme colossale rend des PV</text>
+<text id="7342400">Attaquer à l'arc rend des PV</text>
+<text id="7342500">Attaquer à l'arc géant rend des PV</text>
+<text id="7342600">Attaquer à l'arbalète rend des PV</text>
+<text id="7342700">Attaquer à la baliste rend des PV</text>
+<text id="7350000">Attaquer à la dague rend des PC</text>
+<text id="7350100">Attaquer à l'épée droite rend des PC</text>
+<text id="7350200">Attaquer à l'espadon rend des PC</text>
+<text id="7350300">Attaquer à l'épée colossale rend des PC</text>
+<text id="7350400">Attaquer à l'épée courbée rend des PC</text>
+<text id="7350500">Attaquer à l'espadon courbé rend des PC</text>
+<text id="7350600">Attaquer au katana rend des PC</text>
+<text id="7350700">Attaquer à la lame double rend des PC</text>
+<text id="7350800">Attaquer à l'épée d'estoc rend des PC</text>
+<text id="7350900">Attaquer à l'épée d'estoc lourde rend des PC</text>
+<text id="7351000">Attaquer à la hache rend des PC</text>
+<text id="7351100">Attaquer à la grande hache rend des PC</text>
+<text id="7351200">Attaquer au marteau rend des PC</text>
+<text id="7351300">Attaquer au grand marteau rend des PC</text>
+<text id="7351400">Attaquer au fléau d'armes rend des PC</text>
+<text id="7351500">Attaquer à la lance rend des PC</text>
+<text id="7351600">Attaquer à la pique rend des PC</text>
+<text id="7351700">Attaquer à la grande lance rend des PC</text>
+<text id="7351800">Attaquer à la hallebarde rend des PC</text>
+<text id="7351900">Attaquer au fauchard rend des PC</text>
+<text id="7352000">Attaquer au poing rend des PC</text>
+<text id="7352100">Attaquer à la griffe rend des PC</text>
+<text id="7352200">Attaquer au fouet rend des PC</text>
+<text id="7352300">Attaquer à l'arme colossale rend des PC</text>
+<text id="7352400">Attaquer à l'arc rend des PC</text>
+<text id="7352500">Attaquer à l'arc géant rend des PC</text>
+<text id="7352600">Attaquer à l'arbalète rend des PC</text>
+<text id="7352700">Attaquer à la baliste rend des PC</text>
+<text id="8000000">PV maximums augmentés</text>
+<text id="8010000">PC maximums augmentés</text>
+<text id="8010100">Consommation de PC réduite</text>
+<text id="8020000">Endurance maximum augmentée</text>
+<text id="8020100">Consommation d'endurance réduite</text>
+<text id="8020200">Récupération d'endurance augmentée</text>
+<text id="8100000">Puissance d'attaque physique augmentée</text>
+<text id="8100100">Puissance d'attaque magique augmentée</text>
+<text id="8100200">Puissance d'attaque de feu augmentée</text>
+<text id="8100300">Puissance d'attaque de foudre augmentée</text>
+<text id="8100400">Puissance d'attaque sacrée augmentée</text>
+<text id="8110000">Les attaques accumulent du poison</text>
+<text id="8110100">Les attaques accumulent du saignement</text>
+<text id="8110200">Les attaques accumulent du sommeil</text>
+<text id="8110300">Les attaques accumulent de la malemort</text>
+<text id="8110400">Les attaques accumulent de la putréfaction</text>
+<text id="8110500">Les attaques accumulent de la congélation</text>
+<text id="8110600">Les attaques accumulent de la démence</text>
+<text id="8110700">Octroie une affinité de feu à l'arme</text>
+<text id="8110800">Octroie une affinité magique à votre arme</text>
+<text id="8110900">Octroie une affinité de foudre à votre arme</text>
+<text id="8111000">Octroie une affinité sacrée à votre arme</text>
+<text id="8120000">Brise-posture augmentée</text>
+<text id="8130000">Coups critiques améliorés</text>
+<text id="8140000">Brise-garde améliorée</text>
+<text id="8150000">Bonus d'attaque [Chasseur d'étoiles]</text>
+<text id="8150100">Bonus d'attaque [Non-morts]</text>
+<text id="8150300">Bonus d'attaque [Dragons]</text>
+<text id="8200000">Résistance aux dégâts physiques augmentée</text>
+<text id="8200100">Résistance aux dégâts magiques augmentée</text>
+<text id="8200200">Résistance aux dégâts de feu augmentée</text>
+<text id="8200300">Résistance aux dégâts de foudre augmentée</text>
+<text id="8200400">Résistance aux dégâts sacrés augmentée</text>
+<text id="8200500">Résistance aux dégâts d'affinité augmentée</text>
+<text id="8210000">Résistance au poison augmentée</text>
+<text id="8210100">Résistance au saignement augmentée</text>
+<text id="8210200">Résistance au sommeil augmentée</text>
+<text id="8210300">Résistance à la malemort augmentée</text>
+<text id="8210400">Résistance à la putréfaction augmentée</text>
+<text id="8210500">Résistance à la congélation augmentée</text>
+<text id="8210600">Résistance à la démence augmentée</text>
+<text id="8220000">Garde renforcée</text>
+<text id="8220001">Garde renforcée +1</text>
+<text id="8220002">Garde renforcée +2</text>
+<text id="8230000">Équilibre amélioré</text>
+<text id="8300000">Puissance d'attaque augmentée en maniant une arme à deux mains</text>
+<text id="8300100">Brise-posture augmentée en maniant une arme à deux mains</text>
+<text id="8310000">Attaque augmentée en maniant deux armes</text>
+<text id="8310100">Brise-posture augmentée en maniant deux armes</text>
+<text id="8320000">Coup final des enchaînements d'attaques amélioré</text>
+<text id="8320100">Attaques chargées améliorées</text>
+<text id="8320200">Les attaques puissantes augmentent l'équilibre</text>
+<text id="8320300">Attaques sautées améliorées</text>
+<text id="8320400">Attaque chargée : résistance aux dégâts</text>
+<text id="8330000">Sorcelleries améliorées</text>
+<text id="8330100">Incantations améliorées</text>
+<text id="8330200">Sorcelleries chargées améliorées</text>
+<text id="8330300">Incantations chargées améliorées</text>
+<text id="8330400">Canalisation des sorts accélérée</text>
+<text id="8330500">Durée des sorts augmentée</text>
+<text id="8330600">Coût en PC des sorcelleries réduit</text>
+<text id="8330700">La communion draconique applique un effet anti-dragon</text>
+<text id="8330900">Résistance aux dégâts augmentée en lançant des sorts</text>
+<text id="8340000">Attaques avec des armes à distance améliorées</text>
+<text id="8340100">Perte de dégâts des coups longue distance réduite</text>
+<text id="8350000">Puissance d'attaque des compétences augmentée</text>
+<text id="8350100">Puissance d'attaque des compétences chargées augmentée</text>
+<text id="8350200">Coût en PC des compétences réduit</text>
+<text id="8350300">L'activation de compétence augmente l'équilibre</text>
+<text id="8350400">Les parades activent Riposte dorée</text>
+<text id="8360000">Rechargement de tech. ultime accéléré
+</text>
+<text id="8370000">Réduction du temps de recharge des compétences</text>
+<text id="8380000">Cris et souffles améliorés</text>
+<text id="8390000">Pots à lancer améliorés</text>
+<text id="8400000">Techniques de parfums améliorées</text>
+<text id="8410000">Esquive améliorée</text>
+<text id="8410100">Esquiver génère de la foudre</text>
+<text id="8420000">Contre-attaques améliorées</text>
+<text id="8420100">Contre-attaquer déclenche une attaque sacrée</text>
+<text id="8420200">Contre-attaquer déclenche une attaque d'invocations</text>
+<text id="8430000">Contre-attaques d'estoc améliorées</text>
+<text id="8440000">PV rendus par la fiole augmentés</text>
+<text id="8440100">La fiole soigne aussi les alliés</text>
+<text id="8440200">La fiole rend des PV sur la durée</text>
+<text id="8450000">Ruée offensive : magma</text>
+<text id="8450100">Ruée offensive : tempête de givre</text>
+<text id="8460000">Ténèbres occultantes en vous déplaçant</text>
+<text id="8460100">Piliers de flammes en vous déplaçant</text>
+<text id="8460200">Flamme exaltée en vous déplaçant</text>
+<text id="8460300">Spectres en vous déplaçant</text>
+<text id="8460400">Pluies d'étoiles en vous déplaçant</text>
+<text id="8460500">Foudre rouge en vous déplaçant</text>
+<text id="8500000">Plus de runes par ennemi vaincu</text>
+<text id="8510000">Découverte d'objets améliorée</text>
+<text id="8520000">Moins de chances qu'on vous cible</text>
+<text id="8530000">Plusieurs laméclats régulièrement</text>
+<text id="8530100">Moult laméclats régulièrement</text>
+<text id="8530200">Laméclats géantes régulièrement</text>
+<text id="8540000">Récupération de PV continue</text>
+<text id="8600100">Les attaques rendent des PV</text>
+<text id="8600200">Les attaques rendent des PC</text>
+<text id="8600300">Les attaques peuvent tuer instantanément les ennemis</text>
+<text id="8610000">Les attaques successives rendent des PV</text>
+<text id="8610100">Les attaques successives rendent des PC</text>
+<text id="8610200">Les attaques successives augmentent la puissance d'attaque</text>
+<text id="8610300">Attaque chargée : attaque magique déclenchée</text>
+<text id="8610400">Attaque chargée : attaque de feu déclenchée</text>
+<text id="8610500">Attaque chargée : attaque de foudre déclenchée</text>
+<text id="8610600">Attaque chargée : attaque sacrée déclenchée</text>
+<text id="8610700">Les attaques successives augmentent la résistance</text>
+<text id="8620000">Subir des dégâts restitue des PC</text>
+<text id="8620100">Subir des dégâts augmente la résistance à tous les dégâts </text>
+<text id="8630000">PV récupérés à chaque ennemi vaincu</text>
+<text id="8630100">PC récupérés à chaque ennemi vaincu</text>
+<text id="8630200">Les attaques invoquent des spectres</text>
+<text id="8630300">Les attaques créent une brume envoûtante</text>
+<text id="8630400">Les attaques invoquent des esprits vengeurs</text>
+<text id="8630500">Les attaques génèrent du magma</text>
+<text id="8630600">Les attaques créent une brume glaciale</text>
+<text id="8630700">Les attaques génèrent de la foudre</text>
+<text id="8630800">Les attaques génèrent une onde de choc dorée</text>
+<text id="8640000">PV récupérés lors des coups critiques</text>
+<text id="8640100">PC récupérés lors des coups critiques</text>
+<text id="8640200">Dégâts augmentés après coup critique</text>
+<text id="8640300">Les coups critiques sacrés lancent Ordre sacré</text>
+<text id="8640400">Les coups critiques de feu génèrent du magma</text>
+<text id="8640500">Les coups critiques de foudre génèrent un éclair</text>
+<text id="8640600">Les coups critiques magiques génèrent des éclats de cristal</text>
+<text id="8640700">Les coups critiques de poison lancent Brume empoisonnée</text>
+<text id="8640800">Les coups critiques de saignement projettent des ronces</text>
+<text id="8640900">Les coups crit. avec la putréfaction écarlate projettent de la putr.</text>
+<text id="8641000">Les coups critiques avec congélation lancent Tempête de givre</text>
+<text id="8641100">Les coups critiques de démence lancent Flamme exaltée</text>
+<text id="8641200">Les coups critiques de malemort lancent Éclairs funestes</text>
+<text id="8650000">Les gardes réussies restituent des PV</text>
+<text id="8650100">Les gardes réussies restituent des PC</text>
+<text id="8652000">Les gardes réussies améliorent l'équilibre</text>
+<text id="8652100">Les gardes réussies augmente la résistance</text>
+<text id="8660000">Puissance d'attaque augmentée quand les PV sont bas</text>
+<text id="8660101">Résistance aux dégâts améliorée quand les PV sont bas</text>
+<text id="8660200">Accumule du saignement sur les coups critiques</text>
+<text id="8660300">Créer une Terre sacrée lorsque les PV sont faibles</text>
+<text id="8660400">Quand vos PV sont bas, les coups critiques vous soignent entièrement</text>
+<text id="8670000">Attaque augmentée quand les PV sont au maximum</text>
+<text id="8670101">Résistance aux dégâts améliorée si les PV sont au max</text>
+<text id="8690000">Le poison génère un nuage de poison</text>
+<text id="8690100">La démence génère une explosion exaltée</text>
+<text id="8690200">La putréfaction génère un nuage de putréfaction</text>
+<text id="8690300">La congélation génère nuage de givre</text>
+<text id="8690400">Le sommeil génère une brume soporifique</text>
+<text id="8700000">Le poison augmente la puissance d'attaque</text>
+<text id="8710000">Le saignement augmente la puissance d'attaque</text>
+<text id="8720000">Le sommeil augmente la puissance d'attaque</text>
+<text id="8740000">La congélation augmente la puissance d'attaque</text>
+<text id="8750000">La démence augmente la puissance d'attaque</text>
+<text id="8760000">PV maximums réduits</text>
+<text id="8760100">PC maximums réduits</text>
+<text id="8760200">Endurance maximum réduite</text>
+<text id="8761000">Résistance aux dégâts physiques réduite</text>
+<text id="8761100">Résistance aux dégâts d'affinité réduite</text>
+<text id="8762000">Résistance aux altérations réduite</text>
+<text id="8763000">PV rendus par la fiole réduits</text>
+<text id="8764000">Ruée offensive consomme plus d'endurance</text>
+<text id="8765000">Chargement de jauge de technique ultime réduit</text>
+<text id="8766000">Drain de PV en continu</text>
+<text id="8770000">Dégâts de pluie nocturne augmentés</text>
+<text id="8771000">Dégâts augmentés par la Nuit dévorante</text>
+<text id="8800000">Esquiver requiert plus d'endurance</text>
+<text id="8800100">Résistance aux dégâts réduite après une esquive</text>
+<text id="8800200">Esquiver en chaîne réduit la résistance aux dégâts</text>
+<text id="8801000">Utiliser une fiole réduit la résistance aux dégâts</text>
+<text id="8801100">Utiliser une fiole accumule du sommeil</text>
+<text id="8801200">Utiliser une fiole accumule de la démence</text>
+<text id="8810000">Attaque réduite si PV inférieurs au max</text>
+<text id="8810200">Jauge de technique ultime plus lente si PV inférieurs au max</text>
+<text id="8810300">Accumule du poison si PV inférieurs au max</text>
+<text id="8810400">Accumule de la putréfaction si PV inférieurs au max</text>
+<text id="8811000">Puissance d'attaque réduite si PV au max</text>
+<text id="8811200">Jauge de technique ultime plus lente si PV au max</text>
+<text id="8813100">Résistance aux dégâts réduite si endurance faible</text>
+<text id="8821000">Attaque parfois réduite</text>
+<text id="8821100">Accumule de la congélation quand vos attaques réussissent</text>
+<text id="8821200">Accumule du saignement quand vos attaques réussissent</text>
+<text id="8830000">Dégâts des altérations subies augmentés</text>
+<text id="8831000">La mort imminente baisse votre jauge de technique ultime</text>
+<text id="8831100">La mort imminente retire une dose de fiole</text>
+<text id="8831200">La mort imminente réduit vos PV max</text>
+<text id="8880000">Attaque chargée : tempête de givre</text>
+<text id="8880100">Taille chargée : halo de lumière</text>
+<text id="8880200">Attaque chargée : flammes noires</text>
+<text id="8880300">Attaque chargée : attaque fantomatique</text>
+<text id="8880400">Taille chargée : flammes vives</text>
+<text id="8881000">Attaque chargée : onde de choc sacrée</text>
+<text id="8881100">Contondante chargée : projectiles</text>
+<text id="8881200">Attaque chargée : attire les ennemis</text>
+<text id="8881300">Contondante chargée : onde de choc</text>
+<text id="8881400">Contondante chargée : attaque fantomatique</text>
+<text id="8881500">Attaque chargée : magma</text>
+<text id="8881600">Contondante chargée : bulles magiques</text>
+<text id="8882000">Estoc chargé : attaque fantomatique</text>
+<text id="8882100">Attaque chargée : foudre</text>
+<text id="8882200">Estoc chargé : brume acide</text>
+<text id="8882300">Estoc chargé : fils putréfiés</text>
+<text id="8882400">Estoc chargé : nuage de poison</text>
+<text id="8882500">Attaque chargée : brume soporifique</text>
+<text id="8883000">Attaque chargée : projectiles</text>
+<text id="8883100">Tir de précision : foudre</text>
+<text id="8883200">Tir de précision : nuage de poison</text>
+<text id="8883300">Tir de précision : nuage de putréfaction</text>
+<text id="8883400">Tir de précision : insectes de sang</text>
+<text id="8884000">Lever le bouclier augmente la résistance</text>
+<text id="8884100">Lever le bouclier active Vœu d'inflexibilité</text>
+<text id="8884200">Lever le bouclier génère une Terre sacrée</text>
+<text id="8884300">Déclenche Résilience lorsque votre posture est brisée</text>
+<text id="8885000">La fiole restaure aussi des PC</text>
+<text id="8885100">Échouer à lancer un sort restaure des PC</text>
+<text id="8885200">Bloquer des dégâts améliore les sorcelleries et incantations</text>
+<text id="8920100">Puissance d'attaque d'affinité augmentée</text>
+<text id="8921400">Les coups critiques augmentent la puissance d'attaque</text>
+<text id="8960100">Attaques puissantes modifiées</text>
+<text id="8960200">Les attaques puissantes sautées déclenchent une onde de choc</text>
+<text id="9021400">Pouvoir de la nuit ardente</text>
+<text id="9030900">Pouvoir de la lune obscure</text>
+<text id="9031000">Pouvoir de la Volonté suprême</text>
+<text id="9031400">Pouvoir du seigneur du blasphème</text>
+<text id="9031500">Pouvoir de la maison Tourbier</text>
+<text id="9031700">Pouvoir de l'Ordre d'or</text>
+<text id="9040200">Pouvoir de la Mort destinée</text>
+<text id="9040500">Pouvoir du Fléau des astres</text>
+<text id="9040800">Pouvoir de la destruction</text>
+<text id="9041000">Pouvoir de la vengeance</text>
+<text id="9060400">Pouvoir du Seigneur draconique</text>
+<text id="9071000">Pouvoir du désespoir</text>
+<text id="9081000">Pouvoir du roi Réprouvé</text>
+<text id="9090200">Pouvoir de l'invaincue</text>
+<text id="9111500">Pouvoir de la reine</text>
+<text id="9122000">Pouvoir du seigneur du blasphème</text>
+<text id="9130300">Pouvoir du vide obscur</text>
+<text id="9150400">Pouvoir de la lignée dorée</text>
+<text id="9151100">Pouvoir de l'esprit ancestral</text>
+<text id="9160900">Pouvoir de l'illustre dragon ancien</text>
+<text id="9170100">Pouvoir du Seigneur du sang</text>
+<text id="9200600">Pouvoir du Géant</text>
+<text id="9210600">Pouvoir du Dragon volant</text>
+<text id="9230500">Pouvoir du premier seigneur</text>
+<text id="9330900">Pouvoir de la pleine lune</text>
+<text id="9420000">Pouvoir du général</text>
+<text id="9990100">Chagrin du Rôdeur</text>
+<text id="9990200">Chagrin du Gardien</text>
+<text id="9990300">Chagrin de l'Œil perçant</text>
+<text id="9990400">Chagrin de la Duchesse</text>
+<text id="9990500">Chagrin du Forban</text>
+<text id="9990600">Chagrin de la Revenante</text>
+<text id="9990700">Chagrin de l'Anachorète</text>
+<text id="9990800">Chagrin de l'Exécuteur</text>
+<text id="18000000">PV maximums augmentés</text>
+<text id="18010000">PC maximums augmentés</text>
+<text id="18010100">Consommation de PC réduite</text>
+<text id="18020000">Endurance maximum augmentée</text>
+<text id="18020200">Récupération d'endurance augmentée</text>
+<text id="18100000">Attaque physique augmentée</text>
+<text id="18100500">Puissance d'attaque d'affinité augmentée</text>
+<text id="18120000">Brise-posture augmentée</text>
+<text id="18200000">Résistance aux dégâts physiques augmentée</text>
+<text id="18200500">Résistance aux dégâts d'affinité augmentée</text>
+<text id="18210700">Résistance aux altérations augmentée</text>
+<text id="18230000">Équilibre amélioré</text>
+<text id="18330103">Sorcelleries et incantations améliorées</text>
+<text id="18330500">Durée des sorcelleries et incantations augmentée</text>
+<text id="18330700">La Communion Draconique octroie Plaie draconique</text>
+<text id="18350400">Réussir une parade déclenche Riposte dorée</text>
+<text id="18420100">Contre-attaquer déclenche des attaques sacrées</text>
+<text id="18420200">Contre-attaquer déclenche une attaque d'invocations</text>
+<text id="18430000">Contre-attaques d'estoc améliorées</text>
+<text id="18440000">PV rendus par la fiole augmentés</text>
+<text id="18500000">Plus de runes par ennemi vaincu</text>
+<text id="18640000">PV récupérés lors des coups critiques</text>
+<text id="18640100">PC récupérés lors des coups critiques</text>
+<text id="18640200">Dégâts augmentés après un coup critique</text>
+<text id="18650000">Les gardes réussies restituent des PV</text>
+<text id="18650100">Les gardes réussies restituent des PC</text>
+<text id="18660200">Les coups critiques infligent du saignement</text>
+<text id="18660300">Si PV faibles, génère une Terre sacrée</text>
+<text id="18700000">Le poison et la putréfaction rendent des PV en continu</text>
+<text id="18710000">Attaque augmentée en cas de saignement à proximité</text>
+<text id="19700000">Vigueur</text>
+<text id="19700001">%null%</text>
+<text id="19700002">%null%</text>
+<text id="19700003">%null%</text>
+<text id="19700004">%null%</text>
+<text id="19700005">%null%</text>
+<text id="19700006">%null%</text>
+<text id="19700007">%null%</text>
+<text id="19700008">%null%</text>
+<text id="19700009">%null%</text>
+<text id="19700010">Esprit</text>
+<text id="19700011">%null%</text>
+<text id="19700012">%null%</text>
+<text id="19700013">%null%</text>
+<text id="19700014">%null%</text>
+<text id="19700015">%null%</text>
+<text id="19700016">%null%</text>
+<text id="19700017">%null%</text>
+<text id="19700018">%null%</text>
+<text id="19700019">%null%</text>
+<text id="19700020">Endurance</text>
+<text id="19700021">%null%</text>
+<text id="19700022">%null%</text>
+<text id="19700023">%null%</text>
+<text id="19700024">%null%</text>
+<text id="19700025">%null%</text>
+<text id="19700026">%null%</text>
+<text id="19700027">%null%</text>
+<text id="19700028">%null%</text>
+<text id="19700029">%null%</text>
+<text id="19700030">Force</text>
+<text id="19700031">%null%</text>
+<text id="19700032">%null%</text>
+<text id="19700033">%null%</text>
+<text id="19700034">%null%</text>
+<text id="19700035">%null%</text>
+<text id="19700036">%null%</text>
+<text id="19700037">%null%</text>
+<text id="19700038">%null%</text>
+<text id="19700039">%null%</text>
+<text id="19700040">Dextérité</text>
+<text id="19700041">%null%</text>
+<text id="19700042">%null%</text>
+<text id="19700043">%null%</text>
+<text id="19700044">%null%</text>
+<text id="19700045">%null%</text>
+<text id="19700046">%null%</text>
+<text id="19700047">%null%</text>
+<text id="19700048">%null%</text>
+<text id="19700049">%null%</text>
+<text id="19700050">Intelligence</text>
+<text id="19700051">%null%</text>
+<text id="19700052">%null%</text>
+<text id="19700053">%null%</text>
+<text id="19700054">%null%</text>
+<text id="19700055">%null%</text>
+<text id="19700056">%null%</text>
+<text id="19700057">%null%</text>
+<text id="19700058">%null%</text>
+<text id="19700059">%null%</text>
+<text id="19700060">Foi</text>
+<text id="19700061">%null%</text>
+<text id="19700062">%null%</text>
+<text id="19700063">%null%</text>
+<text id="19700064">%null%</text>
+<text id="19700065">%null%</text>
+<text id="19700066">%null%</text>
+<text id="19700067">%null%</text>
+<text id="19700068">%null%</text>
+<text id="19700069">%null%</text>
+<text id="19700070">Ésotérisme</text>
+<text id="19700071">%null%</text>
+<text id="19700072">%null%</text>
+<text id="19700073">%null%</text>
+<text id="19700074">%null%</text>
+<text id="19700075">%null%</text>
+<text id="19700076">%null%</text>
+<text id="19700077">%null%</text>
+<text id="19700078">%null%</text>
+<text id="19700079">%null%</text>
+<text id="19700080">Réduction du temps de recharge de la compétence de personnage</text>
+<text id="19700081">%null%</text>
+<text id="19700082">%null%</text>
+<text id="19700083">%null%</text>
+<text id="19700084">%null%</text>
+<text id="19700085">%null%</text>
+<text id="19700086">%null%</text>
+<text id="19700087">%null%</text>
+<text id="19700088">%null%</text>
+<text id="19700089">%null%</text>
+<text id="19700090">Recharg. auto. de technique ultime</text>
+<text id="19700091">%null%</text>
+<text id="19700092">%null%</text>
+<text id="19700093">%null%</text>
+<text id="19700094">%null%</text>
+<text id="19700095">%null%</text>
+<text id="19700096">%null%</text>
+<text id="19700097">%null%</text>
+<text id="19700098">%null%</text>
+<text id="19700099">%null%</text>
+<text id="19700100">Équilibre</text>
+<text id="19799999">Toutes les options</text>
+</entries>
+</fmg>

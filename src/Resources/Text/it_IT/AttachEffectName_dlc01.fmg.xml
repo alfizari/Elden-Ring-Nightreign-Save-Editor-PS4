@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fmg>
+<filename>AttachEffectName_dlc01.fmg</filename>
+<compression>None</compression>
+<version>DarkSouls3</version>
+<bigendian>False</bigendian>
+<entries>
+<text id="6500800">[Erudito] Consumo PA ridotto usando l'abilità personaggio su di sé</text>
+<text id="6500900">[Becchina] L'esecuzione dell'arte innesca l'abilità personaggio</text>
+<text id="6623200">Possiedi lacrima di cristallo liquiverde a inizio spedizione</text>
+<text id="6647200">[Erudito] Mente migliorata, vitalità ridotta</text>
+<text id="6647300">[Erudito] Tempra e destrezza migliorate, intelligenza e arcano ridotti</text>
+<text id="6647400">[Becchina] Destrezza migliorata, vitalità e fede ridotte</text>
+<text id="6647500">[Becchina] Mente e fede migliorate, forza ridotta</text>
+<text id="7006500">Recupero PA nel tempo</text>
+<text id="7006600">Potenza attacco in mischia migliorata</text>
+<text id="7006700">Potenza d'attacco dell'abilità migliorata</text>
+<text id="7036200">[Erudito] Previene il rallentamento dei progressi dell'abilità personaggio</text>
+<text id="7036300">[Erudito] Gli alleati bersaglio dell'abilità personaggio ottengono un potenziamento all'attacco</text>
+<text id="7036400">[Erudito] Danni nel tempo inflitti ai bersagli legati dall'arte suprema</text>
+<text id="7036500">[Erudito] Fornisce rune per ogni esemplare aggiuntivo ottenuto con l'abilità personaggio</text>
+<text id="7036800">[Becchina] L'attivazione dell'arte suprema incrementa la potenza attacco</text>
+<text id="7036900">[Becchina] Potenza attacco incrementata mettendo a segno il colpo finale di attacchi concatenati</text>
+<text id="7037000">[Becchina] Attacchi fisici potenziati mentre è attivo su di sé l'effetto assistenza di un incantesimo</text>
+<text id="7037300">[Becchina] Il contatto con gli alleati ripristina i loro PV mentre l'arte suprema è attiva</text>
+<text id="7037700">Potenza attacco incrementata lentamente con alterazioni di stato</text>
+<text id="7037800">Annulla occasionalmente un attacco subito con resistenza ai danni ridotta</text>
+<text id="7170100">Gli attacchi dopo aver subito danni causano marcescenza</text>
+<text id="7260900">Recupero PV nel tempo vicino a marcescenza</text>
+<text id="7360600">Cambia la stregoneria dell'armamento compatibile con
+Scintilama magica a inizio spedizione</text>
+<text id="7360900">Cambia la stregoneria dell'armamento compatibile con
+Spadone cariano a inizio spedizione</text>
+<text id="7361200">Cambia la stregoneria dell'armamento compatibile con
+Scheggia notturna a inizio spedizione</text>
+<text id="7361300">Cambia la stregoneria dell'armamento compatibile con
+Proiettile magmatico a inizio spedizione</text>
+<text id="7361500">Cambia la stregoneria dell'armamento compatibile con
+Gelo di scintipietra a inizio spedizione</text>
+<text id="7361800">Cambia la stregoneria dell'armamento compatibile con
+Pozzo gravitazionale a inizio spedizione</text>
+<text id="7362100">Cambia la stregoneria dell'armamento compatibile con
+Rovo del castigo a inizio spedizione</text>
+<text id="7370000">Cambia l'incantesimo dell'armamento compatibile con
+Dono benedetto a inizio spedizione</text>
+<text id="7370200">Cambia l'incantesimo dell'armamento compatibile con
+Forma del Crogiolo: corna a inizio spedizione</text>
+<text id="7370300">Cambia l'incantesimo dell'armamento compatibile con
+Ira dorata a inizio spedizione</text>
+<text id="7370400">Cambia l'incantesimo dell'armamento compatibile con
+Lancia folgorante a inizio spedizione</text>
+<text id="7370500">Cambia l'incantesimo dell'armamento compatibile con
+Attacco folgorante a inizio spedizione</text>
+<text id="7370600">Cambia l'incantesimo dell'armamento compatibile con
+O, fiamma! a inizio spedizione</text>
+<text id="7370800">Cambia l'incantesimo dell'armamento compatibile con
+Nera fiamma a inizio spedizione</text>
+<text id="7370900">Cambia l'incantesimo dell'armamento compatibile con
+Artiglio ferino a inizio spedizione</text>
+<text id="7371200">Cambia l'incantesimo dell'armamento compatibile con
+Sciame di mosche a inizio spedizione</text>
+<text id="7371500">Cambia l'incantesimo dell'armamento compatibile con
+Fuoco di drago a inizio spedizione</text>
+<text id="8320500">Potenza attacco in mischia migliorata</text>
+<text id="8320600">Attacchi in scatto migliorati</text>
+<text id="8320700">Attacchi in capriola migliorati</text>
+<text id="8360000">Carica indicatore dell'arte accelerata</text>
+<text id="8880000">Tormenta con attacchi caricati</text>
+<text id="8880200">Nere fiamme con attacchi caricati</text>
+<text id="8880300">Attacco spettro con attacchi caricati</text>
+<text id="8881000">Onda sacra con attacchi caricati</text>
+<text id="8881200">Attira nemici con attacchi caricati</text>
+<text id="8881500">Magma con attacchi caricati</text>
+<text id="8882100">Fulmine con attacchi caricati</text>
+<text id="8882500">Foschia sonno con att. caricati</text>
+<text id="8885200">La difesa continua accresce la potenza di stregonerie e incantesimi e ne accelera il lancio</text>
+<text id="9990900">Dolore dell'Erudito</text>
+<text id="9991000">Dolore della Becchina</text>
+</entries>
+</fmg>
