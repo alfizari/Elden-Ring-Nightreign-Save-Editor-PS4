@@ -19,7 +19,6 @@ os.chdir(working_directory)
 data_source = SourceDataHandler()
 items_json = {}
 effects_json = {}
-ill_effects_json = {}
 data = None
 userdata_path = None
 imported_data=None
@@ -44,7 +43,7 @@ ITEM_TYPE_RELIC = 0xC0000000
 
 
 def load_json_data():
-    global items_json, effects_json, ill_effects_json
+    global items_json, effects_json
     try:
         file_path = os.path.join(working_directory, "Resources/Json")
 
@@ -53,9 +52,6 @@ def load_json_data():
 
         with open(os.path.join(file_path, 'effects.json'), 'r', encoding='utf-8') as f:
             effects_json = json.load(f)
-
-        with open(os.path.join(file_path, 'illegal_effects.json'), 'r', encoding='utf-8') as f:
-            ill_effects_json = json.load(f)
 
         return True
 
