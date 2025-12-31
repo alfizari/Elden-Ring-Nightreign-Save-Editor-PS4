@@ -1,0 +1,1294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fmg>
+<filename>AttachEffectName.fmg</filename>
+<compression>None</compression>
+<version>DarkSouls3</version>
+<bigendian>False</bigendian>
+<entries>
+<text id="1">%null%</text>
+<text id="2">%null%</text>
+<text id="3">%null%</text>
+<text id="100">%null%</text>
+<text id="310000">Erhöhte maximale LP</text>
+<text id="310100">Erhöhte maximale FP</text>
+<text id="310200">Erhöhte maximale Ausdauer</text>
+<text id="310400">Erhöhte maximale LP</text>
+<text id="310401">Erhöhte maximale Ausdauer</text>
+<text id="311000">Verbesserte Objektentdeckung</text>
+<text id="311100">Mehr Runen aus besiegten Gegnern</text>
+<text id="311500">Verbesserte Ausdauerregeneration</text>
+<text id="311600">Verbesserte Blutverlustresistenz</text>
+<text id="311601">Verbesserte Frostresistenz</text>
+<text id="311700">Verbesserte Giftresistenz</text>
+<text id="311701">Verbesserte Fäulnisresistenz</text>
+<text id="311800">Verbesserte Schlafresistenz</text>
+<text id="311801">Verbesserte Wahnsinnsresistenz</text>
+<text id="311900">Verbesserte Todespestresistenz</text>
+<text id="312000">Verbesserte Gift- und Fäulnisresistenz</text>
+<text id="312001">Verbesserte Blutverlust- und Frostresistenz</text>
+<text id="312002">Verbesserte Schlaf- und Wahnsinnsresistenz</text>
+<text id="312100">Verbessertes Gleichgewicht</text>
+<text id="312300">Erhöhte Talent-Angriffskraft</text>
+<text id="312500">Verbessertes Geschick</text>
+<text id="312501">Aufeinanderfolgende Angriffe erhöhen Angriffskraft</text>
+<text id="320000">Erhöhte magische Angriffskraft</text>
+<text id="320001">Verringerte körperliche Schadensresistenz</text>
+<text id="320100">Erhöhte Blitz-Angriffskraft</text>
+<text id="320101">Verringerte körperliche Schadensresistenz</text>
+<text id="320200">Erhöhte Feuer-Angriffskraft</text>
+<text id="320201">Verringerte körperliche Schadensresistenz</text>
+<text id="320300">Erhöhte Heiligangriffskraft</text>
+<text id="320301">Verringerte körperliche Schadensresistenz</text>
+<text id="320400">Erhöhte Angriffskraft bei niedrigen LP</text>
+<text id="320500">Erhöhte Angriffskraft bei vollen LP</text>
+<text id="320600">Verbesserter Stoß-Abwehrkonter</text>
+<text id="320700">Verbesserte Abwehrbrechung</text>
+<text id="320800">Aufeinanderfolgende Angriffe erhöhen Angriffskraft</text>
+<text id="320900">Verbesserte kritische Treffer</text>
+<text id="321000">Verringerter Projektil-Schadensverlust</text>
+<text id="321200">Verbesserte Angriffsketten-Abschlüsse</text>
+<text id="321300">Verbesserte aufgeladene Angriffe</text>
+<text id="321500">Verbesserte Fernwaffenangriffe</text>
+<text id="321600">Blutverlust in der Nähe erhöht die Angriffskraft</text>
+<text id="321700">Gift &amp; Fäulnis in der Nähe erhöhen Angriffskraft</text>
+<text id="321800">Verbesserte Sprungangriffe</text>
+<text id="321900">Verbesserte Brüllen- und Odem-Angriffe</text>
+<text id="322000">Verbesserte Abwehrkonter</text>
+<text id="322100">Verbesserte Wurftöpfe</text>
+<text id="322200">Verbesserte Parfümkunst</text>
+<text id="330000">Verbesserte Zaubereien</text>
+<text id="330400">Verbesserte Anrufungen</text>
+<text id="330600">Erhöhte Zaubereiendauer</text>
+<text id="330700">Verbesserte Zauberei-Wirkungsdauer</text>
+<text id="330800">Verringerte Zauberei-FP-Kosten</text>
+<text id="330801">Verringerte maximale LP</text>
+<text id="330900">Verbesserte aufgeladene Zauber und Talente</text>
+<text id="340000">Erhöhte körperliche Schadensresistenz</text>
+<text id="340100">Erhöhte Magieschaden-Resistenz</text>
+<text id="340200">Erhöhte Feuerschaden-Resistenz</text>
+<text id="340300">Erhöhte Blitzschaden-Resistenz</text>
+<text id="340400">Erhöhte Heiligschaden-Resistenz</text>
+<text id="340500">Erhöhte Resistenz gegen Affinitätsschaden</text>
+<text id="340700">Verbessertes Ausweichen</text>
+<text id="340701">Verringerte Schadensresistenz</text>
+<text id="340800">Erhöhte Schadensresistenz bei niedrigen LP</text>
+<text id="340900">Erhöhte Schadensresistenz bei vollen LP</text>
+<text id="341000">Erhöhte Abwehrfähigkeit</text>
+<text id="350000">Verbesserte Flaschen-LP-Regeneration</text>
+<text id="350200">Laufende LP-Regeneration</text>
+<text id="350300">Besiegen von Gegnern stellt LP wieder her</text>
+<text id="350400">LP-Regeneration durch aufeinanderfolgende Angriffe</text>
+<text id="350500">LP-Regeneration durch kritische Treffer</text>
+<text id="350600">FP-Regeneration durch kritische Treffer</text>
+<text id="360200">Verringerte FP-Talentkosten</text>
+<text id="360700">Kein Runen- oder Stufenverlust bei Tod</text>
+<text id="361100">Besiegen von Gegnern stellt FP wieder her</text>
+<text id="370000">Verbesserte Objektentdeckung</text>
+<text id="370001">Mehr Runen aus besiegten Gegnern</text>
+<text id="370002">Laufender LP-Verlust</text>
+<text id="6000800">Charaktertalent-Abklingzeitverringerung +4</text>
+<text id="6000801">Charaktertalent-Abklingzeitverringerung +5</text>
+<text id="6000900">Ultimativkunst-Auto-Aufladung +4</text>
+<text id="6000901">Ultimativkunst-Auto-Aufladung +5</text>
+<text id="6001000">Gleichgewicht +4</text>
+<text id="6001001">Gleichgewicht +5</text>
+<text id="6001400">Erhöhte körperliche Angriffskraft +4
+</text>
+<text id="6001401">%null%</text>
+<text id="6001500">Erhöhte magische Angriffskraft +3
+</text>
+<text id="6001501">Erhöhte magische Angriffskraft +4
+</text>
+<text id="6001600">Erhöhte Feuer-Angriffskraft +3
+</text>
+<text id="6001601">Erhöhte Feuer-Angriffskraft +4
+</text>
+<text id="6001700">Erhöhte Blitz-Angriffskraft +3
+</text>
+<text id="6001701">Erhöhte Blitz-Angriffskraft +4
+</text>
+<text id="6001800">Erhöhte Heiligangriffskraft +3
+</text>
+<text id="6001801">Erhöhte Heiligangriffskraft +4
+</text>
+<text id="6002600">Erhöhte Magieschadensresistenz +1
+</text>
+<text id="6002601">Erhöhte Magieschadensresistenz +2
+</text>
+<text id="6002700">Erhöhte Feuerschadensresistenz +1
+</text>
+<text id="6002701">Erhöhte Feuerschadensresistenz +2
+</text>
+<text id="6002800">Erhöhte Blitzschadensresistenz +1
+</text>
+<text id="6002801">Erhöhte Blitzschadensresistenz +2
+</text>
+<text id="6002900">Erhöhte Heiligschadensresistenz +1
+</text>
+<text id="6002901">Erhöhte Heiligschadensresistenz +2
+</text>
+<text id="6003000">Erhöhte Giftresistenz +1
+</text>
+<text id="6003001">Erhöhte Giftresistenz +2
+</text>
+<text id="6003100">Erhöhte Blutverlustresistenz +1
+</text>
+<text id="6003101">Erhöhte Blutverlustresistenz +2
+</text>
+<text id="6003200">Erhöhte Schlafresistenz +1
+</text>
+<text id="6003201">Erhöhte Schlafresistenz +2
+</text>
+<text id="6003300">Erhöhte Todespestresistenz +1
+</text>
+<text id="6003301">Erhöhte Todespestresistenz +2
+</text>
+<text id="6003400">Erhöhte Fäulnisresistenz +1
+</text>
+<text id="6003401">Erhöhte Fäulnisresistenz +2
+</text>
+<text id="6003500">Erhöhte Frostresistenz +1
+</text>
+<text id="6003501">Erhöhte Frostresistenz +2
+</text>
+<text id="6003600">Erhöhte Wahnsinnsresistenz +1
+</text>
+<text id="6003601">Erhöhte Wahnsinnsresistenz +2
+</text>
+<text id="6005600">Partielle LP-Wiederherstellung nach Angriffsschaden +1
+</text>
+<text id="6005601">Partielle LP-Wiederherstellung nach Angriffsschaden +2
+</text>
+<text id="6006000">Verbessertes Brechen von Haltungen mit Zweihandwaffen +1</text>
+<text id="6006001">Verbessertes Brechen von Haltungen mit Zweihandwaffen +2</text>
+<text id="6006100">Verbessertes Brechen von Haltungen mit zwei Waffen +1</text>
+<text id="6006101">Verbessertes Brechen von Haltungen mit zwei Waffen +2</text>
+<text id="6012300">Erhöhte Schadensresistenz bei niedrigen LP +1</text>
+<text id="6012301">Erhöhte Schadensresistenz bei niedrigen LP +2</text>
+<text id="6030200">LP-Wiederherstellung bei Nutzung von medizinischen Boli usw. +1
+</text>
+<text id="6030201">LP-Wiederherstellung bei Nutzung von medizinischen Boli usw. +2
+</text>
+<text id="6030600">Erfolgreiche Abwehr füllt mehr der Kunst-Anzeige +1
+</text>
+<text id="6030601">Erfolgreiche Abwehr füllt mehr der Kunst-Anzeige +2
+</text>
+<text id="6030800">Kritische Treffer füllen mehr der Kunst-Anzeige +1
+</text>
+<text id="6030801">Kritische Treffer füllen mehr der Kunst-Anzeige +2
+</text>
+<text id="6030900">Körperliche Angriffskraft steigt nach Einsatz von Fetten +1
+</text>
+<text id="6030901">Körperliche Angriffskraft steigt nach Einsatz von Fetten +2
+</text>
+<text id="6031900">Kritische Treffer gewähren Runen +1</text>
+<text id="6031901">Kritische Treffer gewähren Runen +2</text>
+<text id="6032200">Das Erleiden von Angriffen erhöht Angriffskraft +1</text>
+<text id="6032201">Das Erleiden von Angriffen erhöht Angriffskraft +2</text>
+<text id="6035100">Kritischer Treffer erhöht Ausdauerregeneration +1</text>
+<text id="6035101">Kritischer Treffer erhöht Ausdauerregeneration +2</text>
+<text id="6040000">Verbesserter Ausgangs-Standardangriff +1</text>
+<text id="6040001">Verbesserter Ausgangs-Standardangriff +2</text>
+<text id="6040100">Verbesserte Abwehrkonter +1
+</text>
+<text id="6040101">Verbesserte Abwehrkonter +2
+</text>
+<text id="6040300">Verbesserter Wurftopf-Schaden +1</text>
+<text id="6040301">Verbesserter Wurftopf-Schaden +2</text>
+<text id="6040400">Verbesserter Wurfmesser-Schaden +1</text>
+<text id="6040401">Verbesserter Wurfmesser-Schaden +2</text>
+<text id="6040500">Erhöhter Schimmerstein- und Gravitationssteinschaden +1</text>
+<text id="6040501">Erhöhter Schimmerstein- und Gravitationssteinschaden +2</text>
+<text id="6043000">Verbesserte Brüllen- &amp; Odem-Angriffe +1</text>
+<text id="6043001">Verbesserte Brüllen- &amp; Odem-Angriffe +2</text>
+<text id="6043100">Verbesserte Parfümkunst +1</text>
+<text id="6043101">Verbesserte Parfümkunst +2</text>
+<text id="6060300">Erhöhte maximale LP für jeden, in einer Großen Kirche, besiegten großen Gegner</text>
+<text id="6060400">Erhöhte Runen und Objektentdeckung für jeden, in einer Festung, besiegten großen Gegner</text>
+<text id="6060500">Erhöhte Arkanenergie für jeden, in einer Ruine, besiegten großen Gegner</text>
+<text id="6060600">Erhöhte maximale Ausdauer für jeden, in einem Hauptlager, besiegten großen Gegner</text>
+<text id="6090000">Das Besiegen von Gegnern füllt die Kunst-Anzeige mehr +1
+</text>
+<text id="6090001">Das Besiegen von Gegnern füllt die Kunst-Anzeige mehr +2
+</text>
+<text id="6160000">LP-Wiederherstellung durch Stoß-Abwehrkonter +1
+</text>
+<text id="6160001">LP-Wiederherstellung durch Stoß-Abwehrkonter +2
+</text>
+<text id="6260000">Erhöhte Angriffskraft gegen von Gift geplagte Gegner +1
+</text>
+<text id="6260001">Erhöhte Angriffskraft gegen von Gift geplagte Gegner +2
+</text>
+<text id="6260300">Erhöhte Angriffskraft gegen von Scharlachfäule geplagte Gegner +1
+</text>
+<text id="6260301">Erhöhte Angriffskraft gegen von Scharlachfäule geplagte Gegner +2
+</text>
+<text id="6260400">Erhöhte Angriffskraft gegen von Frost geplagte Gegner +1
+</text>
+<text id="6260401">Erhöhte Angriffskraft gegen von Frost geplagte Gegner +2
+</text>
+<text id="6500000">[Wylder] Charaktertalent verursacht Blutverlust</text>
+<text id="6500100">[Wächter] Charaktertalent verstärkt Schadensresistenz von Verbündeten in der Nähe</text>
+<text id="6500200">[Eisenauge] Charaktertalent fügt schweren Giftschaden bei vergifteten Gegnern zu
+</text>
+<text id="6500300">[Gräfin] Einsatz von Charaktertalent gewährt kurzzeitig Unverwundbarkeit</text>
+<text id="6500400">[Räuber] Treffer mit Charaktertalenten reduzieren die gegnerische Angriffskraft</text>
+<text id="6500500">[Gespenst] Höhere maximale FP beim Aktivieren von Fähigkeit</text>
+<text id="6500600">[Einsiedlerin] Sammeln von Affinitätsspuren negiert Affinität</text>
+<text id="6500700">[Exekutor] Regeneriert langsam LP beim Verwenden von Fähigkeit</text>
+<text id="6600000">Naher Schlaf erhöht Angriffskraft
+</text>
+<text id="6600001">Naher Schlaf erhöht Angriffskraft +1
+</text>
+<text id="6600002">Naher Schlaf erhöht Angriffskraft +2
+</text>
+<text id="6600100">Naher Wahnsinn erhöht Angriffskraft
+</text>
+<text id="6600101">Naher Wahnsinn erhöht Angriffskraft +1
+</text>
+<text id="6600102">Naher Wahnsinn erhöht Angriffskraft +2
+</text>
+<text id="6610400">Erhöhte maximale LP
+</text>
+<text id="6610500">Erhöhte maximale FP
+</text>
+<text id="6610600">Erhöhte maximale Ausdauer
+</text>
+<text id="6610700">Verringerter FP-Verbrauch</text>
+<text id="6610701">Verringerter FP-Verbrauch +1</text>
+<text id="6610702">Verringerter FP-Verbrauch +2</text>
+<text id="6610800">Erhöhte Affinitäts-Angriffskraft</text>
+<text id="6610801">Erhöhte Affinitäts-Angriffskraft +1
+</text>
+<text id="6610802">Erhöhte Affinitäts-Angriffskraft +2
+</text>
+<text id="6611000">Erhöhte körperliche Schadensresistenz</text>
+<text id="6611001">Erhöhte körperliche Schadensresistenz +1
+</text>
+<text id="6611002">Erhöhte körperliche Schadensresistenz +2
+</text>
+<text id="6611100">Erhöhte Affinitätsschadensresistenz</text>
+<text id="6611101">Erhöhte Affinitätsschadensresistenz +1
+</text>
+<text id="6611102">Erhöhte Affinitätsschadensresistenz +2
+</text>
+<text id="6611200">Verbesserte Zaubereien</text>
+<text id="6611201">Verbesserte Zaubereien +1
+</text>
+<text id="6611202">Verbesserte Zaubereien +2
+</text>
+<text id="6611300">Verbesserte Anrufungen</text>
+<text id="6611301">Verbesserte Anrufungen +1
+</text>
+<text id="6611302">Verbesserte Anrufungen +2
+</text>
+<text id="6611400">Verbesserte Flaschen-LP-Wiederherstellung</text>
+<text id="6621000">Purpurne Kristallträne im Besitz zu Beginn der Expedition</text>
+<text id="6621100">Purpurrote Kristallträne im Besitz zu Beginn der Expedition</text>
+<text id="6621200">Himmelblaue Kristallträne im Besitz zu Beginn der Expedition</text>
+<text id="6621300">Gefleckte verhärtete Träne im Besitz zu Beginn der Expedition</text>
+<text id="6621400">Purpurrote Blasenträne im Besitz zu Beginn der Expedition</text>
+<text id="6621500">Opalene Blasenträne im Besitz zu Beginn der Expedition</text>
+<text id="6621600">Purpurrote Bruchkristallträne im Besitz zu Beginn der Expedition</text>
+<text id="6621700">Grüne Bruchkristallträne im Besitz zu Beginn der Expedition</text>
+<text id="6621800">Opalene verhärtete Träne im Besitz zu Beginn der Expedition</text>
+<text id="6621900">Gesprungene Dornenträne im Besitz zu Beginn der Expedition</text>
+<text id="6622000">Gesprungene Stachelträne im Besitz zu Beginn der Expedition</text>
+<text id="6622100">Sturmkristallträne im Besitz zu Beginn der Expedition</text>
+<text id="6622200">Gesprungene Kristallträne im Besitz zu Beginn der Expedition</text>
+<text id="6622300">Verhärtete Bleiträne im Besitz zu Beginn der Expedition</text>
+<text id="6622400">Gesprungene Zweigträne im Besitz zu Beginn der Expedition</text>
+<text id="6622500">Purpurwirbel-Blasenträne im Besitz zu Beginn der Expedition</text>
+<text id="6622600">Himmelblaue Geheimnisträne im Besitz zu Beginn der Expedition</text>
+<text id="6622700">Gesprungene Steinstachelträne im Besitz zu Beginn der Expedition</text>
+<text id="6622800">Gesprungene Flammenschleierträne im Besitz zu Beginn der Expedition</text>
+<text id="6622900">Gesprungene Magieschleierträne im Besitz zu Beginn der Expedition</text>
+<text id="6623000">Gesprungene Blitzschleierträne im Besitz zu Beginn der Expedition</text>
+<text id="6623100">Gesprungene Heiligschleierträne im Besitz zu Beginn der Expedition</text>
+<text id="6624000">Erbauliches Aromat im Besitz zu Beginn der Expedition</text>
+<text id="6624100">Funkenaromat im Besitz zu Beginn der Expedition</text>
+<text id="6624200">Eisengefäß-Aromat im Besitz zu Beginn der Expedition</text>
+<text id="6624300">Blutkochendes Aromat im Besitz zu Beginn der Expedition</text>
+<text id="6624400">Giftiger Sprühnebel im Besitz zu Beginn der Expedition</text>
+<text id="6624500">Ätzender Sprühnebel im Besitz zu Beginn der Expedition</text>
+<text id="6630000">Schlummernde Kraft hilft beim Finden von Dolchen</text>
+<text id="6630100">Schlummernde Kraft hilft beim Finden von geraden Schwertern</text>
+<text id="6630200">Schlummernde Kraft hilft beim Finden von Großschwertern</text>
+<text id="6630300">Schlummernde Kraft hilft beim Finden von Riesenschwertern</text>
+<text id="6630400">Schlummernde Kraft hilft beim Finden von Krummschwertern</text>
+<text id="6630500">Schlummernde Kraft hilft beim Finden von krummen Großschwertern</text>
+<text id="6630600">Schlummernde Kraft hilft beim Finden von Katana</text>
+<text id="6630700">Schlummernde Kraft hilft beim Finden von Doppelklingen</text>
+<text id="6630800">Schlummernde Kraft hilft beim Finden von Stoßschwertern</text>
+<text id="6630900">Schlummernde Kraft hilft beim Finden von schweren Stoßschwertern</text>
+<text id="6631000">Schlummernde Kraft hilft beim Finden von Äxten</text>
+<text id="6631100">Schlummernde Kraft hilft beim Finden von Großäxten</text>
+<text id="6631200">Schlummernde Kraft hilft beim Finden von Hämmern</text>
+<text id="6631300">Schlummernde Kraft hilft beim Finden von Kriegshämmern</text>
+<text id="6631400">Schlummernde Kraft hilft beim Finden von Flegeln</text>
+<text id="6631500">Schlummernde Kraft hilft beim Finden von Speeren</text>
+<text id="6631600">Schlummernde Kraft hilft beim Finden von großen Speeren</text>
+<text id="6631700">Schlummernde Kraft hilft beim Finden von Hellebarden</text>
+<text id="6631800">Schlummernde Kraft hilft beim Finden von Schnittern</text>
+<text id="6631900">Schlummernde Kraft hilft beim Finden von Fäusten</text>
+<text id="6632000">Schlummernde Kraft hilft beim Finden von Krallen</text>
+<text id="6632100">Schlummernde Kraft hilft beim Finden von Peitschen</text>
+<text id="6632200">Schlummernde Kraft hilft beim Finden von gigantischen Waffen</text>
+<text id="6632300">Schlummernde Kraft hilft beim Finden von Bögen</text>
+<text id="6632400">Schlummernde Kraft hilft beim Finden von Großbögen</text>
+<text id="6632500">Schlummernde Kraft hilft beim Finden von Armbrüsten</text>
+<text id="6632600">Schlummernde Kraft hilft beim Finden von Ballisten</text>
+<text id="6632700">Schlummernde Kraft hilft beim Finden von kleinen Schilden</text>
+<text id="6632800">Schlummernde Kraft hilft beim Finden von mittleren Schilden</text>
+<text id="6632900">Schlummernde Kraft hilft beim Finden von Großschilden</text>
+<text id="6633000">Schlummernde Kraft hilft beim Finden von Stäben</text>
+<text id="6633100">Schlummernde Kraft hilft beim Finden von heiligen Siegeln</text>
+<text id="6633200">Schlummernde Kraft hilft beim Finden von Fackeln</text>
+<text id="6640000">[Wylder] Erhöhter Geist, reduzierte Kraft</text>
+<text id="6640100">[Wylder] Erhöhte Weisheit und Glaube, reduzierte Stärke und Geschick</text>
+<text id="6641000">[Wächter] Erhöhte Stärke und Geschick, reduzierte Kraft</text>
+<text id="6641100">[Wächter] Erhöhter Geist und Glaube, reduzierte Kraft</text>
+<text id="6642000">[Eisenauge] Erhöhte Arkanenergie, reduziertes Geschick</text>
+<text id="6642100">[Eisenauge] Erhöhte Kraft und Stärke, reduziertes Geschick</text>
+<text id="6643000">[Gräfin] Erhöhte Kraft und Stärke, reduzierter Geist</text>
+<text id="6643100">[Gräfin] Erhöhter Geist und Glaube, reduzierte Weisheit</text>
+<text id="6644000">[Räuber] Erhöhter Geist und Weisheit, reduzierte Kraft und Kondition</text>
+<text id="6644100">[Räuber] Erhöhte Arkanenergie, reduzierte Kraft</text>
+<text id="6645000">[Gespenst] Erhöhte Kraft und Kondition, reduzierter Geist</text>
+<text id="6645100">[Gespenst] Erhöhte Stärke, reduzierter Glaube</text>
+<text id="6646000">[Einsiedlerin] Erhöhte Kraft, Kondition und Geschick, reduzierte Weisheit und Glaube</text>
+<text id="6646100">[Einsiedlerin] Erhöhte Weisheit und Glaube, reduzierter Geist</text>
+<text id="6647000">[Exekutor] Erhöhte Kraft und Kondition, reduzierte Arkanenergie</text>
+<text id="6647100">[Exekutor] Erhöhtes Geschick und Arkanenergie, reduzierte Kraft</text>
+<text id="6800000">Verringerte Kraft</text>
+<text id="6800200">Verringerte Kondition</text>
+<text id="6810100">Verringerte Schadensresistenz</text>
+<text id="6820000">Erleiden von Schaden verursacht Vergiftung</text>
+<text id="6820100">Erleiden von Schaden verursacht Scharlachfäule</text>
+<text id="6820200">Erleiden von Schaden verursacht Frost</text>
+<text id="6820300">Erleiden von Schaden verursacht Blutverlust</text>
+<text id="6820400">Erleiden von Schaden verursacht Wahnsinn</text>
+<text id="6820500">Erleiden von Schaden verursacht Schlaf</text>
+<text id="6820600">Erleiden von Schaden verursacht Todesfluch</text>
+<text id="6830000">Stärke und Weisheit verringert</text>
+<text id="6830100">Geschick und Glaube verringert</text>
+<text id="6830200">Weisheit und Geschick verringert</text>
+<text id="6830300">Glaube und Stärke verringert</text>
+<text id="6830400">Kraft und Arkanenergie verringert</text>
+<text id="6840000">Verringerter Runenerwerb</text>
+<text id="6840100">Verringerte Flaschen-LP-Wiederherstellung</text>
+<text id="6840200">Verringerte Ultimativkunst-Aufladung</text>
+<text id="6850000">Verr. körperliche Schadensres.</text>
+<text id="6850100">Verringerte Affinitätsschadensresistenz</text>
+<text id="6850200">Alle Resistenzen verringert</text>
+<text id="6850300">Verring. Flaschen-LP-Wiederherst.</text>
+<text id="6850400">Ausbruchsprints verbr. mehr Ausd.</text>
+<text id="6850500">Laufender LP-Verlust</text>
+<text id="6850600">Ausweichen verbraucht mehr Ausd.</text>
+<text id="6850700">Verringerte Schadensresistenz nach Ausweichen</text>
+<text id="6850800">Wiederholt. Ausw. verring. Schadensres.</text>
+<text id="6850900">Flaschengebrauch verring. Schadensres.</text>
+<text id="6851000">Flaschengebrauch verursacht Schlaf</text>
+<text id="6851100">Flaschengebrauch verurs. Wahnsinn</text>
+<text id="6851200">Verring. Ang. unter max. LP</text>
+<text id="6851300">Vergiftung unter max. LP</text>
+<text id="6851400">Scharlachfäule unter max. LP</text>
+<text id="6851500">Max. LP verringert Angriffskraft</text>
+<text id="6851600">Nahtod zerstört Flaschen</text>
+<text id="6851700">Nahtod verringert max. LP</text>
+<text id="7000000">Kraft +1</text>
+<text id="7000001">Kraft +2</text>
+<text id="7000002">Kraft +3</text>
+<text id="7000090">Erhöhte maximale LP</text>
+<text id="7000091">%null%</text>
+<text id="7000092">%null%</text>
+<text id="7000093">%null%</text>
+<text id="7000094">%null%</text>
+<text id="7000095">%null%</text>
+<text id="7000096">%null%</text>
+<text id="7000097">%null%</text>
+<text id="7000098">%null%</text>
+<text id="7000099">%null%</text>
+<text id="7000100">Geist +1</text>
+<text id="7000101">Geist +2</text>
+<text id="7000102">Geist +3</text>
+<text id="7000190">Erhöhte maximale FP</text>
+<text id="7000191">%null%</text>
+<text id="7000192">%null%</text>
+<text id="7000193">%null%</text>
+<text id="7000194">%null%</text>
+<text id="7000195">%null%</text>
+<text id="7000196">%null%</text>
+<text id="7000197">%null%</text>
+<text id="7000198">%null%</text>
+<text id="7000199">%null%</text>
+<text id="7000200">Kondition +1</text>
+<text id="7000201">Kondition +2</text>
+<text id="7000202">Kondition +3</text>
+<text id="7000290">Erhöhte maximale Ausdauer</text>
+<text id="7000291">%null%</text>
+<text id="7000292">%null%</text>
+<text id="7000293">%null%</text>
+<text id="7000294">%null%</text>
+<text id="7000295">%null%</text>
+<text id="7000296">%null%</text>
+<text id="7000297">%null%</text>
+<text id="7000298">%null%</text>
+<text id="7000299">%null%</text>
+<text id="7000300">Stärke +1</text>
+<text id="7000301">Stärke +2</text>
+<text id="7000302">Stärke +3</text>
+<text id="7000400">Geschick +1</text>
+<text id="7000401">Geschick +2</text>
+<text id="7000402">Geschick +3</text>
+<text id="7000500">Weisheit +1</text>
+<text id="7000501">Weisheit +2</text>
+<text id="7000502">Weisheit +3</text>
+<text id="7000600">Glaube +1</text>
+<text id="7000601">Glaube +2</text>
+<text id="7000602">Glaube +3</text>
+<text id="7000700">Arkanenergie +1</text>
+<text id="7000701">Arkanenergie +2</text>
+<text id="7000702">Arkanenergie +3</text>
+<text id="7000800">Charaktertalent-Abklingzeitverringerung +1</text>
+<text id="7000801">Charaktertalent-Abklingzeitverringerung +2</text>
+<text id="7000802">Charaktertalent-Abklingzeitverringerung +3</text>
+<text id="7000900">Ultimativkunst-Auto-Aufladung +1</text>
+<text id="7000901">Ultimativkunst-Auto-Aufladung +2</text>
+<text id="7000902">Ultimativkunst-Auto-Aufladung +3</text>
+<text id="7001000">Gleichgewicht +1</text>
+<text id="7001001">Gleichgewicht +2</text>
+<text id="7001002">Gleichgewicht +3</text>
+<text id="7001400">Erhöhte körperliche Angriffskraft</text>
+<text id="7001401">Erhöhte körperliche Angriffskraft +1</text>
+<text id="7001402">Erhöhte körperliche Angriffskraft +2</text>
+<text id="7001403">Erhöhte körperliche Angriffskraft +3</text>
+<text id="7001500">Erhöhte magische Angriffskraft</text>
+<text id="7001501">Erhöhte magische Angriffskraft +1</text>
+<text id="7001502">Erhöhte magische Angriffskraft +2</text>
+<text id="7001600">Erhöhte Feuer-Angriffskraft</text>
+<text id="7001601">Erhöhte Feuer-Angriffskraft +1</text>
+<text id="7001602">Erhöhte Feuer-Angriffskraft +2</text>
+<text id="7001700">Erhöhte Blitz-Angriffskraft</text>
+<text id="7001701">Erhöhte Blitz-Angriffskraft +1</text>
+<text id="7001702">Erhöhte Blitz-Angriffskraft +2</text>
+<text id="7001800">Erhöhte Heiligangriffskraft</text>
+<text id="7001801">Erhöhte Heiligangriffskraft +1</text>
+<text id="7001802">Erhöhte Heiligangriffskraft +2</text>
+<text id="7001900">Angriffe verursachen Gift</text>
+<text id="7001901">Angriffe verursachen Gift +1</text>
+<text id="7001902">Angriffe verursachen Gift +2</text>
+<text id="7002000">Angriffe verursachen Blutverlust</text>
+<text id="7002001">Angriffe verursachen Blutverlust +1</text>
+<text id="7002002">Angriffe verursachen Blutverlust +2</text>
+<text id="7002100">Angriffe verursachen Schlaf</text>
+<text id="7002101">Angriffe verursachen Schlaf +1</text>
+<text id="7002102">Angriffe verursachen Schlaf +2</text>
+<text id="7002103">Angriffe verursachen Schlaf +3</text>
+<text id="7002200">Angriffe verursachen Todespest</text>
+<text id="7002300">Angriffe verursachen Scharlachfäule</text>
+<text id="7002301">Angriffe verursachen Scharlachfäule +1</text>
+<text id="7002302">Angriffe verursachen Scharlachfäule +2</text>
+<text id="7002400">Angriffe verursachen Frost</text>
+<text id="7002401">Angriffe verursachen Frost +1</text>
+<text id="7002402">Angriffe verursachen Frost +2</text>
+<text id="7002403">Angriffe verursachen Frost +3</text>
+<text id="7002500">Angriffe verursachen Wahnsinn</text>
+<text id="7002600">Erhöhte Magieschaden-Resistenz</text>
+<text id="7002700">Erhöhte Feuerschaden-Resistenz</text>
+<text id="7002800">Erhöhte Blitzschaden-Resistenz</text>
+<text id="7002900">Erhöhte Heiligschaden-Resistenz</text>
+<text id="7003000">Erhöhte Giftresistenz</text>
+<text id="7003100">Erhöhte Blutverlustresistenz</text>
+<text id="7003200">Erhöhte Schlafresistenz</text>
+<text id="7003300">Erhöhte Todespestresistenz</text>
+<text id="7003400">Erhöhte Scharlachfäule-Resistenz</text>
+<text id="7003500">Erhöhte Frostresistenz</text>
+<text id="7003600">Erhöhte Wahnsinnsresistenz</text>
+<text id="7005600">Partielle LP-Regeneration nach Angriffsschaden</text>
+<text id="7010000">[Wächter] Verbesserte Charaktertalent-Reichweite</text>
+<text id="7010200">Flaschen heilen auch Verbündete</text>
+<text id="7010500">[Wylder] Kunstaktivierung verbreitet Feuer im Bereich</text>
+<text id="7010700">[Gräfin] Dolch-Angriffsketten übertragen
+Ereignis auf Gegner in der Nähe</text>
+<text id="7010800">[Räuber] Charaktertalentschaden erhöht,
+Schadensresistenz während Nutzung verringert</text>
+<text id="7010900">[Gespenst] Verwendet bei Kunstaktivierung eigene LP,
+um Verbündete in der Nähe vollständig zu heilen</text>
+<text id="7011000">[Wächter] Verlängerte Dauer für Charaktertalent</text>
+<text id="7011100">[Wächter] Nutzung der Ultimativkunst
+verbessert Schadensresistenz für Verbündete.</text>
+<text id="7011200">[Gespenst] Löst bei Aktivierung der Ultimativkunst
+Geisterflammenexplosion aus.</text>
+<text id="7011400">[Wächter] Stellt bei Nutzung des Charaktertalents
+LP von Verbündeten wieder her</text>
+<text id="7011500">[Wylder] Charaktertalent verursacht Blutverlust</text>
+<text id="7011600">[Wächter] Erzeugt einen Wirbelwind beim
+Aufladen von Hellebardenangriffen</text>
+<text id="7011700">[Exekutor] Brüllen stellt LP wieder her,
+während Kunst aktiv ist</text>
+<text id="7011900">[Wächter] Charaktertalent verursacht Heiligschaden</text>
+<text id="7012000">[Wächter] Stellt LP naher Verbündeter wieder her,
+während Kunst aktiv ist</text>
+<text id="7012200">Heilt langsam Eure LP und die von
+Verbündeten bei niedrigen LP</text>
+<text id="7012300">Erhöhte Schadensresistenz bei niedrigen LP</text>
+<text id="7012400">Starker Angriff setzt große Hitzewelle frei</text>
+<text id="7012500">Springen erschafft magische Geschosse</text>
+<text id="7012600">Angriffsbonus von nahem Verbündeten</text>
+<text id="7012700">Abwehrkonter beschw. Lichtsäule</text>
+<text id="7020000">[Wylder] Feuer-Folgeangriffe möglich bei Verwendung
+von Charaktertalenten (nur Großschwert)</text>
+<text id="7030000">Verbessertes Gleichgewicht nahe Totem Stela</text>
+<text id="7030200">LP-Wiederherstellung bei Nutzung von medizinischen Boli usw.</text>
+<text id="7030500">[Wylder] Verringerte Schadensresistenz, verbesserte
+Angriffskraft und Ausdauer nach Kunstaktivierung</text>
+<text id="7030600">Erfolgreiche Abwehr füllt mehr der Kunst-Anzeige</text>
+<text id="7030700">Zieht Aufmerksamkeit der Gegner beim Abwehren an</text>
+<text id="7030800">Kritische Treffer füllen mehr der Kunst-Anzeige</text>
+<text id="7030900">Körperliche Angriffskraft steigt nach Einsatz von Fetten</text>
+<text id="7031200">[Gespenst] Verstärkt bei Aktivierung von
+Ultimativkunst Familie und Verbündete</text>
+<text id="7031300">[Räuber] Bei Verwendung des Charaktertalents
+erlittener Schaden erhöht Angriffskraft und Ausdauer</text>
+<text id="7031400">[Wylder] Reduziert Abklingzeit des Charaktertalents</text>
+<text id="7031600">Aufeinanderfolgende erfolgreiche Abwehr
+verbessert Abwehrfähigkeit und lenkt große Angriffe ab</text>
+<text id="7031700">Erfolgreiche Abwehr erzeugt Schockwelle</text>
+<text id="7031800">[Gräfin] Schwerer zu sehen und lautlose Schritte,
+nach kritischen Treffern von hinten</text>
+<text id="7031900">Kritische Treffer gewähren Runen</text>
+<text id="7032200">Das Erleiden von Angriffen erhöht Angriffskraft</text>
+<text id="7032300">[Wylder] Erhöhte Angriffskraft während Charaktertalent aktiv ist</text>
+<text id="7032400">[Wylder] Kunstanzeige deutlich gefüllt, wenn die Fähigkeit
+aktiv ist</text>
+<text id="7032700">[Gräfin] Besiegen von Gegnern bei
+aktiver Kunst erhöht Angriffskraft</text>
+<text id="7032800">[Einsiedlerin] Sammeln von Affinitäts-
+spuren aktiviert Terra Magica</text>
+<text id="7032900">[Einsiedlerin] Erleide Blutverlust bei Aktivierung
+von Ultimativkunst und erhöhe Angriffskraft</text>
+<text id="7033000">[Wylder] Erhöhte Angriffskraft,
+wenn Fähigkeiten aktiviert werden</text>
+<text id="7033100">%null%</text>
+<text id="7033200">[Wylder] +1 zusätzlicher Charaktertalent-Einsatz</text>
+<text id="7033300">[Wächter] Werde das Ziel der gegnerischen Aggression,
+wenn Talent aktiv ist</text>
+<text id="7033400">[Wächter] Erfolgreiches Blocken sendet Schockwellen bei aktiver Fähigkeit aus</text>
+<text id="7033600">[Gräfin] Erhöhte Dauer von Ultimativkunst</text>
+<text id="7033700">Riesenwaffen sind bei aufgeladenen Angriffen
+mit Stein überzogen</text>
+<text id="7033800">[Räuber] Der finale Angriff eines Charaktertalents
+erhöht dauerhaft die Angriffskraft</text>
+<text id="7033900">[Einsiedlerin] Erhöhte Dauer von Blutsiegeln</text>
+<text id="7034000">[Einsiedlerin] Sammeln von 4 Affinitätsspuren
+erhöht Affinitäts-Angriffskraft</text>
+<text id="7034100">[Einsiedlerin] Aktiveren der
+Ultimativkunst erhöht die maximalen LP </text>
+<text id="7034200">[Exekutor] Erhöhte Angriffskraft,
+während Ultimativkunst aktiv ist</text>
+<text id="7034300">[Exekutor] Verbesserte Effekte von Talenten,
+aber verringerte Resistenz gegen Statusleiden</text>
+<text id="7034400">[Exekutor] Charaktertalent erhöht Angriff,
+aber Angriffe verbrauchen LP</text>
+<text id="7034500">[Exekutor] Während Charaktertalent aktiv ist, stellt 
+Freischalten des verfluchten Schwerts LP her</text>
+<text id="7034600">[Eisenauge] Kunstladungsaktivierung
+fügt Gift-Effekt hinzu</text>
+<text id="7034700">[Eisenauge] Stärkt Stoß-Abwehrkonter
+nach Kunstausführung</text>
+<text id="7034800">Kritische Feuer-Treffer erhöhen max. Ausdauer</text>
+<text id="7034900">Kritische Treffer regenerieren LP</text>
+<text id="7035000">Kritischer Treffer fügt Blitz-Effekt hinzu</text>
+<text id="7035100">Kritischer Treffer erhöht Ausdauerregeneration</text>
+<text id="7035200">Wiederholte Abwehr härtet Haut</text>
+<text id="7035300">Kritischer Treffer erzeugt Schlafnebel</text>
+<text id="7035400">Geste „Gekreuzte Beine“ sammelt Wahnsinn an</text>
+<text id="7035500">Wahnsinn stellt kontinuierlich FP wieder her</text>
+<text id="7035600">Aufprall nach Ausbruchsprint spaltet Erde</text>
+<text id="7035700">Waffenwechsel fügt Affinitäts-Angriff hinzu</text>
+<text id="7035800">Erhöhte Angriffskraft hinzugefügter Affinitäts-Angriffe</text>
+<text id="7035900">Waffenwechsel erhöht Angriffskraft</text>
+<text id="7040000">Verbesserter Ausgangs-Standardangriff</text>
+<text id="7040100">Verbesserte Abwehrkonter</text>
+<text id="7040200">Verbesserte kritische Treffer</text>
+<text id="7040290">Verbesserte kritische Treffer +1</text>
+<text id="7040291">%null%</text>
+<text id="7040292">%null%</text>
+<text id="7040293">%null%</text>
+<text id="7040294">%null%</text>
+<text id="7040295">%null%</text>
+<text id="7040296">%null%</text>
+<text id="7040297">%null%</text>
+<text id="7040298">%null%</text>
+<text id="7040299">%null%</text>
+<text id="7040300">Verbesserter Wurftopf-Schaden</text>
+<text id="7040400">Verbesserter Wurfmesser-Schaden</text>
+<text id="7040500">Verbesserter Schimmerstein- und Gravitationssteinschaden</text>
+<text id="7043200">Verbesserte Steingräberzauberei</text>
+<text id="7043300">Verbesserte Cariaschwertzauberei</text>
+<text id="7043400">Verbesserte Schimmerklingenzauberei</text>
+<text id="7043500">Verbesserte Unsichtbarkeitszauberei</text>
+<text id="7043600">Verbesserte Kristallianerzauberei</text>
+<text id="7043700">Verbesserte Gravitationszauberei</text>
+<text id="7043800">Verbesserte Dornenzauberei</text>
+<text id="7043900">Verbesserte Nachtzauberei</text>
+<text id="7044000">Verbesserte Anrufungen d. Fundamentalisten</text>
+<text id="7044100">Verbesserte Anrufungen des Drachenkults</text>
+<text id="7044200">Verbesserte Anrufungen der Flamme der Riesen</text>
+<text id="7044300">Verbesserte Anrufungen der Gottestöter</text>
+<text id="7044400">Verbesserte bestialische Anrufungen</text>
+<text id="7044500">Verbesserte Anrufungen der Rasenden Flamme</text>
+<text id="7044600">Verbesserte Drachenkommunionsanrufungen</text>
+<text id="7050000">Erhöhte Ausdauerregeneration für
+Verbündete in der Nähe, aber nicht Euch</text>
+<text id="7050100">Objekte gewähren Effekte allen Verbündeten in der Nähe</text>
+<text id="7060000">Erhöhte Angriffskraft für jeden besiegten Siegelgefängnis-
+Gefangenen</text>
+<text id="7060100">Erhöhte maximale FP für jeden freigeschalteten Turm der Zauberer</text>
+<text id="7060200">Erhöhte Angriffskraft für jeden
+besiegten Eindringling der Nacht</text>
+<text id="7070000">Schatz auf Karte markiert</text>
+<text id="7080000">Erhöhte Angriffskraft mit 3+ Dolchen</text>
+<text id="7080100">Erhöhte Angriffskraft mit 3+ geraden Schwertern</text>
+<text id="7080200">Erhöhte Angriffskraft mit 3+ Großschwertern</text>
+<text id="7080300">Erhöhte Angriffskraft mit 3+ Riesenschwertern</text>
+<text id="7080400">Erhöhte Angriffskraft mit 3+ Krummschwertern</text>
+<text id="7080500">Erhöhte Angriffskraft mit 3+ krummen Großschwertern</text>
+<text id="7080600">Erhöhte Angriffskraft mit 3+ Katanas</text>
+<text id="7080700">Erhöhte Angriffskraft mit 3+ Doppelklingen</text>
+<text id="7080800">Erhöhte Angriffskraft mit 3+ Stoßschwertern</text>
+<text id="7080900">Erhöhte Angriffskraft mit 3+ schweren Stoßschwertern</text>
+<text id="7081000">Erhöhte Angriffskraft mit 3+ Äxten</text>
+<text id="7081100">Erhöhte Angriffskraft mit 3+ Großäxten</text>
+<text id="7081200">Erhöhte Angriffskraft mit 3+ Hämmern</text>
+<text id="7081300">Erhöhte Angriffskraft mit 3+ Kriegshämmern</text>
+<text id="7081400">Erhöhte Angriffskraft mit 3+ Flegeln</text>
+<text id="7081500">Erhöhte Angriffskraft mit 3+ Speeren</text>
+<text id="7081700">Erhöhte Angriffskraft mit 3+ Großspeeren</text>
+<text id="7081800">Erhöhte Angriffskraft mit 3+ Hellebarden</text>
+<text id="7081900">Erhöhte Angriffskraft mit 3+ Schnittern</text>
+<text id="7082000">Erhöhte Angriffskraft mit 3+ Fäusten</text>
+<text id="7082100">Erhöhte Angriffskraft mit 3+ Klauen</text>
+<text id="7082200">Erhöhte Angriffskraft mit 3+ Peitschen</text>
+<text id="7082300">Erhöhte Angriffskraft mit 3+ gigantischen Waffen</text>
+<text id="7082400">Erhöhte Angriffskraft mit 3+ Bögen</text>
+<text id="7082500">Erhöhte maximale FP mit 3+ Stäben</text>
+<text id="7082600">Erhöhte maximale FP mit 3+ heiligen Siegeln</text>
+<text id="7082700">Erhöhte maximale LP mit 3+ kleinen Schilden</text>
+<text id="7082800">Erhöhte maximale LP mit 3+ mittleren Schilden</text>
+<text id="7082900">Erhöhte maximale LP mit 3+ Großschilden</text>
+<text id="7090000">Das Besiegen von Gegnern füllt die Kunst-Anzeige mehr</text>
+<text id="7090100">Besiegen von Gegnern stellt LP bei
+Verbündeten wieder her, aber nicht Euch</text>
+<text id="7090300">Besiegen von Gegnern nahe einer Totem Stela
+regeneriert LP</text>
+<text id="7100000">Kritische Treffer fügen vergifteten Gegnern
+gewaltigen Schaden zu</text>
+<text id="7100100">Ausdauer-Wiederherstellung durch getroffene Angriffe</text>
+<text id="7100190">Ausdauer-Wiederherstellung durch getroffene Angriffe +1</text>
+<text id="7110000">Erhöht den Runenerwerb für Euch und Verbündete</text>
+<text id="7120000">Anfangswaffe verursacht Magieschaden
+</text>
+<text id="7120100">Anfangswaffe verursacht Feuerschaden </text>
+<text id="7120101">Anfangswaffe verursacht verstärkten Feuerschaden</text>
+<text id="7120200">Anfangswaffe verursacht Blitzschaden </text>
+<text id="7120300">Anfangswaffe verursacht Heiligschaden</text>
+<text id="7120400">Anfangswaffe verursacht Frost
+</text>
+<text id="7120500">Anfangswaffe verursacht Gift
+</text>
+<text id="7120600">Anfangswaffe verursacht Blutverlust
+</text>
+<text id="7120700">Anfangswaffe verursacht Scharlachfäule
+</text>
+<text id="7120900">Steinschwertschlüssel im Besitz
+zu Beginn der Expedition</text>
+<text id="7121000">Kleiner Beutel im Besitz
+zu Beginn der Expedition</text>
+<text id="7121100">Feuertöpfe im Besitz
+zu Beginn der Expedition</text>
+<text id="7121200">Magische Töpfe im Besitz
+zu Beginn der Expedition</text>
+<text id="7121300">Blitztöpfe im Besitz
+zu Beginn der Expedition</text>
+<text id="7121400">Weihwassertöpfe im Besitz
+zu Beginn der Expedition</text>
+<text id="7121500">Giftknochenwurfpfeile im Besitz
+zu Beginn der Expedition</text>
+<text id="7121600">Kristallwurfpfeile im Besitz
+zu Beginn der Expedition</text>
+<text id="7121700">Wurfdolche im Besitz
+zu Beginn der Expedition</text>
+<text id="7121800">Schimmerstein-Überreste im Besitz
+zu Beginn der Expedition</text>
+<text id="7121900">Gravitationssteinbrocken im Besitz
+zu Beginn der Expedition</text>
+<text id="7122000">Betörende Äste im Besitz
+zu Beginn der Expedition</text>
+<text id="7122100">Gespensterrufende Glocke im Besitz
+zu Beginn der Expedition</text>
+<text id="7122200">Feuerfett im Besitz
+zu Beginn der Expedition</text>
+<text id="7122300">Magiefett im Besitz
+zu Beginn der Expedition</text>
+<text id="7122400">Blitzfett im Besitz
+zu Beginn der Expedition</text>
+<text id="7122500">Heiligfett im Besitz
+zu Beginn der Expedition</text>
+<text id="7122600">Schildfett im Besitz
+zu Beginn der Expedition</text>
+<text id="7122700">Ändert Talent der kompatiblen Waffe
+in Schimmerphalanx zu Beginn der Expedition</text>
+<text id="7122800">Ändert Talent der kompatiblen Waffe
+in Gravitation zu Beginn der Expedition</text>
+<text id="7122900">Ändert Talent der kompatiblen Waffe
+in Flammender Schlag zu Beginn der Expedition</text>
+<text id="7123000">Ändert Talent der kompatiblen Waffe
+in Eruption zu Beginn der Expedition</text>
+<text id="7123100">Ändert Talent der kompatiblen Waffe
+in Donnerblitz zu Beginn der Expedition</text>
+<text id="7123200">Ändert Talent der kompatiblen Waffe
+in Blitzschnitt zu Beginn der Expedition</text>
+<text id="7123300">Ändert Talent der kompatiblen Waffe
+in Heilige Klinge zu Beginn der Expedition</text>
+<text id="7123400">Ändert Talent der kompatiblen Waffe
+in Gebetsschlag zu Beginn der Expedition</text>
+<text id="7123500">Ändert Talent der kompatiblen Waffe
+in Giftiger Nebel zu Beginn der Expedition</text>
+<text id="7123600">Ändert Talent der kompatiblen Waffe
+in Giftiger Falter zu Beginn der Expedition</text>
+<text id="7123700">Ändert Talent der kompatiblen Waffe
+in Blutklinge zu Beginn der Expedition</text>
+<text id="7123800">Ändert Talent der kompatiblen Waffe
+in Seppuku zu Beginn der Expedition</text>
+<text id="7123900">Ändert Talent der kompatiblen Waffe
+in Frostnebel zu Beginn der Expedition</text>
+<text id="7124000">Ändert Talent der kompatiblen Waffe
+in Raureifstampfer zu Beginn der Expedition</text>
+<text id="7124100">Ändert Talent der kompatiblen Waffe
+in Ruf des Weißen Schatten zu Beginn der Expedition</text>
+<text id="7124300">Ändert Talent der kompatiblen Waffe
+in Beharren zu Beginn der Expedition</text>
+<text id="7124400">Ändert Talent der kompatiblen Waffe
+in Schnellschritt zu Beginn der Expedition</text>
+<text id="7124500">Ändert Talent der kompatiblen Waffe
+in Sturmstampfer zu Beginn der Expedition</text>
+<text id="7124600">Ändert Talent der kompatiblen Waffe
+in Eiserner Wille zu Beginn der Expedition</text>
+<text id="7124700">Ändert Talent der kompatiblen Waffe
+in Pfeilhagel zu Beginn der Expedition</text>
+<text id="7126000">Sternenlichtsplitter im Besitz
+zu Beginn der Expedition</text>
+<text id="7150000">Abwehrkonter wird je nach aktuellen LP verbessert</text>
+<text id="7160000">LP-Regeneration durch Stoß-Abwehrkonter</text>
+<text id="7200000">LP-Regeneration durch Kopfschüsse</text>
+<text id="7200100">Verbesserte Haltungsbrechung durch Kopfschüsse</text>
+<text id="7220000">[Gespenst] Verstärkt beim Kampf gemeinsam mit Familie</text>
+<text id="7230000">Runenrabatt auf Käufe bei Händlern
+auf Expeditionen</text>
+<text id="7230001">Riesiger Runenrabatt auf Käufe bei Händlern
+auf Expeditionen</text>
+<text id="7240000">Verbessert Gleichgewicht &amp; Schadensresistenz
+wenn durch Schaden zurückgestoßen</text>
+<text id="7260000">Erhöhte Angriffskraft gegen
+von Gift geplagte Gegner</text>
+<text id="7260200">Erhöhte Angriffskraft gegen
+von Schlaf geplagte Gegner</text>
+<text id="7260300">Erhöhte Angriffskraft gegen
+von Scharlachfäule geplagte Gegner</text>
+<text id="7260400">Erhöhte Angriffskraft gegen
+von Frost geplagte Gegner</text>
+<text id="7260600">Angriff auf schlafende Gegner erzeugen
+magische Explosionen</text>
+<text id="7260700">Naher Frost verbirgt Euch</text>
+<text id="7260701">%null%</text>
+<text id="7260702">%null%</text>
+<text id="7260703">%null%</text>
+<text id="7260704">%null%</text>
+<text id="7260705">%null%</text>
+<text id="7260706">%null%</text>
+<text id="7260707">%null%</text>
+<text id="7260708">%null%</text>
+<text id="7260709">%null%</text>
+<text id="7260710">Gift &amp; Fäulnis in der Nähe erhöhen Angriffskraft</text>
+<text id="7270100">[Eisenauge] +1 zusätzlicher Charaktertalent-Einsatz</text>
+<text id="7280000">[Eisenauge] Erhöhte Dauer von Schwachstellen</text>
+<text id="7290000">[Gräfin] Erhöhte Charaktertalent-Angriffskraft</text>
+<text id="7300000">[Gräfin] Charaktertalent verursacht Schlaf bei Gegnern</text>
+<text id="7310000">[Räuber] Erhöhte Dauer von Ultimativkunst</text>
+<text id="7320000">[Gespenst] Erhöhte Chance für Talentaktivierung</text>
+<text id="7330000">Erhöhte Dolch-Angriffskraft</text>
+<text id="7330100">Erhöhte Gerades-Schwert-Angriffskraft</text>
+<text id="7330200">Erhöhte Großschwert-Angriffskraft</text>
+<text id="7330300">Erhöhte Riesenschwert-Angriffskraft</text>
+<text id="7330400">Erhöhte Krummschwert-Angriffskraft</text>
+<text id="7330500">Erhöhte Krummes-Großschwert-Angriffskraft</text>
+<text id="7330600">Erhöhte Katana-Angriffskraft</text>
+<text id="7330700">Erhöhte Doppelklingen-Angriffskraft</text>
+<text id="7330800">Erhöhte Stoßschwert-Angriffskraft</text>
+<text id="7330900">Erhöhte Schweres-Stoßschwert-Angriffskraft</text>
+<text id="7331000">Erhöhte Axt-Angriffskraft</text>
+<text id="7331100">Erhöhte Großaxt-Angriffskraft</text>
+<text id="7331200">Erhöhte Hammer-Angriffskraft</text>
+<text id="7331300">Erhöhte Kriegshammer-Angriffskraft</text>
+<text id="7331400">Erhöhte Flegel-Angriffskraft</text>
+<text id="7331500">Erhöhte Speer-Angriffskraft</text>
+<text id="7331600">Erhöhte Piken-Angriffskraft</text>
+<text id="7331700">Erhöhte Großer-Speer-Angriffskraft</text>
+<text id="7331800">Erhöhte Hellebarden-Angriffskraft</text>
+<text id="7331900">Erhöhte Schnitter-Angriffskraft</text>
+<text id="7332000">Erhöhte Faust-Angriffskraft</text>
+<text id="7332100">Erhöhte Klauen-Angriffskraft</text>
+<text id="7332200">Erhöhte Peitschen-Angriffskraft</text>
+<text id="7332300">Erhöhte Gigantische-Waffen-Angriffskraft</text>
+<text id="7332400">Erhöhte Bogen-Angriffskraft</text>
+<text id="7332500">Erhöhte Großbogen-Angriffskraft</text>
+<text id="7332600">Erhöhte Armbrust-Angriffskraft</text>
+<text id="7332700">Erhöhte Ballisten-Angriffskraft</text>
+<text id="7340000">LP-Regeneration durch Dolchangriffe</text>
+<text id="7340100">LP-Regeneration durch Gerades-Schwert-Angriffe</text>
+<text id="7340200">LP-Regeneration durch Großschwertangriffe</text>
+<text id="7340300">LP-Regeneration durch Riesenschwertangriffe</text>
+<text id="7340400">LP-Regeneration durch Krummschwertangriffe</text>
+<text id="7340500">LP-Regeneration durch Krummes-Großschwertangriffe</text>
+<text id="7340600">LP-Regeneration durch Katana-Angriffe</text>
+<text id="7340700">LP-Regeneration durch Doppelklingen-Angriffe</text>
+<text id="7340800">LP-Regeneration durch Stoßschwertangriffe</text>
+<text id="7340900">LP-Regeneration durch Schweres-Stoßschwertangriffe</text>
+<text id="7341000">LP-Regeneration durch Axtangriffe</text>
+<text id="7341100">LP-Regeneration durch Großaxtangriffe</text>
+<text id="7341200">LP-Regeneration durch Hammerangriffe</text>
+<text id="7341300">LP-Regeneration durch Kriegshammerangriffe</text>
+<text id="7341400">LP-Regeneration durch Flegelangriffe</text>
+<text id="7341500">LP-Regeneration durch Speerangriffe</text>
+<text id="7341600">LP-Regeneration durch Pikenangriffe</text>
+<text id="7341700">LP-Regeneration durch Großer-Speerangriffe</text>
+<text id="7341800">LP-Regeneration durch Hellebardenangriffe</text>
+<text id="7341900">LP-Regeneration durch Schnitterangriffe</text>
+<text id="7342000">LP-Regeneration durch Faustangriffe</text>
+<text id="7342100">LP-Regeneration durch Klauenangriffe</text>
+<text id="7342200">LP-Regeneration durch Peitschenangriffe</text>
+<text id="7342300">LP-Regeneration durch Gigantische-Waffenangriffe</text>
+<text id="7342400">LP-Regeneration durch Bogenangriffe</text>
+<text id="7342500">LP-Regeneration durch Großbogenangriffe</text>
+<text id="7342600">LP-Regeneration durch Armbrustangriffe</text>
+<text id="7342700">LP-Regeneration durch Ballisten-Angriffe</text>
+<text id="7350000">FP-Regeneration durch Dolchangriffe</text>
+<text id="7350100">FP-Regeneration durch Gerades-Schwert-Angriffe</text>
+<text id="7350200">FP-Regeneration durch Großschwertangriffe</text>
+<text id="7350300">FP-Regeneration durch Riesenschwertangriffe</text>
+<text id="7350400">FP-Regeneration durch Krummschwertangriffe</text>
+<text id="7350500">FP-Regeneration durch Krummes-Großschwertangriffe</text>
+<text id="7350600">FP-Regeneration durch Katana-Angriffe</text>
+<text id="7350700">FP-Regeneration durch Doppelklingen-Angriffe</text>
+<text id="7350800">FP-Regeneration durch Stoßschwertangriffe</text>
+<text id="7350900">FP-Regeneration durch Schweres-Stoßschwertangriffe</text>
+<text id="7351000">FP-Regeneration durch Axtangriffe</text>
+<text id="7351100">FP-Regeneration durch Großaxtangriffe</text>
+<text id="7351200">FP-Regeneration durch Hammerangriffe</text>
+<text id="7351300">FP-Regeneration durch Kriegshammerangriffe</text>
+<text id="7351400">FP-Regeneration durch Flegelangriffe</text>
+<text id="7351500">FP-Regeneration durch Speerangriffe</text>
+<text id="7351600">FP-Regeneration durch Pikenangriffe</text>
+<text id="7351700">FP-Regeneration durch Großer-Speerangriffe</text>
+<text id="7351800">FP-Regeneration durch Hellebardenangriffe</text>
+<text id="7351900">FP-Regeneration durch Schnitterangriffe</text>
+<text id="7352000">FP-Regeneration durch Faustangriffe</text>
+<text id="7352100">FP-Regeneration durch Klauenangriffe</text>
+<text id="7352200">FP-Regeneration durch Peitschenangriffe</text>
+<text id="7352300">FP-Regeneration durch Gigantische-Waffenangriffe</text>
+<text id="7352400">FP-Regeneration durch Bogenangriffe</text>
+<text id="7352500">FP-Regeneration durch Großbogenangriffe</text>
+<text id="7352600">FP-Regeneration durch Armbrustangriffe</text>
+<text id="7352700">FP-Regeneration durch Ballisten-Angriffe</text>
+<text id="8000000">Erhöhte maximale LP</text>
+<text id="8010000">Erhöhte maximale FP</text>
+<text id="8010100">Verringerter FP-Verbrauch</text>
+<text id="8020000">Erhöhte maximale Ausdauer</text>
+<text id="8020100">Verringerter Ausdauer-Verbrauch</text>
+<text id="8020200">Verbesserte Ausdauerregeneration</text>
+<text id="8100000">Erhöhte körperliche Angriffskraft</text>
+<text id="8100100">Erhöhte magische Angriffskraft</text>
+<text id="8100200">Erhöhte Feuer-Angriffskraft</text>
+<text id="8100300">Erhöhte Blitz-Angriffskraft</text>
+<text id="8100400">Erhöhte Heiligangriffskraft</text>
+<text id="8110000">Angriffe verursachen Gift</text>
+<text id="8110100">Angriffe verursachen Blutverlust</text>
+<text id="8110200">Angriffe verursachen Schlaf</text>
+<text id="8110300">Angriffe verursachen Todespest</text>
+<text id="8110400">Angriffe verurs. Scharlachfäule</text>
+<text id="8110500">Angriffe verursachen Frost</text>
+<text id="8110600">Angriffe verursachen Wahnsinn</text>
+<text id="8110700">Feuer zu Waffe hinzufügen</text>
+<text id="8110800">Magie zu Waffe hinzufügen</text>
+<text id="8110900">Blitz zu Waffe hinzufügen</text>
+<text id="8111000">Heilig zu Waffe hinzufügen</text>
+<text id="8120000">Verbesserte Haltungsbrechung</text>
+<text id="8130000">Verbesserte kritische Treffer</text>
+<text id="8140000">Verbesserte Abwehrbrechung</text>
+<text id="8150000">Angriffsstärkung [Sternenfallwesen]</text>
+<text id="8150100">Angriffsstärkung [Jene, die im Tode leben]</text>
+<text id="8150300">Angriffsstärkung [Drachen]</text>
+<text id="8200000">Erhöhte körperliche Schadensresistenz</text>
+<text id="8200100">Erhöhte Magieschaden-Resistenz</text>
+<text id="8200200">Erhöhte Feuerschaden-Resistenz</text>
+<text id="8200300">Erhöhte Blitzschaden-Resistenz</text>
+<text id="8200400">Erhöhte Heiligschaden-Resistenz</text>
+<text id="8200500">Erhöhte Affinitätsschadensresistenz</text>
+<text id="8210000">Erhöhte Giftresistenz</text>
+<text id="8210100">Erhöhte Blutverlustresistenz</text>
+<text id="8210200">Erhöhte Schlafresistenz</text>
+<text id="8210300">Erhöhte Todespestresistenz</text>
+<text id="8210400">Erhöhte Fäulnisresistenz</text>
+<text id="8210500">Erhöhte Frostresistenz</text>
+<text id="8210600">Erhöhte Wahnsinnsresistenz</text>
+<text id="8220000">Erhöhte Abwehrfähigkeit</text>
+<text id="8220001">Erhöhte Abwehrfähigkeit +1</text>
+<text id="8220002">Erhöhte Abwehrfähigkeit +2</text>
+<text id="8230000">Verbessertes Gleichgewicht</text>
+<text id="8300000">Erhöhte Angriffskraft mit Zweihandwaffen</text>
+<text id="8300100">Verbesserte Haltungsbrechung mit Zweihandwaffen</text>
+<text id="8310000">Erhöhte Angriffskraft mit zwei Waffen</text>
+<text id="8310100">Verbesserte Haltungsbrechung mit zwei Waffen</text>
+<text id="8320000">Verbesserte Angriffsketten-Abschlüsse</text>
+<text id="8320100">Verbesserte aufgeladene Angriffe</text>
+<text id="8320200">Starke Angriffe verbessern Gleichgewicht</text>
+<text id="8320300">Verbesserte Sprungangriffe</text>
+<text id="8320400">Erh. Sch.-Res. nach Tr. m. aufg. Angr.</text>
+<text id="8330000">Verbesserte Zaubereien</text>
+<text id="8330100">Verbesserte Anrufungen</text>
+<text id="8330200">Verbesserte aufgeladene Zaubereien</text>
+<text id="8330300">Verbesserte aufgeladene Anrufungen</text>
+<text id="8330400">Verbesserte Zauberei-Wirkungsdauer</text>
+<text id="8330500">Erhöhte Zaubereiendauer</text>
+<text id="8330600">Verringerte Zauberei-FP-Kosten</text>
+<text id="8330700">Anti-Drachen-Effekt bei Anrufung</text>
+<text id="8330900">Erhöhte Schadensresistenz während Zauberei</text>
+<text id="8340000">Verbesserte Fernwaffenangriffe</text>
+<text id="8340100">Verringerter Projektil-Schadensverlust</text>
+<text id="8350000">Erhöhte Talent-Angriffskraft</text>
+<text id="8350100">Erhöhte aufgeladene Angriffskraft</text>
+<text id="8350200">Verringerte FP-Talentkosten</text>
+<text id="8350300">Talentaktivierung verbessert Gleichgewicht</text>
+<text id="8350400">Parieren aktiviert Goldene Vergeltung</text>
+<text id="8360000">Kunst-Anzeige füllt sich schneller
+</text>
+<text id="8370000">Charaktertalent-Abklingzeitverringerung</text>
+<text id="8380000">Verbesserte Brüllen- und Odem-Angriffe</text>
+<text id="8390000">Verbesserte Wurftöpfe</text>
+<text id="8400000">Verbesserte Parfümkunst</text>
+<text id="8410000">Verbessertes Ausweichen</text>
+<text id="8410100">Blitz beim Ausweichen</text>
+<text id="8420000">Verbesserte Abwehrkonter</text>
+<text id="8420100">Abwehrkonter aktiviert Heiligangriffe</text>
+<text id="8420200">Abwehrkonter aktiviert Beschwörungs-Angriff</text>
+<text id="8430000">Verbesserter Stoß-Abwehrkonter</text>
+<text id="8440000">Verbesserte Flaschen-LP-Regeneration</text>
+<text id="8440100">Flaschen heilen auch Verbündete</text>
+<text id="8440200">Langsame Regeneration durch Flasche</text>
+<text id="8450000">Magma-Ausbruchsprint</text>
+<text id="8450100">Eissturm-Ausbruchsprint</text>
+<text id="8460000">Dunkelheit verbirgt Wirker beim Gehen</text>
+<text id="8460100">Wilde Flammensäulen steigen auf</text>
+<text id="8460200">Rasende Flamme beim Gehen</text>
+<text id="8460300">Gespenster beim Gehen</text>
+<text id="8460400">Brutaler Sternregen beim Gehen</text>
+<text id="8460500">Rotes Blitzgewitter beim Gehen</text>
+<text id="8500000">Mehr Runen aus besiegten Gegnern</text>
+<text id="8510000">Verbesserte Objektentdeckung</text>
+<text id="8520000">Ihr werdet nicht so leicht Ziel</text>
+<text id="8530000">Mehrere regelmäßige Schimmerklingen</text>
+<text id="8530100">Viele regelmäßige Schimmerklingen</text>
+<text id="8530200">Regelmäßige große Schimmerklingen</text>
+<text id="8540000">Laufende LP-Regeneration</text>
+<text id="8600100">LP-Wiederherst. d. getr. Angriffe</text>
+<text id="8600200">FP-Wiederherst. d. getr. Angriffe</text>
+<text id="8600300">Plötzl. Gegnertod bei getr. Ang.</text>
+<text id="8610000">LP-Regeneration bei aufeinanderfolgenden Angriffen</text>
+<text id="8610100">FP-Regeneration bei aufeinanderfolgenden Angriffen</text>
+<text id="8610200">Aufeinanderfolgende Angriffe erhöhen Angriffskraft</text>
+<text id="8610300">Magieangriff folgt getr. aufgeladenen Ang.</text>
+<text id="8610400">Feuerangriff folgt getr. aufgeladenen Ang.</text>
+<text id="8610500">Blitz folgt getr. aufgeladenen Ang.</text>
+<text id="8610600">Heiligangriff folgt getr. aufgeladenen Ang.</text>
+<text id="8610700">Aufeinanderfolgende Angriffe negieren Schaden</text>
+<text id="8620000">Erleiden von Schaden regeneriert FP</text>
+<text id="8620100">Erleiden von Schaden erhöht Schadensres.</text>
+<text id="8630000">Besiegen von Gegnern stellt LP wieder her</text>
+<text id="8630100">Besiegen von Gegnern stellt FP wieder her</text>
+<text id="8630200">Angriffe beschwören Gespenster</text>
+<text id="8630300">Angriffe erzeugen betörenden Nebel</text>
+<text id="8630400">Angriffe rufen Rachegeister</text>
+<text id="8630500">Angriffe erzeugen Lava</text>
+<text id="8630600">Angriffe erzeugen Frostnebel</text>
+<text id="8630700">Angriffe entfesseln Blitze</text>
+<text id="8630800">Angriffe erzeugen goldene Schockwellen</text>
+<text id="8640000">Kritische Treffer-LP-Regeneration</text>
+<text id="8640100">Kritische Treffer-FP-Regeneration</text>
+<text id="8640200">Erh. Sch. nach Krit. Treffer</text>
+<text id="8640300">Heilige Ordnung bei kritischem Heilig-Treffer</text>
+<text id="8640400">Magma bei kritischem Feuer-Treffer</text>
+<text id="8640500">Waffenaufladung bei kritischem Blitz-Treffer</text>
+<text id="8640600">Kristallsplitter bei kritischem Magie-Treffer</text>
+<text id="8640700">Giftiger Nebel bei kritischem Gift-Treffer</text>
+<text id="8640800">Dornen der Bestrafung bei kritischem Blutverlust-Treffer</text>
+<text id="8640900">Ungezieferfäden bei kritischem Fäulnis-Treffer</text>
+<text id="8641000">Eissturm bei kritischem Frost-Treffer</text>
+<text id="8641100">Rasende Flamme bei kritischem Wahnsinn-Treffer</text>
+<text id="8641200">Todesgewitter bei kritischem Todes-Treffer</text>
+<text id="8650000">LP-Regeneration bei erfolgreicher Abwehr</text>
+<text id="8650100">FP-Regeneration bei erfolgreicher Abwehr</text>
+<text id="8652000">Erfolgreiche Abwehr verbessert Gleichgewicht</text>
+<text id="8652100">Erfolgreiche Abwehr erhöht Schadensreduktion</text>
+<text id="8660000">Erhöhte Angriffskraft bei niedrigen LP</text>
+<text id="8660101">Erhöhte Schadensresistenz bei niedrigen LP</text>
+<text id="8660200">Kritische Treffer verursachen Blutverlust</text>
+<text id="8660300">Erschafft Heiligen Boden bei niedren LP</text>
+<text id="8660400">Kritischer treffer bei niedrigen LP regeneriert volle LP</text>
+<text id="8670000">Erhöhte Angriffskraft bei vollen LP</text>
+<text id="8670101">Erhöhte Schadensreduktion bei vollen LP</text>
+<text id="8690000">Gift erzeugt Giftnebel</text>
+<text id="8690100">Wahnsinn erzeugt rasende Explosion</text>
+<text id="8690200">Fäulnis erzeugt Scharlachfäule-Nebel</text>
+<text id="8690300">Frost erzeugt Frostnebel</text>
+<text id="8690400">Schlaf erzeugt Schlafnebel</text>
+<text id="8700000">Gift erhöht Angriffskraft</text>
+<text id="8710000">Blutverlust erhöht Angriffskraft</text>
+<text id="8720000">Schlaf erhöht Angriffskraft</text>
+<text id="8740000">Frost erhöht Angriffskraft</text>
+<text id="8750000">Wahnsinn erhöht Angriffskraft</text>
+<text id="8760000">Verringerte maximale LP</text>
+<text id="8760100">Verringerte maximale FP</text>
+<text id="8760200">Verringerte maximale Ausdauer</text>
+<text id="8761000">Verr. körperliche Schadensres.</text>
+<text id="8761100">Verr. Affinitätsschadensresistenz</text>
+<text id="8762000">Alle Resistenzen verringert</text>
+<text id="8763000">Verring. Flaschen-LP-Wiederherst.</text>
+<text id="8764000">Ausbruchsprints verbr. mehr Ausd.</text>
+<text id="8765000">Verringerte Ultimativkunst-Aufladung</text>
+<text id="8766000">Laufender LP-Verlust</text>
+<text id="8770000">Nachtregenschaden erhöht</text>
+<text id="8771000">Schaden durch Nahen der Nacht erhöht</text>
+<text id="8800000">Ausweichen verbraucht mehr Ausd.</text>
+<text id="8800100">Verr. Sch.-Res. nach Ausweichen</text>
+<text id="8800200">Wiederholt. Ausw. verring. Schadensres.</text>
+<text id="8801000">Flaschengebrauch verring. Schadensres.</text>
+<text id="8801100">Flaschengebrauch verursacht Schlaf</text>
+<text id="8801200">Flaschengebrauch verurs. Wahnsinn</text>
+<text id="8810000">Verring. Ang. unter max. LP</text>
+<text id="8810200">Langs. Aufl. von Kunst u. max. LP</text>
+<text id="8810300">Vergiftung unter max. LP</text>
+<text id="8810400">Scharlachfäule unter max. LP</text>
+<text id="8811000">Max. LP verringert Angriffskraft</text>
+<text id="8811200">Langs. Aufl. von Kunst bei max. LP</text>
+<text id="8813100">Weniger Ausd. verring. Sch.-Res.</text>
+<text id="8821000">Angriffe gelegentlich geschwächt</text>
+<text id="8821100">Treffer mit Ang. verurs. Frost</text>
+<text id="8821200">Treffer mit Ang. verurs. Blutverl.</text>
+<text id="8830000">Leiden fügen mehr Schaden zu</text>
+<text id="8831000">Nahtod reduziert die Kunst-Anzeige</text>
+<text id="8831100">Nahtod zerstört Flaschen</text>
+<text id="8831200">Nahtod verringert max. LP</text>
+<text id="8880000">Eissturm d. aufgeladene Angriffe</text>
+<text id="8880100">Lichtring bei aufgeladenem Schnitt</text>
+<text id="8880200">Schw. Flamme d. aufgelad. Angriffe</text>
+<text id="8880300">Phantomang. d. aufgelad. Angriffe</text>
+<text id="8880400">Tosende Flammen bei aufgeladenem Schnitt</text>
+<text id="8881000">Hlge. Schockw. d. aufgelad. Angr.</text>
+<text id="8881100">Geschosse bei aufgeladenem Schlag</text>
+<text id="8881200">Gegneranlocken d. aufgelad. Angr.</text>
+<text id="8881300">Schockwelle bei aufgeladenem Schlag</text>
+<text id="8881400">Phantomangriff bei aufgeladenem Schlag</text>
+<text id="8881500">Magma durch aufgeladene Angriffe</text>
+<text id="8881600">Magische Blasen bei aufgeladenem Schlag</text>
+<text id="8882000">Phantomangriff bei aufgeladenem Stoß</text>
+<text id="8882100">Blitz durch aufgeladene Angriffe</text>
+<text id="8882200">Ätznebel bei aufgeladenem Stoß</text>
+<text id="8882300">Ungezieferfäden bei aufgeladenem Stoß</text>
+<text id="8882400">Giftnebel bei aufgeladenem Stoß</text>
+<text id="8882500">Aufgelad. Angr. erz. Schlafnebel</text>
+<text id="8883000">Geschosse bei aufgelad. Angriffen</text>
+<text id="8883100">Blitz bei präzisem Zielen</text>
+<text id="8883200">Giftnebel bei präzisem Zielen</text>
+<text id="8883300">Fäulnis-Nebel bei präzisem Zielen</text>
+<text id="8883400">Blutfliegen bei präzisem Zielen</text>
+<text id="8884000">Schildeinsatz erhöht Schadensresistenz </text>
+<text id="8884100">Schildeinsatz erzeugt Unbeugsamer Schwur</text>
+<text id="8884200">Schildeinsatz erzeugt Heiligen Boden</text>
+<text id="8884300">Gebrochene Haltung aktiviert Beharren</text>
+<text id="8885000">Flasche stellt auch FP wieder her</text>
+<text id="8885100">Fehlgeschl. Zauber stellen FP her</text>
+<text id="8885200">Abwehren verstärkt Zaubereien und Anrufungen</text>
+<text id="8920100">Erhöhte Affinitäts-Angriffskraft</text>
+<text id="8921400">Erhöhte Angriffskraft bei kritischen Treffern</text>
+<text id="8960100">Geänderte starke Angriffe</text>
+<text id="8960200">Starke Sprungangriffe erzeugen Schockwellen</text>
+<text id="9021400">Macht der Nacht und der Flamme</text>
+<text id="9030900">Macht des Dunkelmonds</text>
+<text id="9031000">Macht des Höheren Willens</text>
+<text id="9031400">Macht des Blasphemischen</text>
+<text id="9031500">Macht des Hauses Marais</text>
+<text id="9031700">Macht der Goldenen Ordnung</text>
+<text id="9040200">Macht des Schicksalstodes</text>
+<text id="9040500">Macht der Sternengeißel</text>
+<text id="9040800">Macht der Zerstörung</text>
+<text id="9041000">Macht der Rache</text>
+<text id="9060400">Macht des Drachenfürsten</text>
+<text id="9071000">Macht des Verzweiflung</text>
+<text id="9081000">Macht des Malkönigs</text>
+<text id="9090200">Macht des Unbesiegten</text>
+<text id="9111500">Macht der Königin</text>
+<text id="9122000">Macht des Blasphemischen</text>
+<text id="9130300">Macht der lichtlosen Leere</text>
+<text id="9150400">Macht des goldenen Stammbaums</text>
+<text id="9151100">Macht des Ahnengeistes</text>
+<text id="9160900">Macht des uralten Großdrachen</text>
+<text id="9170100">Macht des Blutfürsten</text>
+<text id="9200600">Macht des Riesen</text>
+<text id="9210600">Macht des fliegenden Drachen</text>
+<text id="9230500">Macht des Ersten Fürsten</text>
+<text id="9330900">Macht des Vollmonds</text>
+<text id="9420000">Macht des Generals</text>
+<text id="9990100">Der Gram des Wylders</text>
+<text id="9990200">Der Gram des Wächters</text>
+<text id="9990300">Der Gram des Eisenauges</text>
+<text id="9990400">Der Gram der Gräfin</text>
+<text id="9990500">Der Gram des Räubers</text>
+<text id="9990600">Der Gram des Gespensts</text>
+<text id="9990700">Der Gram der Einsiedlerin</text>
+<text id="9990800">Der Gram des Exekutors</text>
+<text id="18000000">Erhöhte maximale LP</text>
+<text id="18010000">Erhöhte maximale FP</text>
+<text id="18010100">Verringerter FP-Verbrauch</text>
+<text id="18020000">Erhöhte maximale Ausdauer</text>
+<text id="18020200">Verbesserte Ausdauerregeneration</text>
+<text id="18100000">Erhöhte körperliche Angriffskraft</text>
+<text id="18100500">Erhöhte Affinitäts-Angriffskraft</text>
+<text id="18120000">Verbessertes Brechen von Haltungen</text>
+<text id="18200000">Erhöhte körperliche Schadensresistenz</text>
+<text id="18200500">Erh. Affinitätsschadensresistenz</text>
+<text id="18210700">Alle Resistenzen erhöht</text>
+<text id="18230000">Verbessertes Gleichgewicht</text>
+<text id="18330103">Verb. Zaubereien &amp; Anrufungen</text>
+<text id="18330500">Erh. Zauberei- &amp; Anrufungsdauer</text>
+<text id="18330700">Anti-Drachen-Effekt bei Anrufung</text>
+<text id="18350400">Erfolgr. Parieren aktiviert Goldene Vergeltung</text>
+<text id="18420100">Abwehrkonter aktiv. Heiligangriffe</text>
+<text id="18420200">Abwehrkonter aktiv. Beschw.-Angriff</text>
+<text id="18430000">Verbesserter Stoß-Abwehrkonter</text>
+<text id="18440000">Verbesserte Flaschen-LP-Wiederherstellung</text>
+<text id="18500000">Mehr Runen aus besiegten Gegnern</text>
+<text id="18640000">Krit.-Treffer-LP-Wiederherstellung</text>
+<text id="18640100">Krit.-Treffer-FP-Regeneration</text>
+<text id="18640200">Erhöhter Schaden nach kritischen Treffern</text>
+<text id="18650000">LP-Wiederherst. d. erfolgr. Abwehr</text>
+<text id="18650100">FP-Wiederherst. d. erfolgr. Abwehr</text>
+<text id="18660200">Krit. Treffer verursachen Blutverlust</text>
+<text id="18660300">Ersch. Heilig. Boden bei niedr. LP</text>
+<text id="18700000">Giftig &amp; Fäule akt. laufende LP-Wiederher.</text>
+<text id="18710000">Blutverlust in der Nähe erhöht die Angriffskraft</text>
+<text id="19700000">Kraft</text>
+<text id="19700001">%null%</text>
+<text id="19700002">%null%</text>
+<text id="19700003">%null%</text>
+<text id="19700004">%null%</text>
+<text id="19700005">%null%</text>
+<text id="19700006">%null%</text>
+<text id="19700007">%null%</text>
+<text id="19700008">%null%</text>
+<text id="19700009">%null%</text>
+<text id="19700010">Geist</text>
+<text id="19700011">%null%</text>
+<text id="19700012">%null%</text>
+<text id="19700013">%null%</text>
+<text id="19700014">%null%</text>
+<text id="19700015">%null%</text>
+<text id="19700016">%null%</text>
+<text id="19700017">%null%</text>
+<text id="19700018">%null%</text>
+<text id="19700019">%null%</text>
+<text id="19700020">Kondition</text>
+<text id="19700021">%null%</text>
+<text id="19700022">%null%</text>
+<text id="19700023">%null%</text>
+<text id="19700024">%null%</text>
+<text id="19700025">%null%</text>
+<text id="19700026">%null%</text>
+<text id="19700027">%null%</text>
+<text id="19700028">%null%</text>
+<text id="19700029">%null%</text>
+<text id="19700030">Stärke</text>
+<text id="19700031">%null%</text>
+<text id="19700032">%null%</text>
+<text id="19700033">%null%</text>
+<text id="19700034">%null%</text>
+<text id="19700035">%null%</text>
+<text id="19700036">%null%</text>
+<text id="19700037">%null%</text>
+<text id="19700038">%null%</text>
+<text id="19700039">%null%</text>
+<text id="19700040">Geschick</text>
+<text id="19700041">%null%</text>
+<text id="19700042">%null%</text>
+<text id="19700043">%null%</text>
+<text id="19700044">%null%</text>
+<text id="19700045">%null%</text>
+<text id="19700046">%null%</text>
+<text id="19700047">%null%</text>
+<text id="19700048">%null%</text>
+<text id="19700049">%null%</text>
+<text id="19700050">Weisheit</text>
+<text id="19700051">%null%</text>
+<text id="19700052">%null%</text>
+<text id="19700053">%null%</text>
+<text id="19700054">%null%</text>
+<text id="19700055">%null%</text>
+<text id="19700056">%null%</text>
+<text id="19700057">%null%</text>
+<text id="19700058">%null%</text>
+<text id="19700059">%null%</text>
+<text id="19700060">Glaube</text>
+<text id="19700061">%null%</text>
+<text id="19700062">%null%</text>
+<text id="19700063">%null%</text>
+<text id="19700064">%null%</text>
+<text id="19700065">%null%</text>
+<text id="19700066">%null%</text>
+<text id="19700067">%null%</text>
+<text id="19700068">%null%</text>
+<text id="19700069">%null%</text>
+<text id="19700070">Arkanenergie</text>
+<text id="19700071">%null%</text>
+<text id="19700072">%null%</text>
+<text id="19700073">%null%</text>
+<text id="19700074">%null%</text>
+<text id="19700075">%null%</text>
+<text id="19700076">%null%</text>
+<text id="19700077">%null%</text>
+<text id="19700078">%null%</text>
+<text id="19700079">%null%</text>
+<text id="19700080">Charaktertalent-Abklingzeitverringerung</text>
+<text id="19700081">%null%</text>
+<text id="19700082">%null%</text>
+<text id="19700083">%null%</text>
+<text id="19700084">%null%</text>
+<text id="19700085">%null%</text>
+<text id="19700086">%null%</text>
+<text id="19700087">%null%</text>
+<text id="19700088">%null%</text>
+<text id="19700089">%null%</text>
+<text id="19700090">Ultimativkunst-Auto-Aufladung</text>
+<text id="19700091">%null%</text>
+<text id="19700092">%null%</text>
+<text id="19700093">%null%</text>
+<text id="19700094">%null%</text>
+<text id="19700095">%null%</text>
+<text id="19700096">%null%</text>
+<text id="19700097">%null%</text>
+<text id="19700098">%null%</text>
+<text id="19700099">%null%</text>
+<text id="19700100">Gleichgewicht</text>
+<text id="19799999">Alle Optionen</text>
+</entries>
+</fmg>

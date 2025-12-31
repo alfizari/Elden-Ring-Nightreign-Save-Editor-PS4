@@ -1,0 +1,1259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fmg>
+<filename>AttachEffectName.fmg</filename>
+<compression>None</compression>
+<version>DarkSouls3</version>
+<bigendian>False</bigendian>
+<entries>
+<text id="1">%null%</text>
+<text id="2">%null%</text>
+<text id="3">%null%</text>
+<text id="100">%null%</text>
+<text id="310000">PV massimi incrementati</text>
+<text id="310100">PA massimi incrementati</text>
+<text id="310200">Vigore massimo incrementato</text>
+<text id="310400">PV massimi incrementati</text>
+<text id="310401">Vigore massimo incrementato</text>
+<text id="311000">Scoperta di oggetti migliorata</text>
+<text id="311100">Incremento rune dai nemici sconfitti</text>
+<text id="311500">Recupero vigore migliorato</text>
+<text id="311600">Resistenza al sanguinamento migliorata</text>
+<text id="311601">Resistenza all'assideramento migliorata</text>
+<text id="311700">Resistenza al veleno migliorata</text>
+<text id="311701">Resistenza alla marcescenza migliorata</text>
+<text id="311800">Resistenza al sonno migliorata</text>
+<text id="311801">Resistenza alla follia migliorata</text>
+<text id="311900">Resistenza al morbo mortale migliorata</text>
+<text id="312000">Resistenza a veleno e marcescenza migliorata</text>
+<text id="312001">Resistenza a sanguinamento e assideramento migliorata</text>
+<text id="312002">Resistenza a sonno e follia migliorata</text>
+<text id="312100">Stabilità migliorata</text>
+<text id="312300">Potenza d'attacco dell'abilità migliorata</text>
+<text id="312500">Destrezza migliorata</text>
+<text id="312501">Attacchi consecutivi migliorano la potenza d'attacco</text>
+<text id="320000">Potenza attacco magico migliorata</text>
+<text id="320001">Resistenza danni fisici ridotta</text>
+<text id="320100">Potenza attacco fulmine migliorata</text>
+<text id="320101">Resistenza danni fisici ridotta</text>
+<text id="320200">Potenza attacco fuoco migliorata</text>
+<text id="320201">Resistenza danni fisici ridotta</text>
+<text id="320300">Potenza attacco sacro migliorata</text>
+<text id="320301">Resistenza danni fisici ridotta</text>
+<text id="320400">Potenza d'attacco migliorata con PV ridotti</text>
+<text id="320500">Potenza d'attacco migliorata con PV al massimo</text>
+<text id="320600">Contrattacco in affondo migliorato</text>
+<text id="320700">Rottura della difesa migliorata</text>
+<text id="320800">Attacchi consecutivi migliorano la potenza d'attacco</text>
+<text id="320900">Colpi critici migliorati</text>
+<text id="321000">Perdita danni proiettili ridotta</text>
+<text id="321200">Colpo finale degli attacchi concatenati migliorato</text>
+<text id="321300">Attacchi caricati migliorati</text>
+<text id="321500">Attacchi con armi a distanza migliorati</text>
+<text id="321600">Incrementa potenza d'attacco in prossimità di sanguinamento</text>
+<text id="321700">Incrementa potenza attacco vicino a veleno e marcescenza</text>
+<text id="321800">Attacchi in salto migliorati</text>
+<text id="321900">Attacchi basati su ruggiti e soffi migliorati</text>
+<text id="322000">Contrattacchi in difesa migliorati</text>
+<text id="322100">Vasi da lancio migliorati</text>
+<text id="322200">Tecniche di profumeria migliorate</text>
+<text id="330000">Stregonerie migliorate</text>
+<text id="330400">Incantesimi migliorati</text>
+<text id="330600">Durata magie estesa</text>
+<text id="330700">Velocità lancio magie migliorata</text>
+<text id="330800">Costo PA delle magie ridotto</text>
+<text id="330801">PV massimi ridotti</text>
+<text id="330900">Magie e abilità caricate migliorate</text>
+<text id="340000">Resistenza danni fisici migliorata</text>
+<text id="340100">Resistenza danni magici migliorata</text>
+<text id="340200">Resistenza danni da fuoco migliorata</text>
+<text id="340300">Resistenza danni da fulmine migliorata</text>
+<text id="340400">Resistenza danni sacri migliorata</text>
+<text id="340500">Resistenza danni affinità migliorata</text>
+<text id="340700">Schivata migliorata</text>
+<text id="340701">Resistenza danni ridotta</text>
+<text id="340800">Resistenza danni migliorata con PV ridotti</text>
+<text id="340900">Resistenza danni migliorata con PV al massimo</text>
+<text id="341000">Capacità difensiva migliorata</text>
+<text id="350000">Ripristino PV da ampolla migliorato</text>
+<text id="350200">Recupero PV nel tempo</text>
+<text id="350300">I nemici sconfitti ripristinano PV</text>
+<text id="350400">Ripristino PV con attacchi consecutivi</text>
+<text id="350500">Ripristino PV con colpi critici</text>
+<text id="350600">Ripristino PA con colpi critici</text>
+<text id="360200">Costo PA delle abilità ridotto</text>
+<text id="360700">Nessuna perdita di rune o livelli dopo la morte</text>
+<text id="361100">I nemici sconfitti ripristinano PA</text>
+<text id="370000">Scoperta di oggetti migliorata</text>
+<text id="370001">Incremento rune dai nemici sconfitti</text>
+<text id="370002">Consumo PV nel tempo</text>
+<text id="6000800">Riduzione periodo ricarica abilità personaggio +4</text>
+<text id="6000801">Riduzione periodo ricarica abilità personaggio +5</text>
+<text id="6000900">Carica automatica arte suprema +4</text>
+<text id="6000901">Carica automatica arte suprema +5</text>
+<text id="6001000">Stabilità +4</text>
+<text id="6001001">Stabilità +5</text>
+<text id="6001400">Aumento attacco fisico +4
+</text>
+<text id="6001401">%null%</text>
+<text id="6001500">Aumento potenza attacco magico +3
+</text>
+<text id="6001501">Aumento potenza attacco magico +4
+</text>
+<text id="6001600">Aumento potenza attacco fuoco +3
+</text>
+<text id="6001601">Aumento potenza attacco fuoco +4
+</text>
+<text id="6001700">Aumento potenza attacco fulmine +3
+</text>
+<text id="6001701">Aumento potenza attacco fulmine +4
+</text>
+<text id="6001800">Aumento potenza attacco sacro +3
+</text>
+<text id="6001801">Aumento potenza attacco sacro +4
+</text>
+<text id="6002600">Resistenza danni magici migliorata +1
+</text>
+<text id="6002601">Resistenza danni magici migliorata +2
+</text>
+<text id="6002700">Resistenza danni da fuoco migliorata +1
+</text>
+<text id="6002701">Resistenza danni da fuoco migliorata +2
+</text>
+<text id="6002800">Resistenza danni da fulmine migliorata +1
+</text>
+<text id="6002801">Resistenza danni da fulmine migliorata +2
+</text>
+<text id="6002900">Resistenza danni sacri migliorata +1
+</text>
+<text id="6002901">Resistenza danni sacri migliorata +2
+</text>
+<text id="6003000">Resistenza al veleno migliorata +1
+</text>
+<text id="6003001">Resistenza al veleno migliorata +2
+</text>
+<text id="6003100">Resistenza al sanguinamento migliorata +1
+</text>
+<text id="6003101">Resistenza al sanguinamento migliorata +2
+</text>
+<text id="6003200">Resistenza al sonno migliorata +1
+</text>
+<text id="6003201">Resistenza al sonno migliorata +2
+</text>
+<text id="6003300">Resistenza al morbo mortale migliorata +1
+</text>
+<text id="6003301">Resistenza al morbo mortale migliorata +2
+</text>
+<text id="6003400">Resistenza alla marcescenza migliorata +1
+</text>
+<text id="6003401">Resistenza alla marcescenza migliorata +2
+</text>
+<text id="6003500">Resistenza all'assideramento migliorata +1
+</text>
+<text id="6003501">Resistenza all'assideramento migliorata +2
+</text>
+<text id="6003600">Resistenza alla follia migliorata +1
+</text>
+<text id="6003601">Resistenza alla follia migliorata +2
+</text>
+<text id="6005600">Ripristino parziale PV con attacchi successivi ai danni +1
+</text>
+<text id="6005601">Ripristino parziale PV con attacchi successivi ai danni +2
+</text>
+<text id="6006000">Sbilanciamento migliorato con impugnatura a due mani +1</text>
+<text id="6006001">Sbilanciamento migliorato con impugnatura a due mani +2</text>
+<text id="6006100">Sbilanciamento migliorato usando due armamenti +1</text>
+<text id="6006101">Sbilanciamento migliorato usando due armamenti +2</text>
+<text id="6012300">Resistenza danni migliorata con PV ridotti +1</text>
+<text id="6012301">Resistenza danni migliorata con PV ridotti +2</text>
+<text id="6030200">Ripristino PV usando boli medicinali, ecc. +1
+</text>
+<text id="6030201">Ripristino PV usando boli medicinali, ecc. +2
+</text>
+<text id="6030600">La difesa efficace carica l'indicatore dell'arte +1
+</text>
+<text id="6030601">La difesa efficace carica l'indicatore dell'arte +2
+</text>
+<text id="6030800">I colpi critici caricano leggermente l'indicatore dell'arte +1
+</text>
+<text id="6030801">I colpi critici caricano leggermente l'indicatore dell'arte +2
+</text>
+<text id="6030900">Potenza attacco fisico incrementata dopo aver usato grasso +1
+</text>
+<text id="6030901">Potenza attacco fisico incrementata dopo aver usato grasso +2
+</text>
+<text id="6031900">Ottieni rune con i colpi critici +1</text>
+<text id="6031901">Ottieni rune con i colpi critici +2</text>
+<text id="6032200">Subire attacchi migliora la potenza d'attacco +1</text>
+<text id="6032201">Subire attacchi migliora la potenza d'attacco +2</text>
+<text id="6035100">I colpi critici incrementano la velocità recupero vigore +1</text>
+<text id="6035101">I colpi critici incrementano la velocità recupero vigore +2</text>
+<text id="6040000">Attacco standard iniziale migliorato +1</text>
+<text id="6040001">Attacco standard iniziale migliorato +2</text>
+<text id="6040100">Contrattacchi in difesa migliorati +1
+</text>
+<text id="6040101">Contrattacchi in difesa migliorati +2
+</text>
+<text id="6040300">Danni vasi da lancio migliorati +1</text>
+<text id="6040301">Danni vasi da lancio migliorati +2</text>
+<text id="6040400">Danni coltello da lancio migliorati +1</text>
+<text id="6040401">Danni coltello da lancio migliorati +2</text>
+<text id="6040500">Danni scintipietra e pietra gravitazionale migliorati +1</text>
+<text id="6040501">Danni scintipietra e pietra gravitazionale migliorati +2</text>
+<text id="6043000">Attacchi basati su ruggiti e soffi migliorati +1</text>
+<text id="6043001">Attacchi basati su ruggiti e soffi migliorati +2</text>
+<text id="6043100">Tecniche di profumeria migliorate +1</text>
+<text id="6043101">Tecniche di profumeria migliorate +2</text>
+<text id="6060300">PV massimi incrementati per ogni nemico potente sconfitto in una grande chiesa</text>
+<text id="6060400">Rune e scoperta oggetti incrementati per ogni nemico potente sconfitto in un forte</text>
+<text id="6060500">Arcano incrementato per ogni nemico potente sconfitto in una rovina</text>
+<text id="6060600">Vigore massimo incrementato per ogni nemico potente sconfitto in un accampamento principale</text>
+<text id="6090000">I nemici sconfitti caricano maggiormente l'indicatore dell'arte +1
+</text>
+<text id="6090001">I nemici sconfitti caricano maggiormente l'indicatore dell'arte +2
+</text>
+<text id="6160000">Ripristino PV con contrattacchi in affondo +1
+</text>
+<text id="6160001">Ripristino PV con contrattacchi in affondo +2
+</text>
+<text id="6260000">Potenza d'attacco aumentata contro nemici avvelenati +1
+</text>
+<text id="6260001">Potenza d'attacco aumentata contro nemici avvelenati +2
+</text>
+<text id="6260300">Potenza d'attacco aumentata contro nemici in preda a marcescenza scarlatta +1
+</text>
+<text id="6260301">Potenza d'attacco aumentata contro nemici in preda a marcescenza scarlatta +2
+</text>
+<text id="6260400">Potenza d'attacco aumentata contro nemici assiderati +1
+</text>
+<text id="6260401">Potenza d'attacco aumentata contro nemici assiderati +2
+</text>
+<text id="6500000">[Selvaggio] L'abilità personaggio causa sanguinamento</text>
+<text id="6500100">[Guardiano] L'abilità personaggio incrementa la resistenza ai danni degli alleati vicini</text>
+<text id="6500200">[Occhio di ferro] L'abilità personaggio infligge ingenti danni da veleno ai nemici avvelenati</text>
+<text id="6500300">[Duchessa] L'uso dell'abilità personaggio fornisce una breve invulnerabilità
+</text>
+<text id="6500400">[Predone] L'abilità personaggio a segno riduce la potenza d'attacco nemica</text>
+<text id="6500500">[Rediviva] PA incrementati durante l'attivazione della capacità</text>
+<text id="6500600">[Reclusa] I residui di affinità raccolti annullano l'affinità</text>
+<text id="6500700">[Giustiziere] Ripristina lentamente PV durante l'uso della capacità</text>
+<text id="6600000">Potenza d'attacco migliorata vicino a sonno
+</text>
+<text id="6600001">Potenza d'attacco migliorata vicino a sonno +1
+</text>
+<text id="6600002">Potenza d'attacco migliorata vicino a sonno +2
+</text>
+<text id="6600100">Potenza d'attacco migliorata vicino a follia
+</text>
+<text id="6600101">Potenza d'attacco migliorata vicino a follia +1
+</text>
+<text id="6600102">Potenza d'attacco migliorata vicino a follia +2
+</text>
+<text id="6610400">PV massimi incrementati
+</text>
+<text id="6610500">PA massimi incrementati
+</text>
+<text id="6610600">Vigore massimo incrementato
+</text>
+<text id="6610700">Consumo PA ridotto</text>
+<text id="6610701">Consumo PA ridotto +1</text>
+<text id="6610702">Consumo PA ridotto +2</text>
+<text id="6610800">Potenza attacco affinità migliorata</text>
+<text id="6610801">Potenza attacco affinità migliorata +1
+</text>
+<text id="6610802">Potenza attacco affinità migliorata +2
+</text>
+<text id="6611000">Resistenza danni fisici migliorata</text>
+<text id="6611001">Resistenza danni fisici migliorata +1
+</text>
+<text id="6611002">Resistenza danni fisici migliorata +2
+</text>
+<text id="6611100">Resistenza danni affinità migliorata</text>
+<text id="6611101">Resistenza danni affinità migliorata +1
+</text>
+<text id="6611102">Resistenza danni affinità migliorata +2
+</text>
+<text id="6611200">Stregonerie migliorate</text>
+<text id="6611201">Stregonerie migliorate +1
+</text>
+<text id="6611202">Stregonerie migliorate +2
+</text>
+<text id="6611300">Incantesimi migliorati</text>
+<text id="6611301">Incantesimi migliorati +1
+</text>
+<text id="6611302">Incantesimi migliorati +2
+</text>
+<text id="6611400">Ripristino PV da ampolla migliorato</text>
+<text id="6621000">Possiedi lacrima di cristallo liquicremisi a inizio spedizione</text>
+<text id="6621100">Possiedi lacrima di cristallo cremisi a inizio spedizione</text>
+<text id="6621200">Possiedi lacrima di cristallo cerulea a inizio spedizione</text>
+<text id="6621300">Possiedi lacrima solida maculata a inizio spedizione</text>
+<text id="6621400">Possiedi lacrima bolla cremisi a inizio spedizione</text>
+<text id="6621500">Possiedi lacrima bolla opalescente a inizio spedizione</text>
+<text id="6621600">Possiedi lacrima di cristallo pirocremisi a inizio spedizione</text>
+<text id="6621700">Possiedi lacrima di cristallo piroverde a inizio spedizione</text>
+<text id="6621800">Possiedi lacrima solida opalescente a inizio spedizione</text>
+<text id="6621900">Possiedi lacrima spezzata spinosa a inizio spedizione</text>
+<text id="6622000">Possiedi lacrima spezzata chiodata a inizio spedizione</text>
+<text id="6622100">Possiedi lacrima di cristallo ventosa a inizio spedizione</text>
+<text id="6622200">Possiedi lacrima di cristallo dirompente a inizio spedizione</text>
+<text id="6622300">Possiedi lacrima solida rigida a inizio spedizione</text>
+<text id="6622400">Possiedi lacrima spezzata arborea a inizio spedizione</text>
+<text id="6622500">Possiedi lacrima bolla spiralocremisi a inizio spedizione</text>
+<text id="6622600">Possiedi lacrima celata cerulea a inizio spedizione</text>
+<text id="6622700">Possiedi lacrima spezzata acuminata a inizio spedizione</text>
+<text id="6622800">Possiedi lacrima spezzata del velo di fiamma a inizio spedizione</text>
+<text id="6622900">Possiedi lacrima spezzata del velo di magia a inizio spedizione</text>
+<text id="6623000">Possiedi lacrima spezzata del velo di fulmine a inizio spedizione</text>
+<text id="6623100">Possiedi lacrima spezzata del velo sacro a inizio spedizione</text>
+<text id="6624000">Possiedi aromi confortanti a inizio spedizione</text>
+<text id="6624100">Possiedi aromi scintillanti a inizio spedizione</text>
+<text id="6624200">Possiedi aromi del vaso di ferro a inizio spedizione</text>
+<text id="6624300">Possiedi aromi del furore a inizio spedizione</text>
+<text id="6624400">Possiedi soffio velenoso a inizio spedizione</text>
+<text id="6624500">Possiedi soffio acido a inizio spedizione</text>
+<text id="6630000">Potere latente aiuta a trovare pugnali</text>
+<text id="6630100">Potere latente aiuta a trovare spade dritte</text>
+<text id="6630200">Potere latente aiuta a trovare spadoni</text>
+<text id="6630300">Potere latente aiuta a trovare spade colossali</text>
+<text id="6630400">Potere latente aiuta a trovare spade curve</text>
+<text id="6630500">Potere latente aiuta a trovare spadoni curvi</text>
+<text id="6630600">Potere latente aiuta a trovare katana</text>
+<text id="6630700">Potere latente aiuta a trovare lame gemelle</text>
+<text id="6630800">Potere latente aiuta a trovare spade perforanti</text>
+<text id="6630900">Potere latente aiuta a trovare spade perforanti pesanti</text>
+<text id="6631000">Potere latente aiuta a trovare asce</text>
+<text id="6631100">Potere latente aiuta a trovare asce pesanti</text>
+<text id="6631200">Potere latente aiuta a trovare martelli</text>
+<text id="6631300">Potere latente aiuta a trovare martelli da guerra</text>
+<text id="6631400">Potere latente aiuta a trovare flagelli</text>
+<text id="6631500">Potere latente aiuta a trovare lance</text>
+<text id="6631600">Potere latente aiuta a trovare lance pesanti</text>
+<text id="6631700">Potere latente aiuta a trovare alabarde</text>
+<text id="6631800">Potere latente aiuta a trovare falci</text>
+<text id="6631900">Potere latente aiuta a trovare pugni</text>
+<text id="6632000">Potere latente aiuta a trovare artigli</text>
+<text id="6632100">Potere latente aiuta a trovare fruste</text>
+<text id="6632200">Potere latente aiuta a trovare armi colossali</text>
+<text id="6632300">Potere latente aiuta a trovare archi</text>
+<text id="6632400">Potere latente aiuta a trovare archi pesanti</text>
+<text id="6632500">Potere latente aiuta a trovare balestre</text>
+<text id="6632600">Potere latente aiuta a trovare baliste</text>
+<text id="6632700">Potere latente aiuta a trovare scudi piccoli</text>
+<text id="6632800">Potere latente aiuta a trovare scudi medi</text>
+<text id="6632900">Potere latente aiuta a trovare scudi pesanti</text>
+<text id="6633000">Potere latente aiuta a trovare bastoni</text>
+<text id="6633100">Potere latente aiuta a trovare sigilli sacri</text>
+<text id="6633200">Potere latente aiuta a trovare torce</text>
+<text id="6640000">[Selvaggio] Mente migliorata, vitalità ridotta</text>
+<text id="6640100">[Selvaggio] Intelligenza e fede migliorate, forza e destrezza ridotte</text>
+<text id="6641000">[Guardiano] Forza e destrezza migliorate, vitalità ridotta</text>
+<text id="6641100">[Guardiano] Mente e fede migliorate, vitalità ridotta</text>
+<text id="6642000">[Occhio di ferro] Arcano migliorato, destrezza ridotta</text>
+<text id="6642100">[Occhio di ferro] Vitalità e forza migliorate, destrezza ridotta</text>
+<text id="6643000">[Duchessa] Vitalità e forza migliorate, mente ridotta</text>
+<text id="6643100">[Duchessa] Mente e fede migliorate, intelligenza ridotta</text>
+<text id="6644000">[Predone] Mente e intelligenza migliorate, vitalità e tempra ridotte</text>
+<text id="6644100">[Predone] Arcano migliorato, vitalità ridotta</text>
+<text id="6645000">[Rediviva] Vitalità e tempra migliorate, mente ridotta</text>
+<text id="6645100">[Rediviva] Forza migliorata, fede ridotta</text>
+<text id="6646000">[Reclusa] Vitalità, tempra e destrezza migliorate, intelligenza e fede ridotte</text>
+<text id="6646100">[Reclusa] Intelligenza e fede migliorate, mente ridotta</text>
+<text id="6647000">[Giustiziere] Vitalità e tempra migliorate, arcano ridotto</text>
+<text id="6647100">[Giustiziere] Destrezza e arcano migliorati, vitalità ridotta</text>
+<text id="6800000">Vitalità ridotta</text>
+<text id="6800200">Tempra ridotta</text>
+<text id="6810100">Resistenza danni ridotta</text>
+<text id="6820000">Accumulo di veleno subendo danni</text>
+<text id="6820100">Accumulo di marcescenza subendo danni</text>
+<text id="6820200">Accumulo di assideramento subendo danni</text>
+<text id="6820300">Accumulo di sanguinamento subendo danni</text>
+<text id="6820400">Accumulo di follia subendo danni</text>
+<text id="6820500">Accumulo di sonno subendo danni</text>
+<text id="6820600">Accumulo di morbo mortale subendo danni</text>
+<text id="6830000">Forza e intelligenza ridotte</text>
+<text id="6830100">Destrezza e fede ridotte</text>
+<text id="6830200">Intelligenza e destrezza ridotte</text>
+<text id="6830300">Fede e forza ridotte</text>
+<text id="6830400">Vitalità e arcano ridotti</text>
+<text id="6840000">Acquisizione rune ridotta</text>
+<text id="6840100">Ripristino PV da ampolla ridotto</text>
+<text id="6840200">Carica dell'arte suprema ridotta </text>
+<text id="6850000">Resistenza danni fisici ridotta</text>
+<text id="6850100">Resistenza danni affinità ridotta</text>
+<text id="6850200">Tutte le resistenze ridotte</text>
+<text id="6850300">Ripristino PV da ampolla ridotto</text>
+<text id="6850400">Scatto potenziato consuma più vigore</text>
+<text id="6850500">Consumo PV nel tempo</text>
+<text id="6850600">Schivata consuma più vigore</text>
+<text id="6850700">Resistenza danni ridotta dopo le schivate</text>
+<text id="6850800">Minore resistenza ai danni dopo più schivate</text>
+<text id="6850900">Minore resistenza ai danni con uso ampolla</text>
+<text id="6851000">Accumulo sonno con uso ampolla</text>
+<text id="6851100">Accumulo follia con uso ampolla</text>
+<text id="6851200">Attacco ridotto sotto PV massimi</text>
+<text id="6851300">Accumulo veleno sotto PV massimi</text>
+<text id="6851400">Accumulo marcescenza sotto PV massimi</text>
+<text id="6851500">Potenza attacco ridotta con PV massimi</text>
+<text id="6851600">Punto di morte svuota ampolla</text>
+<text id="6851700">Punto di morte riduce PV massimi</text>
+<text id="7000000">Vitalità +1</text>
+<text id="7000001">Vitalità +2</text>
+<text id="7000002">Vitalità +3</text>
+<text id="7000090">PV massimi incrementati</text>
+<text id="7000091">%null%</text>
+<text id="7000092">%null%</text>
+<text id="7000093">%null%</text>
+<text id="7000094">%null%</text>
+<text id="7000095">%null%</text>
+<text id="7000096">%null%</text>
+<text id="7000097">%null%</text>
+<text id="7000098">%null%</text>
+<text id="7000099">%null%</text>
+<text id="7000100">Mente +1</text>
+<text id="7000101">Mente +2</text>
+<text id="7000102">Mente +3</text>
+<text id="7000190">PA massimi incrementati</text>
+<text id="7000191">%null%</text>
+<text id="7000192">%null%</text>
+<text id="7000193">%null%</text>
+<text id="7000194">%null%</text>
+<text id="7000195">%null%</text>
+<text id="7000196">%null%</text>
+<text id="7000197">%null%</text>
+<text id="7000198">%null%</text>
+<text id="7000199">%null%</text>
+<text id="7000200">Tempra +1</text>
+<text id="7000201">Tempra +2</text>
+<text id="7000202">Tempra +3</text>
+<text id="7000290">Vigore massimo incrementato</text>
+<text id="7000291">%null%</text>
+<text id="7000292">%null%</text>
+<text id="7000293">%null%</text>
+<text id="7000294">%null%</text>
+<text id="7000295">%null%</text>
+<text id="7000296">%null%</text>
+<text id="7000297">%null%</text>
+<text id="7000298">%null%</text>
+<text id="7000299">%null%</text>
+<text id="7000300">Forza +1</text>
+<text id="7000301">Forza +2</text>
+<text id="7000302">Forza +3</text>
+<text id="7000400">Destrezza +1</text>
+<text id="7000401">Destrezza +2</text>
+<text id="7000402">Destrezza +3</text>
+<text id="7000500">Intelligenza +1</text>
+<text id="7000501">Intelligenza +2</text>
+<text id="7000502">Intelligenza +3</text>
+<text id="7000600">Fede +1</text>
+<text id="7000601">Fede +2</text>
+<text id="7000602">Fede +3</text>
+<text id="7000700">Arcano +1</text>
+<text id="7000701">Arcano +2</text>
+<text id="7000702">Arcano +3</text>
+<text id="7000800">Riduzione periodo ricarica abilità personaggio +1</text>
+<text id="7000801">Riduzione periodo ricarica abilità personaggio +2</text>
+<text id="7000802">Riduzione periodo ricarica abilità personaggio +3</text>
+<text id="7000900">Carica automatica arte suprema +1</text>
+<text id="7000901">Carica automatica arte suprema +2</text>
+<text id="7000902">Carica automatica arte suprema +3</text>
+<text id="7001000">Stabilità +1</text>
+<text id="7001001">Stabilità +2</text>
+<text id="7001002">Stabilità +3</text>
+<text id="7001400">Aumento attacco fisico</text>
+<text id="7001401">Aumento attacco fisico +1</text>
+<text id="7001402">Aumento attacco fisico +2</text>
+<text id="7001403">Aumento attacco fisico +3</text>
+<text id="7001500">Aumento potenza attacco magico</text>
+<text id="7001501">Aumento potenza attacco magico +1</text>
+<text id="7001502">Aumento potenza attacco magico +2</text>
+<text id="7001600">Aumento potenza attacco fuoco</text>
+<text id="7001601">Aumento potenza attacco fuoco +1</text>
+<text id="7001602">Aumento potenza attacco fuoco +2</text>
+<text id="7001700">Aumento potenza attacco fulmine</text>
+<text id="7001701">Aumento potenza attacco fulmine +1</text>
+<text id="7001702">Aumento potenza attacco fulmine +2</text>
+<text id="7001800">Aumento potenza attacco sacro</text>
+<text id="7001801">Aumento potenza attacco sacro +1</text>
+<text id="7001802">Aumento potenza attacco sacro +2</text>
+<text id="7001900">Gli attacchi causano avvelenamento</text>
+<text id="7001901">Gli attacchi causano avvelenamento +1</text>
+<text id="7001902">Gli attacchi causano avvelenamento +2</text>
+<text id="7002000">Gli attacchi causano sanguinamento</text>
+<text id="7002001">Gli attacchi causano sanguinamento +1</text>
+<text id="7002002">Gli attacchi causano sanguinamento +2</text>
+<text id="7002100">Gli attacchi causano sonno</text>
+<text id="7002101">Gli attacchi causano sonno +1</text>
+<text id="7002102">Gli attacchi causano sonno +2</text>
+<text id="7002103">Gli attacchi causano sonno +3</text>
+<text id="7002200">Gli attacchi causano morbo mortale</text>
+<text id="7002300">Gli attacchi causano marcescenza scarlatta</text>
+<text id="7002301">Gli attacchi causano marcescenza scarlatta +1</text>
+<text id="7002302">Gli attacchi causano marcescenza scarlatta +2</text>
+<text id="7002400">Gli attacchi causano assideramento</text>
+<text id="7002401">Gli attacchi causano assideramento +1</text>
+<text id="7002402">Gli attacchi causano assideramento +2</text>
+<text id="7002403">Gli attacchi causano assideramento +3</text>
+<text id="7002500">Gli attacchi causano follia</text>
+<text id="7002600">Aumento resistenza danni magici</text>
+<text id="7002700">Aumento resistenza danni da fuoco</text>
+<text id="7002800">Aumento resistenza danni da fulmine</text>
+<text id="7002900">Aumento resistenza danni sacri</text>
+<text id="7003000">Resistenza al veleno migliorata</text>
+<text id="7003100">Resistenza al sanguinamento migliorata</text>
+<text id="7003200">Resistenza al sonno migliorata</text>
+<text id="7003300">Resistenza al morbo mortale migliorata</text>
+<text id="7003400">Resistenza alla marcescenza migliorata</text>
+<text id="7003500">Resistenza all'assideramento migliorata</text>
+<text id="7003600">Resistenza alla follia migliorata</text>
+<text id="7005600">Ripristino parziale PV con attacchi successivi ai danni</text>
+<text id="7010000">[Guardiano] Portata abilità personaggio migliorata</text>
+<text id="7010200">L'ampolla cura anche gli alleati</text>
+<text id="7010500">[Selvaggio] L'attivazione dell'arte genera fiamme nell'area</text>
+<text id="7010700">[Duchessa] Il successivo attacco di pugnale replica
+eventi sui nemici vicini</text>
+<text id="7010800">[Predone] Aumento danni abilità personaggio, resistenza danni
+ridotta durante l'uso</text>
+<text id="7010900">[Rediviva] Attivando l'arte, cura totalmente gli alleati vicini
+usando i propri PV</text>
+<text id="7011000">[Guardiano] Durata abilità personaggio incrementata</text>
+<text id="7011100">[Guardiano] Migliora la resistenza degli alleati ai danni
+durante l'arte suprema</text>
+<text id="7011200">[Rediviva] Con arte suprema attivata, attiva esplosione
+di fiamma spettrale</text>
+<text id="7011400">[Guardiano] Usare l'abilità personaggio ripristina i PV
+degli alleati</text>
+<text id="7011500">[Selvaggio] L'abilità personaggio causa sanguinamento</text>
+<text id="7011600">[Guardiano] Caricare attacchi con alabarda genera un turbine</text>
+<text id="7011700">[Giustiziere] Con arte attiva, ruggire ripristina PV</text>
+<text id="7011900">[Guardiano] L'abilità personaggio causa danni sacri</text>
+<text id="7012000">[Guardiano] Con arte attiva, ripristina lentamente i PV
+degli alleati vicini</text>
+<text id="7012200">Ripristino graduale PV per sé e alleati con PV ridotti</text>
+<text id="7012300">Resistenza danni migliorata con PV ridotti</text>
+<text id="7012400">L'attacco potente crea un'ampia ondata di calore</text>
+<text id="7012500">I salti evocano proiettili magici</text>
+<text id="7012600">Gli alleati vicini forniscono un incremento attacco</text>
+<text id="7012700">I contrattacchi in difesa creano una colonna di luce</text>
+<text id="7020000">[Selvaggio] L'abilità personaggio potenzia attacchi
+standard con fuoco (solo spadone)</text>
+<text id="7030000">Stabilità migliorata vicino a Stele totemica</text>
+<text id="7030200">Ripristino PV usando boli medicinali, ecc.</text>
+<text id="7030500">[Selvaggio] Resistenza danni ridotta, potenza attacco e vigore
+migliorati attivando arte</text>
+<text id="7030600">La difesa efficace carica l'indicatore dell'arte</text>
+<text id="7030700">La difesa attira l'attenzione del nemico</text>
+<text id="7030800">I colpi critici caricano leggermente l'indicatore dell'arte</text>
+<text id="7030900">Potenza attacco fisico incrementata
+dopo aver usato grasso</text>
+<text id="7031200">[Rediviva] Attivare l'arte suprema rafforza famiglia e alleati</text>
+<text id="7031300">[Predone] Subire danni durante l'abilità personaggio migliora
+potenza d'attacco e vigore</text>
+<text id="7031400">[Selvaggio] Periodo di ricarica abilità personaggio ridotta</text>
+<text id="7031600">Difendersi efficacemente più volte migliora la difesa e respinge
+gli attacchi potenti</text>
+<text id="7031700">Difendersi efficacemente genera un'onda d'urto</text>
+<text id="7031800">[Duchessa] I colpi critici alle spalle rendono difficili da
+individuare e coprono il rumore dei passi</text>
+<text id="7031900">Ottieni rune con i colpi critici</text>
+<text id="7032200">Subire attacchi migliora la potenza d'attacco</text>
+<text id="7032300">[Selvaggio] Potenza d'attacco migliorata quando l'abilità
+personaggio è attivata</text>
+<text id="7032400">[Selvaggio] Le abilità caricano notevolmente l'indicatore dell'arte</text>
+<text id="7032700">[Duchessa] Con arte attiva, sconfiggere nemici aumenta
+la potenza d'attacco</text>
+<text id="7032800">[Reclusa] I residui di affinità attivano Terra Magica</text>
+<text id="7032900">[Reclusa] Con arte suprema attiva, subisce sanguinamento
+e aumenta potenza d'attacco</text>
+<text id="7033000">[Selvaggio] Potenza d'attacco migliorata quando
+un'abilità è attivata</text>
+<text id="7033100">%null%</text>
+<text id="7033200">[Selvaggio] +1 utilizzo abilità personaggio</text>
+<text id="7033300">[Guardiano] Attivare abilità induce i nemici ad attaccare
+l'esecutore</text>
+<text id="7033400">[Guardiano] Le difese efficaci generano onde d'urto
+quando l'abilità è attiva</text>
+<text id="7033600">[Duchessa] Durata arte suprema estesa</text>
+<text id="7033700">Gli armamenti colossali si rivestono di pietra durante
+gli attacchi caricati</text>
+<text id="7033800">[Predone] Il colpo finale dell'abilità personaggio incrementa
+ in via permanente la potenza d'attacco</text>
+<text id="7033900">[Reclusa] Estende la durata dei sigilli di sangue</text>
+<text id="7034000">[Reclusa] Incrementa la potenza attacco affinità ogni 4 residui
+affinità raccolti</text>
+<text id="7034100">[Reclusa] Attivare l'arte suprema aumenta i PV massimi</text>
+<text id="7034200">[Giustiziere] Con arte suprema attiva, aumenta la potenza d'attacco</text>
+<text id="7034300">[Giustiziere] Migliora gli effetti delle abilità, riduce
+la resistenza alle alterazioni di stato</text>
+<text id="7034400">[Giustiziere] L'abilità personaggio aumenta l'attacco,
+ma attaccare consuma PV</text>
+<text id="7034500">[Giustiziere] Con abilità personaggio attiva, sbloccare
+la Spada maledetta ripristina PV</text>
+<text id="7034600">[Occhio di ferro] L'attivazione caricata di un'arte impone
+l'effetto veleno</text>
+<text id="7034700">[Occhio di ferro] Incrementa i contrattacchi in affondo
+dopo un'arte</text>
+<text id="7034800">I colpi critici fuoco incrementano il vigore massimo</text>
+<text id="7034900">Ripristino PV con colpi critici</text>
+<text id="7035000">Effetto fulmine con colpi critici</text>
+<text id="7035100">I colpi critici incrementano la velocità recupero vigore</text>
+<text id="7035200">Pelle più coriacea con difese consecutive</text>
+<text id="7035300">Foschia soporifera con colpi critici</text>
+<text id="7035400">Il gesto "Gambe incrociate" accumula follia</text>
+<text id="7035500">La follia ripristina continuamente PA</text>
+<text id="7035600">Scinde la terra dopo uno scatto potenziato</text>
+<text id="7035700">Fornisce un attacco affinità a ogni cambio d'arma</text>
+<text id="7035800">Incrementa la potenza attacco degli attacchi affinità aggiunti</text>
+<text id="7035900">Incrementa la potenza attacco a ogni cambio d'arma</text>
+<text id="7040000">Attacco standard iniziale migliorato</text>
+<text id="7040100">Contrattacchi in difesa migliorati</text>
+<text id="7040200">Colpi critici migliorati</text>
+<text id="7040290">Colpi critici migliorati +1</text>
+<text id="7040291">%null%</text>
+<text id="7040292">%null%</text>
+<text id="7040293">%null%</text>
+<text id="7040294">%null%</text>
+<text id="7040295">%null%</text>
+<text id="7040296">%null%</text>
+<text id="7040297">%null%</text>
+<text id="7040298">%null%</text>
+<text id="7040299">%null%</text>
+<text id="7040300">Danni vasi da lancio migliorati</text>
+<text id="7040400">Danni coltello da lancio migliorati</text>
+<text id="7040500">Danni scintipietra e pietra gravitazionale migliorati</text>
+<text id="7043200">Stregonerie scavapietra migliorate</text>
+<text id="7043300">Stregonerie della spada cariana migliorate</text>
+<text id="7043400">Stregonerie scintilama migliorate</text>
+<text id="7043500">Stregonerie dell'invisibilità migliorate</text>
+<text id="7043600">Stregonerie cristalliane migliorate</text>
+<text id="7043700">Stregonerie gravitazionali migliorate</text>
+<text id="7043800">Stregonerie del rovo migliorate</text>
+<text id="7043900">Stregonerie notturne migliorate</text>
+<text id="7044000">Incantesimi dei fondamentalisti migliorati</text>
+<text id="7044100">Incantesimi del culto draconico migliorati</text>
+<text id="7044200">Incantesimi della fiamma dei giganti migliorati</text>
+<text id="7044300">Incantesimi deicidi migliorati</text>
+<text id="7044400">Incantesimi bestiali migliorati</text>
+<text id="7044500">Incantesimi della Fiamma della frenesia migliorati</text>
+<text id="7044600">Incantesimi della comunione draconica migliorati</text>
+<text id="7050000">Recupero vigore aumentato per gli alleati vicini, ma non per sé</text>
+<text id="7050100">Effetto degli oggetti esteso agli alleati vicini</text>
+<text id="7060000">Ogni prigioniero di galera eterna sconfitto aumenta la potenza d'attacco</text>
+<text id="7060100">Aumento PA massimi per ogni sblocco della Guglia dello stregone</text>
+<text id="7060200">Sconfiggere un invasore notturno aumenta la potenza d'attacco</text>
+<text id="7070000">Tesoro segnato sulla mappa</text>
+<text id="7080000">Potenza d'attacco migliorata con 3 o più pugnali equipaggiati</text>
+<text id="7080100">Potenza d'attacco migliorata con 3 o più spade dritte equipaggiate</text>
+<text id="7080200">Potenza d'attacco migliorata con 3 o più spadoni equipaggiati</text>
+<text id="7080300">Potenza d'attacco migliorata con 3 o più spade colossali
+equipaggiate</text>
+<text id="7080400">Potenza d'attacco migliorata con 3 o più spade curve equipaggiate</text>
+<text id="7080500">Potenza d'attacco migliorata con 3 o più spadoni curvi
+equipaggiati</text>
+<text id="7080600">Potenza d'attacco migliorata con 3 o più katane equipaggiate</text>
+<text id="7080700">Potenza d'attacco migliorata con 3 o più lame gemelle equipaggiate</text>
+<text id="7080800">Potenza d'attacco migliorata con 3 o più spade perforanti
+equipaggiate</text>
+<text id="7080900">Potenza d'attacco migliorata con 3 o più spade perforanti pesanti
+equipaggiate</text>
+<text id="7081000">Potenza d'attacco migliorata con 3 o più asce equipaggiate</text>
+<text id="7081100">Potenza d'attacco migliorata con 3 o più asce pesanti equipaggiate</text>
+<text id="7081200">Potenza d'attacco migliorata con 3 o più martelli equipaggiati</text>
+<text id="7081300">Potenza d'attacco migliorata con 3 o più martelli pesanti
+equipaggiati</text>
+<text id="7081400">Potenza d'attacco migliorata con 3 o più flagelli equipaggiati</text>
+<text id="7081500">Potenza d'attacco migliorata con 3 o più lance equipaggiate</text>
+<text id="7081700">Potenza d'attacco migliorata con 3 o più lance pesanti
+equipaggiate</text>
+<text id="7081800">Potenza d'attacco migliorata con 3 o più alabarde equipaggiate</text>
+<text id="7081900">Potenza d'attacco migliorata con 3 o più falci equipaggiate</text>
+<text id="7082000">Potenza d'attacco migliorata con 3 o più pugni equipaggiati</text>
+<text id="7082100">Potenza d'attacco migliorata con 3 o più artigli equipaggiati</text>
+<text id="7082200">Potenza d'attacco migliorata con 3 o più fruste equipaggiate</text>
+<text id="7082300">Potenza d'attacco migliorata con 3 o più armi colossali
+equipaggiate</text>
+<text id="7082400">Potenza d'attacco migliorata con 3 o più archi equipaggiati</text>
+<text id="7082500">Aumento PA massimi con 3 o più bastoni equipaggiati</text>
+<text id="7082600">Aumento PA massimi con 3 o più sigilli sacri equipaggiati</text>
+<text id="7082700">Aumento PV massimi con 3 o più scudi piccoli equipaggiati</text>
+<text id="7082800">Aumento PV massimi con 3 o più scudi medi equipaggiati</text>
+<text id="7082900">Aumento PV massimi con 3 o più scudi pesanti equipaggiati</text>
+<text id="7090000">I nemici sconfitti caricano maggiormente l'indicatore dell'arte</text>
+<text id="7090100">I nemici sconfitti ripristinano PV per gli alleati, ma non per sé</text>
+<text id="7090300">Sconfiggere nemici vicino a Stele totemica ripristina PV</text>
+<text id="7100000">I colpi critici infliggono enormi danni ai nemici avvelenati</text>
+<text id="7100100">Recupero vigore con attacchi a segno</text>
+<text id="7100190">Recupero vigore con attacchi a segno +1</text>
+<text id="7110000">Acquisizione rune incrementata per sé e gli alleati</text>
+<text id="7120000">L'armamento base infligge danni magici</text>
+<text id="7120100">L'armamento base infligge danni da fuoco</text>
+<text id="7120101">L'armamento base infligge danni da fuoco +1</text>
+<text id="7120200">L'armamento base infligge danni da fulmine</text>
+<text id="7120300">L'armamento base infligge danni sacri</text>
+<text id="7120400">L'armamento base infligge assideramento</text>
+<text id="7120500">L'armamento base infligge avvelenamento</text>
+<text id="7120600">L'armamento base infligge sanguinamento</text>
+<text id="7120700">L'armamento base infligge marcescenza scarlatta</text>
+<text id="7120900">Possiedi chiave di pietra a inizio spedizione</text>
+<text id="7121000">Possiedi borsa piccola a inizio spedizione</text>
+<text id="7121100">Possiedi vasi incendiari a inizio spedizione</text>
+<text id="7121200">Possiedi vasi magici a inizio spedizione</text>
+<text id="7121300">Possiedi vasi folgoranti a inizio spedizione</text>
+<text id="7121400">Possiedi vasi d'acqua santa a inizio spedizione</text>
+<text id="7121500">Possiedi dardi d'osso avvelenati a inizio spedizione</text>
+<text id="7121600">Possiedi dardi di cristallo a inizio spedizione</text>
+<text id="7121700">Possiedi pugnali da lancio a inizio spedizione</text>
+<text id="7121800">Possiedi frammenti di scintipietra a inizio spedizione</text>
+<text id="7121900">Possiedi blocchi di pietra gravitazionale a inizio spedizione</text>
+<text id="7122000">Possiedi rami ammaliatori a inizio spedizione</text>
+<text id="7122100">Possiedi campana evoca spettri a inizio spedizione</text>
+<text id="7122200">Possiedi grasso incendiario a inizio spedizione</text>
+<text id="7122300">Possiedi grasso magico a inizio spedizione</text>
+<text id="7122400">Possiedi grasso folgorante a inizio spedizione</text>
+<text id="7122500">Possiedi grasso sacro a inizio spedizione</text>
+<text id="7122600">Possiedi grasso per scudi a inizio spedizione</text>
+<text id="7122700">Cambia l'abilità dell'armamento compatibile con Falange di
+scintilama a inizio spedizione</text>
+<text id="7122800">Cambia l'abilità dell'armamento compatibile con Gravitas
+a inizio spedizione</text>
+<text id="7122900">Cambia l'abilità dell'armamento compatibile con Attacco fiammante
+ a inizio spedizione</text>
+<text id="7123000">Cambia l'abilità dell'armamento compatibile con Eruzione
+a inizio spedizione</text>
+<text id="7123100">Cambia l'abilità dell'armamento compatibile con Folgore
+a inizio spedizione</text>
+<text id="7123200">Cambia l'abilità dell'armamento compatibile con Fendente del fulmine
+a inizio spedizione</text>
+<text id="7123300">Cambia l'abilità dell'armamento compatibile con Lama sacra
+a inizio spedizione</text>
+<text id="7123400">Cambia l'abilità dell'armamento compatibile con Attacco devoto
+a inizio spedizione</text>
+<text id="7123500">Cambia l'abilità dell'armamento compatibile con Foschia velenosa
+a inizio spedizione</text>
+<text id="7123600">Cambia l'abilità dell'armamento compatibile con Volo venefico
+a inizio spedizione</text>
+<text id="7123700">Cambia l'abilità dell'armamento compatibile con Lama di sangue
+a inizio spedizione</text>
+<text id="7123800">Cambia l'abilità dell'armamento compatibile con Seppuku
+a inizio spedizione</text>
+<text id="7123900">Cambia l'abilità dell'armamento compatibile con Foschia glaciale
+a inizio spedizione</text>
+<text id="7124000">Cambia l'abilità dell'armamento compatibile con Pestone brinoso
+a inizio spedizione</text>
+<text id="7124100">Cambia l'abilità dell'armamento compatibile con Pallida esca
+a inizio spedizione</text>
+<text id="7124300">Cambia l'abilità dell'armamento compatibile con Tenacia
+a inizio spedizione</text>
+<text id="7124400">Cambia l'abilità dell'armamento compatibile con Passo veloce
+a inizio spedizione</text>
+<text id="7124500">Cambia l'abilità dell'armamento compatibile con Pestone Tempesta
+a inizio spedizione</text>
+<text id="7124600">Cambia l'abilità dell'armamento compatibile con Determinazione
+a inizio spedizione</text>
+<text id="7124700">Cambia l'abilità dell'armamento compatibile con Pioggia di strali
+a inizio spedizione</text>
+<text id="7126000">Possiedi schegge di luce stellare a inizio spedizione</text>
+<text id="7150000">I contrattacchi sono potenziati in base ai PV attuali</text>
+<text id="7160000">Ripristino PV con contrattacchi in affondo</text>
+<text id="7200000">Ripristino PV con colpi alla testa</text>
+<text id="7200100">Sbilanciamento del nemico migliorato con colpi alla testa</text>
+<text id="7220000">[Rediviva] Aumento della potenza combattendo insieme alla famiglia</text>
+<text id="7230000">Sconto in rune sugli acquisti nei negozi durante la spedizione</text>
+<text id="7230001">Elevato sconto in rune sugli acquisti nei negozi 
+durante la spedizione</text>
+<text id="7240000">Stabilità e resistenza danni migliorate subendo sbalzo da danni</text>
+<text id="7260000">Potenza d'attacco aumentata contro nemici avvelenati</text>
+<text id="7260200">Potenza d'attacco aumentata contro nemici in preda al sonno</text>
+<text id="7260300">Potenza d'attacco aumentata contro nemici in preda
+a marcescenza scarlatta</text>
+<text id="7260400">Potenza d'attacco aumentata contro nemici assiderati</text>
+<text id="7260600">Gli attacchi creano esplosioni magiche contro i nemici dormienti</text>
+<text id="7260700">Si nasconde vicino ad assideramento</text>
+<text id="7260701">%null%</text>
+<text id="7260702">%null%</text>
+<text id="7260703">%null%</text>
+<text id="7260704">%null%</text>
+<text id="7260705">%null%</text>
+<text id="7260706">%null%</text>
+<text id="7260707">%null%</text>
+<text id="7260708">%null%</text>
+<text id="7260709">%null%</text>
+<text id="7260710">Incrementa la potenza d'attacco in prossimità di veleno e marcescenza</text>
+<text id="7270100">[Occhio di ferro] +1 utilizzo abilità personaggio</text>
+<text id="7280000">[Occhio di ferro] Estende la durata del punto debole</text>
+<text id="7290000">[Duchessa] Potenza d'attacco dell'abilità personaggio migliorata</text>
+<text id="7300000">[Duchessa] L'abilità personaggio causa sonno ai nemici</text>
+<text id="7310000">[Predone] Durata dell'arte suprema estesa</text>
+<text id="7320000">[Rediviva] Probabilità di attivazione dell'abilità incrementata</text>
+<text id="7330000">Potenza attacco pugnale migliorata</text>
+<text id="7330100">Potenza attacco spada dritta migliorata</text>
+<text id="7330200">Potenza attacco spadone migliorata</text>
+<text id="7330300">Potenza attacco spada colossale migliorata</text>
+<text id="7330400">Potenza attacco spada curva migliorata</text>
+<text id="7330500">Potenza attacco spadone curvo migliorata</text>
+<text id="7330600">Potenza attacco katana migliorata</text>
+<text id="7330700">Potenza attacco lama gemella migliorata</text>
+<text id="7330800">Potenza attacco spada perforante migliorata</text>
+<text id="7330900">Potenza attacco spada perforante pesante migliorata</text>
+<text id="7331000">Potenza attacco ascia migliorata</text>
+<text id="7331100">Potenza attacco ascia pesante migliorata</text>
+<text id="7331200">Potenza attacco martello migliorata</text>
+<text id="7331300">Potenza attacco martello pesante migliorata</text>
+<text id="7331400">Potenza attacco flagello migliorata</text>
+<text id="7331500">Potenza attacco lancia migliorata</text>
+<text id="7331600">Potenza attacco picca migliorata</text>
+<text id="7331700">Potenza attacco lancia pesante migliorata</text>
+<text id="7331800">Potenza attacco alabarda migliorata</text>
+<text id="7331900">Potenza attacco falce migliorata</text>
+<text id="7332000">Potenza attacco pugno migliorata</text>
+<text id="7332100">Potenza attacco artiglio migliorata</text>
+<text id="7332200">Potenza attacco frusta migliorata</text>
+<text id="7332300">Potenza attacco arma colossale migliorata</text>
+<text id="7332400">Potenza attacco arco migliorata</text>
+<text id="7332500">Potenza attacco arco pesante migliorata</text>
+<text id="7332600">Potenza attacco balestra migliorata</text>
+<text id="7332700">Potenza attacco balista migliorata</text>
+<text id="7340000">Ripristino PV con attacchi di pugnale</text>
+<text id="7340100">Ripristino PV con attacchi di spada dritta</text>
+<text id="7340200">Ripristino PV con attacchi di spadone</text>
+<text id="7340300">Ripristino PV con attacchi di spada colossale</text>
+<text id="7340400">Ripristino PV con attacchi di spada curva</text>
+<text id="7340500">Ripristino PV con attacchi di spadone curvo</text>
+<text id="7340600">Ripristino PV con attacchi di katana</text>
+<text id="7340700">Ripristino PV con attacchi di lama gemella</text>
+<text id="7340800">Ripristino PV con attacchi di spada perforante</text>
+<text id="7340900">Ripristino PV con attacchi di spada perforante pesante</text>
+<text id="7341000">Ripristino PV con attacchi di ascia</text>
+<text id="7341100">Ripristino PV con attacchi di ascia pesante</text>
+<text id="7341200">Ripristino PV con attacchi di martello</text>
+<text id="7341300">Ripristino PV con attacchi di martello pesante</text>
+<text id="7341400">Ripristino PV con attacchi di flagello</text>
+<text id="7341500">Ripristino PV con attacchi di lancia</text>
+<text id="7341600">Ripristino PV con attacchi di picca</text>
+<text id="7341700">Ripristino PV con attacchi di lancia pesante</text>
+<text id="7341800">Ripristino PV con attacchi di alabarda</text>
+<text id="7341900">Ripristino PV con attacchi di falce</text>
+<text id="7342000">Ripristino PV con attacchi di pugno</text>
+<text id="7342100">Ripristino PV con attacchi di artiglio</text>
+<text id="7342200">Ripristino PV con attacchi di frusta</text>
+<text id="7342300">Ripristino PV con attacchi di arma colossale</text>
+<text id="7342400">Ripristino PV con attacchi di arco</text>
+<text id="7342500">Ripristino PV con attacchi di arco pesante</text>
+<text id="7342600">Ripristino PV con attacchi di balestra</text>
+<text id="7342700">Ripristino PV con attacchi di balista</text>
+<text id="7350000">Ripristino PA con attacchi di pugnale</text>
+<text id="7350100">Ripristino PA con attacchi di spada dritta</text>
+<text id="7350200">Ripristino PA con attacchi di spadone</text>
+<text id="7350300">Ripristino PA con attacchi di spada colossale</text>
+<text id="7350400">Ripristino PA con attacchi di spada curva</text>
+<text id="7350500">Ripristino PA con attacchi di spadone curvo</text>
+<text id="7350600">Ripristino PA con attacchi di katana</text>
+<text id="7350700">Ripristino PA con attacchi di lama gemella</text>
+<text id="7350800">Ripristino PA con attacchi di spada perforante</text>
+<text id="7350900">Ripristino PA con attacchi di spada perforante pesante</text>
+<text id="7351000">Ripristino PA con attacchi di ascia</text>
+<text id="7351100">Ripristino PA con attacchi di ascia pesante</text>
+<text id="7351200">Ripristino PA con attacchi di martello</text>
+<text id="7351300">Ripristino PA con attacchi di martello pesante</text>
+<text id="7351400">Ripristino PA con attacchi di flagello</text>
+<text id="7351500">Ripristino PA con attacchi di lancia</text>
+<text id="7351600">Ripristino PA con attacchi di picca</text>
+<text id="7351700">Ripristino PA con attacchi di lancia pesante</text>
+<text id="7351800">Ripristino PA con attacchi di alabarda</text>
+<text id="7351900">Ripristino PA con attacchi di falce</text>
+<text id="7352000">Ripristino PA con attacchi di pugno</text>
+<text id="7352100">Ripristino PA con attacchi di artiglio</text>
+<text id="7352200">Ripristino PA con attacchi di frusta</text>
+<text id="7352300">Ripristino PA con attacchi di arma colossale</text>
+<text id="7352400">Ripristino PA con attacchi di arco</text>
+<text id="7352500">Ripristino PA con attacchi di arco pesante</text>
+<text id="7352600">Ripristino PA con attacchi di balestra</text>
+<text id="7352700">Ripristino PA con attacchi di balista</text>
+<text id="8000000">PV massimi incrementati</text>
+<text id="8010000">PA massimi incrementati</text>
+<text id="8010100">Consumo PA ridotto</text>
+<text id="8020000">Vigore massimo incrementato</text>
+<text id="8020100">Consumo vigore ridotto</text>
+<text id="8020200">Recupero vigore migliorato</text>
+<text id="8100000">Potenza attacco fisico migliorata</text>
+<text id="8100100">Potenza attacco magico migliorata</text>
+<text id="8100200">Potenza attacco fuoco migliorata</text>
+<text id="8100300">Potenza attacco fulmine migliorata</text>
+<text id="8100400">Potenza attacco sacro migliorata</text>
+<text id="8110000">Gli attacchi causano avvelenamento</text>
+<text id="8110100">Gli attacchi causano sanguinamento</text>
+<text id="8110200">Gli attacchi causano sonno</text>
+<text id="8110300">Gli attacchi causano morbo mortale</text>
+<text id="8110400">Gli attacchi causano marcescenza</text>
+<text id="8110500">Gli attacchi causano assideramento</text>
+<text id="8110600">Gli attacchi causano follia</text>
+<text id="8110700">Infonde fuoco nell'arma</text>
+<text id="8110800">Infonde magia nell'arma</text>
+<text id="8110900">Infonde fulmine nell'arma</text>
+<text id="8111000">Infonde sacralità nell'arma</text>
+<text id="8120000">Sbilanciamento del nemico migliorato</text>
+<text id="8130000">Colpi critici migliorati</text>
+<text id="8140000">Rottura della difesa migliorata</text>
+<text id="8150000">Incremento attacco [forme vita nate da stelle]</text>
+<text id="8150100">Incremento attacco [coloro che vivono nella morte]</text>
+<text id="8150300">Incremento attacco [draghi]</text>
+<text id="8200000">Resistenza danni fisici migliorata</text>
+<text id="8200100">Resistenza danni magici migliorata</text>
+<text id="8200200">Resistenza danni da fuoco migliorata</text>
+<text id="8200300">Resistenza danni da fulmine migliorata</text>
+<text id="8200400">Resistenza danni sacri migliorata</text>
+<text id="8200500">Resistenza danni affinità migliorata</text>
+<text id="8210000">Resistenza al veleno migliorata</text>
+<text id="8210100">Resistenza al sanguinamento migliorata</text>
+<text id="8210200">Resistenza al sonno migliorata</text>
+<text id="8210300">Resistenza al morbo mortale migliorata</text>
+<text id="8210400">Resistenza alla marcescenza migliorata</text>
+<text id="8210500">Resistenza all'assideramento migliorata</text>
+<text id="8210600">Resistenza alla follia migliorata</text>
+<text id="8220000">Capacità difensiva migliorata</text>
+<text id="8220001">Capacità difensiva migliorata +1</text>
+<text id="8220002">Capacità difensiva migliorata +2</text>
+<text id="8230000">Stabilità migliorata</text>
+<text id="8300000">Potenza attaco migliorata con impugnatura a due mani</text>
+<text id="8300100">Sbilanciamento migliorato con impugnatura a due mani</text>
+<text id="8310000">Potenza attacco migliorata usando due armamenti</text>
+<text id="8310100">Sbilanciamento migliorato usando due armamenti</text>
+<text id="8320000">Colpo finale di attacchi concatenati migliorato</text>
+<text id="8320100">Attacchi caricati migliorati</text>
+<text id="8320200">Gli attacchi potenti migliorano la stabilità</text>
+<text id="8320300">Attacchi in salto migliorati</text>
+<text id="8320400">Bonus resistenza danni da attacchi caricati a segno</text>
+<text id="8330000">Stregonerie migliorate</text>
+<text id="8330100">Incantesimi migliorati</text>
+<text id="8330200">Stregonerie caricate migliorate</text>
+<text id="8330300">Incantesimi caricati migliorati</text>
+<text id="8330400">Velocità lancio magie migliorata</text>
+<text id="8330500">Durata magie estesa</text>
+<text id="8330600">Costo PA delle magie ridotto</text>
+<text id="8330700">La comunione conferisce effetto anti-drago</text>
+<text id="8330900">Bonus resistenza danni lanciando magie</text>
+<text id="8340000">Attacchi con armi a distanza migliorati</text>
+<text id="8340100">Perdita danni proiettili ridotta</text>
+<text id="8350000">Potenza d'attacco dell'abilità migliorata</text>
+<text id="8350100">Potenza attacco abilità caricato migliorata</text>
+<text id="8350200">Costo PA delle abilità ridotto</text>
+<text id="8350300">Attivare abilità migliora la stabilità</text>
+<text id="8350400">Parate attivano Contrappasso aureo</text>
+<text id="8360000">Carica indicatore dell'arte accelerata</text>
+<text id="8370000">Riduzione periodo ricarica abilità personaggio</text>
+<text id="8380000">Attacchi basati su ruggiti e soffi migliorati</text>
+<text id="8390000">Vasi da lancio migliorati</text>
+<text id="8400000">Tecniche di profumeria migliorate</text>
+<text id="8410000">Schivata migliorata</text>
+<text id="8410100">Le schivate generano fulmini</text>
+<text id="8420000">Contrattacchi in difesa migliorati</text>
+<text id="8420100">I contrattacchi in difesa attivano attacchi sacri</text>
+<text id="8420200">I contrattacchi in difesa attivano attacco d'evocazione</text>
+<text id="8430000">Contrattacco in affondo migliorato</text>
+<text id="8440000">Ripristino PV da ampolla migliorato</text>
+<text id="8440100">L'ampolla cura anche gli alleati</text>
+<text id="8440200">Ripristino graduale con ampolla</text>
+<text id="8450000">Scatto magmatico potenziato</text>
+<text id="8450100">Scatto della tormenta potenziato</text>
+<text id="8460000">Camminare ti occulta in un'area di tenebre</text>
+<text id="8460100">Colonne di fuoco mentre si cammina</text>
+<text id="8460200">Camminare sprigiona la Fiamma della frenesia</text>
+<text id="8460300">Camminare evoca spettri</text>
+<text id="8460400">Camminare scatena un violento diluvio astrale</text>
+<text id="8460500">Camminare scatena una tempesta di fulmini scarlatti</text>
+<text id="8500000">Incremento rune dai nemici sconfitti</text>
+<text id="8510000">Scoperta di oggetti migliorata</text>
+<text id="8520000">Ridotta probabilità di essere presi di mira</text>
+<text id="8530000">Scintilame multiple cadenzate</text>
+<text id="8530100">Numerose scintilame cadenzate</text>
+<text id="8530200">Scintilame giganti cadenzate</text>
+<text id="8540000">Recupero PV nel tempo</text>
+<text id="8600100">Ripristino PV con attacchi a segno</text>
+<text id="8600200">Ripristino PA con attacchi a segno</text>
+<text id="8600300">Morte istantanea con attacchi a segno</text>
+<text id="8610000">Ripristino PV con attacchi consecutivi</text>
+<text id="8610100">Ripristino PA con attacchi consecutivi</text>
+<text id="8610200">Attacchi consecutivi migliorano la potenza d'attacco</text>
+<text id="8610300">Attacco magico dopo attacchi caricati a segno</text>
+<text id="8610400">Attacco fuoco dopo attacchi caricati a segno</text>
+<text id="8610500">Attacco fulmine dopo attacchi caricati a segno</text>
+<text id="8610600">Attacco sacro dopo attacchi caricati a segno</text>
+<text id="8610700">Attacchi consecutivi offrono protezione</text>
+<text id="8620000">Ripristino PA subendo danni</text>
+<text id="8620100">Potenzia resistenza danni subendo danni</text>
+<text id="8630000">I nemici sconfitti ripristinano PV</text>
+<text id="8630100">I nemici sconfitti ripristinano PA</text>
+<text id="8630200">Gli attacchi evocano spettri</text>
+<text id="8630300">Gli attacchi generano foschia ammaliante</text>
+<text id="8630400">Gli attacchi richiamano spiriti vendicativi</text>
+<text id="8630500">Gli attacchi generano lava</text>
+<text id="8630600">Gli attacchi generano foschia glaciale</text>
+<text id="8630700">Gli attacchi generano fulmini</text>
+<text id="8630800">Gli attacchi generano onda d'urto dorata</text>
+<text id="8640000">Ripristino PV con colpi critici</text>
+<text id="8640100">Ripristino PA con colpi critici</text>
+<text id="8640200">Danni incrementati con colpo critico</text>
+<text id="8640300">Sacro ordine con colpo critico sacro</text>
+<text id="8640400">Magma con colpo critico fuoco</text>
+<text id="8640500">Colpo critico fulmine permea armamento</text>
+<text id="8640600">Schegge di cristallo con colpo critico magico</text>
+<text id="8640700">Foschia velenosa con colpo critico veleno</text>
+<text id="8640800">Sanguinamento critico: Spine del supplizio</text>
+<text id="8640900">Colpo critico marcescenza genera filamenti marcescenti</text>
+<text id="8641000">Tormenta con colpo critico assideramento</text>
+<text id="8641100">Colpo critico follia genera Fiamma della frenesia</text>
+<text id="8641200">Colpo critico morte invoca Saetta mortale</text>
+<text id="8650000">Recupero PV con difesa efficace</text>
+<text id="8650100">Recupero PA con difesa efficace</text>
+<text id="8652000">Miglioramento stabilità con difesa efficace</text>
+<text id="8652100">Difesa efficace migliora danni resistenza</text>
+<text id="8660000">Potenza d'attacco migliorata con PV ridotti</text>
+<text id="8660101">Resistenza danni migliorata con PV ridotti</text>
+<text id="8660200">I colpi critici causano sanguinamento</text>
+<text id="8660300">Consacra la terra con PV ridotti</text>
+<text id="8660400">PV ripristinati con colpo critico e PV ridotti</text>
+<text id="8670000">Potenza d'attacco migliorata con PV al massimo</text>
+<text id="8670101">Resistenza danni migliorata con PV al massimo</text>
+<text id="8690000">L'avvelenamento genera foschia velenosa</text>
+<text id="8690100">Follia produce esplosione frenetica</text>
+<text id="8690200">Marcescenza scarlatta genera foschia marcescente</text>
+<text id="8690300">L'assideramento genera foschia glaciale</text>
+<text id="8690400">Il sonno genera foschia soporifera</text>
+<text id="8700000">Potenza attacco incrementata con avvelenamento</text>
+<text id="8710000">Potenza attacco incrementata con sanguinamento</text>
+<text id="8720000">Potenza attacco incrementata con sonno</text>
+<text id="8740000">Potenza attacco incrementata con assideramento</text>
+<text id="8750000">Potenza attacco incrementata con follia</text>
+<text id="8760000">PV massimi ridotti</text>
+<text id="8760100">PA massimi ridotti</text>
+<text id="8760200">Vigore massimo ridotto</text>
+<text id="8761000">Resistenza danni fisici ridotta</text>
+<text id="8761100">Resistenza danni affinità ridotta</text>
+<text id="8762000">Tutte le resistenze ridotte</text>
+<text id="8763000">Ripristino PV da ampolla ridotto</text>
+<text id="8764000">Scatto potenziato consuma più vigore</text>
+<text id="8765000">Carica dell'arte suprema ridotta </text>
+<text id="8766000">Consumo PV nel tempo</text>
+<text id="8770000">Danni marea notturna incrementati</text>
+<text id="8771000">Danni incrementati dal calare della notte</text>
+<text id="8800000">Schivata consuma più vigore</text>
+<text id="8800100">Resistenza danni ridotta dopo schivate</text>
+<text id="8800200">Minore res. danni dopo più schivate</text>
+<text id="8801000">Minore res. danni con uso ampolla</text>
+<text id="8801100">Accumulo sonno con uso ampolla</text>
+<text id="8801200">Accumulo follia con uso ampolla</text>
+<text id="8810000">Attacco ridotto sotto PV massimi</text>
+<text id="8810200">Ind. arte rallentato sotto PV massimi</text>
+<text id="8810300">Accumulo veleno sotto PV massimi</text>
+<text id="8810400">Accumulo marcescenza sotto PV massimi</text>
+<text id="8811000">Potenza att. ridotta con PV massimi</text>
+<text id="8811200">PV massimi rallentano ind. arte</text>
+<text id="8813100">Minore res. danni con vigore minimo</text>
+<text id="8821000">Attacco talvolta ridotto</text>
+<text id="8821100">Accumulo assideramento con attacchi a segno</text>
+<text id="8821200">Accumulo sanguinamento con attacchi a segno</text>
+<text id="8830000">Alterazioni causano incremento danni</text>
+<text id="8831000">Punto di morte riduce indicatore arte</text>
+<text id="8831100">Punto di morte svuota ampolla</text>
+<text id="8831200">Punto di morte riduce PV massimi</text>
+<text id="8880000">Tormenta con attacchi caricati</text>
+<text id="8880100">Anello di luce con fendente caricato</text>
+<text id="8880200">Nere fiamme con attacchi caricati</text>
+<text id="8880300">Attacco spettro con att. caricati</text>
+<text id="8880400">Fiamme vive con fendente caricato</text>
+<text id="8881000">Onda sacra con att. caricati</text>
+<text id="8881100">Proiettili con colpo caricato</text>
+<text id="8881200">Attira nemici con att. caricati</text>
+<text id="8881300">Onda d'urto con colpo caricato</text>
+<text id="8881400">Attacco spettro con colpo caricato</text>
+<text id="8881500">Magma con attacchi caricati</text>
+<text id="8881600">Bolle magiche con colpo caricato</text>
+<text id="8882000">Attacco spettro con affondo caricato</text>
+<text id="8882100">Fulmine con attacchi caricati</text>
+<text id="8882200">Foschia acida con affondo caricato</text>
+<text id="8882300">Filamenti infestanti con affondo caricato</text>
+<text id="8882400">Foschia velenosa con affondo caricato</text>
+<text id="8882500">Foschia sonno con att. caricati</text>
+<text id="8883000">Proiettili con att. caricati</text>
+<text id="8883100">Fulmine con mira di precisione</text>
+<text id="8883200">Foschia velenosa con mira di precisione</text>
+<text id="8883300">Foschia marcescente con mira di precisione</text>
+<text id="8883400">Mosche del sangue con mira di precisione</text>
+<text id="8884000">Difesa con scudo migliora resistenza</text>
+<text id="8884100">Difesa con scudo attiva Voto dell'indomito</text>
+<text id="8884200">Difesa con scudo consacra la terra</text>
+<text id="8884300">Sbilanciamento attiva Tenacia</text>
+<text id="8885000">L'ampolla ripristina anche PA</text>
+<text id="8885100">Ripristino PA dopo magia fallita</text>
+<text id="8885200">Difesa migliora stregonerie e incantesimi</text>
+<text id="8920100">Potenza attacco affinità migliorata</text>
+<text id="8921400">Colpi critici migliorano potenza d'attacco</text>
+<text id="8960100">Attacchi potenti modificati</text>
+<text id="8960200">Attacchi potenti in salto generano onda d'urto</text>
+<text id="9021400">Potere della notte ardente</text>
+<text id="9030900">Potere della luna nera</text>
+<text id="9031000">Potere della Volontà superiore</text>
+<text id="9031400">Potere del blasfemo</text>
+<text id="9031500">Potere del casato dei Marais</text>
+<text id="9031700">Potere dell'Ordine aureo</text>
+<text id="9040200">Potere della morte fatidica</text>
+<text id="9040500">Potere del Flagello celeste</text>
+<text id="9040800">Potere della distruzione</text>
+<text id="9041000">Potere della vendetta</text>
+<text id="9060400">Potere del lord draconico</text>
+<text id="9071000">Potere della disperazione</text>
+<text id="9081000">Potere del Re Presagio</text>
+<text id="9090200">Potere dell'Invincibile</text>
+<text id="9111500">Potere della regina</text>
+<text id="9122000">Potere del blasfemo</text>
+<text id="9130300">Potere del vuoto oscuro</text>
+<text id="9150400">Potere della stirpe aurea</text>
+<text id="9151100">Potere dello spirito ancestrale</text>
+<text id="9160900">Potere del grande drago antico</text>
+<text id="9170100">Potere del Signore del sangue</text>
+<text id="9200600">Potere del gigante</text>
+<text id="9210600">Potere del drago volante</text>
+<text id="9230500">Potere del primo Lord</text>
+<text id="9330900">Potere del Plenilunio</text>
+<text id="9420000">Potere del generale</text>
+<text id="9990100">Dolore del Selvaggio</text>
+<text id="9990200">Dolore del Guardiano</text>
+<text id="9990300">Dolore di Occhio di ferro</text>
+<text id="9990400">Dolore della Duchessa</text>
+<text id="9990500">Dolore del Predone</text>
+<text id="9990600">Dolore della Rediviva</text>
+<text id="9990700">Dolore della Reclusa</text>
+<text id="9990800">Dolore del Giustiziere</text>
+<text id="18000000">PV massimi incrementati</text>
+<text id="18010000">PA massimi incrementati</text>
+<text id="18010100">Consumo PA ridotto</text>
+<text id="18020000">Vigore massimo incrementato</text>
+<text id="18020200">Recupero vigore migliorato</text>
+<text id="18100000">Aumento attacco fisico</text>
+<text id="18100500">Potenza attacco affinità migliorata</text>
+<text id="18120000">Sbilanciamento del nemico migliorato</text>
+<text id="18200000">Resistenza danni fisici migliorata</text>
+<text id="18200500">Resistenza danni affinità migliorata</text>
+<text id="18210700">Tutte le resistenze migliorate</text>
+<text id="18230000">Stabilità migliorata</text>
+<text id="18330103">Stregonerie e incantesimi migliorati</text>
+<text id="18330500">Durata stregonerie e incantesimi incrementata</text>
+<text id="18330700">Comunione concede effetti anti-drago</text>
+<text id="18350400">Le parate efficaci attivano Contrappasso aureo</text>
+<text id="18420100">I contrattacchi in difesa attivano attacchi sacri</text>
+<text id="18420200">I contrattacchi in difesa attivano attacchi evocazione</text>
+<text id="18430000">Contrattacco in affondo migliorato</text>
+<text id="18440000">Ripristino PV da ampolla migliorato</text>
+<text id="18500000">Più rune dai nemici sconfitti</text>
+<text id="18640000">Ripristino PV con colpi critici</text>
+<text id="18640100">Ripristino PA con colpi critici</text>
+<text id="18640200">Danni incrementati dopo colpo critico</text>
+<text id="18650000">Recupero PV con difesa efficace</text>
+<text id="18650100">Recupero PA con difesa efficace</text>
+<text id="18660200">I colpi critici causano sanguinamento</text>
+<text id="18660300">Consacra la terra con PV ridotti</text>
+<text id="18700000">Recupero PV nel tempo con veleno e marcescenza</text>
+<text id="18710000">Incrementa potenza attacco vicino a sanguinamento</text>
+<text id="19700000">Vitalità</text>
+<text id="19700001">%null%</text>
+<text id="19700002">%null%</text>
+<text id="19700003">%null%</text>
+<text id="19700004">%null%</text>
+<text id="19700005">%null%</text>
+<text id="19700006">%null%</text>
+<text id="19700007">%null%</text>
+<text id="19700008">%null%</text>
+<text id="19700009">%null%</text>
+<text id="19700010">Mente</text>
+<text id="19700011">%null%</text>
+<text id="19700012">%null%</text>
+<text id="19700013">%null%</text>
+<text id="19700014">%null%</text>
+<text id="19700015">%null%</text>
+<text id="19700016">%null%</text>
+<text id="19700017">%null%</text>
+<text id="19700018">%null%</text>
+<text id="19700019">%null%</text>
+<text id="19700020">Tempra</text>
+<text id="19700021">%null%</text>
+<text id="19700022">%null%</text>
+<text id="19700023">%null%</text>
+<text id="19700024">%null%</text>
+<text id="19700025">%null%</text>
+<text id="19700026">%null%</text>
+<text id="19700027">%null%</text>
+<text id="19700028">%null%</text>
+<text id="19700029">%null%</text>
+<text id="19700030">Forza</text>
+<text id="19700031">%null%</text>
+<text id="19700032">%null%</text>
+<text id="19700033">%null%</text>
+<text id="19700034">%null%</text>
+<text id="19700035">%null%</text>
+<text id="19700036">%null%</text>
+<text id="19700037">%null%</text>
+<text id="19700038">%null%</text>
+<text id="19700039">%null%</text>
+<text id="19700040">Destrezza</text>
+<text id="19700041">%null%</text>
+<text id="19700042">%null%</text>
+<text id="19700043">%null%</text>
+<text id="19700044">%null%</text>
+<text id="19700045">%null%</text>
+<text id="19700046">%null%</text>
+<text id="19700047">%null%</text>
+<text id="19700048">%null%</text>
+<text id="19700049">%null%</text>
+<text id="19700050">Intelligenza</text>
+<text id="19700051">%null%</text>
+<text id="19700052">%null%</text>
+<text id="19700053">%null%</text>
+<text id="19700054">%null%</text>
+<text id="19700055">%null%</text>
+<text id="19700056">%null%</text>
+<text id="19700057">%null%</text>
+<text id="19700058">%null%</text>
+<text id="19700059">%null%</text>
+<text id="19700060">Fede</text>
+<text id="19700061">%null%</text>
+<text id="19700062">%null%</text>
+<text id="19700063">%null%</text>
+<text id="19700064">%null%</text>
+<text id="19700065">%null%</text>
+<text id="19700066">%null%</text>
+<text id="19700067">%null%</text>
+<text id="19700068">%null%</text>
+<text id="19700069">%null%</text>
+<text id="19700070">Arcano</text>
+<text id="19700071">%null%</text>
+<text id="19700072">%null%</text>
+<text id="19700073">%null%</text>
+<text id="19700074">%null%</text>
+<text id="19700075">%null%</text>
+<text id="19700076">%null%</text>
+<text id="19700077">%null%</text>
+<text id="19700078">%null%</text>
+<text id="19700079">%null%</text>
+<text id="19700080">Riduzione periodo ricarica abilità personaggio</text>
+<text id="19700081">%null%</text>
+<text id="19700082">%null%</text>
+<text id="19700083">%null%</text>
+<text id="19700084">%null%</text>
+<text id="19700085">%null%</text>
+<text id="19700086">%null%</text>
+<text id="19700087">%null%</text>
+<text id="19700088">%null%</text>
+<text id="19700089">%null%</text>
+<text id="19700090">Carica automatica arte suprema</text>
+<text id="19700091">%null%</text>
+<text id="19700092">%null%</text>
+<text id="19700093">%null%</text>
+<text id="19700094">%null%</text>
+<text id="19700095">%null%</text>
+<text id="19700096">%null%</text>
+<text id="19700097">%null%</text>
+<text id="19700098">%null%</text>
+<text id="19700099">%null%</text>
+<text id="19700100">Stabilità</text>
+<text id="19799999">Tutte le opzioni</text>
+</entries>
+</fmg>
