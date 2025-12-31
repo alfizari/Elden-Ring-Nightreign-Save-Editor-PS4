@@ -19,7 +19,6 @@ os.chdir(working_directory)
 data_source = SourceDataHandler()
 items_json = {}
 effects_json = {}
-ill_effects_json = {}
 data = None
 userdata_path = None
 imported_data=None
@@ -44,18 +43,17 @@ ITEM_TYPE_RELIC = 0xC0000000
 
 
 def load_json_data():
-    global items_json, effects_json, ill_effects_json
+    global items_json, effects_json
     try:
-        file_path = os.path.join(working_directory, "Resources/Json")
+        # file_path = os.path.join(working_directory, "Resources/Json")
 
-        with open(os.path.join(file_path, 'items.json'), 'r', encoding='utf-8') as f:
-            items_json = json.load(f)
+        # with open(os.path.join(file_path, 'items.json'), 'r', encoding='utf-8') as f:
+        #     items_json = json.load(f)
 
-        with open(os.path.join(file_path, 'effects.json'), 'r', encoding='utf-8') as f:
-            effects_json = json.load(f)
-
-        with open(os.path.join(file_path, 'illegal_effects.json'), 'r', encoding='utf-8') as f:
-            ill_effects_json = json.load(f)
+        # with open(os.path.join(file_path, 'effects.json'), 'r', encoding='utf-8') as f:
+        #     effects_json = json.load(f)
+        items_json = data_source.get_relic_origin_structure()
+        effects_json = data_source.get_effect_origin_structure()
 
         return True
 
@@ -65,6 +63,14 @@ def load_json_data():
             f"JSON files not found: {str(e)}\nManual editing only available."
         )
         return False
+
+
+def reload_language(language_code):
+    global items_json, effects_json, data_source
+    result = data_source.reload_text(language_code)
+    items_json = data_source.get_relic_origin_structure()
+    effects_json = data_source.get_effect_origin_structure()
+    return result
 
 
 class Item:
@@ -1103,6 +1109,24 @@ class SaveEditorGUI:
         
         self.search_info_label = ttk.Label(search_frame, text="", foreground='gray')
         self.search_info_label.pack(side='left', padx=10)
+
+        # ===========Add Language Combobox====================
+        lang_frame = ttk.Frame(search_frame)
+        lang_frame.pack(side='right', padx=5)
+
+        ttk.Label(lang_frame, text="Language:").pack(side='left', padx=2)
+        from source_data_handler import LANGUAGE_MAP
+        lang_display_names = list(LANGUAGE_MAP.values())
+
+        self.lang_combobox = ttk.Combobox(lang_frame,
+                                          values=lang_display_names,
+                                          state="readonly",
+                                          width=15)
+        self.lang_combobox.set(LANGUAGE_MAP.get("en_US"))
+        self.lang_combobox.pack(side='left', padx=2)
+        self.lang_combobox.bind("<<ComboboxSelected>>",
+                                self.on_language_change)
+        # ====================================================
         
         # Inventory display
         inv_frame = ttk.Frame(self.inventory_tab)
@@ -1187,8 +1211,18 @@ class SaveEditorGUI:
                 item_id = int(tags[1])
                 self.modify_dialog.load_relic(ga_handle, item_id)
 
-    
-        
+    def on_language_change(self, event=None):
+        selected_name = self.lang_combobox.get()
+        from source_data_handler import LANGUAGE_MAP
+        lang_code = next((code for code, name in LANGUAGE_MAP.items() if name == selected_name), "en_US")
+        global data_source, items_json, effects_json
+        if reload_language(lang_code):
+            self.refresh_inventory()
+            messagebox.showinfo("Success",
+                                f"Language changed to: {selected_name}")
+        else:
+            messagebox.showerror("Error", "Can't change language.")
+
     def open_file(self):
         global MODE, data, userdata_path
         
@@ -1379,8 +1413,11 @@ class SaveEditorGUI:
             for eff in effects:
                 if eff == 0:
                     effect_names.append("None")
+                elif eff == 4294967295:
+                    effect_names.append("Empty")
                 elif str(eff) in effects_json:
-                    effect_names.append(effects_json[str(eff)]["name"])
+                    effect_names.append(
+                        "".join(effects_json[str(eff)]["name"].splitlines()))
                 else:
                     effect_names.append(f"Unknown ({eff})")
             

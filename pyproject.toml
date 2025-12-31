@@ -1,0 +1,14 @@
+[project]
+name = "elden-ring-nightreign-save-editor-ps4"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "cryptography>=46.0.3",
+    "lxml>=6.0.2",
+    "openpyxl>=3.1.5",
+    "orjson>=3.11.5",
+    "pandas>=2.3.3",
+    "pyinstaller>=6.17.0",
+]
