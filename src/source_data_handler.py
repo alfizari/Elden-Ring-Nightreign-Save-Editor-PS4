@@ -4,6 +4,23 @@ from typing import Optional
 
 
 COLOR_MAP = ["Red", "Blue", "Yellow", "Green"]
+LANGUAGE_MAP = {
+    "ar_AE": "العربية (الإمارات)",
+    "de_DE": "Deutsch",
+    "en_US": "English",
+    "es_AR": "Español (Argentina)",
+    "es_ES": "Español (España)",
+    "fr_FR": "Français",
+    "it_IT": "Italiano",
+    "ja_JP": "日本語",
+    "ko_KR": "한국어",
+    "pl_PL": "Polski",
+    "pt_BR": "Português (Brasil)",
+    "ru_RU": "Русский",
+    "th_TH": "ไทย",
+    "zh_CN": "简体中文",
+    "zh_TW": "繁體中文 (台灣)"
+}
 
 
 class SourceDataHandler:
@@ -50,13 +67,9 @@ class SourceDataHandler:
         self._load_text(language)
 
     def _load_text(self, language: str = "en_US"):
-        language_dir_list = []
-        # search and list subfolders name that are supported language
-        for lang_dir in SourceDataHandler.TEXT_DIR.iterdir():
-            if lang_dir.is_dir():
-                language_dir_list.append(lang_dir.name)
+        support_languages = LANGUAGE_MAP.keys()
         _lng = language
-        if language not in language_dir_list:
+        if language not in support_languages:
             _lng = "en_US"
         # Deal with Relic text
         # Read all Relic xml from language subfolder
@@ -96,6 +109,15 @@ class SourceDataHandler:
         except KeyError:
             self._load_text()
             return False
+
+    def get_support_languages_name(self):
+        return LANGUAGE_MAP.values()
+
+    def get_support_languages_code(self):
+        return LANGUAGE_MAP.keys()
+
+    def get_support_languages(self):
+        return LANGUAGE_MAP
 
     def get_relic_origin_structure(self):
         if self.relic_name is None:
