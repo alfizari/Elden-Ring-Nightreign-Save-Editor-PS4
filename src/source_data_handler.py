@@ -188,7 +188,7 @@ class SourceDataHandler:
             self._load_text()
         _copy_df = self.effect_name.copy()
         _copy_df.set_index("id", inplace=True)
-        _reslut = {}
+        _reslut = {"4294967295": {"name": "Empty"}}
         for index, row in self.effect_params.iterrows():
             try:
                 _attachTextId = self.effect_params.loc[index, "attachTextId"]
