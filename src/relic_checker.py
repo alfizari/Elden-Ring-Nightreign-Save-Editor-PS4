@@ -30,6 +30,7 @@ class RelicChecker:
     def __init__(self, ga_relic, data_source: SourceDataHandler):
         self.ga_relic = ga_relic
         self.data_source = data_source
+        self.illegal_gas = []
 
     def _check_relic_effects_in_pool(self, relic_id: int, effects: list[int]):
         """
@@ -68,9 +69,11 @@ class RelicChecker:
                 if idx == 5:
                     test_results.append(all(test_result))
                     test_result = []
-        return any(test_results)
+            if test_results[-1]:
+                return True
+        return False
 
-    def _is_illegal(self, relic_id: int, effects: list[int]):
+    def is_illegal(self, relic_id: int, effects: list[int]):
 
         # Rule 1
         if relic_id in range(self.RELIC_GROUPS['illegal'][0],
@@ -117,7 +120,25 @@ class RelicChecker:
                     return True
             return False
 
-    def get_illegal_relics(self):
+    def sort_effects(self, effects: list[int]):
+        sort_ids = []
+        curse_map = {}
+        for idx, effect_id in enumerate(effects[:3]):
+            curse_map[effect_id] = effects[idx+3]
+            # Skip empty effects
+            if effect_id in [-1, 0, 4294967295]:
+                sort_ids.append(float('inf'))
+            else:
+                sort_id = self.data_source.get_sort_id(effect_id)
+                sort_ids.append(sort_id)
+        sort_tuple = zip(sort_ids, effects)
+        sorted_effects = sorted(sort_tuple, key=lambda x: (x[0], x[1]))
+        sorted_effects = [effect for _, effect in sorted_effects]
+        result = [effect for effect in sorted_effects]
+        result.extend([curse_map[effect] for effect in sorted_effects])
+        return result
+
+    def set_illegal_relics(self):
         illegal_relics = []
         relic_group_by_id = {}
         for relic in self.ga_relic:
@@ -126,7 +147,7 @@ class RelicChecker:
             if str(real_id) not in relic_group_by_id.keys():
                 relic_group_by_id[str(real_id)] = []
             relic_group_by_id[str(real_id)].append(relic)
-            if self._is_illegal(real_id, [e1, e2, e3,
+            if self.is_illegal(real_id, [e1, e2, e3,
                                           e4, e5, e6]):
                 illegal_relics.append(ga)
 
@@ -144,4 +165,14 @@ class RelicChecker:
                             legal_found = True
                             continue
                         illegal_relics.append(ga)
-        return illegal_relics
+        self.illegal_gas = illegal_relics
+
+    @property
+    def illegal_count(self):
+        return len(self.illegal_gas)
+
+    def append_illegal(self, ga):
+        self.illegal_gas.append(ga)
+
+    def remove_illegal(self, ga):
+        self.illegal_gas.remove(ga)

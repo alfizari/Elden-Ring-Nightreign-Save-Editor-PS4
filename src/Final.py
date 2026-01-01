@@ -8,6 +8,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 from relic_checker import RelicChecker
 from source_data_handler import SourceDataHandler
+from typing import Optional
 
 
 # Global variables
@@ -17,6 +18,7 @@ os.chdir(working_directory)
 
 # Data storage
 data_source = SourceDataHandler()
+relic_checker: Optional[RelicChecker] = None
 items_json = {}
 effects_json = {}
 data = None
@@ -503,8 +505,8 @@ def modify_relic(ga_index, item_id, new_effects, new_item_id=None):
 
 
 def check_illegal_relics():
-    relic_checker = RelicChecker(ga_relic, data_source)
-    illegal_relics = relic_checker.get_illegal_relics()
+    global relic_checker
+    illegal_relics = relic_checker.illegal_gas
     # for ga, relic_id, e1, e2, e3, e4, e5, e6, offset, size in ga_relic:
     #     # Skip relic entirely if its ID is invalid
     #     if relic_id in (0, -1, 4294967295):
@@ -1303,8 +1305,7 @@ class SaveEditorGUI:
         self.load_character(path)
 
     def load_character(self, path):
-        global data, userdata_path, steam_id
-        
+        global data, userdata_path, steam_id, data_source, ga_relic, relic_checker
         userdata_path = path
         
         try:
@@ -1314,6 +1315,10 @@ class SaveEditorGUI:
             # Parse items
             gaprint(data)
             
+            # Load Relic Checker
+            relic_checker = RelicChecker(ga_relic=ga_relic,
+                                         data_source=data_source)
+            relic_checker.set_illegal_relics()
             # Read stats
             read_murks_and_sigs(data)
 
@@ -1941,6 +1946,7 @@ class ModifyRelicDialog:
     
     def apply_changes(self):
         # Extract effect IDs from entries
+        global relic_checker
         new_effects = []
         
         for entry in self.effect_entries:
@@ -1949,6 +1955,7 @@ class ModifyRelicDialog:
                 new_effects.append(value)
             except ValueError:
                 new_effects.append(0)
+        new_effects = relic_checker.sort_effects(new_effects)
         
         # Check if item ID was changed
         new_item_id = None
@@ -1959,6 +1966,11 @@ class ModifyRelicDialog:
         except ValueError:
             pass  # Keep original ID if invalid entry
         
+        is_illegal = relic_checker.is_illegal(entered_id, new_effects)
+        if is_illegal and self.ga_handle not in relic_checker.illegal_gas:
+            relic_checker.append_illegal(self.ga_handle)
+        elif not is_illegal and self.ga_handle in relic_checker.illegal_gas:
+            relic_checker.remove_illegal(self.ga_handle)    
         # Apply modifications
         if modify_relic(self.ga_handle, self.item_id, new_effects, new_item_id):
             messagebox.showinfo("Success", "Relic modified successfully")
