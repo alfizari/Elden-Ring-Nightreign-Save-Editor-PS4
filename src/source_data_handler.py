@@ -128,15 +128,17 @@ class SourceDataHandler:
         _result = {}
         for index, row in self.relic_table.iterrows():
             try:
-                if _copy_df.loc[index, ["name"]].empty:
-                    _result[str(index)] = {"name": "Unset",
-                                           "color": "Red"}
-                    continue
+                _name_matches = \
+                    _copy_df[_copy_df.index == index]["name"].values
+                _color_matches = \
+                    self.relic_table[self.relic_table.index == index][
+                        "relicColor"].values
+                first_name_val = \
+                    _name_matches[0] if len(_name_matches) > 0 else "Unset"
+                first_color_val = COLOR_MAP[int(_color_matches[0])] if len(_color_matches) > 0 else "Red"
                 _result[str(index)] = {
-                    "name": _copy_df.loc[index, ["name"]].iloc[0],
-                    "color": COLOR_MAP[
-                        int(self.relic_table.loc[index, ["relicColor"]].iloc[0])
-                        ],
+                    "name": str(first_name_val),
+                    "color": first_color_val,
                 }
             except KeyError:
                 _result[str(index)] = {"name": "Unset", "color": "Red"}
@@ -194,14 +196,6 @@ class SourceDataHandler:
                     _copy_df[_copy_df.index == _attachTextId]["text"].values
                 first_val = matches[0] if len(matches) > 0 else "Unknown"
                 _reslut[str(index)] = {"name": str(first_val)}
-                # if _copy_df.loc[_attachTextId, ["text"]].empty:
-                #     _reslut[str(index)] = {"name": "Unknown"}
-                #     continue
-                # _reslut[str(index)] = {
-                #     "name": str(
-                #         _copy_df.loc[_attachTextId, ["text"]].iloc[0]
-                #         )
-                # }
             except KeyError:
                 _reslut[str(index)] = {"name": "Unknown"}
         return _reslut
