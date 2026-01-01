@@ -2018,7 +2018,7 @@ class SearchDialog:
             name = item_data.get('name', 'Unknown')
             self.all_items.append((item_id, name))
         
-        self.all_items.sort(key=lambda x: x[1])
+        self.all_items.sort(key=lambda x: int(x[0]) if x[0].isdigit() else 0)
         self.filter_results()
         
         # Buttons

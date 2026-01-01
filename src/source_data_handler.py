@@ -128,10 +128,14 @@ class SourceDataHandler:
         _result = {}
         for index, row in self.relic_table.iterrows():
             try:
+                if _copy_df.loc[index, ["name"]].empty:
+                    _result[str(index)] = {"name": "Unset",
+                                           "color": "Red"}
+                    continue
                 _result[str(index)] = {
-                    "name": _copy_df.loc[index, "name"],
+                    "name": _copy_df.loc[index, ["name"]].iloc[0],
                     "color": COLOR_MAP[
-                        int(self.relic_table.loc[index, "relicColor"])
+                        int(self.relic_table.loc[index, ["relicColor"]].iloc[0])
                         ],
                 }
             except KeyError:
@@ -186,11 +190,18 @@ class SourceDataHandler:
         for index, row in self.effect_params.iterrows():
             try:
                 _attachTextId = self.effect_params.loc[index, "attachTextId"]
-                _reslut[str(index)] = {
-                    "name": _copy_df.loc[
-                        _attachTextId, "text"
-                    ]
-                }
+                matches = \
+                    _copy_df[_copy_df.index == _attachTextId]["text"].values
+                first_val = matches[0] if len(matches) > 0 else "Unknown"
+                _reslut[str(index)] = {"name": str(first_val)}
+                # if _copy_df.loc[_attachTextId, ["text"]].empty:
+                #     _reslut[str(index)] = {"name": "Unknown"}
+                #     continue
+                # _reslut[str(index)] = {
+                #     "name": str(
+                #         _copy_df.loc[_attachTextId, ["text"]].iloc[0]
+                #         )
+                # }
             except KeyError:
                 _reslut[str(index)] = {"name": "Unknown"}
         return _reslut
@@ -223,5 +234,5 @@ class SourceDataHandler:
 
 if __name__ == "__main__":
     source_data_handler = SourceDataHandler("zh_TW")
-    t = source_data_handler.get_relic_pools_seq(202)
+    t = source_data_handler.get_effect_origin_structure()
     print(t)
