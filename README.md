@@ -1,6 +1,8 @@
 # Elden Ring Nightreign Save Editor PS4
 
-(I am not as active on the project as before, if anyone interested on maintaining lmk.)
+For more uptodate version, please check: https://github.com/ip1259/Elden-Ring-Nightreign-Save-Editor-PS4.
+
+hopefully we will update the main repo soon.
 
 A powerful and easy-to-use save editor for Elden Ring on PS4 (Latest Update)
 
