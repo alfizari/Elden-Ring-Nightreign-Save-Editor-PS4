@@ -163,6 +163,32 @@ class SourceDataHandler:
         _result.set_index("ID", inplace=True)
         return _result
 
+    def cvrt_filtered_relic_origin_structure(self,
+                                             relic_dataframe: pd.DataFrame):
+        if self.relic_name is None:
+            self._load_text()
+        _copy_df = self.relic_name.copy()
+        _copy_df.set_index("id", inplace=True)
+        _copy_df.rename(columns={"text": "name"}, inplace=True)
+        _result = {}
+        for index, row in relic_dataframe.iterrows():
+            try:
+                _name_matches = \
+                    _copy_df[_copy_df.index == index]["name"].values
+                _color_matches = \
+                    relic_dataframe[relic_dataframe.index == index][
+                        "relicColor"].values
+                first_name_val = \
+                    _name_matches[0] if len(_name_matches) > 0 else "Unset"
+                first_color_val = COLOR_MAP[int(_color_matches[0])] if len(_color_matches) > 0 else "Red"
+                _result[str(index)] = {
+                    "name": str(first_name_val),
+                    "color": first_color_val,
+                }
+            except KeyError:
+                _result[str(index)] = {"name": "Unset", "color": "Red"}
+        return _result
+
     def get_effect_datas(self):
         if self.effect_name is None:
             self._load_text()
@@ -200,6 +226,26 @@ class SourceDataHandler:
                 _reslut[str(index)] = {"name": "Unknown"}
         return _reslut
 
+    def cvrt_filtered_effect_origin_structure(self,
+                                              effect_dataframe: pd.DataFrame):
+        if self.effect_name is None:
+            self._load_text()
+        _copy_df = self.effect_name.copy()
+        _copy_df.set_index("id", inplace=True)
+        _reslut = {}
+        for index, row in effect_dataframe.iterrows():
+            try:
+                _attachTextId = effect_dataframe.loc[index, "attachTextId"]
+                matches = \
+                    _copy_df[_copy_df.index == _attachTextId]["text"].values
+                first_val = matches[0] if len(matches) > 0 else "Unknown"
+                _reslut[str(index)] = {"name": str(first_val)}
+            except KeyError:
+                _reslut[str(index)] = {"name": "Unknown"}
+        if len(_reslut) == 0:
+            _reslut = {"4294967295": {"name": "Empty"}}
+        return _reslut
+
     def get_relic_pools_seq(self, relic_id: int):
         _pool_ids = self.relic_table.loc[relic_id,
                                          ["attachEffectTableId_1",
@@ -211,8 +257,13 @@ class SourceDataHandler:
         return _pool_ids.values.tolist()
 
     def get_effect_conflict_id(self, effect_id: int):
-        _conflict_id = self.effect_params.loc[effect_id, "compatibilityId"]
-        return _conflict_id
+        try:
+            if effect_id == -1 or effect_id == 4294967295:
+                return -1
+            _conflict_id = self.effect_params.loc[effect_id, "compatibilityId"]
+            return _conflict_id
+        except KeyError:
+            return -1
 
     def get_sort_id(self, effect_id: int):
         _sort_id = self.effect_params.loc[effect_id, "overrideEffectId"]
