@@ -1779,6 +1779,8 @@ class ModifyRelicDialog:
         self.dialog.title("Modify Relic")
         self.dialog.geometry("700x600")
         self.dialog.transient(parent)
+
+        self.safe_mode_var = tk.BooleanVar(value=True)
         
         self.setup_ui()
         self.load_relic(ga_handle, item_id)
@@ -1831,7 +1833,7 @@ class ModifyRelicDialog:
         
         # Main container with scrollbar
         main_frame = ttk.Frame(self.dialog)
-        main_frame.pack(fill='both', expand=True, padx=10, pady=5)
+        main_frame.pack(fill='both', expand=True, padx=10, pady=6)
         
         canvas = tk.Canvas(main_frame)
         scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
@@ -1844,6 +1846,15 @@ class ModifyRelicDialog:
         
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Modifier Config Section
+        modifier_frame = ttk.LabelFrame(scrollable_frame, text="Modifier Configuration", padding=10)
+        modifier_frame.pack(fill='x', pady=5)
+        self.safe_mode_cb = ttk.Checkbutton(modifier_frame,
+                                            text="Safe Mode: Auto-filter legal effects",
+                                            variable=self.safe_mode_var,
+                                            onvalue=True, offvalue=False)
+        self.safe_mode_cb.pack(anchor='w')
         
         # Item ID section (optional modification)
         item_frame = ttk.LabelFrame(scrollable_frame, text="Relic Item ID", padding=10)
@@ -1926,11 +1937,65 @@ class ModifyRelicDialog:
     
     def search_items(self):
         """Open search dialog for items"""
-        SearchDialog(self.dialog, items_json, "Select Relic", self.on_item_selected)
+        _items = {}
+        if self.safe_mode_var.get():
+            _cut_relic_id = int(self.item_id_entry.get())
+            _, _safe_range = relic_checker.find_id_range(_cut_relic_id)
+            _df = data_source.relic_table.copy()
+            _df = _df[_df.index.isin(range(_safe_range[0], _safe_range[1] + 1))]
+            _items = data_source.cvrt_filtered_relic_origin_structure(_df)
+        else:
+            _items = items_json
+        SearchDialog(self.dialog, _items, "Select Relic", self.on_item_selected)
     
     def search_effects(self, effect_index):
         """Open search dialog for effects"""
-        SearchDialog(self.dialog, effects_json, f"Select Effect {effect_index + 1}", 
+        _items = {}
+        if self.safe_mode_var.get():
+            _cut_relic_id = int(self.item_id_entry.get())
+            _pool_id = data_source.get_relic_pools_seq(_cut_relic_id)[effect_index]
+            _pool_effects = data_source.get_pool_effects(_pool_id)
+            _effect_params_df = data_source.effect_params.copy()
+            _effect_params_df = _effect_params_df[_effect_params_df.index.isin(_pool_effects)]
+            match effect_index:
+                case 1:
+                    _effect_id_1 = int(self.effect_entries[0].get())
+                    _conflic_id_1 = data_source.get_effect_conflict_id(_effect_id_1)
+                    _effect_params_df = _effect_params_df[
+                        (_effect_params_df["compatibilityId"] == -1) |
+                        (_effect_params_df["compatibilityId"] != _conflic_id_1)
+                    ]
+                case 2:
+                    _effect_id_1 = int(self.effect_entries[0].get())
+                    _conflic_id_1 = data_source.get_effect_conflict_id(_effect_id_1)
+                    _effect_id_2 = int(self.effect_entries[1].get())
+                    _conflic_id_2 = data_source.get_effect_conflict_id(_effect_id_2)
+                    _effect_params_df = _effect_params_df[
+                        (_effect_params_df["compatibilityId"] == -1) |
+                        ((_effect_params_df["compatibilityId"] != _conflic_id_1) &
+                         (_effect_params_df["compatibilityId"] != _conflic_id_2))
+                    ]
+                case 4:
+                    _effect_id_4 = int(self.effect_entries[3].get())
+                    _conflic_id_4 = data_source.get_effect_conflict_id(_effect_id_4)
+                    _effect_params_df = _effect_params_df[
+                        (_effect_params_df["compatibilityId"] == -1) |
+                        (_effect_params_df["compatibilityId"] != _conflic_id_4)
+                    ]
+                case 5:
+                    _effect_id_4 = int(self.effect_entries[3].get())
+                    _conflic_id_4 = data_source.get_effect_conflict_id(_effect_id_4)
+                    _effect_id_5 = int(self.effect_entries[4].get())
+                    _conflic_id_5 = data_source.get_effect_conflict_id(_effect_id_5)
+                    _effect_params_df = _effect_params_df[
+                        (_effect_params_df["compatibilityId"] == -1) |
+                        ((_effect_params_df["compatibilityId"] != _conflic_id_4) &
+                         (_effect_params_df["compatibilityId"] != _conflic_id_5))
+                    ]
+            _items = data_source.cvrt_filtered_effect_origin_structure(_effect_params_df)
+        else:
+            _items = effects_json
+        SearchDialog(self.dialog, _items, f"Select Effect {effect_index + 1}", 
                     lambda item_id: self.on_effect_selected(effect_index, item_id))
     
     def on_item_selected(self, item_id):

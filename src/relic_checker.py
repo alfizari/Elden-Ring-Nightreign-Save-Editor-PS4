@@ -176,3 +176,9 @@ class RelicChecker:
 
     def remove_illegal(self, ga):
         self.illegal_gas.remove(ga)
+
+    def find_id_range(self, relic_id: int):
+        for group_name, group_range in self.RELIC_GROUPS.items():
+            if relic_id in range(group_range[0], group_range[1] + 1):
+                return group_name, group_range
+        return None
