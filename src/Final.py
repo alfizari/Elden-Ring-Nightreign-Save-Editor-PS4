@@ -1585,12 +1585,10 @@ class SaveEditorGUI:
         if relic_checker:
             relic_checker.ga_relic = ga_relic
             relic_checker.set_illegal_relics()
-            print(f"DEBUG refresh_inventory: After set_illegal_relics, illegal count = {len(relic_checker.illegal_gas)}")
 
         # Check for illegal relics
         illegal_gas = check_illegal_relics()
         illegal_count = len(illegal_gas)
-        print(f"DEBUG refresh_inventory: illegal_gas has {illegal_count} items")
         
         # Check for forbidden relics
         forbidden_relics = get_forbidden_relics()
@@ -2091,10 +2089,6 @@ class SaveEditorGUI:
                 else:
                     fixable_relics.append((ga, id, real_id, valid_id, item_name, new_name, effects))
             else:
-                # Debug: print why this relic can't be fixed
-                print(f"\n=== Cannot fix: {item_name} (ID: {real_id}) ===")
-                self._find_valid_relic_id_for_effects(real_id, effects, debug=True)
-
                 # Track why it can't be fixed
                 reason = "No valid ID found with same color"
                 unfixable_relics.append((real_id, item_name, reason))
@@ -2152,36 +2146,26 @@ class SaveEditorGUI:
         messagebox.showinfo("Mass Fix Complete", message)
         self.refresh_inventory()
 
-    def _find_valid_relic_id_for_effects(self, current_id, effects, debug=False):
+    def _find_valid_relic_id_for_effects(self, current_id, effects):
         """Find a valid relic ID that can have the given effects (must be same color)"""
         # Get the current relic's color
         if current_id not in data_source.relic_table.index:
-            if debug:
-                print(f"DEBUG: ID {current_id} not in relic_table")
             return None
         current_color = data_source.relic_table.loc[current_id, "relicColor"]
 
         # Count how many effects need curses
         curses_needed = sum(1 for e in effects[:3]
                           if e not in [0, -1, 4294967295] and data_source.effect_needs_curse(e))
-        if debug:
-            print(f"DEBUG: Effects that need curses: {curses_needed}")
 
         # Get the range group of current ID
         id_range = relic_checker.find_id_range(current_id)
         if not id_range:
-            if debug:
-                print(f"DEBUG: No range found for ID {current_id}")
             return None
 
         group_name, (range_start, range_end) = id_range
-        if debug:
-            print(f"DEBUG: ID {current_id} is in range {group_name} ({range_start}-{range_end}), color={current_color}")
 
         # Skip illegal range
         if group_name == "illegal":
-            if debug:
-                print(f"DEBUG: ID {current_id} is in illegal range")
             return None
 
         # First check if current ID is actually valid (effects match AND has enough curse slots)
@@ -2192,14 +2176,11 @@ class SaveEditorGUI:
                 pools = data_source.get_relic_pools_seq(current_id)
                 available_curse_slots = sum(1 for p in pools[3:] if p != -1)
                 if available_curse_slots >= curses_needed:
-                    if debug:
-                        print(f"DEBUG: Current ID {current_id} already valid for these effects")
                     return current_id  # Already valid, return same ID
             except KeyError:
                 pass
 
         # Search within the same range for a valid ID with SAME color only
-        same_color_count = 0
         for test_id in range(range_start, range_end + 1):
             if test_id not in data_source.relic_table.index:
                 continue
@@ -2209,27 +2190,19 @@ class SaveEditorGUI:
             if test_color != current_color:
                 continue
 
-            same_color_count += 1
-
             # Check if relic has enough curse slots for effects that need curses
             try:
                 pools = data_source.get_relic_pools_seq(test_id)
                 available_curse_slots = sum(1 for p in pools[3:] if p != -1)
                 if available_curse_slots < curses_needed:
-                    if debug:
-                        print(f"DEBUG: ID {test_id} skipped - only {available_curse_slots} curse slots, need {curses_needed}")
                     continue
             except KeyError:
                 continue
 
             # Check if effects are valid for this ID (allow empty curses)
             if relic_checker._check_relic_effects_in_pool(test_id, effects, allow_empty_curses=True):
-                if debug:
-                    print(f"DEBUG: Found valid ID {test_id} for effects (has {available_curse_slots} curse slots)")
                 return test_id
 
-        if debug:
-            print(f"DEBUG: No valid ID found. Checked {same_color_count} IDs with same color ({current_color})")
         return None
 
     def export_relics(self):
