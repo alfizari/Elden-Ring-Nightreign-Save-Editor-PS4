@@ -1220,8 +1220,6 @@ class SaveEditorGUI:
         global data_source, items_json, effects_json
         if reload_language(lang_code):
             self.refresh_inventory()
-            messagebox.showinfo("Success",
-                                f"Language changed to: {selected_name}")
         else:
             messagebox.showerror("Error", "Can't change language.")
 
