@@ -1,6 +1,9 @@
 import pandas as pd
 import pathlib
 from typing import Optional
+import locale
+import sys
+import os
 
 
 COLOR_MAP = ["Red", "Blue", "Yellow", "Green"]
@@ -21,6 +24,25 @@ LANGUAGE_MAP = {
     "zh_CN": "简体中文",
     "zh_TW": "繁體中文 (台灣)"
 }
+
+
+def get_system_language():
+    lang = None
+
+    try:
+        lang, _ = locale.getdefaultlocale()
+    except Exception:
+        return "en_US"
+
+    if lang:
+        normalized = locale.normalize(lang)
+        clean_lang = normalized.split('.')[0]
+        clean_lang = clean_lang.replace('-', '_')
+        if clean_lang in LANGUAGE_MAP:
+            return clean_lang
+        else:
+            return "en_US"
+    return "en_US"
 
 
 class SourceDataHandler:

@@ -7,7 +7,7 @@ from pathlib import Path
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 from relic_checker import RelicChecker
-from source_data_handler import SourceDataHandler
+from source_data_handler import SourceDataHandler, get_system_language
 from typing import Optional
 
 
@@ -17,7 +17,7 @@ working_directory = Path(working_directory)
 os.chdir(working_directory)
 
 # Data storage
-data_source = SourceDataHandler()
+data_source = SourceDataHandler(language=get_system_language())
 relic_checker: Optional[RelicChecker] = None
 items_json = {}
 effects_json = {}
@@ -1124,7 +1124,7 @@ class SaveEditorGUI:
                                           values=lang_display_names,
                                           state="readonly",
                                           width=15)
-        self.lang_combobox.set(LANGUAGE_MAP.get("en_US"))
+        self.lang_combobox.set(LANGUAGE_MAP.get(get_system_language()))
         self.lang_combobox.pack(side='left', padx=2)
         self.lang_combobox.bind("<<ComboboxSelected>>",
                                 self.on_language_change)
