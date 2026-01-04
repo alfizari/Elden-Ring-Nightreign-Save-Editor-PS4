@@ -288,7 +288,7 @@ class RelicChecker:
         for idx in range(3):
             effect_id = effects[idx]
             curse_id = 4294967295
-            if self.data_source.is_deep_only_effect(effect_id):
+            if self.data_source.effect_needs_curse(effect_id):
                 curse_id = curses.pop(0)
             else:
                 curse_id = curses.pop()
