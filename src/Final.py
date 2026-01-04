@@ -9,6 +9,7 @@ from openpyxl.utils import get_column_letter
 from relic_checker import RelicChecker
 from source_data_handler import SourceDataHandler, get_system_language
 from typing import Optional
+import sys
 
 
 # Global variables
@@ -24,8 +25,17 @@ effects_json = {}
 data = None
 userdata_path = None
 
+
+def get_base_dir():
+    if getattr(sys, 'frozen', False):
+        return Path(sys.executable).parent
+    else:
+        return Path(__file__).resolve().parent
+
+
 # Config file path for remembering last opened file
-CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "editor_config.json")
+CONFIG_FILE = os.path.join(get_base_dir(), "editor_config.json")
+
 
 def load_config():
     """Load saved configuration"""
