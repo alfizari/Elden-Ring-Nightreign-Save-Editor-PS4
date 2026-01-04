@@ -66,7 +66,7 @@ class SourceDataHandler:
         self.effect_table = \
             pd.read_csv(self.PARAM_DIR / "AttachEffectTableParam.csv")
         self.effect_table: pd.DataFrame = \
-            self.effect_table[["ID", "attachEffectId"]]
+            self.effect_table[["ID", "attachEffectId", "chanceWeight"]]
 
         self.relic_table = \
             pd.read_csv(self.PARAM_DIR / "EquipParamAntique.csv")
@@ -297,6 +297,68 @@ class SourceDataHandler:
         _effects = self.effect_table[self.effect_table["ID"] == pool_id]
         _effects = _effects["attachEffectId"].values.tolist()
         return _effects
+
+    def get_effect_pools(self, effect_id: int):
+        """Get all pool IDs that contain a specific effect."""
+        _pools = self.effect_table[self.effect_table["attachEffectId"] == effect_id]
+        return _pools["ID"].values.tolist()
+
+    def get_effect_rollable_pools(self, effect_id: int):
+        """Get all pool IDs where this effect can actually roll (chanceWeight != -65536)."""
+        _rows = self.effect_table[self.effect_table["attachEffectId"] == effect_id]
+        # Filter out rows where chanceWeight is -65536 (cannot roll)
+        _rollable = _rows[_rows["chanceWeight"] != -65536]
+        return _rollable["ID"].values.tolist()
+
+    def is_deep_only_effect(self, effect_id: int):
+        """Check if an effect only exists in deep relic pools (2000000, 2100000, 2200000)
+        plus its own dedicated pool (effect_id == pool_id).
+        These effects require curses when used on multi-effect relics."""
+        if effect_id in [-1, 0, 4294967295]:
+            return False
+        pools = self.get_effect_pools(effect_id)
+        deep_pools = {2000000, 2100000, 2200000}
+        for pool in pools:
+            # If pool is not a deep pool and not the effect's dedicated pool, it's not deep-only
+            if pool not in deep_pools and pool != effect_id:
+                return False
+        return True
+
+    def effect_needs_curse(self, effect_id: int) -> bool:
+        """Check if an effect REQUIRES a curse.
+
+        An effect needs a curse if it can ONLY roll from pool 2000000 (3-effect relics)
+        and NOT from pools 2100000 or 2200000 (single-effect relics with no curse).
+
+        We check rollable pools (weight != -65536) because an effect may be listed
+        in a pool but with weight -65536 meaning it can't actually roll there.
+        """
+        if effect_id in [-1, 0, 4294967295]:
+            return False
+
+        # Get pools where this effect can actually roll
+        pools = self.get_effect_rollable_pools(effect_id)
+
+        # Pool 2000000 = 3-effect relics (always have curse slots)
+        # Pools 2100000, 2200000 = single-effect relics (no curse slots)
+        curse_required_pool = 2000000
+        curse_free_pools = {2100000, 2200000}
+
+        in_curse_required_pool = False
+        in_curse_free_pool = False
+
+        for pool in pools:
+            if pool == effect_id:
+                # Skip dedicated pool (effect's own pool)
+                continue
+            if pool == curse_required_pool:
+                in_curse_required_pool = True
+            elif pool in curse_free_pools:
+                in_curse_free_pool = True
+
+        # Effect needs curse only if it can roll from pool 2000000
+        # AND cannot roll from any curse-free pool (2100000 or 2200000)
+        return in_curse_required_pool and not in_curse_free_pool
 
 
 if __name__ == "__main__":

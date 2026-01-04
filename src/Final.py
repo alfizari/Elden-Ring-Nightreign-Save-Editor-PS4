@@ -23,6 +23,27 @@ items_json = {}
 effects_json = {}
 data = None
 userdata_path = None
+
+# Config file path for remembering last opened file
+CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "editor_config.json")
+
+def load_config():
+    """Load saved configuration"""
+    try:
+        if os.path.exists(CONFIG_FILE):
+            with open(CONFIG_FILE, 'r') as f:
+                return json.load(f)
+    except:
+        pass
+    return {}
+
+def save_config(config):
+    """Save configuration to file"""
+    try:
+        with open(CONFIG_FILE, 'w') as f:
+            json.dump(config, f, indent=2)
+    except Exception as e:
+        print(f"Warning: Could not save config: {e}")
 imported_data=None
 MODE = None
 IMPORT_MODE=None
@@ -30,12 +51,17 @@ char_name_list = []
 char_name_list_import = []
 ga_relic = []
 ga_items = []
+ga_to_characters = {}  # Maps GA handle -> list of character names
 current_murks = 0
 current_sigs = 0
 # AOB_search='00 00 00 00 ?? 00 00 00 ?? ?? 00 00 00 00 00 00 ??'
 AOB_search='00 00 00 00 0A 00 00 00 ?? ?? 00 00 00 00 00 00 06'
-from_aob_steam= 44 
+from_aob_steam= 44
 steam_id=None
+
+# Character names for vessel assignment
+CHARACTER_NAMES = ['Wylder', 'Guardian', 'Ironeye', 'Duchess', 'Raider',
+                   'Revenant', 'Recluse', 'Executor', 'Scholar', 'Undertaker']
 
 # Items type
 ITEM_TYPE_EMPTY = 0x00000000
@@ -170,6 +196,51 @@ def read_char_name(data):
     raw_name = data[name_offset:name_offset + max_chars * 2]
     name = raw_name.decode("utf-16-le", errors="ignore").rstrip("\x00")
     return name if name else None
+
+
+def parse_vessel_assignments(file_data):
+    """Parse vessel data to map GA handles to character names.
+
+    Vessel structure:
+    - Each character (0-9) has vessels at IDs 1000-1006, 2000-2006, etc.
+    - Each vessel slot contains: ID (4 bytes) + 6 GA handles (24 bytes)
+    """
+    global ga_to_characters
+    ga_to_characters = {}
+
+    # Search for vessel structures in the save file
+    for offset in range(0x10000, min(0x50000, len(file_data) - 28), 4):
+        try:
+            val = struct.unpack_from('<I', file_data, offset)[0]
+
+            # Check for vessel IDs in range 1000-10006 (characters 0-9, vessels 0-6)
+            if 1000 <= val <= 10006:
+                char_id = (val - 1000) // 1000  # 0-based character index
+                vessel_slot = val % 1000  # vessel 0-6
+
+                # Only process valid vessel slots (0-6)
+                if vessel_slot > 6:
+                    continue
+
+                # Read the 6 potential GA handles
+                ga_handles = struct.unpack_from('<6I', file_data, offset + 4)
+
+                for ga in ga_handles:
+                    # Check if this is a relic GA handle (type bits = 0xC0000000)
+                    if (ga & 0xF0000000) == ITEM_TYPE_RELIC and ga != 0:
+                        char_name = CHARACTER_NAMES[char_id] if char_id < len(CHARACTER_NAMES) else f'Char_{char_id}'
+
+                        if ga not in ga_to_characters:
+                            ga_to_characters[ga] = set()
+                        ga_to_characters[ga].add(char_name)
+        except:
+            continue
+
+    # Convert sets to sorted lists for display
+    for ga in ga_to_characters:
+        ga_to_characters[ga] = sorted(list(ga_to_characters[ga]))
+
+    return ga_to_characters
 
 
 def read_murks_and_sigs(data):
@@ -470,10 +541,10 @@ def delete_relic(ga_index, item_id):
 
 def modify_relic(ga_index, item_id, new_effects, new_item_id=None):
     global data
-    
+
     for ga, id, e1, e2, e3, e4, e5, e6, offset, size in ga_relic:
         real_id = id - 2147483648
-        
+
         if ga_index == ga and real_id == item_id:
             # Update item ID if provided
             if new_item_id is not None and new_item_id != real_id:
@@ -482,23 +553,60 @@ def modify_relic(ga_index, item_id, new_effects, new_item_id=None):
                 item_id_offset = offset + 4  # Skip GA handle (4 bytes)
                 item_id_bytes = new_id_internal.to_bytes(4, byteorder='little')
                 data = data[:item_id_offset] + item_id_bytes + data[item_id_offset+4:]
-            
+
             # Modify effects in the relic data structure
             effect_offset = offset + 16  # Skip handle, id, durability, unk_1
-            
+
             # Write primary effects
             for i, eff in enumerate(new_effects[:3]):
                 eff_bytes = eff.to_bytes(4, byteorder='little')
                 pos = effect_offset + (i * 4)
                 data = data[:pos] + eff_bytes + data[pos+4:]
-            
+
             # Write secondary effects
             sec_effect_offset = effect_offset + 12 + 0x1C  # Skip padding
             for i, eff in enumerate(new_effects[3:6]):
                 eff_bytes = eff.to_bytes(4, byteorder='little')
                 pos = sec_effect_offset + (i * 4)
                 data = data[:pos] + eff_bytes + data[pos+4:]
-            
+
+            save_current_data()
+            return True
+    return False
+
+
+def modify_relic_by_ga(ga_index, new_effects, new_item_id, sort_effects=True):
+    """Modify a relic by GA handle only (doesn't require matching item_id)"""
+    global data
+
+    for ga, id, e1, e2, e3, e4, e5, e6, offset, size in ga_relic:
+        if ga_index == ga:
+            # Sort effects if requested (fixes effect ordering issues)
+            if sort_effects and relic_checker:
+                new_effects = relic_checker.sort_effects(new_effects)
+
+            # Update item ID
+            new_id_internal = new_item_id + 2147483648
+            item_id_offset = offset + 4  # Skip GA handle (4 bytes)
+            item_id_bytes = new_id_internal.to_bytes(4, byteorder='little')
+            data = data[:item_id_offset] + item_id_bytes + data[item_id_offset+4:]
+
+            # Modify effects in the relic data structure
+            effect_offset = offset + 16  # Skip handle, id, durability, unk_1
+
+            # Write primary effects
+            for i, eff in enumerate(new_effects[:3]):
+                eff_bytes = eff.to_bytes(4, byteorder='little')
+                pos = effect_offset + (i * 4)
+                data = data[:pos] + eff_bytes + data[pos+4:]
+
+            # Write secondary effects
+            sec_effect_offset = effect_offset + 12 + 0x1C  # Skip padding
+            for i, eff in enumerate(new_effects[3:6]):
+                eff_bytes = eff.to_bytes(4, byteorder='little')
+                pos = sec_effect_offset + (i * 4)
+                data = data[:pos] + eff_bytes + data[pos+4:]
+
             save_current_data()
             return True
     return False
@@ -987,24 +1095,70 @@ class SaveEditorGUI:
         self.root = root
         self.root.title("Elden Ring NightReign Save Editor")
         self.root.geometry("1000x700")
-        
+
         # Modify dialog reference
         self.modify_dialog = None
-        
+
+        # Clipboard for copy/paste relic effects
+        self.clipboard_effects = None  # Will store (effects, item_id, item_name)
+
+        # Track last selected character index for config saving
+        self.last_char_index = None
+
         # Create notebook for tabs
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill='both', expand=True, padx=10, pady=10)
-        
+
         # Create tabs
         self.file_tab = ttk.Frame(self.notebook)
         self.inventory_tab = ttk.Frame(self.notebook)
-        
+
         self.notebook.add(self.file_tab, text="File Management")
         self.notebook.add(self.inventory_tab, text="Relics")
-        
+
         self.setup_file_tab()
         self.setup_inventory_tab()
-        
+
+        # Try to load last opened file after UI is set up
+        self.root.after(100, self.try_load_last_file)
+
+    def try_load_last_file(self):
+        """Try to load the last opened save file and character"""
+        global MODE
+
+        config = load_config()
+        last_file = config.get('last_file')
+        last_mode = config.get('last_mode')
+        last_char_index = config.get('last_char_index', 0)
+
+        if not last_file or not os.path.exists(last_file):
+            return
+
+        try:
+            # Set mode
+            MODE = last_mode
+
+            # Split files
+            split_files(last_file, 'decrypted_output')
+
+            # Load JSON data
+            if not load_json_data():
+                return
+
+            # Get character names
+            name_to_path()
+
+            # Display character buttons
+            self.display_character_buttons()
+
+            # Auto-select the last used character if valid
+            if char_name_list and 0 <= last_char_index < len(char_name_list):
+                name, path = char_name_list[last_char_index]
+                self.on_character_click(last_char_index, path, name)
+
+        except Exception as e:
+            print(f"Could not auto-load last file: {e}")
+
     def setup_file_tab(self):
         # Main container
         container = ttk.Frame(self.file_tab)
@@ -1076,8 +1230,9 @@ class SaveEditorGUI:
         ttk.Button(controls_frame, text="📥 Import from Excel", command=self.import_relics).pack(side='left', padx=5)
         ttk.Button(controls_frame, text="🗑️ Delete All Illegal", command=self.delete_all_illegal, 
                   style='Danger.TButton').pack(side='left', padx=5)
-        ttk.Button(controls_frame, text="🗑️ Mass Delete Selected", command=self.mass_delete_relics, 
+        ttk.Button(controls_frame, text="🗑️ Mass Delete Selected", command=self.mass_delete_relics,
                   style='Danger.TButton').pack(side='left', padx=5)
+        ttk.Button(controls_frame, text="🔧 Mass Fix", command=self.mass_fix_incorrect_ids).pack(side='left', padx=5)
         
         # Info label
         self.illegal_count_label = ttk.Label(
@@ -1093,6 +1248,7 @@ class SaveEditorGUI:
 
         ttk.Label(legend_frame, text="Blue = Red + Orange", foreground="blue").pack(side='left', padx=5)
         ttk.Label(legend_frame, text="Red = Illegal", foreground="red").pack(side='left', padx=5)
+        ttk.Label(legend_frame, text="Purple = Missing Curse", foreground="#800080").pack(side='left', padx=5)
         ttk.Label(legend_frame, text="Orange = Unique Relic (don't edit)", foreground="#FF8C00").pack(side='left', padx=5)
 
         
@@ -1108,7 +1264,16 @@ class SaveEditorGUI:
         self.search_entry.pack(side='left', padx=5)
         
         ttk.Button(search_frame, text="Clear", command=self.clear_search).pack(side='left', padx=5)
-        
+
+        # Character filter dropdown
+        ttk.Label(search_frame, text="👤 Character:").pack(side='left', padx=(15, 5))
+        self.char_filter_var = tk.StringVar(value="All")
+        char_options = ["All"] + CHARACTER_NAMES
+        self.char_filter_combo = ttk.Combobox(search_frame, textvariable=self.char_filter_var,
+                                               values=char_options, state="readonly", width=12)
+        self.char_filter_combo.pack(side='left', padx=5)
+        self.char_filter_combo.bind("<<ComboboxSelected>>", lambda e: self.filter_relics())
+
         self.search_info_label = ttk.Label(search_frame, text="", foreground='gray')
         self.search_info_label.pack(side='left', padx=10)
 
@@ -1133,22 +1298,24 @@ class SaveEditorGUI:
         # Inventory display
         inv_frame = ttk.Frame(self.inventory_tab)
         inv_frame.pack(fill='both', expand=True, padx=10, pady=5)
-        
-        # Treeview for relics (removed GA Handle column, added Color)
-        columns = ('Item Name', 'Item ID', 'Color', 'Effect 1', 'Effect 2', 'Effect 3', 
+
+        # Treeview for relics (added Equipped By and Deep columns)
+        columns = ('Item Name', 'Deep', 'Item ID', 'Color', 'Equipped By', 'Effect 1', 'Effect 2', 'Effect 3',
                    'Sec Effect 1', 'Sec Effect 2', 'Sec Effect 3')
-        
+
         self.tree = ttk.Treeview(inv_frame, columns=columns, show='tree headings', height=20)
-        
+
         # Configure columns
         self.tree.heading('#0', text='#')
         self.tree.column('#0', width=40, minwidth=40, stretch=False)
-        
+
         # Set column widths - more space for effect names
         col_widths = {
             'Item Name': 180,
+            'Deep': 35,
             'Item ID': 80,
-            'Color': 100,
+            'Color': 70,
+            'Equipped By': 120,
             'Effect 1': 200,
             'Effect 2': 200,
             'Effect 3': 200,
@@ -1156,11 +1323,18 @@ class SaveEditorGUI:
             'Sec Effect 2': 200,
             'Sec Effect 3': 200
         }
-        
+
         for col in columns:
-            self.tree.heading(col, text=col)
+            self.tree.heading(col, text=col, command=lambda c=col: self.sort_by_column(c))
             self.tree.column(col, width=col_widths.get(col, 150), minwidth=80)
-        
+
+        # Also allow sorting by # column
+        self.tree.heading('#0', text='#', command=lambda: self.sort_by_column('#'))
+
+        # Track sort state
+        self.sort_column = None
+        self.sort_reverse = False
+
         # Scrollbars
         vsb = ttk.Scrollbar(inv_frame, orient="vertical", command=self.tree.yview)
         hsb = ttk.Scrollbar(inv_frame, orient="horizontal", command=self.tree.xview)
@@ -1177,10 +1351,13 @@ class SaveEditorGUI:
         
         # Bind selection change
         self.tree.bind('<<TreeviewSelect>>', self.on_relic_select)
-        
+
+        # Bind double-click to open modify window
+        self.tree.bind('<Double-1>', lambda e: self.modify_selected_relic())
+
         # Configure tree for extended selection (multiple items)
         self.tree.configure(selectmode='extended')
-        
+
         # Context menu
         self.tree.bind("<Button-3>", self.show_context_menu)
         
@@ -1247,14 +1424,22 @@ class SaveEditorGUI:
         
         # Split files
         split_files(file_path, 'decrypted_output')
-        
+
         # Load JSON data
         if not load_json_data():
             return
-        
+
         # Get character names
         name_to_path()
-        
+
+        # Save the opened file path to config
+        config = load_config()
+        config['last_file'] = file_path
+        config['last_mode'] = MODE
+        # Reset character index since we're opening a new file
+        config['last_char_index'] = 0
+        save_config(config)
+
         # Display character buttons
         self.display_character_buttons()
         
@@ -1295,24 +1480,33 @@ class SaveEditorGUI:
         # Reset all buttons to normal style
         for b in self.char_buttons:
             b.configure(style="Char.TButton")
-        
+
         # Highlight clicked button
         self.char_buttons[idx].configure(style="Highlighted.TButton")
-        
+
+        # Save selected character index to config
+        self.last_char_index = idx
+        config = load_config()
+        config['last_char_index'] = idx
+        save_config(config)
+
         # Load character
         self.load_character(path)
 
     def load_character(self, path):
-        global data, userdata_path, steam_id, data_source, ga_relic, relic_checker
+        global data, userdata_path, steam_id, data_source, ga_relic, relic_checker, ga_to_characters
         userdata_path = path
-        
+
         try:
             with open(path, "rb") as f:
                 data = f.read()
-            
+
             # Parse items
             gaprint(data)
-            
+
+            # Parse vessel assignments (maps GA handles to character names)
+            parse_vessel_assignments(data)
+
             # Load Relic Checker
             relic_checker = RelicChecker(ga_relic=ga_relic,
                                          data_source=data_source)
@@ -1325,7 +1519,7 @@ class SaveEditorGUI:
             # Refresh all tabs
             self.refresh_inventory()
             self.refresh_stats()
-            
+
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load character: {str(e)}")
     
@@ -1369,19 +1563,27 @@ class SaveEditorGUI:
             messagebox.showinfo("Success", "Sigs updated successfully")
     
     def refresh_inventory(self):
-        global data, ga_relic
-        
+        global data, ga_relic, relic_checker
+
         if data is None:
             messagebox.showwarning("Warning", "No character loaded")
             return
-        
+
         # Clear treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
-        
-        # Parse items
+
+        # Parse items - this updates ga_relic with current data
         gaprint(data)
-        
+
+        # Re-parse vessel assignments
+        parse_vessel_assignments(data)
+
+        # Update relic checker with new ga_relic and recalculate illegal relics
+        if relic_checker:
+            relic_checker.ga_relic = ga_relic
+            relic_checker.set_illegal_relics()
+
         # Check for illegal relics
         illegal_gas = check_illegal_relics()
         illegal_count = len(illegal_gas)
@@ -1427,26 +1629,41 @@ class SaveEditorGUI:
             # Check if this relic is illegal or forbidden
             is_illegal = ga in illegal_gas
             is_forbidden = real_id in forbidden_relics
-            
+            is_curse_illegal = relic_checker and ga in relic_checker.curse_illegal_gas
+
+            # Get character assignment (which characters have this relic equipped)
+            equipped_by = ga_to_characters.get(ga, [])
+            equipped_by_str = ", ".join(equipped_by) if equipped_by else "-"
+
+            # Check if this is a deep relic (ID range 2000000-2019999)
+            is_deep = 2000000 <= real_id <= 2019999
+
             # Determine tag
             tag_list = [ga, real_id]
             if is_forbidden and is_illegal:
                 tag_list.append('both')
             elif is_forbidden:
                 tag_list.append('forbidden')
+            elif is_curse_illegal:
+                tag_list.append('curse_illegal')
             elif is_illegal:
                 tag_list.append('illegal')
-            
+
             # Store relic data for filtering
             self.all_relics.append({
                 'index': idx + 1,
+                'ga': ga,
                 'item_name': item_name,
                 'real_id': real_id,
                 'item_color': item_color,
+                'is_deep': is_deep,
+                'equipped_by': equipped_by,
+                'equipped_by_str': equipped_by_str,
                 'effect_names': effect_names,
                 'tag_list': tuple(tag_list),
                 'is_forbidden': is_forbidden,
                 'is_illegal': is_illegal,
+                'is_curse_illegal': is_curse_illegal,
                 'both': is_forbidden and is_illegal
             })
         
@@ -1454,79 +1671,240 @@ class SaveEditorGUI:
         self.filter_relics()
     
     def filter_relics(self):
-        """Filter relics based on search term"""
+        """Filter relics based on search term and character filter"""
         if not hasattr(self, 'all_relics'):
             return
-        
+
         # Clear treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
-        
+
         search_term = self.search_var.get().lower()
-        
+        char_filter = self.char_filter_var.get() if hasattr(self, 'char_filter_var') else "All"
+
         # Filter relics
         filtered_relics = []
         for relic in self.all_relics:
-            if search_term == '':
+            # Apply search filter
+            passes_search = True
+            if search_term != '':
+                passes_search = (search_term in relic['item_name'].lower() or
+                                 search_term in str(relic['real_id']) or
+                                 search_term in relic.get('equipped_by_str', '').lower())
+
+            # Apply character filter
+            passes_char = True
+            if char_filter != "All":
+                equipped_by = relic.get('equipped_by', [])
+                passes_char = char_filter in equipped_by
+
+            if passes_search and passes_char:
                 filtered_relics.append(relic)
-            else:
-                # Search in item name or ID
-                if (search_term in relic['item_name'].lower() or 
-                    search_term in str(relic['real_id'])):
-                    filtered_relics.append(relic)
-        
+
         # Populate treeview with filtered results
         for relic in filtered_relics:
-            item_id = self.tree.insert('', 'end', text=str(relic['index']), 
-                           values=(relic['item_name'], relic['real_id'], relic['item_color'],
+            deep_indicator = "✓" if relic.get('is_deep', False) else ""
+            item_id = self.tree.insert('', 'end', text=str(relic['index']),
+                           values=(relic['item_name'], deep_indicator, relic['real_id'], relic['item_color'],
+                                  relic.get('equipped_by_str', '-'),
                                   relic['effect_names'][0], relic['effect_names'][1], relic['effect_names'][2],
                                   relic['effect_names'][3], relic['effect_names'][4], relic['effect_names'][5]),
                            tags=relic['tag_list'])
-            
+
             # Color forbidden relics orange (priority over illegal)
             if relic['is_forbidden'] and relic['is_illegal']:
                 self.tree.tag_configure('both', foreground='blue', font=('Arial', 9, 'bold'))
             elif relic['is_forbidden']:
                 self.tree.tag_configure('forbidden', foreground='#FF8C00', font=('Arial', 9, 'bold'))
+            # Color curse-illegal relics purple
+            elif relic.get('is_curse_illegal', False):
+                self.tree.tag_configure('curse_illegal', foreground='#9932CC', font=('Arial', 9, 'bold'))
             # Color illegal relics red
             elif relic['is_illegal']:
                 self.tree.tag_configure('illegal', foreground='red', font=('Arial', 9, 'bold'))
-        
+
         # Update search info
-        if search_term:
+        filter_active = search_term or char_filter != "All"
+        if filter_active:
             self.search_info_label.config(text=f"Showing {len(filtered_relics)} of {len(self.all_relics)} relics")
         else:
             self.search_info_label.config(text="")
     
     def clear_search(self):
-        """Clear the search box"""
+        """Clear the search box and character filter"""
         self.search_var.set("")
+        if hasattr(self, 'char_filter_var'):
+            self.char_filter_var.set("All")
+        self.filter_relics()
         self.search_entry.focus()
-    
+
+    def sort_by_column(self, col):
+        """Sort treeview by clicked column"""
+        if not hasattr(self, 'all_relics') or not self.all_relics:
+            return
+
+        # Toggle sort direction if same column clicked
+        if self.sort_column == col:
+            self.sort_reverse = not self.sort_reverse
+        else:
+            self.sort_column = col
+            self.sort_reverse = False
+
+        # Define sort key based on column
+        def get_sort_key(relic):
+            if col == '#':
+                return relic['index']
+            elif col == 'Item Name':
+                return relic['item_name'].lower()
+            elif col == 'Deep':
+                return relic.get('is_deep', False)
+            elif col == 'Item ID':
+                return relic['real_id']
+            elif col == 'Color':
+                return relic['item_color'].lower() if relic['item_color'] else ''
+            elif col == 'Equipped By':
+                return relic.get('equipped_by_str', '').lower()
+            elif col == 'Effect 1':
+                return relic['effect_names'][0].lower()
+            elif col == 'Effect 2':
+                return relic['effect_names'][1].lower()
+            elif col == 'Effect 3':
+                return relic['effect_names'][2].lower()
+            elif col == 'Sec Effect 1':
+                return relic['effect_names'][3].lower()
+            elif col == 'Sec Effect 2':
+                return relic['effect_names'][4].lower()
+            elif col == 'Sec Effect 3':
+                return relic['effect_names'][5].lower()
+            return 0
+
+        # Sort the data
+        self.all_relics.sort(key=get_sort_key, reverse=self.sort_reverse)
+
+        # Re-apply filter to refresh display
+        self.filter_relics()
+
+        # Update column header to show sort indicator
+        columns = ('Item Name', 'Deep', 'Item ID', 'Color', 'Equipped By', 'Effect 1', 'Effect 2', 'Effect 3',
+                   'Sec Effect 1', 'Sec Effect 2', 'Sec Effect 3')
+        for c in columns:
+            indicator = ''
+            if c == col:
+                indicator = ' ▼' if self.sort_reverse else ' ▲'
+            self.tree.heading(c, text=c + indicator)
+
+        # Update # column header
+        if col == '#':
+            self.tree.heading('#0', text='#' + (' ▼' if self.sort_reverse else ' ▲'))
+        else:
+            self.tree.heading('#0', text='#')
+
     def show_context_menu(self, event):
         # Select item under cursor
         item = self.tree.identify_row(event.y)
         if item:
             self.tree.selection_set(item)
-            
+
             menu = tk.Menu(self.root, tearoff=0)
             menu.add_command(label="Modify", command=self.modify_selected_relic)
             menu.add_command(label="Delete", command=self.delete_selected_relic)
+            menu.add_separator()
+            menu.add_command(label="📋 Copy Effects", command=self.copy_relic_effects)
+
+            # Only enable paste if we have something in clipboard
+            paste_label = "📋 Paste Effects"
+            if self.clipboard_effects:
+                paste_label += f" (from {self.clipboard_effects[2]})"
+            menu.add_command(label=paste_label, command=self.paste_relic_effects,
+                           state='normal' if self.clipboard_effects else 'disabled')
             menu.post(event.x_root, event.y_root)
-    
-    
-    
-    def show_context_menu(self, event):
-        # Select item under cursor
-        item = self.tree.identify_row(event.y)
-        if item:
-            self.tree.selection_set(item)
-            
-            menu = tk.Menu(self.root, tearoff=0)
-            menu.add_command(label="Modify", command=self.modify_selected_relic)
-            menu.add_command(label="Delete", command=self.delete_selected_relic)
-            menu.post(event.x_root, event.y_root)
-    
+
+    def copy_relic_effects(self):
+        """Copy effects from selected relic to clipboard"""
+        selection = self.tree.selection()
+        if not selection:
+            messagebox.showwarning("Warning", "No relic selected")
+            return
+
+        item = selection[0]
+        tags = self.tree.item(item, 'tags')
+        ga_handle = int(tags[0])
+        item_id = int(tags[1])
+
+        # Find the relic data
+        for ga, id, e1, e2, e3, se1, se2, se3, offset, size in ga_relic:
+            real_id = id - 2147483648
+            if ga == ga_handle and real_id == item_id:
+                effects = [e1, e2, e3, se1, se2, se3]
+                item_name = items_json.get(str(real_id), {}).get("name", f"Unknown ({real_id})")
+                self.clipboard_effects = (effects, real_id, item_name)
+                messagebox.showinfo("Copied", f"Copied effects from:\n{item_name}\n\nEffects: {len([e for e in effects if e != 0])} effect(s)")
+                return
+
+        messagebox.showerror("Error", "Could not find relic data")
+
+    def paste_relic_effects(self):
+        """Paste copied effects to selected relic"""
+        if not self.clipboard_effects:
+            messagebox.showwarning("Warning", "No effects copied. Right-click a relic and select 'Copy Effects' first.")
+            return
+
+        selection = self.tree.selection()
+        if not selection:
+            messagebox.showwarning("Warning", "No relic selected")
+            return
+
+        item = selection[0]
+        tags = self.tree.item(item, 'tags')
+        ga_handle = int(tags[0])
+        item_id = int(tags[1])
+
+        # Get target relic info
+        target_name = items_json.get(str(item_id), {}).get("name", f"Unknown ({item_id})")
+        source_effects, source_id, source_name = self.clipboard_effects
+
+        # Build effect names for display
+        effect_names = []
+        for eff in source_effects:
+            if eff != 0:
+                eff_name = effects_json.get(str(eff), {}).get("name", f"Unknown ({eff})")
+                effect_names.append(eff_name)
+
+        # Confirm paste
+        msg = f"Paste effects from:\n  {source_name}\n\nTo:\n  {target_name}\n\n"
+        msg += f"Effects to paste ({len(effect_names)}):\n"
+        for name in effect_names[:6]:
+            msg += f"  • {name}\n"
+        msg += "\nProceed?"
+
+        if not messagebox.askyesno("Confirm Paste", msg):
+            return
+
+        # Check if this would make the relic illegal
+        if relic_checker:
+            would_be_illegal = relic_checker.is_illegal(item_id, source_effects)
+            if would_be_illegal:
+                warn_msg = "⚠️ Warning: These effects may not be valid for this relic type.\n\n"
+                warn_msg += "The relic may be flagged as illegal after pasting.\n\nContinue anyway?"
+                if not messagebox.askyesno("Invalid Effects Warning", warn_msg, icon='warning'):
+                    return
+
+        # Apply the effects
+        if modify_relic(ga_handle, item_id, source_effects):
+            # Update illegal status
+            if relic_checker:
+                is_illegal = relic_checker.is_illegal(item_id, source_effects)
+                is_curse_illegal = relic_checker.is_curse_illegal(item_id, source_effects)
+                if is_illegal and ga_handle not in relic_checker.illegal_gas:
+                    relic_checker.append_illegal(ga_handle, is_curse_illegal)
+                elif not is_illegal and ga_handle in relic_checker.illegal_gas:
+                    relic_checker.remove_illegal(ga_handle)
+
+            messagebox.showinfo("Success", f"Effects pasted to {target_name}")
+            self.refresh_inventory()
+        else:
+            messagebox.showerror("Error", "Failed to paste effects")
+
     def modify_selected_relic(self):
         selection = self.tree.selection()
         if not selection:
@@ -1664,7 +2042,167 @@ class SaveEditorGUI:
             self.refresh_inventory()
         else:
             messagebox.showerror("Error", "Failed to delete any relics")
-    
+
+    def mass_fix_incorrect_ids(self):
+        """Find relics with incorrect IDs (effects don't match) and fix them by finding valid IDs"""
+        global data, userdata_path
+
+        if data is None:
+            messagebox.showwarning("Warning", "No character loaded")
+            return
+
+        if relic_checker is None:
+            messagebox.showwarning("Warning", "Relic checker not initialized")
+            return
+
+        # Find all illegal relics that could be fixed
+        fixable_relics = []
+        unfixable_relics = []  # Track relics that can't be fixed
+
+        for ga, id, e1, e2, e3, se1, se2, se3, offset, size in ga_relic:
+            real_id = id - 2147483648
+            effects = [e1, e2, e3, se1, se2, se3]
+
+            # Skip if not illegal
+            if ga not in relic_checker.illegal_gas:
+                continue
+
+            # Skip unique relics
+            if real_id in RelicChecker.UNIQUENESS_IDS:
+                continue
+
+            item_name = items_json.get(str(real_id), {}).get("name", f"Unknown ({real_id})")
+
+            # Try to find a valid ID for these effects
+            # This will find an ID with enough curse slots for effects that need curses
+            valid_id = self._find_valid_relic_id_for_effects(real_id, effects)
+
+            if valid_id is not None:
+                # valid_id == real_id means effects are valid but might need reordering
+                # valid_id != real_id means we need to change the item ID
+                new_name = items_json.get(str(valid_id), {}).get("name", f"Unknown ({valid_id})")
+                if valid_id == real_id:
+                    # Same ID - just needs effect reordering
+                    fixable_relics.append((ga, id, real_id, valid_id, item_name, f"{new_name} (reorder effects)", effects))
+                else:
+                    fixable_relics.append((ga, id, real_id, valid_id, item_name, new_name, effects))
+            else:
+                # Track why it can't be fixed
+                reason = "No valid ID found with same color"
+                unfixable_relics.append((real_id, item_name, reason))
+
+        if not fixable_relics:
+            msg = "No fixable relics found.\n\n"
+            if unfixable_relics:
+                msg += f"{len(unfixable_relics)} illegal relic(s) cannot be auto-fixed:\n"
+                for real_id, name, reason in unfixable_relics[:5]:
+                    msg += f"• {name} ({real_id}): {reason}\n"
+                if len(unfixable_relics) > 5:
+                    msg += f"... and {len(unfixable_relics) - 5} more\n"
+                msg += "\nThese may need manual effect changes."
+            messagebox.showinfo("Mass Fix", msg)
+            return
+
+        # Show confirmation with details
+        details = f"Found {len(fixable_relics)} relic(s) that can be fixed:\n\n"
+        for i, (ga, id, old_id, new_id, old_name, new_name, effects) in enumerate(fixable_relics[:10]):
+            details += f"• {old_name} ({old_id}) → {new_name} ({new_id})\n"
+        if len(fixable_relics) > 10:
+            details += f"\n... and {len(fixable_relics) - 10} more"
+
+        details += "\n\nProceed with fixing these relics?"
+
+        result = messagebox.askyesno("Confirm Mass Fix", details)
+        if not result:
+            return
+
+        # Apply fixes - use modify_relic_by_ga which matches by GA handle only
+        # This avoids issues where item_id changes after gaprint refresh
+        fixed_count = 0
+        failed_count = 0
+
+        for ga, id, old_id, new_id, old_name, new_name, effects in fixable_relics:
+            # Reload ga_relic before each modification to ensure we have current offsets
+            gaprint(data)
+
+            # Use modify_relic_by_ga which only needs GA handle (doesn't care about current item_id)
+            if modify_relic_by_ga(ga, effects, new_id):
+                fixed_count += 1
+            else:
+                failed_count += 1
+
+        # Reload data from file to ensure we have the final saved state
+        if userdata_path:
+            with open(userdata_path, 'rb') as f:
+                data = f.read()
+
+        # Show result
+        message = f"Fixed {fixed_count} relic(s)"
+        if failed_count > 0:
+            message += f"\n{failed_count} failed to fix"
+
+        messagebox.showinfo("Mass Fix Complete", message)
+        self.refresh_inventory()
+
+    def _find_valid_relic_id_for_effects(self, current_id, effects):
+        """Find a valid relic ID that can have the given effects (must be same color)"""
+        # Get the current relic's color
+        if current_id not in data_source.relic_table.index:
+            return None
+        current_color = data_source.relic_table.loc[current_id, "relicColor"]
+
+        # Count how many effects need curses
+        curses_needed = sum(1 for e in effects[:3]
+                          if e not in [0, -1, 4294967295] and data_source.effect_needs_curse(e))
+
+        # Get the range group of current ID
+        id_range = relic_checker.find_id_range(current_id)
+        if not id_range:
+            return None
+
+        group_name, (range_start, range_end) = id_range
+
+        # Skip illegal range
+        if group_name == "illegal":
+            return None
+
+        # First check if current ID is actually valid (effects match AND has enough curse slots)
+        # Use allow_empty_curses=True because we're checking if primary effects fit the pools
+        if relic_checker._check_relic_effects_in_pool(current_id, effects, allow_empty_curses=True):
+            # Also check it has enough curse slots for effects that need curses
+            try:
+                pools = data_source.get_relic_pools_seq(current_id)
+                available_curse_slots = sum(1 for p in pools[3:] if p != -1)
+                if available_curse_slots >= curses_needed:
+                    return current_id  # Already valid, return same ID
+            except KeyError:
+                pass
+
+        # Search within the same range for a valid ID with SAME color only
+        for test_id in range(range_start, range_end + 1):
+            if test_id not in data_source.relic_table.index:
+                continue
+
+            # Must be same color - never change color
+            test_color = data_source.relic_table.loc[test_id, "relicColor"]
+            if test_color != current_color:
+                continue
+
+            # Check if relic has enough curse slots for effects that need curses
+            try:
+                pools = data_source.get_relic_pools_seq(test_id)
+                available_curse_slots = sum(1 for p in pools[3:] if p != -1)
+                if available_curse_slots < curses_needed:
+                    continue
+            except KeyError:
+                continue
+
+            # Check if effects are valid for this ID (allow empty curses)
+            if relic_checker._check_relic_effects_in_pool(test_id, effects, allow_empty_curses=True):
+                return test_id
+
+        return None
+
     def export_relics(self):
         """Export relics to Excel file"""
         if data is None:
@@ -1787,12 +2325,15 @@ class ModifyRelicDialog:
         """Load relic data into the dialog"""
         self.ga_handle = ga_handle
         self.item_id = item_id
-        
+
         # Get current effects
         self.current_effects = self.get_current_effects()
-        
+
         # Update UI
         self.update_effects_display()
+
+        # Update debug info (after UI is set up)
+        self.dialog.after(100, self.update_debug_info)
     
     def get_current_effects(self):
         for ga, id, e1, e2, e3, se1, se2, se3, offset, size in ga_relic:
@@ -1803,11 +2344,10 @@ class ModifyRelicDialog:
     
     def update_effects_display(self):
         """Update the effect entry fields with current values"""
-        # Update item ID display
+        # Update item ID display (use StringVar - this triggers _on_item_id_change)
         self.current_item_label.config(text=f"{self.item_id}")
-        self.item_id_entry.delete(0, tk.END)
-        self.item_id_entry.insert(0, str(self.item_id))
-        
+        self.item_id_var.set(str(self.item_id))
+
         for i, entry in enumerate(self.effect_entries):
             current_eff = self.current_effects[i]
             if current_eff == 0:
@@ -1816,34 +2356,231 @@ class ModifyRelicDialog:
             else:
                 entry.delete(0, tk.END)
                 entry.insert(0, str(current_eff))
-                
+
                 # Also update the name display
                 if str(current_eff) in effects_json:
                     name = effects_json[str(current_eff)]["name"]
                     self.effect_name_labels[i].config(text=name)
                 else:
                     self.effect_name_labels[i].config(text="Unknown Effect")
-    
+
+    def _update_color_display(self):
+        """Update the current color label"""
+        color_map = {0: ("Red", "#ff6666"), 1: ("Blue", "#6666ff"),
+                     2: ("Yellow", "#cccc00"), 3: ("Green", "#66cc66")}
+        try:
+            current_relic_id = int(self.item_id_entry.get())
+            color_idx = data_source.relic_table.loc[current_relic_id, "relicColor"]
+            color_name, color_hex = color_map.get(color_idx, ("Unknown", "gray"))
+            self.current_color_label.config(text=color_name, foreground=color_hex)
+        except (KeyError, ValueError):
+            self.current_color_label.config(text="Unknown", foreground="gray")
+
+    def _update_relic_structure_display(self):
+        """Update the relic structure label showing effect/curse slots"""
+        try:
+            current_relic_id = int(self.item_id_entry.get())
+            pools = data_source.get_relic_pools_seq(current_relic_id)
+
+            # Count effect slots and curse slots
+            effect_slots = sum(1 for p in pools[:3] if p != -1)
+            curse_slots = sum(1 for p in pools[3:] if p != -1)
+
+            # Format the display text
+            effect_text = f"{effect_slots} effect slot" + ("s" if effect_slots != 1 else "")
+            curse_text = f"{curse_slots} curse slot" + ("s" if curse_slots != 1 else "")
+
+            structure_text = f"({effect_text}, {curse_text})"
+            self.relic_structure_label.config(text=structure_text)
+        except (KeyError, ValueError):
+            self.relic_structure_label.config(text="(Unknown structure)")
+
+    def _on_item_id_change(self):
+        """Called when item ID entry changes - updates color and structure display"""
+        self._update_color_display()
+        self._update_relic_structure_display()
+
+    def update_debug_info(self):
+        """Update debug info showing why relic is flagged"""
+        if not hasattr(self, 'debug_text'):
+            return
+
+        self.debug_text.config(state='normal')
+        self.debug_text.delete('1.0', tk.END)
+
+        try:
+            relic_id = int(self.item_id_entry.get())
+            effects = []
+            for entry in self.effect_entries:
+                try:
+                    effects.append(int(entry.get()))
+                except ValueError:
+                    effects.append(4294967295)
+
+            lines = []
+            lines.append(f"Relic ID: {relic_id}")
+            lines.append(f"Effects: {effects[:3]}")
+            lines.append(f"Curses:  {effects[3:]}")
+            lines.append("")
+
+            # Get relic pools
+            try:
+                pools = data_source.get_relic_pools_seq(relic_id)
+                lines.append(f"Pools (eff1,eff2,eff3,curse1,curse2,curse3): {pools}")
+            except KeyError:
+                lines.append(f"Pools: Relic ID {relic_id} not found in table!")
+                pools = None
+
+            lines.append("")
+
+            # Check validation status
+            if relic_checker:
+                is_illegal = relic_checker.is_illegal(relic_id, effects)
+                is_curse_illegal = relic_checker.is_curse_illegal(relic_id, effects)
+
+                lines.append(f"is_illegal(): {is_illegal}")
+                lines.append(f"is_curse_illegal(): {is_curse_illegal}")
+                lines.append("")
+
+                # Show effect analysis
+                lines.append("--- Effect Analysis ---")
+                if pools:
+                    effect_slot_count = sum(1 for p in pools[:3] if p != -1)
+                    lines.append(f"Effect slots: {effect_slot_count} ({'single-effect' if effect_slot_count <= 1 else 'multi-effect'} relic)")
+
+                    if effect_slot_count <= 1:
+                        lines.append("Single-effect relics don't require curses")
+                    else:
+                        curse_required_count = 0
+                        for i, eff in enumerate(effects[:3]):
+                            if eff in [-1, 0, 4294967295]:
+                                lines.append(f"Effect {i}: {eff} (empty)")
+                            else:
+                                needs_curse = data_source.effect_needs_curse(eff)
+                                effect_pools = data_source.get_effect_pools(eff)
+                                if needs_curse:
+                                    curse_required_count += 1
+                                lines.append(f"Effect {i}: {eff} -> needs_curse={needs_curse}, pools={effect_pools}")
+
+                        curses_provided = sum(1 for c in effects[3:] if c not in [-1, 0, 4294967295])
+                        lines.append("")
+                        lines.append(f"Effects needing curses: {curse_required_count}, Curses provided: {curses_provided}")
+                        if curse_required_count > curses_provided:
+                            lines.append("⚠ NOT ENOUGH CURSES for effects that need them!")
+                lines.append("")
+
+                # Detailed check
+                if pools:
+                    effect_slot_count = sum(1 for p in pools[:3] if p != -1)
+                    is_multi_effect = effect_slot_count > 1
+
+                    lines.append("--- Sequence Check Details ---")
+                    if not is_multi_effect:
+                        lines.append("(Single-effect relic - curse checks skipped)")
+
+                    possible_sequences = [[0, 1, 2], [0, 2, 1], [1, 0, 2],
+                                          [1, 2, 0], [2, 0, 1], [2, 1, 0]]
+
+                    for seq in possible_sequences:
+                        cur_effects = [effects[i] for i in seq]
+                        cur_curses = [effects[i + 3] for i in seq]
+
+                        seq_valid = True
+                        issues = []
+
+                        for idx in range(3):
+                            eff = cur_effects[idx]
+                            curse = cur_curses[idx]
+                            eff_pool = pools[idx]
+                            curse_pool = pools[idx + 3]
+
+                            # Check effect
+                            if eff_pool == -1:
+                                if eff != 4294967295:
+                                    seq_valid = False
+                                    issues.append(f"slot{idx}: pool=-1 but eff={eff}")
+                            else:
+                                pool_effs = data_source.get_pool_effects(eff_pool)
+                                if eff not in pool_effs:
+                                    seq_valid = False
+                                    issues.append(f"slot{idx}: eff {eff} not in pool {eff_pool}")
+
+                            # Check curse (only for multi-effect relics)
+                            if is_multi_effect:
+                                eff_needs_curse = data_source.effect_needs_curse(eff)
+
+                                if eff_needs_curse:
+                                    # Effect requires a curse
+                                    if curse_pool == -1:
+                                        issues.append(f"curse{idx}: effect needs curse but slot has no curse_pool!")
+                                        seq_valid = False
+                                    elif curse in [-1, 0, 4294967295]:
+                                        issues.append(f"curse{idx}: effect REQUIRES curse, but empty!")
+                                        seq_valid = False
+                                    else:
+                                        pool_curses = data_source.get_pool_effects(curse_pool)
+                                        if curse not in pool_curses:
+                                            issues.append(f"curse{idx}: {curse} not in pool {curse_pool}")
+                                            seq_valid = False
+                                elif curse_pool != -1:
+                                    # Effect doesn't need curse but slot supports one (optional)
+                                    if curse not in [-1, 0, 4294967295]:
+                                        pool_curses = data_source.get_pool_effects(curse_pool)
+                                        if curse not in pool_curses:
+                                            issues.append(f"curse{idx}: {curse} not in pool {curse_pool}")
+                                            seq_valid = False
+                                else:
+                                    # curse_pool == -1: no curse allowed
+                                    if curse not in [-1, 0, 4294967295]:
+                                        issues.append(f"curse{idx}: slot doesn't support curse but curse={curse}")
+                                        seq_valid = False
+
+                        status = "✓ VALID" if seq_valid else "✗ invalid"
+                        lines.append(f"Seq {seq}: {status}")
+                        if issues:
+                            for issue in issues:
+                                lines.append(f"  - {issue}")
+
+            self.debug_text.insert('1.0', '\n'.join(lines))
+        except Exception as e:
+            self.debug_text.insert('1.0', f"Error generating debug info: {str(e)}")
+
+        self.debug_text.config(state='disabled')
+
     def setup_ui(self):
         # Title showing current relic
         self.title_label = ttk.Label(self.dialog, text="", font=('Arial', 14, 'bold'))
         self.title_label.pack(pady=10)
-        
+
         # Main container with scrollbar
         main_frame = ttk.Frame(self.dialog)
         main_frame.pack(fill='both', expand=True, padx=10, pady=6)
-        
+
         canvas = tk.Canvas(main_frame)
         scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
-        
+
         scrollable_frame.bind(
             "<Configure>",
             lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
         )
-        
+
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Enable mouse wheel scrolling only when mouse is over this dialog
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+        def _bind_mousewheel(event):
+            canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+        def _unbind_mousewheel(event):
+            canvas.unbind_all("<MouseWheel>")
+
+        # Bind on enter, unbind on leave
+        self.dialog.bind("<Enter>", _bind_mousewheel)
+        self.dialog.bind("<Leave>", _unbind_mousewheel)
 
         # Modifier Config Section
         modifier_frame = ttk.LabelFrame(scrollable_frame, text="Modifier Configuration", padding=10)
@@ -1857,21 +2594,63 @@ class ModifyRelicDialog:
         # Item ID section (optional modification)
         item_frame = ttk.LabelFrame(scrollable_frame, text="Relic Item ID", padding=10)
         item_frame.pack(fill='x', pady=5)
-        
-        ttk.Label(item_frame, text="Current Item ID:").pack(anchor='w')
-        self.current_item_label = ttk.Label(item_frame, text="", font=('Arial', 10, 'bold'), foreground='blue')
-        self.current_item_label.pack(anchor='w', pady=(0, 10))
-        
-        ttk.Label(item_frame, text="Enter new Item ID (decimal) or search:").pack(anchor='w')
-        
+
+        item_info_frame = ttk.Frame(item_frame)
+        item_info_frame.pack(fill='x', anchor='w')
+
+        ttk.Label(item_info_frame, text="Current Item ID:").pack(side='left')
+        self.current_item_label = ttk.Label(item_info_frame, text="", font=('Arial', 10, 'bold'), foreground='blue')
+        self.current_item_label.pack(side='left', padx=(5, 15))
+
+        self.relic_structure_label = ttk.Label(item_info_frame, text="", font=('Arial', 9), foreground='#666666')
+        self.relic_structure_label.pack(side='left')
+
+        ttk.Label(item_frame, text="Enter new Item ID (decimal) or search:").pack(anchor='w', pady=(10, 0))
+
         item_entry_frame = ttk.Frame(item_frame)
         item_entry_frame.pack(fill='x', pady=5)
-        
-        self.item_id_entry = ttk.Entry(item_entry_frame, width=15)
+
+        self.item_id_var = tk.StringVar()
+        self.item_id_var.trace('w', lambda *args: self._on_item_id_change())
+        self.item_id_entry = ttk.Entry(item_entry_frame, width=15, textvariable=self.item_id_var)
         self.item_id_entry.pack(side='left', padx=5)
-        
+
         ttk.Button(item_entry_frame, text="Search Items", command=self.search_items).pack(side='left', padx=5)
-        
+        ttk.Button(item_entry_frame, text="🔧 Find Valid ID", command=self.find_valid_relic_id).pack(side='left', padx=5)
+
+        # Color change section
+        color_frame = ttk.LabelFrame(scrollable_frame, text="Change Relic Color", padding=10)
+        color_frame.pack(fill='x', pady=5)
+
+        color_info_frame = ttk.Frame(color_frame)
+        color_info_frame.pack(fill='x', pady=(0, 5))
+
+        ttk.Label(color_info_frame, text="Current Color:").pack(side='left', padx=5)
+        self.current_color_label = ttk.Label(color_info_frame, text="", font=('Arial', 10, 'bold'))
+        self.current_color_label.pack(side='left', padx=5)
+
+        color_btn_frame = ttk.Frame(color_frame)
+        color_btn_frame.pack(fill='x', pady=5)
+
+        ttk.Label(color_btn_frame, text="Change to:").pack(side='left', padx=5)
+
+        # Color buttons with actual colors
+        self.red_btn = tk.Button(color_btn_frame, text="🔴 Red", bg='#ffcccc', activebackground='#ff9999',
+                                  command=lambda: self.change_relic_color(0))
+        self.red_btn.pack(side='left', padx=3)
+
+        self.blue_btn = tk.Button(color_btn_frame, text="🔵 Blue", bg='#ccccff', activebackground='#9999ff',
+                                   command=lambda: self.change_relic_color(1))
+        self.blue_btn.pack(side='left', padx=3)
+
+        self.yellow_btn = tk.Button(color_btn_frame, text="🟡 Yellow", bg='#ffffcc', activebackground='#ffff99',
+                                     command=lambda: self.change_relic_color(2))
+        self.yellow_btn.pack(side='left', padx=3)
+
+        self.green_btn = tk.Button(color_btn_frame, text="🟢 Green", bg='#ccffcc', activebackground='#99ff99',
+                                    command=lambda: self.change_relic_color(3))
+        self.green_btn.pack(side='left', padx=3)
+
         # Effect modification section
         effect_frame = ttk.LabelFrame(scrollable_frame, text="Modify Effects", padding=10)
         effect_frame.pack(fill='x', pady=5)
@@ -1906,19 +2685,64 @@ class ModifyRelicDialog:
             self.effect_name_labels.append(name_label)
         
         effect_frame.grid_columnconfigure(0, weight=1)
-        
+
+        # Debug info section
+        debug_frame = ttk.LabelFrame(scrollable_frame, text="⚙ Debug: Validation Info", padding=10)
+        debug_frame.pack(fill='x', pady=5)
+
+        self.debug_text = tk.Text(debug_frame, height=12, width=80, font=('Consolas', 9),
+                                   state='disabled', bg='#f5f5f5')
+        self.debug_text.pack(fill='x', padx=5, pady=5)
+
+        ttk.Button(debug_frame, text="🔄 Refresh Debug Info",
+                   command=self.update_debug_info).pack(anchor='w', padx=5)
+
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
         
         # Buttons at bottom
         button_frame = ttk.Frame(self.dialog)
         button_frame.pack(fill='x', padx=10, pady=10)
-        
-        ttk.Label(button_frame, text="Click different relics in inventory to switch", 
+
+        ttk.Label(button_frame, text="Click different relics in inventory to switch",
                  foreground='gray').pack(side='left', padx=5)
         ttk.Button(button_frame, text="Apply Changes", command=self.apply_changes).pack(side='right', padx=5)
         ttk.Button(button_frame, text="Close", command=self.dialog.destroy).pack(side='right', padx=5)
-    
+        ttk.Button(button_frame, text="🔄 Auto Sort", command=self.auto_sort_effects).pack(side='right', padx=5)
+
+    def auto_sort_effects(self):
+        """Sort effects in the correct order (keeps curses with their corresponding effects)"""
+        try:
+            # Get current effects from entry fields
+            current_effects = []
+            for entry in self.effect_entries:
+                try:
+                    val = int(entry.get())
+                    current_effects.append(val)
+                except ValueError:
+                    current_effects.append(4294967295)  # Empty
+
+            if len(current_effects) != 6:
+                messagebox.showerror("Error", "Invalid effects configuration")
+                return
+
+            # Use relic_checker to sort effects (keeps curses paired with their primary effects)
+            if relic_checker:
+                sorted_effects = relic_checker.sort_effects(current_effects)
+
+                # Update entry fields with sorted values
+                for i, entry in enumerate(self.effect_entries):
+                    entry.delete(0, tk.END)
+                    entry.insert(0, str(sorted_effects[i]))
+                    self.on_effect_change(i)  # Update name labels
+
+                messagebox.showinfo("Auto Sort", "Effects sorted successfully!\nCurses remain paired with their corresponding effects.")
+            else:
+                messagebox.showerror("Error", "Relic checker not initialized")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to sort effects: {str(e)}")
+
     def on_effect_change(self, index):
         """When effect ID is manually entered, update the name display"""
         try:
@@ -1945,7 +2769,247 @@ class ModifyRelicDialog:
         else:
             _items = items_json
         SearchDialog(self.dialog, _items, "Select Relic", self.on_item_selected)
-    
+
+    def find_valid_relic_id(self):
+        """Find a valid relic ID that matches the current effects configuration"""
+        try:
+            # Get current effects from the entry fields
+            current_effects = []
+            for entry in self.effect_entries:
+                try:
+                    val = int(entry.get())
+                    current_effects.append(val)
+                except ValueError:
+                    current_effects.append(4294967295)  # Empty
+
+            # Count how many effect slots are used (non-empty)
+            effect_count = sum(1 for e in current_effects[:3] if e not in [0, -1, 4294967295])
+
+            # Count how many curses are NEEDED based on the effects (not just present)
+            # Effects that can only roll on 3-effect relics need curses
+            curses_needed = sum(1 for e in current_effects[:3]
+                               if e not in [0, -1, 4294967295] and data_source.effect_needs_curse(e))
+
+            # Also count curses that are present (for validation)
+            curses_present = sum(1 for e in current_effects[3:] if e not in [0, -1, 4294967295])
+
+            # Get current relic's color
+            current_relic_id = int(self.item_id_entry.get())
+            try:
+                current_color = data_source.relic_table.loc[current_relic_id, "relicColor"]
+            except KeyError:
+                current_color = None
+
+            # Search for valid relics with matching structure
+            relic_table = data_source.relic_table.copy()
+            valid_candidates = []
+
+            for relic_id, row in relic_table.iterrows():
+                # Skip illegal range
+                if relic_id in range(20000, 30036):
+                    continue
+
+                # Check if within valid range
+                if relic_id not in range(100, 2013323):
+                    continue
+
+                # Get pool configuration for this relic
+                pools = [
+                    row["attachEffectTableId_1"],
+                    row["attachEffectTableId_2"],
+                    row["attachEffectTableId_3"],
+                    row["attachEffectTableId_curse1"],
+                    row["attachEffectTableId_curse2"],
+                    row["attachEffectTableId_curse3"],
+                ]
+
+                # Count available slots (non -1 pools)
+                available_effect_slots = sum(1 for p in pools[:3] if p != -1)
+                available_curse_slots = sum(1 for p in pools[3:] if p != -1)
+
+                # Check if this relic can accommodate our effects
+                if available_effect_slots < effect_count:
+                    continue
+
+                # Must have enough curse slots for effects that NEED curses
+                if available_curse_slots < curses_needed:
+                    continue
+
+                # Check color match (if we have a color preference)
+                relic_color = row["relicColor"]
+                if current_color is not None and relic_color != current_color:
+                    continue
+
+                # Check if all current effects are valid in this relic's pools
+                effects_valid = self._check_effects_valid_for_relic(relic_id, current_effects, pools)
+                if effects_valid:
+                    valid_candidates.append(relic_id)
+
+            if valid_candidates:
+                # Pick the first valid candidate and update the entry
+                best_match = valid_candidates[0]
+                self.item_id_var.set(str(best_match))
+
+                # Get the name for display
+                relic_name = items_json.get(str(best_match), {}).get("name", "Unknown")
+                relic_color = items_json.get(str(best_match), {}).get("color", "Unknown")
+
+                messagebox.showinfo(
+                    "Valid ID Found",
+                    f"Found valid relic ID: {best_match}\n"
+                    f"Name: {relic_name}\n"
+                    f"Color: {relic_color}\n\n"
+                    f"Effects: {effect_count}, Curses needed: {curses_needed}"
+                )
+            else:
+                messagebox.showwarning(
+                    "No Valid ID Found",
+                    f"Could not find a valid relic ID that:\n"
+                    f"- Has the same color\n"
+                    f"- Supports {effect_count} effect slot(s)\n"
+                    f"- Has at least {curses_needed} curse slot(s) for effects that need them\n"
+                    f"- Has valid pools for all current effects\n\n"
+                    f"Try removing some effects or changing the color requirement."
+                )
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to find valid ID: {str(e)}")
+
+    def _check_effects_valid_for_relic(self, relic_id, effects, pools):
+        """Check if the given effects are valid for the relic's effect pools"""
+        # For each non-empty effect, check if it exists in at least one valid pool
+        for i, effect in enumerate(effects[:3]):
+            if effect in [0, -1, 4294967295]:
+                continue
+            # Check if effect is in any of the effect pools
+            found_in_pool = False
+            for pool_id in pools[:3]:
+                if pool_id == -1:
+                    continue
+                pool_effects = data_source.get_pool_effects(pool_id)
+                if effect in pool_effects:
+                    found_in_pool = True
+                    break
+            if not found_in_pool:
+                return False
+
+        # Check curse effects
+        for i, effect in enumerate(effects[3:]):
+            if effect in [0, -1, 4294967295]:
+                continue
+            # Check if curse effect is in any of the curse pools
+            found_in_pool = False
+            for pool_id in pools[3:]:
+                if pool_id == -1:
+                    continue
+                pool_effects = data_source.get_pool_effects(pool_id)
+                if effect in pool_effects:
+                    found_in_pool = True
+                    break
+            if not found_in_pool:
+                return False
+
+        return True
+
+    def change_relic_color(self, target_color):
+        """Change the relic to a different color while keeping effects legal"""
+        color_names = {0: "Red", 1: "Blue", 2: "Yellow", 3: "Green"}
+        target_color_name = color_names.get(target_color, "Unknown")
+
+        try:
+            # Get current effects from the entry fields
+            current_effects = []
+            for entry in self.effect_entries:
+                try:
+                    val = int(entry.get())
+                    current_effects.append(val)
+                except ValueError:
+                    current_effects.append(4294967295)  # Empty
+
+            # Count how many effect slots are used (non-empty)
+            effect_count = sum(1 for e in current_effects[:3] if e not in [0, -1, 4294967295])
+            curse_count = sum(1 for e in current_effects[3:] if e not in [0, -1, 4294967295])
+
+            # Get current relic's color to check if already the target
+            current_relic_id = int(self.item_id_entry.get())
+            try:
+                current_color = data_source.relic_table.loc[current_relic_id, "relicColor"]
+                if current_color == target_color:
+                    messagebox.showinfo("Info", f"Relic is already {target_color_name}!")
+                    return
+            except KeyError:
+                pass
+
+            # Search for valid relics with the target color
+            relic_table = data_source.relic_table.copy()
+            valid_candidates = []
+
+            for relic_id, row in relic_table.iterrows():
+                # Skip illegal range
+                if relic_id in range(20000, 30036):
+                    continue
+
+                # Check if within valid range
+                if relic_id not in range(100, 2013323):
+                    continue
+
+                # Check color match
+                if row["relicColor"] != target_color:
+                    continue
+
+                # Get pool configuration for this relic
+                pools = [
+                    row["attachEffectTableId_1"],
+                    row["attachEffectTableId_2"],
+                    row["attachEffectTableId_3"],
+                    row["attachEffectTableId_curse1"],
+                    row["attachEffectTableId_curse2"],
+                    row["attachEffectTableId_curse3"],
+                ]
+
+                # Count available slots (non -1 pools)
+                available_effect_slots = sum(1 for p in pools[:3] if p != -1)
+                available_curse_slots = sum(1 for p in pools[3:] if p != -1)
+
+                # Check if this relic can accommodate our effects
+                if available_effect_slots < effect_count:
+                    continue
+                if available_curse_slots < curse_count:
+                    continue
+
+                # Check if all current effects are valid in this relic's pools
+                effects_valid = self._check_effects_valid_for_relic(relic_id, current_effects, pools)
+                if effects_valid:
+                    valid_candidates.append(relic_id)
+
+            if valid_candidates:
+                # Pick the first valid candidate and update the entry
+                best_match = valid_candidates[0]
+                self.item_id_var.set(str(best_match))
+
+                # Get the name for display
+                relic_name = items_json.get(str(best_match), {}).get("name", "Unknown")
+
+                messagebox.showinfo(
+                    "Color Changed",
+                    f"Changed to {target_color_name}!\n\n"
+                    f"New Relic ID: {best_match}\n"
+                    f"Name: {relic_name}\n\n"
+                    f"Click 'Apply Changes' to save."
+                )
+            else:
+                messagebox.showwarning(
+                    "Cannot Change Color",
+                    f"Could not find a valid {target_color_name} relic that:\n"
+                    f"- Supports {effect_count} effect slot(s)\n"
+                    f"- Supports {curse_count} curse slot(s)\n"
+                    f"- Has valid pools for all current effects\n\n"
+                    f"Try removing some effects first, or the effects may not exist in {target_color_name} relics."
+                )
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to change color: {str(e)}")
+
     def search_effects(self, effect_index):
         """Open search dialog for effects"""
         _items = {}
@@ -1998,8 +3062,7 @@ class ModifyRelicDialog:
     
     def on_item_selected(self, item_id):
         """Callback when item is selected from search"""
-        self.item_id_entry.delete(0, tk.END)
-        self.item_id_entry.insert(0, str(item_id))
+        self.item_id_var.set(str(item_id))
     
     def on_effect_selected(self, effect_index, effect_id):
         """Callback when effect is selected from search"""
@@ -2030,10 +3093,11 @@ class ModifyRelicDialog:
             pass  # Keep original ID if invalid entry
         
         is_illegal = relic_checker.is_illegal(entered_id, new_effects)
+        is_curse_illegal = relic_checker.is_curse_illegal(entered_id, new_effects)
         if is_illegal and self.ga_handle not in relic_checker.illegal_gas:
-            relic_checker.append_illegal(self.ga_handle)
+            relic_checker.append_illegal(self.ga_handle, is_curse_illegal)
         elif not is_illegal and self.ga_handle in relic_checker.illegal_gas:
-            relic_checker.remove_illegal(self.ga_handle)    
+            relic_checker.remove_illegal(self.ga_handle)
         # Apply modifications
         if modify_relic(self.ga_handle, self.item_id, new_effects, new_item_id):
             messagebox.showinfo("Success", "Relic modified successfully")
