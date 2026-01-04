@@ -221,9 +221,6 @@ class RelicChecker:
         if relic_id in range(self.RELIC_GROUPS['illegal'][0],
                              self.RELIC_GROUPS['illegal'][1] + 1):
             return True
-        # Rule 2
-        if not self._check_relic_effects_in_pool(relic_id, effects):
-            return True
 
         if relic_id not in range(self.RELIC_RANGE[0],
                                  self.RELIC_RANGE[1]+1):
