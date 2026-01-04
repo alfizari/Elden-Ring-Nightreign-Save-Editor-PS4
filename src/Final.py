@@ -1615,14 +1615,21 @@ class SaveEditorGUI:
 
         # Check for illegal relics
         illegal_gas = check_illegal_relics()
-        illegal_count = len(illegal_gas)
-        
-        # Check for forbidden relics
+
+        # Check for forbidden relics (unique relics that are technically invalid but allowed)
         forbidden_relics = get_forbidden_relics()
-        
-        # Update illegal count label
-        if illegal_count > 0:
-            self.illegal_count_label.config(text=f"⚠️ {illegal_count} possible (test) Illegal Relic(s) Found")
+
+        # Count truly illegal relics (exclude forbidden/unique relics from count)
+        # Forbidden relics are marked orange and shouldn't count as "illegal"
+        truly_illegal_count = 0
+        for ga, id, *_ in ga_relic:
+            real_id = id - 2147483648
+            if ga in illegal_gas and real_id not in forbidden_relics:
+                truly_illegal_count += 1
+
+        # Update illegal count label (only count non-forbidden illegal relics)
+        if truly_illegal_count > 0:
+            self.illegal_count_label.config(text=f"⚠️ {truly_illegal_count} Illegal Relic(s) Found")
         else:
             self.illegal_count_label.config(text="✓ All Relics Valid")
         
