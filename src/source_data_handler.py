@@ -360,6 +360,25 @@ class SourceDataHandler:
         # AND cannot roll from any curse-free pool (2100000 or 2200000)
         return in_curse_required_pool and not in_curse_free_pool
 
+    def get_adjusted_pool_sequence(self, relic_id: int,
+                                   effects: list[int]):
+        """
+        Get adjusted pool sequence for a relic based on its effects.
+        For each of the first three effects, check if it requires a curse.
+        If it does, assign the next available curse pool ID.
+        If it doesn't, assign -1.
+        """
+        effs = effects[:3]
+        pool_ids = self.get_relic_pools_seq(relic_id)
+        curse_pools = pool_ids[3:]
+        new_pool_ids = pool_ids[:3]
+        for i in range(3):
+            if self.effect_needs_curse(effs[i]):
+                new_pool_ids.append(curse_pools.pop(0))
+            else:
+                new_pool_ids.append(-1)
+        return new_pool_ids
+
 
 if __name__ == "__main__":
     source_data_handler = SourceDataHandler("zh_TW")

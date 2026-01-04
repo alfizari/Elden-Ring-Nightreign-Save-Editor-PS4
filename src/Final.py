@@ -3091,8 +3091,10 @@ class ModifyRelicDialog:
         """Open search dialog for effects"""
         _items = {}
         if self.safe_mode_var.get():
+            _effects = [int(entry.get()) for entry in self.effect_entries]
             _cut_relic_id = int(self.item_id_entry.get())
-            _pool_id = data_source.get_relic_pools_seq(_cut_relic_id)[effect_index]
+            # _pool_id = data_source.get_relic_pools_seq(_cut_relic_id)[effect_index]
+            _pool_id = data_source.get_adjusted_pool_sequence(_cut_relic_id, _effects)[effect_index]
             _pool_effects = data_source.get_pool_effects(_pool_id)
             _effect_params_df = data_source.effect_params.copy()
             _effect_params_df = _effect_params_df[_effect_params_df.index.isin(_pool_effects)]
