@@ -276,9 +276,25 @@ class RelicChecker:
         """
         # Build list of (sort_id, effect_id, curse_id) tuples
         effect_curse_pairs = []
+        curses = effects[3:]
+        curse_tuples = []
+        for idx in range(3):
+            curse_id = curses[idx]
+            if curse_id in [-1, 0, 4294967295]:
+                sort_id = float('inf')  # Empty curses go last
+            else:
+                sort_id = self.data_source.get_sort_id(curse_id)
+            curse_tuples.append((sort_id, curse_id))
+        curse_tuples = sorted(curse_tuples, key=lambda x: (x[0], x[1]))
+        curses = [pair[1] for pair in curse_tuples]
+
         for idx in range(3):
             effect_id = effects[idx]
-            curse_id = effects[idx + 3]
+            curse_id = 4294967295
+            if self.data_source.is_deep_only_effect(effect_id):
+                curse_id = curses.pop(0)
+            else:
+                curse_id = curses.pop()
 
             # Get sort ID for the primary effect
             if effect_id in [-1, 0, 4294967295]:
