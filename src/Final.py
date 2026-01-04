@@ -1252,27 +1252,54 @@ class SaveEditorGUI:
         ttk.Label(legend_frame, text="Orange = Unique Relic (don't edit)", foreground="#FF8C00").pack(side='left', padx=5)
 
         
-        # Search frame
+        # Search frame - Row 1: Basic search and filters
         search_frame = ttk.Frame(self.inventory_tab)
         search_frame.pack(fill='x', padx=10, pady=5)
-        
-        ttk.Label(search_frame, text="🔍 Search Relics:").pack(side='left', padx=5)
+
+        ttk.Label(search_frame, text="🔍 Search:").pack(side='left', padx=5)
         self.search_var = tk.StringVar()
         self.search_var.trace('w', lambda *args: self.filter_relics())
-        
-        self.search_entry = ttk.Entry(search_frame, textvariable=self.search_var, width=30)
+
+        self.search_entry = ttk.Entry(search_frame, textvariable=self.search_var, width=25)
         self.search_entry.pack(side='left', padx=5)
-        
+
+        # Search field selector
+        ttk.Label(search_frame, text="in:").pack(side='left', padx=2)
+        self.search_field_var = tk.StringVar(value="All Fields")
+        search_fields = ["All Fields", "Name", "ID", "Color", "Effect Name", "Effect ID", "Equipped By"]
+        self.search_field_combo = ttk.Combobox(search_frame, textvariable=self.search_field_var,
+                                                values=search_fields, state="readonly", width=12)
+        self.search_field_combo.pack(side='left', padx=2)
+        self.search_field_combo.bind("<<ComboboxSelected>>", lambda e: self.filter_relics())
+
         ttk.Button(search_frame, text="Clear", command=self.clear_search).pack(side='left', padx=5)
 
         # Character filter dropdown
-        ttk.Label(search_frame, text="👤 Character:").pack(side='left', padx=(15, 5))
+        ttk.Label(search_frame, text="👤 Char:").pack(side='left', padx=(10, 2))
         self.char_filter_var = tk.StringVar(value="All")
         char_options = ["All"] + CHARACTER_NAMES
         self.char_filter_combo = ttk.Combobox(search_frame, textvariable=self.char_filter_var,
-                                               values=char_options, state="readonly", width=12)
-        self.char_filter_combo.pack(side='left', padx=5)
+                                               values=char_options, state="readonly", width=10)
+        self.char_filter_combo.pack(side='left', padx=2)
         self.char_filter_combo.bind("<<ComboboxSelected>>", lambda e: self.filter_relics())
+
+        # Color filter
+        ttk.Label(search_frame, text="🎨 Color:").pack(side='left', padx=(10, 2))
+        self.color_filter_var = tk.StringVar(value="All")
+        color_options = ["All", "Red", "Blue", "Yellow", "Green"]
+        self.color_filter_combo = ttk.Combobox(search_frame, textvariable=self.color_filter_var,
+                                                values=color_options, state="readonly", width=8)
+        self.color_filter_combo.pack(side='left', padx=2)
+        self.color_filter_combo.bind("<<ComboboxSelected>>", lambda e: self.filter_relics())
+
+        # Status filter
+        ttk.Label(search_frame, text="⚠️ Status:").pack(side='left', padx=(10, 2))
+        self.status_filter_var = tk.StringVar(value="All")
+        status_options = ["All", "Valid", "Illegal", "Curse Illegal", "Forbidden", "Deep Only"]
+        self.status_filter_combo = ttk.Combobox(search_frame, textvariable=self.status_filter_var,
+                                                 values=status_options, state="readonly", width=11)
+        self.status_filter_combo.pack(side='left', padx=2)
+        self.status_filter_combo.bind("<<ComboboxSelected>>", lambda e: self.filter_relics())
 
         self.search_info_label = ttk.Label(search_frame, text="", foreground='gray')
         self.search_info_label.pack(side='left', padx=10)
@@ -1662,6 +1689,7 @@ class SaveEditorGUI:
                 'equipped_by': equipped_by,
                 'equipped_by_str': equipped_by_str,
                 'effect_names': effect_names,
+                'effect_ids': effects,  # Store raw effect IDs for searching
                 'tag_list': tuple(tag_list),
                 'is_forbidden': is_forbidden,
                 'is_illegal': is_illegal,
@@ -1673,7 +1701,7 @@ class SaveEditorGUI:
         self.filter_relics()
     
     def filter_relics(self):
-        """Filter relics based on search term and character filter"""
+        """Filter relics based on search term and all filter criteria"""
         if not hasattr(self, 'all_relics'):
             return
 
@@ -1682,17 +1710,41 @@ class SaveEditorGUI:
             self.tree.delete(item)
 
         search_term = self.search_var.get().lower()
+        search_field = self.search_field_var.get() if hasattr(self, 'search_field_var') else "All Fields"
         char_filter = self.char_filter_var.get() if hasattr(self, 'char_filter_var') else "All"
+        color_filter = self.color_filter_var.get() if hasattr(self, 'color_filter_var') else "All"
+        status_filter = self.status_filter_var.get() if hasattr(self, 'status_filter_var') else "All"
 
         # Filter relics
         filtered_relics = []
         for relic in self.all_relics:
-            # Apply search filter
+            # Apply search filter based on selected field
             passes_search = True
             if search_term != '':
-                passes_search = (search_term in relic['item_name'].lower() or
-                                 search_term in str(relic['real_id']) or
-                                 search_term in relic.get('equipped_by_str', '').lower())
+                if search_field == "All Fields":
+                    # Search in all text fields
+                    effect_names_str = " ".join(relic['effect_names']).lower()
+                    effect_ids_str = " ".join(str(e) for e in relic.get('effect_ids', []))
+                    passes_search = (search_term in relic['item_name'].lower() or
+                                     search_term in str(relic['real_id']) or
+                                     search_term in relic['item_color'].lower() or
+                                     search_term in relic.get('equipped_by_str', '').lower() or
+                                     search_term in effect_names_str or
+                                     search_term in effect_ids_str)
+                elif search_field == "Name":
+                    passes_search = search_term in relic['item_name'].lower()
+                elif search_field == "ID":
+                    passes_search = search_term in str(relic['real_id'])
+                elif search_field == "Color":
+                    passes_search = search_term in relic['item_color'].lower()
+                elif search_field == "Effect Name":
+                    effect_names_str = " ".join(relic['effect_names']).lower()
+                    passes_search = search_term in effect_names_str
+                elif search_field == "Effect ID":
+                    effect_ids_str = " ".join(str(e) for e in relic.get('effect_ids', []))
+                    passes_search = search_term in effect_ids_str
+                elif search_field == "Equipped By":
+                    passes_search = search_term in relic.get('equipped_by_str', '').lower()
 
             # Apply character filter
             passes_char = True
@@ -1700,13 +1752,32 @@ class SaveEditorGUI:
                 equipped_by = relic.get('equipped_by', [])
                 passes_char = char_filter in equipped_by
 
-            if passes_search and passes_char:
+            # Apply color filter
+            passes_color = True
+            if color_filter != "All":
+                passes_color = relic['item_color'] == color_filter
+
+            # Apply status filter
+            passes_status = True
+            if status_filter != "All":
+                if status_filter == "Valid":
+                    passes_status = not relic['is_illegal'] and not relic['is_forbidden'] and not relic.get('is_curse_illegal', False)
+                elif status_filter == "Illegal":
+                    passes_status = relic['is_illegal']
+                elif status_filter == "Curse Illegal":
+                    passes_status = relic.get('is_curse_illegal', False)
+                elif status_filter == "Forbidden":
+                    passes_status = relic['is_forbidden']
+                elif status_filter == "Deep Only":
+                    passes_status = relic.get('is_deep', False)
+
+            if passes_search and passes_char and passes_color and passes_status:
                 filtered_relics.append(relic)
 
         # Populate treeview with filtered results
         for relic in filtered_relics:
             deep_indicator = "✓" if relic.get('is_deep', False) else ""
-            item_id = self.tree.insert('', 'end', text=str(relic['index']),
+            self.tree.insert('', 'end', text=str(relic['index']),
                            values=(relic['item_name'], deep_indicator, relic['real_id'], relic['item_color'],
                                   relic.get('equipped_by_str', '-'),
                                   relic['effect_names'][0], relic['effect_names'][1], relic['effect_names'][2],
@@ -1726,17 +1797,23 @@ class SaveEditorGUI:
                 self.tree.tag_configure('illegal', foreground='red', font=('Arial', 9, 'bold'))
 
         # Update search info
-        filter_active = search_term or char_filter != "All"
+        filter_active = search_term or char_filter != "All" or color_filter != "All" or status_filter != "All"
         if filter_active:
             self.search_info_label.config(text=f"Showing {len(filtered_relics)} of {len(self.all_relics)} relics")
         else:
             self.search_info_label.config(text="")
     
     def clear_search(self):
-        """Clear the search box and character filter"""
+        """Clear the search box and all filters"""
         self.search_var.set("")
+        if hasattr(self, 'search_field_var'):
+            self.search_field_var.set("All Fields")
         if hasattr(self, 'char_filter_var'):
             self.char_filter_var.set("All")
+        if hasattr(self, 'color_filter_var'):
+            self.color_filter_var.set("All")
+        if hasattr(self, 'status_filter_var'):
+            self.status_filter_var.set("All")
         self.filter_relics()
         self.search_entry.focus()
 
