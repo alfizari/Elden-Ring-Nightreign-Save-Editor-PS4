@@ -5768,6 +5768,109 @@ class ModifyRelicDialog:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to find valid ID: {str(e)}")
 
+    def _auto_find_valid_relic_id(self):
+        """Silently find and apply a valid relic ID when effects change.
+
+        This runs in the background without showing dialogs, automatically
+        updating the relic ID when needed (e.g., when an effect that needs
+        a curse is selected).
+        """
+        try:
+            # Get current effects from the entry fields
+            current_effects = []
+            for entry in self.effect_entries:
+                try:
+                    val = int(entry.get())
+                    current_effects.append(val)
+                except ValueError:
+                    current_effects.append(4294967295)  # Empty
+
+            # Get current relic ID and check if it's already valid
+            current_relic_id = int(self.item_id_entry.get())
+
+            # Check if current relic is already valid for these effects
+            try:
+                current_pools = data_source.get_relic_pools_seq(current_relic_id)
+                if self._check_effects_valid_for_relic(current_relic_id, current_effects, current_pools, require_curses_present=False):
+                    # Current relic is fine, no change needed
+                    return
+            except (KeyError, IndexError):
+                pass  # Current relic invalid, continue to find new one
+
+            # Count how many effect slots are used (non-empty)
+            effect_count = sum(1 for e in current_effects[:3] if e not in [0, -1, 4294967295])
+
+            # Count how many curses are NEEDED based on the effects
+            curses_needed = sum(1 for e in current_effects[:3]
+                               if e not in [0, -1, 4294967295] and data_source.effect_needs_curse(e))
+
+            # Also count curses that are present
+            curses_present = sum(1 for e in current_effects[3:] if e not in [0, -1, 4294967295])
+
+            # Get current relic's color
+            try:
+                current_color = data_source.relic_table.loc[current_relic_id, "relicColor"]
+            except KeyError:
+                current_color = None
+
+            # Search for valid relics with matching structure
+            relic_table = data_source.relic_table.copy()
+            valid_candidates = []
+
+            for relic_id, row in relic_table.iterrows():
+                # Skip illegal range
+                if relic_id in range(20000, 30036):
+                    continue
+
+                # Check if within valid range
+                if relic_id not in range(100, 2013323):
+                    continue
+
+                # Get pool configuration for this relic
+                pools = [
+                    row["attachEffectTableId_1"],
+                    row["attachEffectTableId_2"],
+                    row["attachEffectTableId_3"],
+                    row["attachEffectTableId_curse1"],
+                    row["attachEffectTableId_curse2"],
+                    row["attachEffectTableId_curse3"],
+                ]
+
+                # Count available slots (non -1 pools)
+                available_effect_slots = sum(1 for p in pools[:3] if p != -1)
+                available_curse_slots = sum(1 for p in pools[3:] if p != -1)
+
+                # Check if this relic can accommodate our effects
+                if available_effect_slots < effect_count:
+                    continue
+
+                # Must have enough curse slots for effects that NEED curses
+                if available_curse_slots < curses_needed:
+                    continue
+
+                # Must also have enough curse slots for curses that ARE present
+                if available_curse_slots < curses_present:
+                    continue
+
+                # Check color match (if we have a color preference)
+                relic_color = row["relicColor"]
+                if current_color is not None and relic_color != current_color:
+                    continue
+
+                # Check if effects are valid WITH rearrangement
+                effects_valid = self._check_effects_valid_for_relic(relic_id, current_effects, pools, require_curses_present=False)
+                if effects_valid:
+                    valid_candidates.append(relic_id)
+
+            if valid_candidates:
+                # Silently apply the first valid candidate
+                best_match = valid_candidates[0]
+                self.item_id_var.set(str(best_match))
+
+        except Exception:
+            # Silently fail - user can still use manual "Find Valid ID" button
+            pass
+
     def _check_effects_valid_for_relic_exact(self, effects, pools):
         """Check if effects are valid for relic pools WITHOUT rearranging.
 
@@ -6116,6 +6219,10 @@ class ModifyRelicDialog:
         self.effect_entries[effect_index].delete(0, tk.END)
         self.effect_entries[effect_index].insert(0, str(effect_id))
         self.on_effect_change(effect_index)
+
+        # Auto-find valid relic ID in background (silent mode)
+        # This handles cases where selected effect needs a curse
+        self._auto_find_valid_relic_id()
     
     def apply_changes(self):
         # Extract effect IDs from entries
