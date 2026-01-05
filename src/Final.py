@@ -54,6 +54,34 @@ def save_config(config):
             json.dump(config, f, indent=2)
     except Exception as e:
         print(f"Warning: Could not save config: {e}")
+
+def autosize_treeview_columns(tree, padding=20, min_width=50):
+    """Auto-size treeview columns based on content width, prevent stretching"""
+    import tkinter.font as tkfont
+
+    for col in tree['columns']:
+        # Get header text width
+        header_text = tree.heading(col)['text']
+        header_font = tkfont.nametofont('TkHeadingFont')
+        max_content_width = header_font.measure(header_text)
+
+        # Check all items for max content width (sample first 100 for performance)
+        default_font = tkfont.nametofont('TkDefaultFont')
+        children = tree.get_children()[:100]
+        for item in children:
+            values = tree.item(item, 'values')
+            col_idx = tree['columns'].index(col)
+            if col_idx < len(values):
+                text = str(values[col_idx])
+                text_width = default_font.measure(text)
+                if text_width > max_content_width:
+                    max_content_width = text_width
+
+        # Apply width with padding - size to content, no max limit
+        # Set stretch=False to prevent columns from growing beyond content width
+        final_width = max(min_width, max_content_width + padding)
+        tree.column(col, width=final_width, minwidth=final_width, stretch=False)
+
 imported_data=None
 MODE = None
 IMPORT_MODE=None
@@ -69,6 +97,21 @@ AOB_search='00 00 00 00 0A 00 00 00 ?? ?? 00 00 00 00 00 00 06'
 from_aob_steam= 44
 steam_id=None
 
+
+# Vessel slot color meanings
+# Red = Burning Scene relics only
+# Green = Tranquil Scene relics only
+# Blue = Drizzly Scene relics only
+# Yellow = Luminous Scene relics only
+# White = Universal (any relic)
+
+def get_vessel_info(char_name, vessel_slot):
+    """Get vessel name for a character's vessel slot.
+
+    Note: We don't have actual vessel names from the save file or game data,
+    so we use simple numbering (Vessel 0, Vessel 1, etc.)
+    """
+    return {'name': f"Vessel {vessel_slot}"}
 
 # Items type
 ITEM_TYPE_EMPTY = 0x00000000
@@ -205,17 +248,528 @@ def read_char_name(data):
     return name if name else None
 
 
+# Global vessel data storage
+vessel_data = {}  # Maps (char_id, vessel_slot) -> {'offset': int, 'ga_handles': [6 handles], 'relic_slot_offsets': [6 offsets]}
+character_vessels = {}  # Maps char_name -> {vessel_slot -> [list of ga handles]}
+
+def debug_dump_complete_relic_analysis(file_data):
+    """Complete deep dive analysis of relics in save file and data files."""
+
+    output_lines = []
+    def log(msg=""):
+        output_lines.append(msg)
+        print(msg)
+
+    log("\n" + "="*100)
+    log("COMPLETE RELIC DEEP DIVE ANALYSIS")
+    log("="*100)
+
+    # =========================================================================
+    # PART 1: SAVE FILE ANALYSIS
+    # =========================================================================
+    log(f"\n{'='*50}")
+    log("PART 1: SAVE FILE STRUCTURE")
+    log(f"{'='*50}")
+    log(f"File size: {len(file_data)} bytes (0x{len(file_data):X})")
+
+    # Find all relic GA handles in the file
+    relic_handles = []
+    for offset in range(0, len(file_data) - 4, 4):
+        val = struct.unpack_from('<I', file_data, offset)[0]
+        if (val & 0xF0000000) == ITEM_TYPE_RELIC and val != 0:
+            relic_handles.append((offset, val))
+
+    log(f"\nTotal relic GA handles found: {len(relic_handles)}")
+
+    # Analyze the relic item data structure (from gaprint parsing)
+    log(f"\n--- Relic Item Data (from ga_relic) ---")
+    log(f"Total relics parsed: {len(ga_relic)}")
+    if ga_relic:
+        log("\nRelic structure: (ga_handle, item_id, effect1, effect2, effect3, curse1, curse2, curse3, offset, size)")
+        log("\nFirst 10 relics with full data:")
+        for i, relic in enumerate(ga_relic[:10]):
+            ga_handle, item_id, eff1, eff2, eff3, curse1, curse2, curse3, offset, size = relic
+            real_id = item_id - 2147483648
+            item_info = items_json.get(str(real_id), {})
+            name = item_info.get('name', 'Unknown')
+            color = item_info.get('color', 'Unknown')
+            log(f"\n  Relic {i+1}:")
+            log(f"    GA Handle: 0x{ga_handle:08X}")
+            log(f"    Item ID: {item_id} (real: {real_id})")
+            log(f"    Name: {name}")
+            log(f"    Color: {color}")
+            log(f"    Effects: {eff1}, {eff2}, {eff3}")
+            log(f"    Curses: {curse1}, {curse2}, {curse3}")
+            log(f"    Offset: 0x{offset:06X}, Size: {size} bytes")
+
+            # Show raw bytes around this relic
+            if offset > 0 and offset + size < len(file_data):
+                log(f"    Raw data at offset (first 80 bytes):")
+                for j in range(0, min(80, size), 16):
+                    hex_str = ' '.join(f'{file_data[offset+j+k]:02X}' for k in range(min(16, size-j)))
+                    log(f"      0x{offset+j:06X}: {hex_str}")
+
+    # =========================================================================
+    # PART 2: ANALYZE RELIC STRUCTURE IN DETAIL
+    # =========================================================================
+    log(f"\n{'='*50}")
+    log("PART 2: DETAILED RELIC BYTE STRUCTURE")
+    log(f"{'='*50}")
+
+    if ga_relic:
+        # Pick one relic and show complete structure
+        sample_relic = ga_relic[0]
+        ga_handle, item_id, eff1, eff2, eff3, curse1, curse2, curse3, offset, size = sample_relic
+
+        log(f"\nSample relic at offset 0x{offset:06X} (size {size} bytes):")
+        log(f"Interpreting structure field by field:")
+
+        cursor = offset
+        fields = [
+            ("GA Handle", 4),
+            ("Item ID", 4),
+            ("Durability?", 4),
+            ("Unknown 1", 4),
+            ("Effect 1", 4),
+            ("Effect 2", 4),
+            ("Effect 3", 4),
+        ]
+
+        # Read and display each potential field
+        for field_name, field_size in fields:
+            if cursor + field_size <= len(file_data):
+                val = struct.unpack_from('<I', file_data, cursor)[0]
+                log(f"  0x{cursor:06X} [{field_name:12}]: {val} (0x{val:08X})")
+                cursor += field_size
+
+        # Show remaining bytes
+        remaining = size - (cursor - offset)
+        if remaining > 0:
+            log(f"\n  Remaining {remaining} bytes:")
+            for i in range(0, remaining, 16):
+                hex_str = ' '.join(f'{file_data[cursor+i+k]:02X}' for k in range(min(16, remaining-i)))
+                vals = struct.unpack_from(f'<{min(4, (remaining-i)//4)}I', file_data, cursor+i) if remaining-i >= 4 else []
+                log(f"    0x{cursor+i:06X}: {hex_str}")
+                if vals:
+                    log(f"             As ints: {', '.join(str(v) for v in vals)}")
+
+    # =========================================================================
+    # PART 3: DATA FILES ANALYSIS
+    # =========================================================================
+    log(f"\n{'='*50}")
+    log("PART 3: DATA FILES ANALYSIS")
+    log(f"{'='*50}")
+
+    # Analyze items.json
+    log(f"\n--- items.json Analysis ---")
+    log(f"Total items: {len(items_json)}")
+
+    colors_found = {}
+    for item_id, item_data in items_json.items():
+        color = item_data.get('color')
+        if color not in colors_found:
+            colors_found[color] = []
+        colors_found[color].append((item_id, item_data.get('name', 'Unknown')))
+
+    log(f"\nColors found in items.json:")
+    for color, items in sorted(colors_found.items(), key=lambda x: str(x[0])):
+        log(f"  {color}: {len(items)} items")
+        # Show first 3 examples
+        for item_id, name in items[:3]:
+            log(f"    - ID {item_id}: {name}")
+
+    # Analyze effects.json
+    log(f"\n--- effects.json Analysis ---")
+    log(f"Total effects: {len(effects_json)}")
+
+    # Sample some effects
+    log("\nSample effects:")
+    for i, (eff_id, eff_data) in enumerate(list(effects_json.items())[:10]):
+        log(f"  {eff_id}: {eff_data}")
+
+    # =========================================================================
+    # PART 4: VESSEL STRUCTURE ANALYSIS
+    # =========================================================================
+    log(f"\n{'='*50}")
+    log("PART 4: VESSEL STRUCTURE DEEP DIVE")
+    log(f"{'='*50}")
+
+    # Find vessel structures and analyze surrounding data
+    vessel_findings = []
+    for offset in range(0x10000, min(0x50000, len(file_data) - 28), 4):
+        val = struct.unpack_from('<I', file_data, offset)[0]
+        if 1000 <= val <= 10006:
+            char_id = (val - 1000) // 1000
+            vessel_slot = val % 1000
+            if vessel_slot <= 6:
+                ga_handles = list(struct.unpack_from('<6I', file_data, offset + 4))
+                has_relics = any((h & 0xF0000000) == ITEM_TYPE_RELIC for h in ga_handles if h != 0)
+                vessel_findings.append({
+                    'offset': offset,
+                    'vessel_id': val,
+                    'char_id': char_id,
+                    'vessel_slot': vessel_slot,
+                    'ga_handles': ga_handles,
+                    'has_relics': has_relics
+                })
+
+    log(f"\nFound {len(vessel_findings)} vessel entries")
+
+    # Show vessels with relics and analyze surrounding data
+    log("\n--- Vessels WITH relics (detailed) ---")
+    for v in vessel_findings:
+        if v['has_relics']:
+            log(f"\nVessel ID {v['vessel_id']} (Char {v['char_id']}, Slot {v['vessel_slot']}) at 0x{v['offset']:06X}:")
+            log(f"  GA Handles: {[f'0x{h:08X}' for h in v['ga_handles']]}")
+
+            # Show 32 bytes BEFORE the vessel ID
+            if v['offset'] >= 32:
+                log(f"  32 bytes BEFORE vessel ID:")
+                for i in range(8):
+                    check_offset = v['offset'] - 32 + (i * 4)
+                    check_val = struct.unpack_from('<I', file_data, check_offset)[0]
+                    log(f"    0x{check_offset:06X}: {check_val:10} (0x{check_val:08X})")
+
+            # Show 32 bytes AFTER the GA handles
+            after_offset = v['offset'] + 4 + 24  # vessel_id + 6 handles
+            if after_offset + 32 < len(file_data):
+                log(f"  32 bytes AFTER GA handles:")
+                for i in range(8):
+                    check_offset = after_offset + (i * 4)
+                    check_val = struct.unpack_from('<I', file_data, check_offset)[0]
+                    log(f"    0x{check_offset:06X}: {check_val:10} (0x{check_val:08X})")
+
+            # Resolve relic names for this vessel
+            log(f"  Relic details:")
+            for idx, ga in enumerate(v['ga_handles']):
+                if ga != 0 and (ga & 0xF0000000) == ITEM_TYPE_RELIC:
+                    # Find this relic in ga_relic
+                    for relic in ga_relic:
+                        if relic[0] == ga:
+                            real_id = relic[1] - 2147483648
+                            item_info = items_json.get(str(real_id), {})
+                            name = item_info.get('name', 'Unknown')
+                            color = item_info.get('color', 'Unknown')
+                            log(f"    Slot {idx}: {name} ({color}) - Effects: {relic[2]}, {relic[3]}, {relic[4]}")
+                            break
+                else:
+                    log(f"    Slot {idx}: (empty)")
+
+    # =========================================================================
+    # PART 5: LOOK FOR ADDITIONAL PATTERNS
+    # =========================================================================
+    log(f"\n{'='*50}")
+    log("PART 5: SEARCHING FOR ADDITIONAL PATTERNS")
+    log(f"{'='*50}")
+
+    # Look for color-related values near relics
+    log("\n--- Searching for color values (0-3) near relic data ---")
+    if ga_relic:
+        for relic in ga_relic[:5]:
+            offset = relic[8]
+            real_id = relic[1] - 2147483648
+            item_info = items_json.get(str(real_id), {})
+            color = item_info.get('color', 'Unknown')
+
+            log(f"\nRelic '{item_info.get('name', 'Unknown')}' (color={color}) at 0x{offset:06X}:")
+            # Search in 20 bytes before and after for small values 0-3
+            search_start = max(0, offset - 20)
+            search_end = min(len(file_data), offset + 100)
+
+            small_vals = []
+            for i in range(search_start, search_end):
+                if file_data[i] <= 3:
+                    small_vals.append((i, file_data[i]))
+
+            if small_vals:
+                log(f"  Small values (0-3) found in range 0x{search_start:06X}-0x{search_end:06X}:")
+                for pos, val in small_vals[:20]:
+                    log(f"    0x{pos:06X}: {val}")
+
+    # =========================================================================
+    # PART 6: CSV FILE ANALYSIS
+    # =========================================================================
+    log(f"\n{'='*50}")
+    log("PART 6: CSV PARAM FILE ANALYSIS")
+    log(f"{'='*50}")
+
+    # Read and analyze EquipParamAntique.csv
+    try:
+        import csv
+        import os
+        csv_path = os.path.join(os.path.dirname(__file__), "Resources/Param/EquipParamAntique.csv")
+        with open(csv_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            rows = list(reader)
+
+        log(f"\nEquipParamAntique.csv: {len(rows)} rows")
+        log(f"Columns: {list(rows[0].keys()) if rows else 'N/A'}")
+
+        # Analyze relicColor distribution
+        color_dist = {}
+        deep_relic_count = 0
+        for row in rows:
+            color = row.get('relicColor', 'N/A')
+            is_deep = row.get('isDeepRelic', '0')
+            if color not in color_dist:
+                color_dist[color] = 0
+            color_dist[color] += 1
+            if is_deep == '1':
+                deep_relic_count += 1
+
+        log(f"\nrelicColor distribution:")
+        for color, count in sorted(color_dist.items()):
+            log(f"  {color}: {count} items")
+
+        log(f"\nDeep relics (isDeepRelic=1): {deep_relic_count}")
+
+        # Show sample rows with different colors
+        log(f"\nSample rows by color:")
+        shown_colors = set()
+        for row in rows:
+            color = row.get('relicColor', 'N/A')
+            if color not in shown_colors and len(shown_colors) < 5:
+                shown_colors.add(color)
+                log(f"\n  Color {color} example (ID={row.get('ID')}):")
+                for key, val in list(row.items())[:15]:
+                    log(f"    {key}: {val}")
+    except Exception as e:
+        log(f"\nError reading CSV: {e}")
+
+    # =========================================================================
+    # SUMMARY
+    # =========================================================================
+    log(f"\n{'='*100}")
+    log("SUMMARY")
+    log(f"{'='*100}")
+    log(f"- Save file has {len(ga_relic)} relics parsed")
+    log(f"- items.json has {len(items_json)} items with colors: {list(colors_found.keys())}")
+    log(f"- {len(vessel_findings)} vessel entries found")
+    log(f"- Vessels with relics: {sum(1 for v in vessel_findings if v['has_relics'])}")
+
+    # Write to file
+    with open("debug_relic_analysis.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(output_lines))
+    log(f"\n[Output also saved to debug_relic_analysis.txt]")
+
+    log("\n" + "="*100)
+
+
+def debug_dump_save_analysis(file_data):
+    """Debug function to analyze save file structure and find vessel-related data."""
+    # Call the complete analysis
+    debug_dump_complete_relic_analysis(file_data)
+
+    # Search for preset names
+    debug_find_preset_names(file_data)
+
+
+def debug_find_preset_names(file_data):
+    """Search for preset names in the save file (UTF-16 encoded strings)."""
+    output_lines = []
+    def log(msg=""):
+        output_lines.append(msg)
+
+    log("\n" + "="*60)
+    log("PRESET NAME SEARCH")
+    log("="*60)
+
+    # Common words that might appear in preset names
+    search_terms = ['build', 'Build', 'preset', 'Preset', 'loadout', 'Loadout', 'Jail', 'Ever']
+
+    found_presets = []
+
+    for term in search_terms:
+        search_bytes = term.encode('utf-16-le')
+        pos = 0
+        while True:
+            idx = file_data.find(search_bytes, pos)
+            if idx == -1:
+                break
+
+            # Extract the full UTF-16 string
+            str_start = idx
+            while str_start > 0 and file_data[str_start-2:str_start] != b'\x00\x00':
+                str_start -= 2
+
+            str_end = idx + len(search_bytes)
+            while str_end < len(file_data) - 1 and file_data[str_end:str_end+2] != b'\x00\x00':
+                str_end += 2
+
+            try:
+                full_string = file_data[str_start:str_end].decode('utf-16-le')
+                if len(full_string) < 50 and full_string not in [p[0] for p in found_presets]:
+                    # Look for vessel IDs nearby
+                    nearby_vessels = []
+                    for check_offset in range(max(0, str_start - 256), min(len(file_data) - 4, str_end + 256), 4):
+                        val = struct.unpack_from('<I', file_data, check_offset)[0]
+                        if 1000 <= val <= 10006:
+                            char_id = (val - 1000) // 1000
+                            vessel_slot = val % 1000
+                            if vessel_slot <= 6:
+                                nearby_vessels.append((check_offset, val, char_id, vessel_slot))
+
+                    found_presets.append((full_string, str_start, nearby_vessels))
+            except:
+                pass
+
+            pos = idx + 1
+
+    log(f"\nFound {len(found_presets)} potential preset names:")
+    for preset_name, offset, nearby_vessels in found_presets:
+        log(f"\n  '{preset_name}' at offset 0x{offset:06X}")
+        if nearby_vessels:
+            log(f"    Nearby vessel IDs:")
+            for v_offset, v_id, char_id, slot in nearby_vessels:
+                char_name = CHARACTER_NAMES[char_id] if char_id < len(CHARACTER_NAMES) else f'Char_{char_id}'
+                log(f"      {v_id} at 0x{v_offset:06X} ({char_name}, slot {slot})")
+
+    # Write to file
+    with open("debug_preset_names.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(output_lines))
+
+
+# Global storage for vessel presets (additional occurrences after the first/active)
+vessel_presets = {}  # (char_id, vessel_slot) -> list of {'offset': int, 'ga_handles': list, 'name': str}
+
+# Global storage for preset names found in save file
+preset_name_map = {}  # vessel_offset -> preset_name
+
+
+def find_preset_names(file_data):
+    """Find preset names in save file and map them to vessel offsets.
+
+    Preset structure in save file:
+    - [vessel_id (4 bytes)] [6 GA handles (24 bytes)] [name string (UTF-16)] [next vessel...]
+    - The name appears AFTER the vessel data block, before the next vessel
+    """
+    global preset_name_map
+    preset_name_map = {}
+
+    # Look for vessel IDs in the preset area (after the active loadout area)
+    # Presets start around 0x01C1A0
+    preset_area_start = 0x01C100
+    preset_area_end = min(0x02A000, len(file_data) - 28)
+
+    # Find all vessel occurrences in preset area
+    vessel_offsets = []
+    for offset in range(preset_area_start, preset_area_end, 4):
+        try:
+            val = struct.unpack_from('<I', file_data, offset)[0]
+            if 1000 <= val <= 10006:
+                char_id = (val - 1000) // 1000
+                vessel_slot = val % 1000
+                if vessel_slot <= 6:
+                    vessel_offsets.append((offset, val, char_id, vessel_slot))
+        except:
+            continue
+
+    # Sort by offset
+    vessel_offsets.sort(key=lambda x: x[0])
+
+    # Structure: [name string] [vessel_id + 6 GA handles] [name string] [vessel_id + 6 GA handles]...
+    # The name BEFORE a vessel belongs to THAT vessel
+    #
+    # Orphan detection: When a preset is deleted in-game, the name string may remain
+    # but the vessel data is removed. We detect this by checking:
+    # 1. The name must be within a reasonable distance (80 bytes) from the vessel start
+    # 2. If the gap is too large, it's likely an orphaned name from a deleted preset
+
+    for i in range(len(vessel_offsets)):
+        current_offset = vessel_offsets[i][0]
+
+        # Look for name BEFORE this vessel
+        if i > 0:
+            prev_offset = vessel_offsets[i-1][0]
+            prev_end = prev_offset + 28  # End of previous vessel's data
+        else:
+            prev_end = current_offset - 100  # Search up to 100 bytes before first vessel
+
+        # Search between previous vessel's end and current vessel's start
+        search_start = max(prev_end, current_offset - 100)  # Limit search to 100 bytes before
+        search_end = current_offset
+
+        # Look for null-terminated UTF-16 string, searching from END backwards
+        # to find the name closest to this vessel
+        best_name = None
+        best_distance = float('inf')
+
+        for str_start in range(search_start, search_end - 4, 2):
+            # Skip null bytes
+            if file_data[str_start:str_start+2] == b'\x00\x00':
+                continue
+
+            # Try to find end of string (double null)
+            str_end = str_start
+            while str_end < search_end - 1:
+                if file_data[str_end:str_end+2] == b'\x00\x00':
+                    break
+                str_end += 2
+
+            if str_end <= str_start:
+                continue
+
+            # Try to decode
+            try:
+                candidate = file_data[str_start:str_end].decode('utf-16-le')
+                # Strip non-ASCII characters from the start
+                cleaned = ''.join(c for c in candidate if 32 <= ord(c) <= 126)
+                # Valid preset name: reasonable length after cleaning
+                if 2 <= len(cleaned) <= 30:
+                    # Calculate distance from name END to vessel START
+                    distance = current_offset - str_end
+
+                    # Orphan filter: name must be within 80 bytes of vessel
+                    # and prefer the name closest to the vessel
+                    if distance <= 80 and distance < best_distance:
+                        best_name = cleaned
+                        best_distance = distance
+            except:
+                continue
+
+        if best_name:
+            preset_name_map[current_offset] = best_name
+
+    return preset_name_map
+
+
 def parse_vessel_assignments(file_data):
     """Parse vessel data to map GA handles to character names.
 
     Vessel structure:
     - Each character (0-9) has vessels at IDs 1000-1006, 2000-2006, etc.
     - Each vessel slot contains: ID (4 bytes) + 6 GA handles (24 bytes)
-    """
-    global ga_to_characters
-    ga_to_characters = {}
 
-    # Search for vessel structures in the save file
+    Note: Vessel IDs can appear multiple times in save:
+    - Occurrence with most relics = active loadout (what's currently equipped)
+    - Other occurrences = saved presets
+    """
+    global ga_to_characters, vessel_data, character_vessels, vessel_presets
+    ga_to_characters = {}
+    vessel_data = {}
+    vessel_presets = {}
+    character_vessels = {name: {} for name in CHARACTER_NAMES}
+
+    # Debug log
+    debug_lines = []
+    def log(msg=""):
+        debug_lines.append(msg)
+
+    log("="*60)
+    log("VESSEL PARSING DEBUG")
+    log("="*60)
+
+    # Run debug analysis first
+    debug_dump_save_analysis(file_data)
+
+    # Find preset names in save file
+    find_preset_names(file_data)
+    log(f"\nPreset names found: {preset_name_map}")
+
+    # First pass: collect ALL vessel occurrences
+    vessel_occurrences = {}  # (char_id, vessel_slot) -> list of (offset, ga_handles)
+
+    log("\nSearching for vessel IDs (1000-10006)...")
     for offset in range(0x10000, min(0x50000, len(file_data) - 28), 4):
         try:
             val = struct.unpack_from('<I', file_data, offset)[0]
@@ -230,24 +784,223 @@ def parse_vessel_assignments(file_data):
                     continue
 
                 # Read the 6 potential GA handles
-                ga_handles = struct.unpack_from('<6I', file_data, offset + 4)
+                ga_handles = list(struct.unpack_from('<6I', file_data, offset + 4))
 
-                for ga in ga_handles:
-                    # Check if this is a relic GA handle (type bits = 0xC0000000)
-                    if (ga & 0xF0000000) == ITEM_TYPE_RELIC and ga != 0:
-                        char_name = CHARACTER_NAMES[char_id] if char_id < len(CHARACTER_NAMES) else f'Char_{char_id}'
+                key = (char_id, vessel_slot)
+                if key not in vessel_occurrences:
+                    vessel_occurrences[key] = []
+                vessel_occurrences[key].append((offset, ga_handles))
 
-                        if ga not in ga_to_characters:
-                            ga_to_characters[ga] = set()
-                        ga_to_characters[ga].add(char_name)
+                char_name = CHARACTER_NAMES[char_id] if char_id < len(CHARACTER_NAMES) else f'Char_{char_id}'
+                log(f"\nFound vessel ID {val} at 0x{offset:06X} ({char_name}, vessel={vessel_slot})")
+                log(f"  GA handles: {[f'0x{h:08X}' for h in ga_handles]}")
         except:
             continue
+
+    # Second pass: filter out template entries (first block with non-relic GA handles like 0x00004A38)
+    # and determine which is active vs preset
+    log("\n" + "="*60)
+    log("DETERMINING ACTIVE VS PRESET")
+    log("="*60)
+
+    def is_template_entry(ga_handles):
+        """Check if this is a template entry (first GA is not a relic handle)"""
+        if ga_handles[0] == 0:
+            return False  # Empty is not a template
+        # Template entries have non-relic values like 0x00004A38
+        return (ga_handles[0] & 0xF0000000) != ITEM_TYPE_RELIC
+
+    def count_relics(ga_handles):
+        """Count actual relic GA handles"""
+        return sum(1 for ga in ga_handles if ga != 0 and (ga & 0xF0000000) == ITEM_TYPE_RELIC)
+
+    found_count = 0
+    for (char_id, vessel_slot), occurrences in vessel_occurrences.items():
+        char_name = CHARACTER_NAMES[char_id] if char_id < len(CHARACTER_NAMES) else f'Char_{char_id}'
+
+        # Filter out template entries
+        valid_occurrences = [(off, ga) for off, ga in occurrences if not is_template_entry(ga)]
+        template_count = len(occurrences) - len(valid_occurrences)
+
+        if not valid_occurrences:
+            # All entries are templates or empty - use first non-template
+            valid_occurrences = occurrences
+
+        # FIRST valid occurrence (after filtering templates) is the ACTIVE loadout
+        # Additional occurrences are saved presets
+        active_idx = 0
+        offset, ga_handles = valid_occurrences[active_idx]
+
+        if len(occurrences) > 1 or template_count > 0:
+            log(f"\n{char_name} Vessel {vessel_slot}: {len(occurrences)} total, {template_count} templates filtered, {len(valid_occurrences)} valid")
+            for idx, (off, ga) in enumerate(valid_occurrences):
+                cnt = count_relics(ga)
+                marker = " <-- ACTIVE (first valid)" if idx == active_idx else " (preset)"
+                log(f"  [{idx}] at 0x{off:06X}: {cnt} relics, handles={[f'0x{h:08X}' for h in ga]}{marker}")
+
+            # Store non-active occurrences as presets
+            vessel_presets[(char_id, vessel_slot)] = []
+            preset_num = 1
+            for idx, (preset_offset, preset_ga) in enumerate(valid_occurrences):
+                if idx != active_idx:
+                    # Check if we have a name for this preset from the save file
+                    preset_name = preset_name_map.get(preset_offset, f'Preset {preset_num}')
+                    log(f"  Preset at 0x{preset_offset:06X} -> name: '{preset_name}'")
+                    vessel_presets[(char_id, vessel_slot)].append({
+                        'offset': preset_offset,
+                        'ga_handles': preset_ga,
+                        'name': preset_name
+                    })
+                    preset_num += 1
+
+        found_count += 1
+
+        # Store vessel data with offsets for modification
+        vessel_data[(char_id, vessel_slot)] = {
+            'offset': offset,
+            'ga_handles': ga_handles,
+            'relic_slot_offsets': [offset + 4 + (i * 4) for i in range(6)]
+        }
+
+        # Store in character_vessels for easy access
+        if char_name in character_vessels:
+            character_vessels[char_name][vessel_slot] = ga_handles
+
+        for idx, ga in enumerate(ga_handles):
+            # Check if this is a relic GA handle (type bits = 0xC0000000)
+            if (ga & 0xF0000000) == ITEM_TYPE_RELIC and ga != 0:
+                if ga not in ga_to_characters:
+                    ga_to_characters[ga] = set()
+                ga_to_characters[ga].add(char_name)
+
+    log(f"\n{'='*60}")
+    log("SUMMARY")
+    log(f"{'='*60}")
+    log(f"Total vessel slots: {found_count}")
+    log(f"Total presets found: {sum(len(p) for p in vessel_presets.values())}")
+
+    # Write debug to file
+    with open("debug_vessel_parsing.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(debug_lines))
 
     # Convert sets to sorted lists for display
     for ga in ga_to_characters:
         ga_to_characters[ga] = sorted(list(ga_to_characters[ga]))
 
     return ga_to_characters
+
+
+def get_vessel_slot_offset(char_name, vessel_slot, relic_index):
+    """Get the file offset for a specific relic slot in a vessel.
+
+    Args:
+        char_name: Character name (e.g., 'Wylder')
+        vessel_slot: Vessel slot number (0-6)
+        relic_index: Index within vessel (0-5)
+
+    Returns:
+        File offset or None if not found
+    """
+    char_id = CHARACTER_NAMES.index(char_name) if char_name in CHARACTER_NAMES else -1
+    if char_id < 0:
+        return None
+
+    key = (char_id, vessel_slot)
+    if key in vessel_data:
+        return vessel_data[key]['relic_slot_offsets'][relic_index]
+    return None
+
+
+def modify_vessel_assignment(file_data, char_name, vessel_slot, relic_index, new_ga_handle):
+    """Modify a relic assignment in a vessel slot.
+
+    Args:
+        file_data: Bytearray of save file
+        char_name: Character name
+        vessel_slot: Vessel slot (0-6)
+        relic_index: Relic index within vessel (0-5)
+        new_ga_handle: New GA handle to assign (0 to clear)
+
+    Returns:
+        True if successful, False otherwise
+    """
+    offset = get_vessel_slot_offset(char_name, vessel_slot, relic_index)
+    if offset is None:
+        return False
+
+    try:
+        struct.pack_into('<I', file_data, offset, new_ga_handle)
+        return True
+    except:
+        return False
+
+
+def get_character_loadout(char_name):
+    """Get the current relic loadout for a character.
+
+    Returns:
+        Dict with vessel_slot -> {'relics': list of (ga_handle, relic_info), 'unlocked': bool}
+    """
+    if char_name not in character_vessels:
+        return {}
+
+    char_id = CHARACTER_NAMES.index(char_name) if char_name in CHARACTER_NAMES else -1
+
+    loadout = {}
+    for vessel_slot, ga_handles in character_vessels[char_name].items():
+        relics = []
+        has_any_relic = False
+
+        for ga in ga_handles:
+            if ga != 0 and (ga & 0xF0000000) == ITEM_TYPE_RELIC:
+                has_any_relic = True
+                # Find relic info
+                relic_info = None
+                for relic in ga_relic:
+                    if len(relic) >= 8 and relic[0] == ga:  # ga_handle match
+                        real_id = relic[1] - 2147483648
+                        item_data = items_json.get(str(real_id), {})
+                        relic_info = {
+                            'ga': ga,
+                            'real_id': real_id,
+                            'name': item_data.get('name', f'Unknown ({real_id})'),
+                            'color': item_data.get('color', 'Unknown'),
+                            'effects': [relic[2], relic[3], relic[4]],
+                            'curses': [relic[5], relic[6], relic[7]]
+                        }
+                        break
+                relics.append((ga, relic_info))
+            else:
+                relics.append((0, None))
+
+        # A vessel is considered "unlocked" if:
+        # 1. It's vessel slot 0 (always unlocked - the default vessel)
+        # 2. It has any relic assigned (player must have unlocked it to assign relics)
+        # Note: We can't reliably detect unlock status from save data alone,
+        # so we show "Unknown" for empty vessels beyond slot 0
+        is_unlocked = vessel_slot == 0 or has_any_relic
+
+        loadout[vessel_slot] = {
+            'relics': relics,
+            'unlocked': is_unlocked,
+            'has_relics': has_any_relic
+        }
+
+    return loadout
+
+
+# Color mapping for UI display
+RELIC_COLOR_HEX = {
+    'Red': '#FF4444',
+    'Blue': '#4488FF',
+    'Yellow': '#B8860B',  # Dark goldenrod - readable on light backgrounds
+    'Green': '#44BB44',
+    'Purple': '#AA44FF',
+    'Orange': '#FF8C00',
+    'White': '#AAAAAA',  # Gray for universal slot - readable on light backgrounds
+    'Unknown': '#888888',
+    None: '#888888'
+}
 
 
 def read_murks_and_sigs(data):
@@ -1119,12 +1872,15 @@ class SaveEditorGUI:
         # Create tabs
         self.file_tab = ttk.Frame(self.notebook)
         self.inventory_tab = ttk.Frame(self.notebook)
+        self.vessels_tab = ttk.Frame(self.notebook)
 
         self.notebook.add(self.file_tab, text="File Management")
         self.notebook.add(self.inventory_tab, text="Relics")
+        self.notebook.add(self.vessels_tab, text="Vessels")
 
         self.setup_file_tab()
         self.setup_inventory_tab()
+        self.setup_vessels_tab()
 
         # Try to load last opened file after UI is set up
         self.root.after(100, self.try_load_last_file)
@@ -1222,11 +1978,1782 @@ class SaveEditorGUI:
         scrollbar.pack(side='right', fill='y')
         canvas.pack(side='left', fill='both', expand=True)
         canvas.create_window((0, 0), window=self.char_button_frame, anchor='nw')
-        
-        self.char_button_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-    
 
-        
+        self.char_button_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+    def setup_vessels_tab(self):
+        """Setup the Vessels tab for viewing and managing character loadouts"""
+        # Top controls
+        controls_frame = ttk.Frame(self.vessels_tab)
+        controls_frame.pack(fill='x', padx=10, pady=5)
+
+        ttk.Button(controls_frame, text="🔄 Refresh", command=self.refresh_vessels).pack(side='left', padx=5)
+        ttk.Button(controls_frame, text="💾 Save Loadout", command=self.save_loadout).pack(side='left', padx=5)
+        ttk.Button(controls_frame, text="📂 Load Loadout", command=self.load_loadout).pack(side='left', padx=5)
+
+        # Character selector
+        ttk.Label(controls_frame, text="Character:").pack(side='left', padx=(20, 5))
+        self.vessel_char_var = tk.StringVar(value=CHARACTER_NAMES[0])
+        self.vessel_char_combo = ttk.Combobox(controls_frame, textvariable=self.vessel_char_var,
+                                               values=CHARACTER_NAMES, state="readonly", width=12)
+        self.vessel_char_combo.pack(side='left', padx=5)
+        self.vessel_char_combo.bind("<<ComboboxSelected>>", lambda e: self.refresh_vessels())
+
+        # Main content - split into vessel slots
+        self.vessels_content = ttk.Frame(self.vessels_tab)
+        self.vessels_content.pack(fill='both', expand=True, padx=10, pady=5)
+
+        # Create vessel slot frames (7 vessels per character)
+        self.vessel_frames = []
+        self.vessel_trees = []
+
+        # Use a canvas with scrollbar for the vessel display
+        canvas_frame = ttk.Frame(self.vessels_content)
+        canvas_frame.pack(fill='both', expand=True)
+
+        self.vessels_canvas = tk.Canvas(canvas_frame)
+        scrollbar = ttk.Scrollbar(canvas_frame, orient='vertical', command=self.vessels_canvas.yview)
+        self.vessels_inner_frame = ttk.Frame(self.vessels_canvas)
+
+        self.vessels_canvas.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side='right', fill='y')
+        self.vessels_canvas.pack(side='left', fill='both', expand=True)
+        self.vessels_window_id = self.vessels_canvas.create_window((0, 0), window=self.vessels_inner_frame, anchor='nw')
+
+        def on_inner_frame_configure(e):
+            self.vessels_canvas.configure(scrollregion=self.vessels_canvas.bbox("all"))
+
+        def on_canvas_configure(e):
+            # Make inner frame fill the canvas width
+            self.vessels_canvas.itemconfig(self.vessels_window_id, width=e.width)
+
+        self.vessels_inner_frame.bind("<Configure>", on_inner_frame_configure)
+        self.vessels_canvas.bind("<Configure>", on_canvas_configure)
+
+        # Enable mouse wheel scrolling anywhere in the canvas
+        def _on_vessels_mousewheel(event):
+            self.vessels_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+        # Bind mousewheel to canvas and inner frame
+        self.vessels_canvas.bind("<MouseWheel>", _on_vessels_mousewheel)
+        self.vessels_inner_frame.bind("<MouseWheel>", _on_vessels_mousewheel)
+
+        # Also bind to canvas_frame for better coverage
+        canvas_frame.bind("<MouseWheel>", _on_vessels_mousewheel)
+
+        # Configure inner frame to expand column 0
+        self.vessels_inner_frame.columnconfigure(0, weight=1)
+
+        # Create 7 vessel slot displays (1 column layout)
+        # Vessel names will be updated dynamically based on selected character
+        for i in range(7):
+            vessel_frame = ttk.LabelFrame(self.vessels_inner_frame, text=f"Vessel Slot {i}")
+            vessel_frame.grid(row=i, column=0, padx=5, pady=5, sticky='nsew')
+
+            # Bind mousewheel to vessel frame
+            vessel_frame.bind("<MouseWheel>", _on_vessels_mousewheel)
+
+            # Status label for unlock state
+            status_label = ttk.Label(vessel_frame, text="")
+            status_label.pack(anchor='w', padx=5, pady=2)
+
+            # Treeview for relics in this vessel - 6 slots (3 normal + 3 deep relics)
+            columns = ('Slot', 'Type', 'Color', 'Relic Name', 'ID', 'Effect 1', 'Effect 2', 'Effect 3')
+            tree = ttk.Treeview(vessel_frame, columns=columns, show='headings', height=6)
+
+            tree.heading('Slot', text='#')
+            tree.heading('Type', text='Type')
+            tree.heading('Color', text='Color')
+            tree.heading('Relic Name', text='Name')
+            tree.heading('ID', text='ID')
+            tree.heading('Effect 1', text='Effect 1')
+            tree.heading('Effect 2', text='Effect 2')
+            tree.heading('Effect 3', text='Effect 3')
+
+            tree.column('Slot', width=25)
+            tree.column('Type', width=50)
+            tree.column('Color', width=55)
+            tree.column('Relic Name', width=150)
+            tree.column('ID', width=70)
+            tree.column('Effect 1', width=120)
+            tree.column('Effect 2', width=120)
+            tree.column('Effect 3', width=120)
+
+            tree.pack(fill='both', expand=True, padx=5, pady=5)
+
+            # Bind mousewheel to tree
+            tree.bind("<MouseWheel>", _on_vessels_mousewheel)
+
+            # Configure color tags for the treeview
+            for color_name, color_hex in RELIC_COLOR_HEX.items():
+                if color_name:
+                    tree.tag_configure(color_name, foreground=color_hex)
+            # Add special tag for empty slots
+            tree.tag_configure('empty', foreground='#666666')
+            # Add tag for color mismatch (wrong color relic in slot)
+            tree.tag_configure('mismatch', foreground='#FF6B6B', background='#331111')
+            # Add White/Universal color
+            tree.tag_configure('White', foreground='#FFFFFF')
+            # Add tag for deep relic slots (slots 4-6) - just use a subtle indicator
+            tree.tag_configure('deep_slot', foreground='#9999BB')
+
+            # Bind right-click for context menu
+            tree.bind('<Button-3>', lambda e, v=i: self.show_vessel_context_menu(e, v))
+            # Bind double-click to open replace dialog
+            tree.bind('<Double-1>', lambda e, v=i: self.on_vessel_relic_double_click(e, v))
+
+            self.vessel_frames.append(vessel_frame)
+            self.vessel_trees.append(tree)
+
+        # Store status labels for updating
+        self.vessel_status_labels = []
+        for frame in self.vessel_frames:
+            # Find the status label in each frame
+            for child in frame.winfo_children():
+                if isinstance(child, ttk.Label):
+                    self.vessel_status_labels.append(child)
+                    break
+
+        # ============================================
+        # PRESETS SECTION
+        # ============================================
+        self.presets_section = ttk.LabelFrame(self.vessels_inner_frame, text="📁 Saved Presets")
+        self.presets_section.grid(row=7, column=0, padx=5, pady=10, sticky='nsew')
+
+        # Modern card-based layout - no internal scroll, expands with content
+        # Cards flow naturally and main vessels canvas handles all scrolling
+        self.presets_cards_frame = tk.Frame(self.presets_section, bg='#2a2a3d')
+        self.presets_cards_frame.pack(fill='both', expand=True, padx=2, pady=2)
+
+        # Bind mousewheel to scroll the main vessels canvas
+        self.presets_cards_frame.bind("<MouseWheel>", _on_vessels_mousewheel)
+        self.presets_section.bind("<MouseWheel>", _on_vessels_mousewheel)
+
+        # Store preset data for lookup (widget -> preset info)
+        self.preset_data_map = {}
+
+        # Configure grid weights (single column)
+        for i in range(8):  # 7 vessels + 1 presets section
+            self.vessels_inner_frame.grid_rowconfigure(i, weight=1)
+        self.vessels_inner_frame.grid_columnconfigure(0, weight=1)
+
+    def refresh_vessels(self):
+        """Refresh the vessels display for the selected character"""
+        if data is None:
+            return
+
+        char_name = self.vessel_char_var.get()
+        loadout = get_character_loadout(char_name)
+
+        # Clear and populate each vessel tree
+        for vessel_slot, tree in enumerate(self.vessel_trees):
+            # Clear existing items
+            for item in tree.get_children():
+                tree.delete(item)
+
+            # Get vessel info for this character
+            vessel_data_info = get_vessel_info(char_name, vessel_slot)
+            vessel_name = vessel_data_info['name']
+
+            # Update vessel frame title with actual vessel name
+            if vessel_slot < len(self.vessel_frames):
+                self.vessel_frames[vessel_slot].config(text=vessel_name)
+
+                vessel_info = loadout.get(vessel_slot, {})
+                has_relics = vessel_info.get('has_relics', False)
+
+                # Update status label
+                if vessel_slot < len(self.vessel_status_labels):
+                    if has_relics:
+                        # Has relics = definitely unlocked
+                        relic_count = sum(1 for _, r in vessel_info.get('relics', []) if r is not None)
+                        self.vessel_status_labels[vessel_slot].config(
+                            text=f"✅ Unlocked ({relic_count}/6 relics)",
+                            foreground='green')
+                    elif vessel_slot == 0:
+                        # Slot 0 is always unlocked (default vessel)
+                        self.vessel_status_labels[vessel_slot].config(
+                            text="✅ Unlocked (Empty)",
+                            foreground='green')
+                    else:
+                        # Empty non-zero slots - status unknown
+                        self.vessel_status_labels[vessel_slot].config(
+                            text="❓ Empty (Status Unknown)",
+                            foreground='#888888')
+
+            # Get relics for this vessel
+            vessel_info = loadout.get(vessel_slot, {'relics': [], 'unlocked': False})
+            relics = vessel_info.get('relics', [])
+
+            # Ensure we always have 6 slots displayed (3 normal + 3 deep relic slots)
+            while len(relics) < 6:
+                relics.append((0, None))
+            # Only show first 6 slots
+            relics = relics[:6]
+
+            for idx, (ga, relic_info) in enumerate(relics):
+                # Determine if this is a deep slot (slots 4-6, index 3-5)
+                is_deep_slot = idx >= 3
+                slot_type = "🔮 Deep" if is_deep_slot else "Normal"
+
+                if relic_info:
+                    # Get effect names (full text, no truncation)
+                    effect_names = []
+                    for eff in relic_info['effects']:
+                        if eff == 0:
+                            effect_names.append("None")
+                        elif eff == 4294967295:
+                            effect_names.append("Empty")
+                        elif str(eff) in effects_json:
+                            eff_name = effects_json[str(eff)]["name"].replace('\n', ' ').strip()
+                            effect_names.append(eff_name)
+                        else:
+                            effect_names.append(f"Unknown")
+
+                    # Get relic color
+                    relic_color = relic_info.get('color', 'Unknown')
+                    relic_color_display = relic_color if relic_color else "?"
+
+                    # Build tags - use relic color for coloring, deep_slot for background
+                    tags = [relic_color]
+                    if is_deep_slot:
+                        tags.append('deep_slot')
+
+                    tree.insert('', 'end', values=(
+                        idx + 1,
+                        slot_type,
+                        relic_color_display,
+                        relic_info['name'],
+                        relic_info['real_id'],
+                        effect_names[0],
+                        effect_names[1],
+                        effect_names[2]
+                    ), tags=tuple(tags))
+                else:
+                    # Empty slot
+                    tags = ['empty']
+                    if is_deep_slot:
+                        tags.append('deep_slot')
+
+                    tree.insert('', 'end', values=(
+                        idx + 1,
+                        slot_type,
+                        "-",
+                        "(Empty)",
+                        "-",
+                        "-",
+                        "-",
+                        "-"
+                    ), tags=tuple(tags))
+
+            # Auto-size columns after populating
+            autosize_treeview_columns(tree)
+
+        # Refresh presets section
+        self.refresh_presets()
+
+    def refresh_presets(self):
+        """Refresh the presets display with modern card layout"""
+        # Clear existing cards
+        for widget in self.presets_cards_frame.winfo_children():
+            widget.destroy()
+        self.preset_data_map = {}
+
+        char_name = self.vessel_char_var.get()
+        char_id = CHARACTER_NAMES.index(char_name) if char_name in CHARACTER_NAMES else -1
+
+        if char_id == -1:
+            return
+
+        # Helper to bind mousewheel scrolling to all widgets in a tree
+        def bind_scroll_recursive(widget):
+            """Bind mousewheel to widget and all descendants for main vessels canvas scrolling"""
+            def scroll_vessels(event):
+                self.vessels_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            widget.bind("<MouseWheel>", scroll_vessels)
+            for child in widget.winfo_children():
+                bind_scroll_recursive(child)
+
+        # Build a lookup dict from ga_relic list for quick access (with effects)
+        ga_to_relic_info = {}
+        for relic in ga_relic:
+            if len(relic) >= 5:
+                ga_handle = relic[0]
+                item_id = relic[1]
+                real_id = item_id - 2147483648 if item_id > 2147483648 else item_id
+                item_info = items_json.get(str(real_id), {})
+                is_deep = 2000000 <= real_id <= 2019999
+                effects = [relic[2], relic[3], relic[4]] if len(relic) >= 5 else []
+                curses = [relic[5], relic[6], relic[7]] if len(relic) >= 8 else []
+                ga_to_relic_info[ga_handle] = {
+                    'name': item_info.get('name', f'ID:{real_id}'),
+                    'color': item_info.get('color', 'Unknown'),
+                    'real_id': real_id,
+                    'is_deep': is_deep,
+                    'effects': effects,
+                    'curses': curses
+                }
+
+        # Colors for UI
+        BG_CARD = '#363650'
+        BG_HEADER = '#454570'
+        FG_TEXT = '#e8e8e8'
+        FG_DIM = '#9999aa'
+        FG_EFFECT = '#88cc88'
+        FG_CURSE = '#cc8888'
+
+        color_hex_map = {
+            'Red': '#ff6666', 'Blue': '#6699ff', 'Yellow': '#ddbb44',
+            'Green': '#66cc66', 'Purple': '#bb77ff', 'Orange': '#ff9944',
+            'White': '#cccccc', 'Unknown': '#888888'
+        }
+
+        # Find presets for this character
+        card_row = 0
+        for (preset_char_id, vessel_slot), presets in vessel_presets.items():
+            if preset_char_id != char_id:
+                continue
+
+            for preset in presets:
+                preset_name = preset.get('name', 'Unknown')
+                ga_handles = preset.get('ga_handles', [])
+
+                # Collect relic info with names and effects grouped per relic
+                relic_data_list = []  # For color indicators
+                relics_with_effects = []  # List of (relic_name, color, is_deep, effects, curses)
+
+                for ga in ga_handles:
+                    if ga != 0 and (ga & 0xF0000000) == ITEM_TYPE_RELIC:
+                        relic_info = ga_to_relic_info.get(ga)
+                        if relic_info:
+                            color = relic_info.get('color', 'Unknown')
+                            is_deep = relic_info.get('is_deep', False)
+                            relic_name = relic_info.get('name', 'Unknown Relic')
+                            relic_data_list.append({'color': color, 'is_deep': is_deep})
+
+                            # Collect effects for this relic
+                            effects = []
+                            for eff in relic_info.get('effects', []):
+                                if eff and eff not in [0, -1, 4294967295]:
+                                    eff_name = effects_json.get(str(eff), {}).get('name', f'Effect {eff}')
+                                    effects.append(eff_name)
+
+                            # Collect curses for this relic
+                            curses = []
+                            for curse in relic_info.get('curses', []):
+                                if curse and curse not in [0, -1, 4294967295]:
+                                    curse_name = effects_json.get(str(curse), {}).get('name', f'Curse {curse}')
+                                    curses.append(curse_name)
+
+                            relics_with_effects.append((relic_name, color, is_deep, effects, curses))
+
+                # Get vessel name
+                vessel_info = get_vessel_info(char_name, vessel_slot)
+                vessel_name = vessel_info.get('name', f'Vessel {vessel_slot}')
+
+                # Create card frame
+                card = tk.Frame(self.presets_cards_frame, bg=BG_CARD, relief='flat', bd=0)
+                card.pack(fill='x', padx=8, pady=6)
+
+                # Header row with name, vessel, and color indicators
+                header = tk.Frame(card, bg=BG_HEADER, cursor='hand2')
+                header.pack(fill='x', padx=2, pady=2)
+
+                # Collapse/expand indicator
+                collapse_var = tk.StringVar(value='▼')
+                collapse_lbl = tk.Label(header, textvariable=collapse_var, font=('Segoe UI', 9),
+                                        fg=FG_DIM, bg=BG_HEADER, cursor='hand2')
+                collapse_lbl.pack(side='left', padx=(10, 0), pady=6)
+
+                tk.Label(header, text=f"📋 {preset_name}", font=('Segoe UI', 11, 'bold'),
+                         fg=FG_TEXT, bg=BG_HEADER).pack(side='left', padx=(5, 10), pady=6)
+                tk.Label(header, text=f"({vessel_name})", font=('Segoe UI', 9),
+                         fg=FG_DIM, bg=BG_HEADER).pack(side='left', padx=5)
+
+                # Color indicators on the right
+                colors_frame = tk.Frame(header, bg=BG_HEADER)
+                colors_frame.pack(side='right', padx=10)
+
+                for rd in relic_data_list:
+                    color = rd['color']
+                    is_deep = rd['is_deep']
+                    c_hex = color_hex_map.get(color, '#888888')
+                    indicator = tk.Label(colors_frame, text='●' if not is_deep else '◆',
+                                        font=('Segoe UI', 12), fg=c_hex, bg=BG_HEADER)
+                    indicator.pack(side='left', padx=2)
+
+                # Collapsible content frame
+                content_frame = tk.Frame(card, bg=BG_CARD)
+                content_frame.pack(fill='x')
+
+                # Relics section - show each relic with its effects
+                effects_frame = tk.Frame(content_frame, bg=BG_CARD)
+                effects_frame.pack(fill='x', padx=12, pady=(8, 10))
+
+                if relics_with_effects:
+                    for relic_name, color, is_deep, effects, curses in relics_with_effects:
+                        c_hex = color_hex_map.get(color, FG_EFFECT)
+
+                        # Relic name header with deep indicator
+                        relic_prefix = "🔮 " if is_deep else "◆ "
+                        tk.Label(effects_frame, text=f"{relic_prefix}{relic_name}",
+                                font=('Segoe UI', 9, 'bold'), fg=c_hex, bg=BG_CARD,
+                                anchor='w').pack(anchor='w', pady=(4, 0))
+
+                        # Effects for this relic
+                        for eff_name in effects:
+                            eff_name = eff_name.replace('\n', ' ').replace('\r', ' ').strip()
+                            tk.Label(effects_frame, text=f"    ✦ {eff_name}",
+                                    font=('Segoe UI', 9), fg=c_hex, bg=BG_CARD,
+                                    anchor='w').pack(anchor='w')
+
+                        # Curses for this relic
+                        for curse_name in curses:
+                            curse_name = curse_name.replace('\n', ' ').replace('\r', ' ').strip()
+                            tk.Label(effects_frame, text=f"    ⚠ {curse_name}",
+                                    font=('Segoe UI', 9, 'italic'), fg=FG_CURSE, bg=BG_CARD,
+                                    anchor='w').pack(anchor='w')
+                else:
+                    tk.Label(effects_frame, text="No relics", font=('Segoe UI', 9, 'italic'),
+                             fg=FG_DIM, bg=BG_CARD).pack(anchor='w')
+
+                # Edit button (inside content_frame so it collapses too)
+                btn_frame = tk.Frame(content_frame, bg=BG_CARD)
+                btn_frame.pack(fill='x', padx=10, pady=(0, 8))
+
+                preset_data = {
+                    'char_name': char_name,
+                    'char_id': char_id,
+                    'vessel_slot': vessel_slot,
+                    'preset': preset,
+                    'ga_to_relic_info': ga_to_relic_info
+                }
+
+                edit_btn = ttk.Button(btn_frame, text="✏️ Edit Preset",
+                                      command=lambda pd=preset_data: self.edit_preset_relics(pd))
+                edit_btn.pack(side='right')
+
+                # Toggle function for collapse/expand
+                def make_toggle(cf, cv):
+                    def toggle(event=None):
+                        if cf.winfo_viewable():
+                            cf.pack_forget()
+                            cv.set('▶')
+                        else:
+                            cf.pack(fill='x')
+                            cv.set('▼')
+                    return toggle
+
+                toggle_fn = make_toggle(content_frame, collapse_var)
+                header.bind('<Button-1>', toggle_fn)
+                collapse_lbl.bind('<Button-1>', toggle_fn)
+                # Make all children of header clickable
+                for child in header.winfo_children():
+                    child.bind('<Button-1>', toggle_fn)
+
+                # Bind scroll to all widgets in this card
+                bind_scroll_recursive(card)
+
+                # Store for reference
+                self.preset_data_map[id(card)] = preset_data
+                card_row += 1
+
+        # Show message if no presets
+        if card_row == 0:
+            no_presets = tk.Label(self.presets_cards_frame,
+                                  text="No saved presets for this character",
+                                  font=('Segoe UI', 10, 'italic'), fg=FG_DIM, bg='#2a2a3d')
+            no_presets.pack(pady=20)
+            bind_scroll_recursive(no_presets)
+
+    def edit_preset_relics(self, preset_info):
+        """Open dialog to edit relics in a preset"""
+        # Debug at start of function
+        with open('preset_debug.txt', 'w') as f:
+            f.write("edit_preset_relics called\n")
+            f.write(f"preset_info keys: {preset_info.keys()}\n")
+
+        char_name = preset_info['char_name']
+        vessel_slot = preset_info['vessel_slot']
+        preset = preset_info['preset']
+        ga_to_relic_info = preset_info['ga_to_relic_info']
+
+        preset_name = preset.get('name', 'Unknown')
+        preset_offset = preset.get('offset', 0)
+        ga_handles = preset.get('ga_handles', [])
+
+        # Build extended relic info with effects from ga_relic
+        ga_to_full_info = {}
+        for relic in ga_relic:
+            if len(relic) >= 8:
+                ga_handle = relic[0]
+                item_id = relic[1]
+                real_id = item_id - 2147483648 if item_id > 2147483648 else item_id
+                item_info = items_json.get(str(real_id), {})
+                ga_to_full_info[ga_handle] = {
+                    'name': item_info.get('name', f'ID:{real_id}'),
+                    'color': item_info.get('color', 'Unknown'),
+                    'real_id': real_id,
+                    'effects': [relic[2], relic[3], relic[4]],
+                    'curses': [relic[5], relic[6], relic[7]],
+                    'ga_handle': ga_handle
+                }
+
+        # Create edit dialog - game-like layout
+        dialog = tk.Toplevel(self.root)
+        dialog.title(f"Edit Preset: {preset_name}")
+        dialog.geometry("1100x700")
+        dialog.transient(self.root)
+        dialog.grab_set()
+        dialog.configure(bg='#1a1a2e')
+
+        # Color scheme matching game
+        BG_DARK = '#1a1a2e'
+        BG_PANEL = '#252545'
+        BG_SLOT = '#2d2d50'
+        BG_SLOT_SELECTED = '#4a4a80'
+        FG_TEXT = '#e0e0e0'
+        FG_DIM = '#888899'
+        FG_CURSE = '#cc6666'
+
+        # Store state
+        slot_relic_data = {}
+        selected_slot = tk.IntVar(value=0)
+        slot_frames = []
+
+        def get_effect_name(eff_id):
+            if eff_id in [0, -1, 4294967295]:
+                return None
+            return effects_json.get(str(eff_id), {}).get('name', f'Unknown ({eff_id})')
+
+        # ============ LEFT PANEL ============
+        left_panel = tk.Frame(dialog, bg=BG_DARK, width=420)
+        left_panel.pack(side='left', fill='y', padx=10, pady=10)
+        left_panel.pack_propagate(False)
+
+        # Header
+        header = tk.Label(left_panel, text=f"{char_name} - {preset_name}",
+                          font=('Segoe UI', 12, 'bold'), fg=FG_TEXT, bg=BG_DARK)
+        header.pack(anchor='w', pady=(0, 10))
+
+        vessel_info = get_vessel_info(char_name, vessel_slot)
+        vessel_name = vessel_info.get('name', f'Vessel {vessel_slot}')
+        tk.Label(left_panel, text=vessel_name, font=('Segoe UI', 10),
+                 fg=FG_DIM, bg=BG_DARK).pack(anchor='w')
+
+        # Slots row (horizontal like game UI)
+        slots_frame = tk.Frame(left_panel, bg=BG_DARK)
+        slots_frame.pack(fill='x', pady=15)
+
+        def update_slot_display():
+            """Refresh slot button appearances"""
+            for idx, frame in enumerate(slot_frames):
+                is_selected = selected_slot.get() == idx
+                relic_data = slot_relic_data.get(idx)
+                color = relic_data.get('color', '') if relic_data else ''
+
+                # Background color
+                bg = BG_SLOT_SELECTED if is_selected else BG_SLOT
+                frame.configure(bg=bg)
+                for child in frame.winfo_children():
+                    child.configure(bg=bg)
+
+                # Border color based on relic color
+                border_color = RELIC_COLOR_HEX.get(color, '#555555')
+                frame.configure(highlightbackground=border_color,
+                               highlightcolor=border_color if is_selected else border_color)
+
+        def select_slot(idx):
+            selected_slot.set(idx)
+            update_slot_display()
+            update_details_panel()
+
+        def on_slot_double_click(idx):
+            # Just select the slot - the relic list on the right will auto-update
+            select_slot(idx)
+
+        # Create 6 slot buttons
+        for idx in range(6):
+            is_deep = idx >= 3
+            ga = ga_handles[idx] if idx < len(ga_handles) else 0
+
+            if ga != 0 and (ga & 0xF0000000) == ITEM_TYPE_RELIC:
+                relic_info = ga_to_full_info.get(ga, ga_to_relic_info.get(ga, {}))
+                slot_relic_data[idx] = relic_info
+            else:
+                slot_relic_data[idx] = None
+
+            # Slot frame
+            slot_frame = tk.Frame(slots_frame, bg=BG_SLOT, width=60, height=70,
+                                  highlightthickness=2, highlightbackground='#555555')
+            slot_frame.pack(side='left', padx=3)
+            slot_frame.pack_propagate(False)
+            slot_frames.append(slot_frame)
+
+            # Slot number
+            slot_num = tk.Label(slot_frame, text=f"{'🔮' if is_deep else ''}{idx+1}",
+                               font=('Segoe UI', 9), fg=FG_DIM, bg=BG_SLOT)
+            slot_num.pack(pady=(3, 0))
+
+            # Relic indicator (color square)
+            relic_data = slot_relic_data.get(idx)
+            color = relic_data.get('color', '') if relic_data else ''
+            indicator_color = RELIC_COLOR_HEX.get(color, '#333333')
+            indicator = tk.Frame(slot_frame, bg=indicator_color, width=30, height=30)
+            indicator.pack(pady=5)
+
+            # Bind clicks
+            for widget in [slot_frame, slot_num, indicator]:
+                widget.bind('<Button-1>', lambda e, i=idx: select_slot(i))
+                widget.bind('<Double-Button-1>', lambda e, i=idx: on_slot_double_click(i))
+
+        # Deep slots label
+        tk.Label(left_panel, text="Slots 1-3: Normal  |  Slots 4-6: 🔮 Deep",
+                 font=('Segoe UI', 8), fg=FG_DIM, bg=BG_DARK).pack(anchor='w', pady=(0, 10))
+
+        # Details panel (below slots)
+        details_panel = tk.Frame(left_panel, bg=BG_PANEL, relief='flat')
+        details_panel.pack(fill='both', expand=True, pady=10)
+
+        # Relic name label
+        relic_name_label = tk.Label(details_panel, text="", font=('Segoe UI', 11, 'bold'),
+                                    fg=FG_TEXT, bg=BG_PANEL, anchor='w')
+        relic_name_label.pack(fill='x', padx=10, pady=(10, 5))
+
+        # Effects container
+        effects_container = tk.Frame(details_panel, bg=BG_PANEL)
+        effects_container.pack(fill='both', expand=True, padx=10, pady=5)
+
+        def is_unique_relic(relic_id):
+            """Check if a relic is unique (all effect pools contain only 1 effect each)"""
+            try:
+                pools = data_source.get_relic_pools_seq(relic_id)
+                # Check each non-empty effect pool
+                for pool_id in pools[:3]:  # Only check effect pools, not curse pools
+                    if pool_id == -1:
+                        continue
+                    pool_effects = data_source.get_pool_effects(pool_id)
+                    if len(pool_effects) > 1:
+                        return False  # Has multiple effects, not unique
+                return True  # All pools have 0 or 1 effect
+            except (KeyError, Exception):
+                return True  # If we can't determine, treat as unique (safer)
+
+        def update_details_panel():
+            """Update the details panel with selected slot's relic info"""
+            # Clear effects container
+            for widget in effects_container.winfo_children():
+                widget.destroy()
+
+            idx = selected_slot.get()
+            relic_data = slot_relic_data.get(idx)
+
+            if not relic_data:
+                relic_name_label.config(text="(Empty Slot)")
+                tk.Label(effects_container, text="Double-click slot or use picker to assign a relic",
+                        fg=FG_DIM, bg=BG_PANEL, font=('Segoe UI', 9)).pack(anchor='w')
+                # Disable edit button for empty slots
+                if 'edit_btn' in dir():
+                    edit_btn.config(state='disabled')
+                return
+
+            relic_name_label.config(text=f"📦 {relic_data['name']}")
+
+            # Check if this is a unique relic (can't be edited)
+            real_id = relic_data.get('real_id', 0)
+            is_unique = is_unique_relic(real_id)
+
+            # Show effects and curses paired together (like game UI)
+            effects = relic_data.get('effects', [])
+            curses = relic_data.get('curses', [])
+            color = relic_data.get('color', 'Unknown')
+            color_hex = RELIC_COLOR_HEX.get(color, '#888888')
+
+            for i in range(3):
+                eff = effects[i] if i < len(effects) else 0
+                curse = curses[i] if i < len(curses) else 0
+
+                eff_name = get_effect_name(eff)
+                curse_name = get_effect_name(curse)
+
+                if eff_name or curse_name:
+                    # Effect row frame
+                    row = tk.Frame(effects_container, bg=BG_PANEL)
+                    row.pack(fill='x', pady=3)
+
+                    # Color indicator square
+                    indicator = tk.Frame(row, bg=color_hex, width=12, height=12)
+                    indicator.pack(side='left', padx=(0, 8))
+
+                    # Text container
+                    text_frame = tk.Frame(row, bg=BG_PANEL)
+                    text_frame.pack(side='left', fill='x')
+
+                    # Blessing
+                    if eff_name:
+                        tk.Label(text_frame, text=eff_name, font=('Segoe UI', 9),
+                                fg=FG_TEXT, bg=BG_PANEL, anchor='w').pack(anchor='w')
+
+                    # Curse (in red, italicized)
+                    if curse_name:
+                        tk.Label(text_frame, text=curse_name, font=('Segoe UI', 9, 'italic'),
+                                fg=FG_CURSE, bg=BG_PANEL, anchor='w').pack(anchor='w')
+
+            # Update edit button state based on whether relic is unique
+            # (nonlocal edit_btn defined after button creation)
+            try:
+                if is_unique:
+                    edit_btn.config(state='disabled')
+                else:
+                    edit_btn.config(state='normal')
+            except NameError:
+                pass  # Button not created yet
+
+        # Buttons below details
+        btn_frame = tk.Frame(left_panel, bg=BG_DARK)
+        btn_frame.pack(fill='x', pady=10)
+
+        def clear_selected_slot():
+            idx = selected_slot.get()
+            if not slot_relic_data.get(idx):
+                return
+            if not messagebox.askyesno("Clear Slot", f"Clear relic from slot {idx + 1}?"):
+                return
+            ga_handles[idx] = 0
+            self.write_preset_relic(preset_offset, idx, 0)
+            slot_relic_data[idx] = None
+            update_slot_display()
+            update_details_panel()
+            self.refresh_presets()
+
+        def edit_selected_relic():
+            """Open the modify dialog for the relic in the selected slot"""
+            idx = selected_slot.get()
+            relic_data = slot_relic_data.get(idx)
+            if not relic_data:
+                messagebox.showinfo("No Relic", "Select a slot with a relic to edit.")
+                return
+
+            ga = ga_handles[idx]
+            real_id = relic_data.get('real_id', 0)
+
+            # Release grab so we can interact with the edit dialog
+            dialog.grab_release()
+
+            def refresh_after_edit():
+                # Refresh main inventory (this updates ga_relic)
+                self.refresh_inventory()
+                # Rebuild relic info from updated ga_relic
+                for relic in ga_relic:
+                    if len(relic) >= 8:
+                        ga_handle = relic[0]
+                        item_id = relic[1]
+                        real_id = item_id - 2147483648 if item_id > 2147483648 else item_id
+                        item_info = items_json.get(str(real_id), {})
+                        ga_to_full_info[ga_handle] = {
+                            'name': item_info.get('name', f'ID:{real_id}'),
+                            'color': item_info.get('color', 'Unknown'),
+                            'real_id': real_id,
+                            'effects': [relic[2], relic[3], relic[4]],
+                            'curses': [relic[5], relic[6], relic[7]],
+                        }
+                # Reload relic data for this slot
+                new_relic_data = ga_to_full_info.get(ga)
+                if new_relic_data:
+                    slot_relic_data[idx] = new_relic_data
+                    update_slot_display()
+                    update_details_panel()
+
+            def on_edit_dialog_close():
+                # Restore grab when edit dialog closes
+                if dialog.winfo_exists():
+                    dialog.grab_set()
+
+            # Open or reuse modify dialog
+            if not self.modify_dialog or not self.modify_dialog.dialog.winfo_exists():
+                self.modify_dialog = ModifyRelicDialog(self.root, ga, real_id, refresh_after_edit)
+                self.modify_dialog.dialog.protocol("WM_DELETE_WINDOW", lambda: [self.modify_dialog.dialog.destroy(), on_edit_dialog_close()])
+            else:
+                self.modify_dialog.load_relic(ga, real_id)
+                self.modify_dialog.dialog.lift()
+
+        ttk.Button(btn_frame, text="Clear Slot", command=clear_selected_slot).pack(side='left', padx=5)
+        edit_btn = ttk.Button(btn_frame, text="✏️ Edit Relic", command=edit_selected_relic)
+        edit_btn.pack(side='left', padx=5)
+        ttk.Button(btn_frame, text="Close", command=dialog.destroy).pack(side='right', padx=5)
+
+        # ============ RIGHT PANEL - Relic List Picker ============
+        right_panel = tk.Frame(dialog, bg=BG_DARK)
+        right_panel.pack(side='right', fill='both', expand=True, padx=10, pady=10)
+
+        # Filter bar
+        filter_frame = tk.Frame(right_panel, bg=BG_DARK)
+        filter_frame.pack(fill='x', pady=(0, 10))
+
+        relic_list_title = tk.Label(filter_frame, text="Available Relics", font=('Segoe UI', 11, 'bold'),
+                                    fg=FG_TEXT, bg=BG_DARK)
+        relic_list_title.pack(side='left')
+
+        # Show all colors checkbox
+        show_all_colors_var = tk.BooleanVar(value=False)
+        show_all_cb = ttk.Checkbutton(filter_frame, text="Show all colors",
+                                       variable=show_all_colors_var)
+        show_all_cb.pack(side='right', padx=5)
+
+        # Search entry
+        search_var = tk.StringVar()
+        search_entry = ttk.Entry(filter_frame, textvariable=search_var, width=20)
+        search_entry.pack(side='right', padx=5)
+        tk.Label(filter_frame, text="🔍", font=('Segoe UI', 10), fg=FG_DIM, bg=BG_DARK).pack(side='right')
+
+        # Relic list with columns
+        list_container = tk.Frame(right_panel, bg=BG_DARK)
+        list_container.pack(fill='both', expand=True)
+
+        columns = ('Name', 'Color', 'Effect 1', 'Effect 2', 'Effect 3')
+        relic_listbox = ttk.Treeview(list_container, columns=columns, show='headings', height=20)
+        relic_listbox.heading('Name', text='Relic Name')
+        relic_listbox.heading('Color', text='Color')
+        relic_listbox.heading('Effect 1', text='Effect 1')
+        relic_listbox.heading('Effect 2', text='Effect 2')
+        relic_listbox.heading('Effect 3', text='Effect 3')
+
+        relic_listbox.column('Name', width=180)
+        relic_listbox.column('Color', width=60)
+        relic_listbox.column('Effect 1', width=150)
+        relic_listbox.column('Effect 2', width=150)
+        relic_listbox.column('Effect 3', width=150)
+
+        scrollbar = ttk.Scrollbar(list_container, orient='vertical', command=relic_listbox.yview)
+        relic_listbox.configure(yscrollcommand=scrollbar.set)
+        relic_listbox.pack(side='left', fill='both', expand=True)
+        scrollbar.pack(side='right', fill='y')
+
+        # Configure row colors by relic color
+        for color, hex_color in RELIC_COLOR_HEX.items():
+            if color:  # Skip None key
+                relic_listbox.tag_configure(color, foreground=hex_color)
+
+        # Build list of all relics with deep flag from inventory (ga_relic)
+        all_relics = []
+        with open('preset_debug.txt', 'a') as f:
+            f.write(f"Building all_relics from ga_relic ({len(ga_relic)} entries)\n")
+        for relic in ga_relic:
+            if len(relic) >= 2:  # Just need ga_handle and item_id at minimum
+                ga_handle = relic[0]
+                item_id = relic[1]
+                real_id = item_id - 2147483648 if item_id > 2147483648 else item_id
+                item_info = items_json.get(str(real_id), {})
+                # Deep relic check: ID range 2000000-2019999
+                is_deep_relic = 2000000 <= real_id <= 2019999
+                # Get effects/curses if available
+                effects = [relic[2], relic[3], relic[4]] if len(relic) >= 5 else [0, 0, 0]
+                curses = [relic[5], relic[6], relic[7]] if len(relic) >= 8 else [0, 0, 0]
+                all_relics.append({
+                    'ga_handle': ga_handle,
+                    'name': item_info.get('name', f'ID:{real_id}'),
+                    'color': item_info.get('color', 'Unknown'),
+                    'effects': effects,
+                    'curses': curses,
+                    'real_id': real_id,
+                    'is_deep': is_deep_relic
+                })
+        with open('preset_debug.txt', 'a') as f:
+            f.write(f"Built all_relics with {len(all_relics)} entries\n")
+            # Sample first 5 relics
+            for i, r in enumerate(all_relics[:5]):
+                f.write(f"  Sample {i}: {r['name']}, color={r['color']}, is_deep={r['is_deep']}\n")
+
+        # Store relic data by treeview item ID
+        item_to_relic = {}
+
+        def populate_relic_list():
+            """Populate the relic list based on selected slot and filters"""
+            # Clear existing
+            for item in relic_listbox.get_children():
+                relic_listbox.delete(item)
+            item_to_relic.clear()
+
+            idx = selected_slot.get()
+            is_deep_slot = idx >= 3
+            current_slot_relic = slot_relic_data.get(idx)
+            current_color = current_slot_relic.get('color') if current_slot_relic else None
+
+            search_text = search_var.get().lower()
+            show_all = show_all_colors_var.get()
+
+            # Debug info - append to file
+            with open('preset_debug.txt', 'a') as f:
+                f.write(f"populate_relic_list: slot={idx}, is_deep={is_deep_slot}, "
+                        f"current_color={current_color}, show_all={show_all}, all_relics={len(all_relics)}\n")
+
+            # Update title to show filtering info
+            slot_type = "Deep" if is_deep_slot else "Normal"
+            if current_color and not show_all:
+                relic_list_title.config(text=f"Available {slot_type} Relics ({current_color})")
+            else:
+                relic_list_title.config(text=f"Available {slot_type} Relics (All Colors)")
+
+            filtered = []
+            for relic in all_relics:
+                # Filter by deep/normal based on selected slot
+                if is_deep_slot and not relic['is_deep']:
+                    continue  # Deep slots need deep relics
+                if not is_deep_slot and relic['is_deep']:
+                    continue  # Normal slots need normal relics
+
+                # Color filter (based on current slot's relic color, unless "show all" or slot is empty)
+                if not show_all and current_color and relic['color'] != current_color:
+                    continue
+
+                # Search filter
+                if search_text:
+                    searchable = relic['name'].lower()
+                    for eff in relic['effects']:
+                        eff_name = get_effect_name(eff)
+                        if eff_name:
+                            searchable += ' ' + eff_name.lower()
+                    if search_text not in searchable:
+                        continue
+
+                filtered.append(relic)
+
+            with open('preset_debug.txt', 'a') as f:
+                f.write(f"Filtered to {len(filtered)} relics\n")
+
+            # Populate list
+            for relic in filtered:
+                eff_names = []
+                for eff in relic['effects']:
+                    name = get_effect_name(eff)
+                    # Strip newlines from effect names
+                    if name:
+                        name = name.replace('\n', ' ').replace('\r', ' ').strip()
+                    eff_names.append(name or '-')
+
+                item_id = relic_listbox.insert('', 'end',
+                    values=(relic['name'], relic['color'], eff_names[0], eff_names[1], eff_names[2]),
+                    tags=(relic['color'],))
+                item_to_relic[item_id] = relic
+
+            # Auto-size columns based on content
+            autosize_treeview_columns(relic_listbox)
+
+        def on_slot_changed():
+            """Called when selected slot changes - refresh relic list"""
+            populate_relic_list()
+
+        def assign_selected_relic():
+            """Assign the selected relic to the current slot"""
+            selection = relic_listbox.selection()
+            if not selection:
+                return
+
+            relic_data = item_to_relic.get(selection[0])
+            if not relic_data:
+                return
+
+            idx = selected_slot.get()
+            new_ga = relic_data['ga_handle']
+
+            # Update in memory
+            ga_handles[idx] = new_ga
+
+            # Write to file
+            if self.write_preset_relic(preset_offset, idx, new_ga):
+                slot_relic_data[idx] = relic_data
+                update_slot_display()
+                update_details_panel()
+                populate_relic_list()  # Refresh list (color filter may change)
+                self.refresh_presets()
+
+        # Double-click to assign
+        relic_listbox.bind('<Double-1>', lambda e: assign_selected_relic())
+
+        # Bind filter events
+        search_var.trace_add('write', lambda *args: populate_relic_list())
+        show_all_colors_var.trace_add('write', lambda *args: populate_relic_list())
+
+        # Assign button
+        assign_btn_frame = tk.Frame(right_panel, bg=BG_DARK)
+        assign_btn_frame.pack(fill='x', pady=(10, 0))
+        ttk.Button(assign_btn_frame, text="Assign to Selected Slot",
+                   command=assign_selected_relic).pack(side='left')
+
+        # Override select_slot to also refresh relic list
+        original_select_slot = select_slot
+        def select_slot_with_refresh(idx):
+            original_select_slot(idx)
+            populate_relic_list()
+
+        # Re-bind slot frames to use the new function
+        for idx, frame in enumerate(slot_frames):
+            for widget in [frame] + list(frame.winfo_children()):
+                widget.bind('<Button-1>', lambda e, i=idx: select_slot_with_refresh(i))
+                widget.bind('<Double-Button-1>', lambda e, i=idx: select_slot_with_refresh(i))
+
+        # Initial population
+        update_slot_display()
+        update_details_panel()
+        populate_relic_list()
+
+    def write_preset_relic(self, preset_offset, slot_idx, new_ga_handle):
+        """Write a relic GA handle to a preset slot in the save file"""
+        global data
+        if data is None:
+            return False
+
+        # Preset structure: [vessel_id (4 bytes)] [6 GA handles (4 bytes each)]
+        # GA handles start at offset + 4
+        relic_offset = preset_offset + 4 + (slot_idx * 4)
+
+        try:
+            struct.pack_into('<I', data, relic_offset, new_ga_handle)
+            return True
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to write preset relic: {e}")
+            return False
+
+    def show_preset_relic_replacement_dialog(self, parent_dialog, relic_tree, slot_items,
+                                             ga_handles, slot_idx, is_deep, current_color,
+                                             preset_offset, char_name, vessel_slot, preset_name,
+                                             slot_relic_data=None, update_details_func=None,
+                                             ga_to_full_info=None):
+        """Show dialog to select a replacement relic for a preset slot"""
+        dialog = tk.Toplevel(parent_dialog)
+        dialog.title(f"Select Relic for Slot {slot_idx + 1}")
+        dialog.geometry("950x600")
+        dialog.transient(parent_dialog)
+        dialog.grab_set()
+
+        # Options frame
+        options_frame = ttk.Frame(dialog)
+        options_frame.pack(fill='x', padx=10, pady=5)
+
+        # Color filter option
+        any_color_var = tk.BooleanVar(value=False)
+
+        def refresh_list():
+            self.refresh_preset_relic_list(
+                replacement_tree, details_text, current_color,
+                any_color_var.get(), is_deep, search_var.get()
+            )
+
+        ttk.Checkbutton(options_frame, text="Show all colors", variable=any_color_var,
+                        command=refresh_list).pack(side='left', padx=5)
+
+        # Search
+        ttk.Label(options_frame, text="Search:").pack(side='left', padx=5)
+        search_var = tk.StringVar()
+        search_entry = ttk.Entry(options_frame, textvariable=search_var, width=30)
+        search_entry.pack(side='left', padx=5)
+        search_var.trace('w', lambda *args: refresh_list())
+
+        # Main content - split into list and details
+        content_frame = ttk.Frame(dialog)
+        content_frame.pack(fill='both', expand=True, padx=10, pady=5)
+
+        # Left side - Relic list
+        list_frame = ttk.LabelFrame(content_frame, text="Available Relics")
+        list_frame.pack(side='left', fill='both', expand=True, padx=(0, 5))
+
+        columns = ('Name', 'Color')
+        replacement_tree = ttk.Treeview(list_frame, columns=columns, show='headings', height=18)
+        replacement_tree.heading('Name', text='Relic Name')
+        replacement_tree.heading('Color', text='Color')
+
+        replacement_tree.column('Name', width=280)
+        replacement_tree.column('Color', width=80)
+
+        scrollbar = ttk.Scrollbar(list_frame, orient='vertical', command=replacement_tree.yview)
+        replacement_tree.configure(yscrollcommand=scrollbar.set)
+
+        replacement_tree.pack(side='left', fill='both', expand=True)
+        scrollbar.pack(side='right', fill='y')
+
+        # Right side - Details panel
+        details_outer = ttk.LabelFrame(content_frame, text="Relic Details")
+        details_outer.pack(side='right', fill='both', expand=True, padx=(5, 0))
+
+        details_text = tk.Text(details_outer, wrap='word', width=45, height=20, font=('Consolas', 9))
+        details_text.pack(fill='both', expand=True, padx=5, pady=5)
+        details_text.config(state='disabled')
+
+        # Configure text tags
+        details_text.tag_configure('title', font=('Segoe UI', 11, 'bold'))
+        details_text.tag_configure('section', font=('Segoe UI', 10, 'bold'), foreground='#4a90d9')
+        details_text.tag_configure('curse', foreground='#cc4444')
+
+        # Populate initial list
+        self.refresh_preset_relic_list(replacement_tree, details_text, current_color, False, is_deep, "")
+
+        # Button frame
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(fill='x', padx=10, pady=10)
+
+        def on_select():
+            selection = replacement_tree.selection()
+            if not selection:
+                messagebox.showwarning("No Selection", "Please select a relic.")
+                return
+
+            # Get relic data from our stored map
+            item_data = replacement_tree.item(selection[0])
+            new_ga = item_data.get('tags', [None])[0]
+            if new_ga is None:
+                return
+            new_ga = int(new_ga)
+
+            values = item_data['values']
+            new_name = values[0]
+            new_color = values[1]
+
+            # Update in memory
+            ga_handles[slot_idx] = new_ga
+
+            # Write to file
+            if self.write_preset_relic(preset_offset, slot_idx, new_ga):
+                # Update the parent tree display
+                slot_label = f"{'🔮 ' if is_deep else ''}Slot {slot_idx + 1}"
+                for item_id, idx in slot_items.items():
+                    if idx == slot_idx:
+                        relic_tree.item(item_id, values=(slot_label, new_name, new_color))
+                        break
+
+                # Update slot_relic_data if provided
+                if slot_relic_data is not None and ga_to_full_info is not None:
+                    slot_relic_data[slot_idx] = ga_to_full_info.get(new_ga)
+
+                # Update details in parent dialog
+                if update_details_func:
+                    update_details_func()
+
+                # Refresh the presets tree in the main window
+                self.refresh_presets()
+                dialog.destroy()
+
+        ttk.Button(btn_frame, text="Select", command=on_select).pack(side='left', padx=5)
+        ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(side='right', padx=5)
+
+        # Double-click to select
+        replacement_tree.bind("<Double-1>", lambda e: on_select())
+
+    def refresh_preset_relic_list(self, tree, details_text, current_color, any_color, is_deep, search_text):
+        """Refresh the list of available relics for preset replacement"""
+        # Clear current items
+        for item in tree.get_children():
+            tree.delete(item)
+
+        search_lower = search_text.lower() if search_text else ""
+
+        # Store relic data for details lookup
+        relic_data_map = {}
+
+        def get_effect_name(eff_id):
+            if eff_id in [0, -1, 4294967295]:
+                return None
+            return effects_json.get(str(eff_id), {}).get('name', f'Unknown ({eff_id})')
+
+        def update_details(event=None):
+            """Update details panel when selection changes"""
+            selection = tree.selection()
+            details_text.config(state='normal')
+            details_text.delete('1.0', 'end')
+
+            if not selection:
+                details_text.insert('end', "Select a relic to view details")
+                details_text.config(state='disabled')
+                return
+
+            ga_handle = tree.item(selection[0]).get('tags', [None])[0]
+            if ga_handle is None:
+                details_text.config(state='disabled')
+                return
+
+            relic_data = relic_data_map.get(int(ga_handle))
+            if not relic_data:
+                details_text.config(state='disabled')
+                return
+
+            # Display relic info
+            details_text.insert('end', f"📦 {relic_data['name']}\n", 'title')
+            details_text.insert('end', f"Color: {relic_data['color']}\n")
+            details_text.insert('end', f"ID: {relic_data['real_id']}\n\n")
+
+            # Effects (Blessings)
+            details_text.insert('end', "✨ BLESSINGS:\n", 'section')
+            effects = relic_data.get('effects', [])
+            has_effects = False
+            for i, eff in enumerate(effects):
+                name = get_effect_name(eff)
+                if name:
+                    has_effects = True
+                    details_text.insert('end', f"  {i+1}. {name}\n")
+            if not has_effects:
+                details_text.insert('end', "  (None)\n")
+
+            details_text.insert('end', "\n")
+
+            # Curses
+            details_text.insert('end', "💀 CURSES:\n", 'section')
+            curses = relic_data.get('curses', [])
+            has_curses = False
+            for i, curse in enumerate(curses):
+                name = get_effect_name(curse)
+                if name:
+                    has_curses = True
+                    details_text.insert('end', f"  {i+1}. {name}\n", 'curse')
+            if not has_curses:
+                details_text.insert('end', "  (None)\n")
+
+            details_text.config(state='disabled')
+
+        # Bind selection event
+        tree.bind('<<TreeviewSelect>>', update_details)
+
+        # Build list of available relics from ga_relic
+        for relic in ga_relic:
+            if len(relic) < 8:
+                continue
+
+            ga_handle = relic[0]
+            item_id = relic[1]
+            real_id = item_id - 2147483648 if item_id > 2147483648 else item_id
+            item_info = items_json.get(str(real_id), {})
+
+            name = item_info.get('name', f'ID:{real_id}')
+            color = item_info.get('color', 'Unknown')
+
+            # Store full relic data for details panel
+            relic_data_map[ga_handle] = {
+                'name': name,
+                'color': color,
+                'real_id': real_id,
+                'effects': [relic[2], relic[3], relic[4]],
+                'curses': [relic[5], relic[6], relic[7]]
+            }
+
+            # Filter by search - also search in effect names
+            if search_lower:
+                effect_names = []
+                for eff in [relic[2], relic[3], relic[4]]:
+                    eff_name = get_effect_name(eff)
+                    if eff_name:
+                        effect_names.append(eff_name.lower())
+                searchable = f"{name.lower()} {' '.join(effect_names)}"
+                if search_lower not in searchable:
+                    continue
+
+            # Filter by color (if not showing all)
+            if not any_color and current_color and color != current_color:
+                continue
+
+            # Insert with GA handle as tag for lookup
+            tree.insert('', 'end', values=(name, color), tags=(str(ga_handle),))
+
+        # Auto-size columns after populating
+        autosize_treeview_columns(tree)
+
+    def show_vessel_context_menu(self, event, vessel_slot):
+        """Show context menu for vessel relic slot"""
+        tree = self.vessel_trees[vessel_slot]
+
+        # Identify which row was clicked
+        item = tree.identify_row(event.y)
+        if not item:
+            return
+
+        # Select the clicked row
+        tree.selection_set(item)
+
+        # Get the slot index (1-based from display, convert to 0-based)
+        values = tree.item(item, 'values')
+        if not values:
+            return
+
+        slot_index = int(values[0]) - 1  # Convert from 1-based to 0-based
+        relic_color = values[2]  # Color column
+        relic_name = values[3]   # Name column
+
+        # Check if slot has a relic (not empty)
+        has_relic = relic_name != "(Empty)" and relic_name != "-"
+
+        # Create context menu
+        menu = tk.Menu(tree, tearoff=0)
+
+        if has_relic:
+            menu.add_command(
+                label=f"Replace Relic ({relic_color})",
+                command=lambda: self.open_replace_relic_dialog(vessel_slot, slot_index)
+            )
+            menu.add_command(
+                label="📋 Copy Relic Effects",
+                command=lambda: self.copy_vessel_relic_effects(vessel_slot, slot_index)
+            )
+            menu.add_command(
+                label="Edit Relic",
+                command=lambda: self.open_edit_relic_dialog(vessel_slot, slot_index)
+            )
+        else:
+            menu.add_command(
+                label="(Empty slot - fill in game first)",
+                state='disabled'
+            )
+
+        # Show the menu
+        menu.tk_popup(event.x_root, event.y_root)
+
+    def on_vessel_relic_double_click(self, event, vessel_slot):
+        """Handle double-click on vessel relic - open replace dialog"""
+        tree = self.vessel_trees[vessel_slot]
+
+        # Identify which row was clicked
+        item = tree.identify_row(event.y)
+        if not item:
+            return
+
+        # Get the slot index
+        values = tree.item(item, 'values')
+        if not values:
+            return
+
+        slot_index = int(values[0]) - 1
+        relic_name = values[3]
+
+        # Only open dialog if slot has a relic
+        if relic_name != "(Empty)" and relic_name != "-":
+            self.open_replace_relic_dialog(vessel_slot, slot_index)
+
+    def open_replace_relic_dialog(self, vessel_slot, slot_index):
+        """Open dialog to replace a relic with another of the same color"""
+        char_name = self.vessel_char_var.get()
+        loadout = get_character_loadout(char_name)
+
+        vessel_info = loadout.get(vessel_slot, {})
+        relics = vessel_info.get('relics', [])
+
+        if slot_index >= len(relics):
+            return
+
+        current_ga, current_relic = relics[slot_index]
+        if not current_relic:
+            messagebox.showinfo("Info", "This slot is empty. Fill it in-game first.")
+            return
+
+        current_color = current_relic.get('color', 'Unknown')
+        is_deep_slot = slot_index >= 3
+
+        # Create dialog
+        dialog = tk.Toplevel(self.root)
+        dialog.title(f"Replace Relic - Slot {slot_index + 1}")
+        dialog.geometry("700x500")
+        dialog.transient(self.root)
+        dialog.grab_set()
+
+        # Current relic info
+        info_frame = ttk.LabelFrame(dialog, text="Current Relic")
+        info_frame.pack(fill='x', padx=10, pady=5)
+
+        info_left = ttk.Frame(info_frame)
+        info_left.pack(side='left', fill='x', expand=True)
+
+        ttk.Label(info_left, text=f"Name: {current_relic['name']}").pack(anchor='w', padx=5)
+        ttk.Label(info_left, text=f"Color: {current_color}").pack(anchor='w', padx=5)
+        ttk.Label(info_left, text=f"ID: {current_relic['real_id']}").pack(anchor='w', padx=5)
+        ttk.Label(info_left, text=f"Slot Type: {'Deep' if is_deep_slot else 'Normal'}").pack(anchor='w', padx=5)
+
+        # Edit button for current relic
+        def edit_current_relic():
+            # Create refresh callback that updates vessels
+            def refresh_after_edit():
+                self.refresh_inventory()
+                self.refresh_vessels()
+                # Refresh the dialog info if still open
+                if dialog.winfo_exists():
+                    # Reload current relic info
+                    new_loadout = get_character_loadout(char_name)
+                    new_vessel_info = new_loadout.get(vessel_slot, {})
+                    new_relics = new_vessel_info.get('relics', [])
+                    if slot_index < len(new_relics):
+                        new_ga, new_relic = new_relics[slot_index]
+                        if new_relic:
+                            # Update labels
+                            for widget in info_left.winfo_children():
+                                widget.destroy()
+                            ttk.Label(info_left, text=f"Name: {new_relic['name']}").pack(anchor='w', padx=5)
+                            ttk.Label(info_left, text=f"Color: {new_relic.get('color', 'Unknown')}").pack(anchor='w', padx=5)
+                            ttk.Label(info_left, text=f"ID: {new_relic['real_id']}").pack(anchor='w', padx=5)
+                            ttk.Label(info_left, text=f"Slot Type: {'Deep' if is_deep_slot else 'Normal'}").pack(anchor='w', padx=5)
+
+            # Open modify dialog
+            if not self.modify_dialog or not self.modify_dialog.dialog.winfo_exists():
+                self.modify_dialog = ModifyRelicDialog(self.root, current_ga, current_relic['real_id'], refresh_after_edit)
+            else:
+                self.modify_dialog.load_relic(current_ga, current_relic['real_id'])
+                self.modify_dialog.dialog.lift()
+
+        info_right = ttk.Frame(info_frame)
+        info_right.pack(side='right', padx=10, pady=5)
+        ttk.Button(info_right, text="✏️ Edit Effects", command=edit_current_relic).pack()
+
+        # Options frame
+        options_frame = ttk.Frame(dialog)
+        options_frame.pack(fill='x', padx=10, pady=5)
+
+        # Checkbox to allow any color
+        any_color_var = tk.BooleanVar(value=False)
+        any_color_cb = ttk.Checkbutton(
+            options_frame,
+            text="Allow any color (for flex slots)",
+            variable=any_color_var,
+            command=lambda: self.refresh_replacement_list(relic_tree, current_color, any_color_var.get(), is_deep_slot)
+        )
+        any_color_cb.pack(side='left', padx=5)
+
+        # Search box
+        ttk.Label(options_frame, text="Search:").pack(side='left', padx=(20, 5))
+        search_var = tk.StringVar()
+        search_entry = ttk.Entry(options_frame, textvariable=search_var, width=30)
+        search_entry.pack(side='left', padx=5)
+        search_var.trace('w', lambda *args: self.refresh_replacement_list(
+            relic_tree, current_color, any_color_var.get(), is_deep_slot, search_var.get()))
+
+        # Relic list
+        list_frame = ttk.LabelFrame(dialog, text=f"Available Relics ({current_color})")
+        list_frame.pack(fill='both', expand=True, padx=10, pady=5)
+
+        columns = ('Name', 'Color', 'ID', 'Effect 1', 'Effect 2', 'Effect 3')
+        relic_tree = ttk.Treeview(list_frame, columns=columns, show='headings', height=15)
+
+        for col in columns:
+            relic_tree.heading(col, text=col)
+        relic_tree.column('Name', width=180)
+        relic_tree.column('Color', width=60)
+        relic_tree.column('ID', width=70)
+        relic_tree.column('Effect 1', width=120)
+        relic_tree.column('Effect 2', width=120)
+        relic_tree.column('Effect 3', width=120)
+
+        vsb = ttk.Scrollbar(list_frame, orient="vertical", command=relic_tree.yview)
+        relic_tree.configure(yscrollcommand=vsb.set)
+
+        relic_tree.pack(side='left', fill='both', expand=True)
+        vsb.pack(side='right', fill='y')
+
+        # Configure color tags
+        for color_name, color_hex in RELIC_COLOR_HEX.items():
+            if color_name:
+                relic_tree.tag_configure(color_name, foreground=color_hex)
+
+        # Store reference to update label
+        self._replace_list_frame = list_frame
+
+        # Populate initial list
+        self.refresh_replacement_list(relic_tree, current_color, False, is_deep_slot)
+
+        # Buttons
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(fill='x', padx=10, pady=10)
+
+        def do_replace():
+            selection = relic_tree.selection()
+            if not selection:
+                messagebox.showwarning("Warning", "Please select a relic to replace with")
+                return
+
+            # Get selected relic GA
+            item = selection[0]
+            new_ga = int(relic_tree.item(item, 'text'))
+
+            # Perform replacement
+            success = self.replace_vessel_relic(char_name, vessel_slot, slot_index, new_ga)
+            if success:
+                dialog.destroy()
+                self.refresh_vessels()
+                messagebox.showinfo("Success", "Relic replaced successfully!")
+
+        ttk.Button(btn_frame, text="Replace", command=do_replace).pack(side='left', padx=5)
+        ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(side='left', padx=5)
+
+    def refresh_replacement_list(self, tree, current_color, allow_any_color, is_deep_slot, search_term=""):
+        """Refresh the replacement relic list based on filters"""
+        # Clear existing items
+        for item in tree.get_children():
+            tree.delete(item)
+
+        # Update frame label
+        if hasattr(self, '_replace_list_frame'):
+            color_text = "Any Color" if allow_any_color else current_color
+            self._replace_list_frame.config(text=f"Available Relics ({color_text})")
+
+        search_lower = search_term.lower()
+
+        # Get relics from inventory that match criteria
+        for relic in ga_relic:
+            ga = relic[0]
+            real_id = relic[1] - 2147483648
+            effects = [relic[2], relic[3], relic[4]]
+
+            # Get item info
+            item_data = items_json.get(str(real_id), {})
+            item_name = item_data.get('name', f'Unknown ({real_id})')
+            item_color = item_data.get('color', 'Unknown')
+
+            # Filter by color unless "any color" is checked
+            if not allow_any_color and item_color != current_color:
+                continue
+
+            # Filter by deep relic status if this is a deep slot
+            relic_is_deep = 2000000 <= real_id <= 2019999
+            if is_deep_slot and not relic_is_deep:
+                continue  # Deep slots need deep relics
+            if not is_deep_slot and relic_is_deep:
+                continue  # Normal slots need normal relics
+
+            # Search filter
+            if search_lower:
+                # Search in name, ID, or effects
+                effect_names = []
+                for eff in effects:
+                    if str(eff) in effects_json:
+                        effect_names.append(effects_json[str(eff)].get('name', '').lower())
+
+                searchable = f"{item_name.lower()} {real_id} {' '.join(effect_names)}"
+                if search_lower not in searchable:
+                    continue
+
+            # Get effect names
+            effect_displays = []
+            for eff in effects:
+                if eff == 0:
+                    effect_displays.append("None")
+                elif eff == 4294967295:
+                    effect_displays.append("Empty")
+                elif str(eff) in effects_json:
+                    effect_displays.append(effects_json[str(eff)].get('name', 'Unknown')[:20])
+                else:
+                    effect_displays.append("Unknown")
+
+            tree.insert('', 'end', text=str(ga), values=(
+                item_name[:30],
+                item_color,
+                real_id,
+                effect_displays[0],
+                effect_displays[1],
+                effect_displays[2]
+            ), tags=(item_color,))
+
+        # Auto-size columns after populating
+        autosize_treeview_columns(tree)
+
+    def replace_vessel_relic(self, char_name, vessel_slot, slot_index, new_ga):
+        """Replace a relic in a vessel slot with a new one"""
+        global data
+
+        char_id = CHARACTER_NAMES.index(char_name) if char_name in CHARACTER_NAMES else -1
+        if char_id < 0:
+            messagebox.showerror("Error", f"Unknown character: {char_name}")
+            return False
+
+        # Get the offset for this relic slot
+        key = (char_id, vessel_slot)
+        if key not in vessel_data:
+            messagebox.showerror("Error", f"Vessel data not found for {char_name} vessel {vessel_slot}")
+            return False
+
+        vessel_info = vessel_data[key]
+        slot_offsets = vessel_info['relic_slot_offsets']
+
+        if slot_index >= len(slot_offsets):
+            messagebox.showerror("Error", f"Invalid slot index: {slot_index}")
+            return False
+
+        offset = slot_offsets[slot_index]
+
+        # Convert data to bytearray for modification, then back to bytes
+        data_array = bytearray(data)
+        struct.pack_into('<I', data_array, offset, new_ga)
+        data = bytes(data_array)
+
+        # Update the vessel_data cache
+        vessel_info['ga_handles'][slot_index] = new_ga
+
+        # Update character_vessels cache
+        if char_name in character_vessels and vessel_slot in character_vessels[char_name]:
+            character_vessels[char_name][vessel_slot][slot_index] = new_ga
+
+        return True
+
+    def open_edit_relic_dialog(self, vessel_slot, slot_index):
+        """Open dialog to edit a relic's effects from the vessel page"""
+        char_name = self.vessel_char_var.get()
+        char_id = CHARACTER_NAMES.index(char_name) if char_name in CHARACTER_NAMES else -1
+        if char_id < 0:
+            messagebox.showerror("Error", f"Unknown character: {char_name}")
+            return
+
+        # Get the GA handle for this slot
+        key = (char_id, vessel_slot)
+        if key not in vessel_data:
+            messagebox.showerror("Error", f"Vessel data not found")
+            return
+
+        ga_handles = vessel_data[key]['ga_handles']
+        if slot_index >= len(ga_handles):
+            messagebox.showerror("Error", f"Invalid slot index")
+            return
+
+        ga_handle = ga_handles[slot_index]
+        if ga_handle == 0:
+            messagebox.showwarning("Warning", "Empty slot - no relic to edit")
+            return
+
+        # Find the relic in ga_relic to get its item_id
+        for ga, id_val, e1, e2, e3, se1, se2, se3, offset, size in ga_relic:
+            if ga == ga_handle:
+                real_id = id_val - 2147483648
+
+                # Create refresh callback that updates both inventory and vessels
+                def refresh_both():
+                    self.refresh_inventory()
+                    self.refresh_vessels()
+
+                # Open or update the modify dialog
+                if not self.modify_dialog or not self.modify_dialog.dialog.winfo_exists():
+                    self.modify_dialog = ModifyRelicDialog(self.root, ga_handle, real_id, refresh_both)
+                else:
+                    self.modify_dialog.load_relic(ga_handle, real_id)
+                    self.modify_dialog.dialog.lift()
+                return
+
+        messagebox.showerror("Error", "Could not find relic data")
+
+    def copy_vessel_relic_effects(self, vessel_slot, slot_index):
+        """Copy effects from a relic in a vessel slot to clipboard"""
+        char_name = self.vessel_char_var.get()
+        char_id = CHARACTER_NAMES.index(char_name) if char_name in CHARACTER_NAMES else -1
+        if char_id < 0:
+            messagebox.showerror("Error", f"Unknown character: {char_name}")
+            return
+
+        # Get the GA handle for this slot
+        key = (char_id, vessel_slot)
+        if key not in vessel_data:
+            messagebox.showerror("Error", f"Vessel data not found")
+            return
+
+        ga_handles = vessel_data[key]['ga_handles']
+        if slot_index >= len(ga_handles):
+            messagebox.showerror("Error", f"Invalid slot index")
+            return
+
+        ga_handle = ga_handles[slot_index]
+        if ga_handle == 0:
+            messagebox.showwarning("Warning", "Empty slot - no relic to copy")
+            return
+
+        # Find the relic in ga_relic to get its effects
+        for ga, id_val, e1, e2, e3, se1, se2, se3, offset, size in ga_relic:
+            if ga == ga_handle:
+                real_id = id_val - 2147483648
+                effects = [e1, e2, e3, se1, se2, se3]
+                item_name = items_json.get(str(real_id), {}).get("name", f"Unknown ({real_id})")
+                self.clipboard_effects = (effects, real_id, item_name)
+
+                effect_count = len([e for e in effects if e != 0])
+                messagebox.showinfo("Copied", f"Copied effects from:\n{item_name}\n\nEffects: {effect_count} effect(s)")
+                return
+
+        messagebox.showerror("Error", "Could not find relic data")
+
+    def save_loadout(self):
+        """Save the current character's loadout to a JSON file"""
+        if data is None:
+            messagebox.showwarning("Warning", "No character loaded")
+            return
+
+        char_name = self.vessel_char_var.get()
+        loadout = get_character_loadout(char_name)
+
+        # Convert to serializable format
+        save_data = {
+            'character': char_name,
+            'vessels': {}
+        }
+
+        for vessel_slot, vessel_info in loadout.items():
+            relics = vessel_info.get('relics', [])
+            vessel_relics = []
+            for ga, relic_info in relics:
+                if relic_info:
+                    vessel_relics.append({
+                        'ga': ga,
+                        'real_id': relic_info['real_id'],
+                        'name': relic_info['name'],
+                        'color': relic_info.get('color', 'Unknown'),
+                        'effects': relic_info['effects'],
+                        'curses': relic_info['curses']
+                    })
+                else:
+                    vessel_relics.append(None)
+            save_data['vessels'][str(vessel_slot)] = {
+                'unlocked': vessel_info.get('unlocked', False),
+                'relics': vessel_relics
+            }
+
+        # Ask for save location
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json")],
+            initialfile=f"{char_name}_loadout.json",
+            title="Save Loadout"
+        )
+
+        if file_path:
+            try:
+                with open(file_path, 'w') as f:
+                    json.dump(save_data, f, indent=2)
+                messagebox.showinfo("Success", f"Loadout saved to {file_path}")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to save loadout: {e}")
+
+    def load_loadout(self):
+        """Load a loadout from a JSON file and apply it"""
+        if data is None:
+            messagebox.showwarning("Warning", "No character loaded")
+            return
+
+        file_path = filedialog.askopenfilename(
+            filetypes=[("JSON files", "*.json")],
+            title="Load Loadout"
+        )
+
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, 'r') as f:
+                loadout_data = json.load(f)
+
+            # Show what will be loaded
+            char_name = loadout_data.get('character', 'Unknown')
+            vessels = loadout_data.get('vessels', {})
+
+            # Build summary
+            summary_lines = [f"Loadout from: {char_name}", ""]
+            for vessel_slot, relics in vessels.items():
+                relic_names = [r['name'] if r else "(Empty)" for r in relics]
+                summary_lines.append(f"Vessel {vessel_slot}: {', '.join(relic_names[:3])}...")
+
+            summary = "\n".join(summary_lines[:10])
+
+            messagebox.showinfo("Loadout Preview",
+                f"{summary}\n\nNote: Applying loadouts will be available in a future update.\n"
+                "Currently you can view and save loadouts.")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load loadout: {e}")
+
     def setup_inventory_tab(self):
         # Controls frame
         controls_frame = ttk.Frame(self.inventory_tab)
@@ -1334,8 +3861,9 @@ class SaveEditorGUI:
         inv_frame.pack(fill='both', expand=True, padx=10, pady=5)
 
         # Treeview for relics (added Equipped By and Deep columns)
+        # Note: "Curse" columns show curse effects for deep relics
         columns = ('Item Name', 'Deep', 'Item ID', 'Color', 'Equipped By', 'Effect 1', 'Effect 2', 'Effect 3',
-                   'Sec Effect 1', 'Sec Effect 2', 'Sec Effect 3')
+                   'Curse 1', 'Curse 2', 'Curse 3')
 
         self.tree = ttk.Treeview(inv_frame, columns=columns, show='tree headings', height=20)
 
@@ -1346,16 +3874,16 @@ class SaveEditorGUI:
         # Set column widths - more space for effect names
         col_widths = {
             'Item Name': 180,
-            'Deep': 35,
+            'Deep': 40,
             'Item ID': 80,
             'Color': 70,
             'Equipped By': 120,
             'Effect 1': 200,
             'Effect 2': 200,
             'Effect 3': 200,
-            'Sec Effect 1': 200,
-            'Sec Effect 2': 200,
-            'Sec Effect 3': 200
+            'Curse 1': 180,
+            'Curse 2': 180,
+            'Curse 3': 180
         }
 
         for col in columns:
@@ -1533,7 +4061,7 @@ class SaveEditorGUI:
 
         try:
             with open(path, "rb") as f:
-                data = f.read()
+                data = bytearray(f.read())  # Use bytearray for in-place modifications
 
             # Parse items
             gaprint(data)
@@ -1553,6 +4081,7 @@ class SaveEditorGUI:
             # Refresh all tabs
             self.refresh_inventory()
             self.refresh_stats()
+            self.refresh_vessels()
 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load character: {str(e)}")
@@ -1786,27 +4315,32 @@ class SaveEditorGUI:
             if passes_search and passes_char and passes_color and passes_status:
                 filtered_relics.append(relic)
 
+        # Configure tags once before populating
+        self.tree.tag_configure('both', foreground='blue', font=('Arial', 9, 'bold'))
+        self.tree.tag_configure('forbidden', foreground='#FF8C00', font=('Arial', 9, 'bold'))
+        self.tree.tag_configure('curse_illegal', foreground='#9932CC', font=('Arial', 9, 'bold'))
+        self.tree.tag_configure('illegal', foreground='red', font=('Arial', 9, 'bold'))
+        self.tree.tag_configure('deep', foreground='#9999BB')  # Subtle color for deep relics, no background
+
         # Populate treeview with filtered results
         for relic in filtered_relics:
-            deep_indicator = "✓" if relic.get('is_deep', False) else ""
+            is_deep = relic.get('is_deep', False)
+            deep_indicator = "🔮" if is_deep else ""  # Crystal ball emoji for deep relics
+
+            # Build tags list - include 'deep' tag for deep relics
+            tags = list(relic['tag_list'])
+            if is_deep:
+                tags.append('deep')
+
             self.tree.insert('', 'end', text=str(relic['index']),
                            values=(relic['item_name'], deep_indicator, relic['real_id'], relic['item_color'],
                                   relic.get('equipped_by_str', '-'),
                                   relic['effect_names'][0], relic['effect_names'][1], relic['effect_names'][2],
                                   relic['effect_names'][3], relic['effect_names'][4], relic['effect_names'][5]),
-                           tags=relic['tag_list'])
+                           tags=tuple(tags))
 
-            # Color forbidden relics orange (priority over illegal)
-            if relic['is_forbidden'] and relic['is_illegal']:
-                self.tree.tag_configure('both', foreground='blue', font=('Arial', 9, 'bold'))
-            elif relic['is_forbidden']:
-                self.tree.tag_configure('forbidden', foreground='#FF8C00', font=('Arial', 9, 'bold'))
-            # Color curse-illegal relics purple
-            elif relic.get('is_curse_illegal', False):
-                self.tree.tag_configure('curse_illegal', foreground='#9932CC', font=('Arial', 9, 'bold'))
-            # Color illegal relics red
-            elif relic['is_illegal']:
-                self.tree.tag_configure('illegal', foreground='red', font=('Arial', 9, 'bold'))
+        # Auto-size columns after populating
+        autosize_treeview_columns(self.tree)
 
         # Update search info
         filter_active = search_term or char_filter != "All" or color_filter != "All" or status_filter != "All"
@@ -1814,7 +4348,7 @@ class SaveEditorGUI:
             self.search_info_label.config(text=f"Showing {len(filtered_relics)} of {len(self.all_relics)} relics")
         else:
             self.search_info_label.config(text="")
-    
+
     def clear_search(self):
         """Clear the search box and all filters"""
         self.search_var.set("")
@@ -1877,7 +4411,7 @@ class SaveEditorGUI:
 
         # Update column header to show sort indicator
         columns = ('Item Name', 'Deep', 'Item ID', 'Color', 'Equipped By', 'Effect 1', 'Effect 2', 'Effect 3',
-                   'Sec Effect 1', 'Sec Effect 2', 'Sec Effect 3')
+                   'Curse 1', 'Curse 2', 'Curse 3')
         for c in columns:
             indicator = ''
             if c == col:
@@ -2455,6 +4989,9 @@ class ModifyRelicDialog:
                 else:
                     self.effect_name_labels[i].config(text="Unknown Effect")
 
+        # Update curse indicators after loading
+        self._update_curse_indicators()
+
     def _update_color_display(self):
         """Update the current color label"""
         color_map = {0: ("Red", "#ff6666"), 1: ("Blue", "#6666ff"),
@@ -2491,6 +5028,118 @@ class ModifyRelicDialog:
         self._update_color_display()
         self._update_relic_structure_display()
 
+    def _update_illegal_status_display(self, relic_id, effects):
+        """Update the prominent illegal status display with human-readable reasons"""
+        if not hasattr(self, 'status_label'):
+            return
+
+        reasons = []
+
+        try:
+            pools = data_source.get_relic_pools_seq(relic_id)
+        except KeyError:
+            self.status_label.config(text="❌ ILLEGAL: Unknown Relic ID", foreground='red')
+            self.illegal_reason_label.config(text=f"Relic ID {relic_id} does not exist in the game data.")
+            return
+
+        is_illegal = relic_checker.is_illegal(relic_id, effects) if relic_checker else False
+        is_curse_illegal = relic_checker.is_curse_illegal(relic_id, effects) if relic_checker else False
+
+        if not is_illegal and not is_curse_illegal:
+            self.status_label.config(text="✅ VALID", foreground='green')
+            self.illegal_reason_label.config(text="This relic configuration is legal and will work in-game.")
+            return
+
+        # Determine relic type for clearer messaging
+        effect_slot_count = sum(1 for p in pools[:3] if p != -1)
+        curse_slot_count = sum(1 for p in pools[3:] if p != -1)
+        is_deep_relic = curse_slot_count < effect_slot_count  # Deep relics have fewer curse slots
+        relic_type_desc = "Deep Relic" if is_deep_relic else "Normal Relic"
+
+        # Get all pools this relic supports (for checking if effect can exist at all)
+        all_relic_effect_pools = set(p for p in pools[:3] if p != -1)
+
+        # Check each effect - determine if it can exist on this relic type AT ALL
+        for i, eff in enumerate(effects[:3]):
+            if eff in [-1, 0, 4294967295]:
+                continue
+
+            eff_name = effects_json.get(str(eff), {}).get("name", f"Unknown ({eff})")
+            pool_id = pools[i]
+
+            # Get all pools this effect can be in
+            effect_valid_pools = set(data_source.get_effect_pools(eff))
+
+            # Check if effect can be in ANY of this relic's pools
+            can_exist_on_relic = bool(effect_valid_pools & all_relic_effect_pools)
+
+            if pool_id == -1:
+                reasons.append(f"• Effect slot {i+1} is disabled for this relic, but has effect '{eff_name}'")
+            elif not can_exist_on_relic:
+                # Effect can't exist on this relic type at all
+                reasons.append(f"• Effect '{eff_name}' cannot exist on this {relic_type_desc} type (incompatible pools)")
+            else:
+                pool_effects = data_source.get_pool_effects(pool_id)
+                if eff not in pool_effects:
+                    # Effect CAN exist on relic, just in wrong slot - might be fixable by reordering
+                    reasons.append(f"• Effect '{eff_name}' is in wrong slot position (try using 'Find Valid ID' or reorder effects)")
+
+        # Check curses - with better messaging for deep relics
+        if effect_slot_count > 1:
+            for i, eff in enumerate(effects[:3]):
+                if eff in [-1, 0, 4294967295]:
+                    continue
+
+                eff_name = effects_json.get(str(eff), {}).get("name", f"Unknown ({eff})")
+                curse = effects[i + 3]
+                curse_pool = pools[i + 3]
+                needs_curse = data_source.effect_needs_curse(eff)
+
+                if needs_curse:
+                    if curse_pool == -1:
+                        # This is the key case for deep relics
+                        if is_deep_relic:
+                            reasons.append(f"• Effect '{eff_name}' needs a curse, but Deep Relics only have {curse_slot_count} curse slot(s) - this effect can't be in slot {i+1}")
+                        else:
+                            reasons.append(f"• Effect '{eff_name}' needs a curse but this relic has no curse slot {i+1}")
+                    elif curse in [-1, 0, 4294967295]:
+                        reasons.append(f"• Effect '{eff_name}' REQUIRES a curse but Curse slot {i+1} is empty")
+                else:
+                    # Effect doesn't need curse
+                    if curse not in [-1, 0, 4294967295]:
+                        curse_name = effects_json.get(str(curse), {}).get("name", f"Unknown ({curse})")
+                        if curse_pool == -1:
+                            if is_deep_relic:
+                                reasons.append(f"• Deep Relics only have {curse_slot_count} curse slot(s) - can't have curse '{curse_name}' in slot {i+1}")
+                            else:
+                                reasons.append(f"• Curse slot {i+1} has '{curse_name}' but this relic doesn't support curses there")
+                        else:
+                            reasons.append(f"• Effect '{eff_name}' does NOT need a curse, but slot {i+1} has '{curse_name}' - remove it!")
+
+        # Check curse validity
+        for i, curse in enumerate(effects[3:]):
+            if curse in [-1, 0, 4294967295]:
+                continue
+
+            curse_name = effects_json.get(str(curse), {}).get("name", f"Unknown ({curse})")
+            curse_pool = pools[i + 3]
+
+            if curse_pool != -1:
+                pool_curses = data_source.get_pool_effects(curse_pool)
+                if curse not in pool_curses:
+                    reasons.append(f"• Curse '{curse_name}' is not valid for this relic type")
+
+        # Set the display
+        if reasons:
+            self.status_label.config(text="❌ ILLEGAL", foreground='red')
+            self.illegal_reason_label.config(text="\n".join(reasons))
+        elif is_illegal or is_curse_illegal:
+            self.status_label.config(text="❌ ILLEGAL", foreground='red')
+            self.illegal_reason_label.config(text="Effect/curse combination is invalid for this relic type. Check the debug info below for details.")
+        else:
+            self.status_label.config(text="✅ VALID", foreground='green')
+            self.illegal_reason_label.config(text="This relic configuration is legal.")
+
     def update_debug_info(self):
         """Update debug info showing why relic is flagged"""
         if not hasattr(self, 'debug_text'):
@@ -2507,6 +5156,9 @@ class ModifyRelicDialog:
                     effects.append(int(entry.get()))
                 except ValueError:
                     effects.append(4294967295)
+
+            # Update the human-readable status display
+            self._update_illegal_status_display(relic_id, effects)
 
             lines = []
             lines.append(f"Relic ID: {relic_id}")
@@ -2673,6 +5325,17 @@ class ModifyRelicDialog:
         self.dialog.bind("<Enter>", _bind_mousewheel)
         self.dialog.bind("<Leave>", _unbind_mousewheel)
 
+        # Illegal Status Section - prominent display at top
+        self.status_frame = ttk.LabelFrame(scrollable_frame, text="⚠️ Relic Status", padding=10)
+        self.status_frame.pack(fill='x', pady=5)
+
+        self.status_label = ttk.Label(self.status_frame, text="Checking...", font=('Arial', 11, 'bold'))
+        self.status_label.pack(anchor='w')
+
+        self.illegal_reason_label = ttk.Label(self.status_frame, text="", font=('Arial', 10),
+                                               wraplength=650, foreground='#333333')
+        self.illegal_reason_label.pack(anchor='w', pady=(5, 0))
+
         # Modifier Config Section
         modifier_frame = ttk.LabelFrame(scrollable_frame, text="Modifier Configuration", padding=10)
         modifier_frame.pack(fill='x', pady=5)
@@ -2745,31 +5408,34 @@ class ModifyRelicDialog:
         # Effect modification section
         effect_frame = ttk.LabelFrame(scrollable_frame, text="Modify Effects", padding=10)
         effect_frame.pack(fill='x', pady=5)
-        
+
         self.effect_entries = []
         self.effect_name_labels = []
-        effect_labels = ['Effect 1', 'Effect 2', 'Effect 3', 
-                        'Secondary Effect 1', 'Secondary Effect 2', 'Secondary Effect 3']
-        
+        self.slot_labels = []  # Store references to slot labels for updating curse indicators
+        effect_labels = ['Effect 1', 'Effect 2', 'Effect 3',
+                        'Curse 1', 'Curse 2', 'Curse 3']
+
         for i, label in enumerate(effect_labels):
-            # Label
-            ttk.Label(effect_frame, text=f"{label}:", font=('Arial', 10, 'bold')).grid(
-                row=i*2, column=0, sticky='w', pady=(10, 2))
-            
+            # Label with indicator for curse slots
+            is_curse_slot = i >= 3
+            slot_label = ttk.Label(effect_frame, text=f"{label}:", font=('Arial', 10, 'bold'))
+            slot_label.grid(row=i*2, column=0, sticky='w', pady=(10, 2))
+            self.slot_labels.append(slot_label)
+
             # Entry frame
             entry_frame = ttk.Frame(effect_frame)
             entry_frame.grid(row=i*2+1, column=0, sticky='ew', pady=(0, 5))
-            
+
             # Manual entry
             entry = ttk.Entry(entry_frame, width=15)
             entry.pack(side='left', padx=5)
             entry.bind('<KeyRelease>', lambda e, idx=i: self.on_effect_change(idx))
             self.effect_entries.append(entry)
-            
+
             # Search button
-            ttk.Button(entry_frame, text="Search Effects", 
+            ttk.Button(entry_frame, text="Search Effects",
                       command=lambda idx=i: self.search_effects(idx)).pack(side='left', padx=5)
-            
+
             # Effect name display
             name_label = ttk.Label(entry_frame, text="", foreground='blue')
             name_label.pack(side='left', padx=5)
@@ -2838,7 +5504,7 @@ class ModifyRelicDialog:
         """When effect ID is manually entered, update the name display"""
         try:
             effect_id = int(self.effect_entries[index].get())
-            if effect_id == 0:
+            if effect_id in [0, 4294967295, -1]:
                 self.effect_name_labels[index].config(text="None")
             elif str(effect_id) in effects_json:
                 name = effects_json[str(effect_id)]["name"]
@@ -2847,6 +5513,59 @@ class ModifyRelicDialog:
                 self.effect_name_labels[index].config(text="Unknown Effect")
         except ValueError:
             self.effect_name_labels[index].config(text="Invalid ID")
+
+        # Update curse indicators when effect or curse slots change
+        self._update_curse_indicators()
+
+    def _update_curse_indicators(self):
+        """Update curse slot labels to show which ones NEED to be filled"""
+        effect_labels_base = ['Effect 1', 'Effect 2', 'Effect 3',
+                              'Curse 1', 'Curse 2', 'Curse 3']
+
+        for i in range(3):
+            effect_idx = i
+            curse_idx = i + 3
+
+            try:
+                effect_id = int(self.effect_entries[effect_idx].get())
+                curse_id = int(self.effect_entries[curse_idx].get())
+            except ValueError:
+                effect_id = 0
+                curse_id = 0
+
+            # Check if this effect needs a curse
+            needs_curse = False
+            has_curse = curse_id not in [0, -1, 4294967295]
+
+            if effect_id not in [0, -1, 4294967295]:
+                needs_curse = data_source.effect_needs_curse(effect_id)
+
+            # Update the curse slot label
+            base_label = effect_labels_base[curse_idx]
+            if needs_curse and not has_curse:
+                # Needs curse but doesn't have one - show warning
+                self.slot_labels[curse_idx].config(
+                    text=f"⚠️ {base_label} (REQUIRED):",
+                    foreground='red'
+                )
+            elif needs_curse and has_curse:
+                # Needs curse and has one - show satisfied
+                self.slot_labels[curse_idx].config(
+                    text=f"✓ {base_label}:",
+                    foreground='green'
+                )
+            elif not needs_curse and has_curse:
+                # Doesn't need curse but has one - ILLEGAL
+                self.slot_labels[curse_idx].config(
+                    text=f"⛔ {base_label} (ILLEGAL - remove curse):",
+                    foreground='red'
+                )
+            else:
+                # Doesn't need curse and doesn't have one - correct
+                self.slot_labels[curse_idx].config(
+                    text=f"{base_label} (not needed):",
+                    foreground='gray'
+                )
     
     def search_items(self):
         """Open search dialog for items"""
@@ -2926,15 +5645,26 @@ class ModifyRelicDialog:
                 if available_curse_slots < curses_needed:
                     continue
 
+                # Must also have enough curse slots for curses that ARE present
+                if available_curse_slots < curses_present:
+                    continue
+
                 # Check color match (if we have a color preference)
                 relic_color = row["relicColor"]
                 if current_color is not None and relic_color != current_color:
                     continue
 
-                # Check if all current effects are valid in this relic's pools
-                effects_valid = self._check_effects_valid_for_relic(relic_id, current_effects, pools)
+                # Check if effects are valid WITH rearrangement (like the game does)
+                # Use require_curses_present=False so we can find relics where curses CAN be added
+                effects_valid = self._check_effects_valid_for_relic(relic_id, current_effects, pools, require_curses_present=False)
                 if effects_valid:
                     valid_candidates.append(relic_id)
+
+            # Determine which positions NEED curse slots
+            curse_positions_needed = []
+            for i, eff in enumerate(current_effects[:3]):
+                if eff not in [0, -1, 4294967295] and data_source.effect_needs_curse(eff):
+                    curse_positions_needed.append(i + 1)  # 1-indexed for display
 
             if valid_candidates:
                 # Pick the first valid candidate and update the entry
@@ -2945,67 +5675,186 @@ class ModifyRelicDialog:
                 relic_name = items_json.get(str(best_match), {}).get("name", "Unknown")
                 relic_color = items_json.get(str(best_match), {}).get("color", "Unknown")
 
+                # Get the new relic's curse slot configuration
+                new_pools = data_source.get_relic_pools_seq(best_match)
+                curse_slots_info = []
+                for i in range(3):
+                    if new_pools[i + 3] != -1:
+                        curse_slots_info.append(f"Slot {i+1}: enabled")
+                    else:
+                        curse_slots_info.append(f"Slot {i+1}: disabled")
+
                 messagebox.showinfo(
                     "Valid ID Found",
                     f"Found valid relic ID: {best_match}\n"
                     f"Name: {relic_name}\n"
                     f"Color: {relic_color}\n\n"
-                    f"Effects: {effect_count}, Curses needed: {curses_needed}"
+                    f"Curse slots: {', '.join(curse_slots_info)}"
                 )
             else:
+                # Build detailed requirements message
+                positions_str = ", ".join(str(p) for p in curse_positions_needed) if curse_positions_needed else "none"
+
                 messagebox.showwarning(
                     "No Valid ID Found",
                     f"Could not find a valid relic ID that:\n"
                     f"- Has the same color\n"
-                    f"- Supports {effect_count} effect slot(s)\n"
-                    f"- Has at least {curses_needed} curse slot(s) for effects that need them\n"
-                    f"- Has valid pools for all current effects\n\n"
-                    f"Try removing some effects or changing the color requirement."
+                    f"- Has effects in pools at exact positions\n"
+                    f"- Has curse slots at positions: {positions_str}\n\n"
+                    f"Your effects that need curses are in slot(s): {positions_str}\n"
+                    f"No relic of this color has curse slots in those exact positions.\n\n"
+                    f"Options:\n"
+                    f"- Try a different color\n"
+                    f"- Rearrange effects so curse-needing ones are in slots 1-2"
                 )
 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to find valid ID: {str(e)}")
 
-    def _check_effects_valid_for_relic(self, relic_id, effects, pools):
-        """Check if the given effects are valid for the relic's effect pools"""
-        # For each non-empty effect, check if it exists in at least one valid pool
-        for i, effect in enumerate(effects[:3]):
-            if effect in [0, -1, 4294967295]:
-                continue
-            # Check if effect is in any of the effect pools
-            found_in_pool = False
-            for pool_id in pools[:3]:
-                if pool_id == -1:
-                    continue
-                pool_effects = data_source.get_pool_effects(pool_id)
-                if effect in pool_effects:
-                    found_in_pool = True
-                    break
-            if not found_in_pool:
-                return False
+    def _check_effects_valid_for_relic_exact(self, effects, pools):
+        """Check if effects are valid for relic pools WITHOUT rearranging.
 
-        # Check curse effects
-        for i, effect in enumerate(effects[3:]):
-            if effect in [0, -1, 4294967295]:
-                continue
-            # Check if curse effect is in any of the curse pools
-            found_in_pool = False
-            for pool_id in pools[3:]:
-                if pool_id == -1:
-                    continue
-                pool_effects = data_source.get_pool_effects(pool_id)
-                if effect in pool_effects:
-                    found_in_pool = True
-                    break
-            if not found_in_pool:
+        This checks that:
+        1. Each effect in position i is in pool i (or empty/pool is -1)
+        2. Each curse in position i is in curse pool i (or empty/pool is -1)
+        3. Effects that need curses have curse slots available in their position
+        4. Curses present have valid curse pools in their position
+
+        Returns True if the exact current arrangement works for this relic.
+        """
+        for idx in range(3):
+            eff = effects[idx]
+            curse = effects[idx + 3]
+            effect_pool = pools[idx]
+            curse_pool = pools[idx + 3]
+
+            # Check effect placement
+            if eff in [0, -1, 4294967295]:
+                # Empty effect - OK
+                pass
+            elif effect_pool == -1:
+                # Effect present but no pool available - invalid
                 return False
+            else:
+                # Effect must be in its pool
+                pool_effects = data_source.get_pool_effects(effect_pool)
+                if eff not in pool_effects:
+                    return False
+
+                # Check if this effect NEEDS a curse (deep-only effect)
+                if data_source.effect_needs_curse(eff):
+                    if curse_pool == -1:
+                        # Effect needs curse but relic has no curse slot in this position
+                        return False
+
+            # Check curse placement
+            if curse in [0, -1, 4294967295]:
+                # Empty curse - OK
+                pass
+            elif curse_pool == -1:
+                # Curse present but no pool available in this position - invalid
+                return False
+            else:
+                # Curse must be in its pool
+                pool_curses = data_source.get_pool_effects(curse_pool)
+                if curse not in pool_curses:
+                    return False
 
         return True
+
+    def _check_effects_valid_for_relic(self, relic_id, effects, pools, require_curses_present=False):
+        """Check if the given effects are valid for the relic's effect pools.
+
+        Args:
+            relic_id: The relic ID to check
+            effects: List of 6 effect IDs [e1, e2, e3, curse1, curse2, curse3]
+            pools: List of 6 pool IDs for this relic
+            require_curses_present: If True, effects that need curses MUST have curses.
+                                   If False, just check that curse SLOTS exist.
+
+        This checks:
+        1. Each effect can be placed in at least one effect pool
+        2. Each curse can be placed in at least one curse pool
+        3. Effects that need curses have curse slots available
+        4. Curses present have corresponding effect slots available
+        """
+        # Try all possible sequences to find one that works
+        possible_sequences = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0],
+                              [2, 0, 1], [2, 1, 0]]
+
+        for seq in possible_sequences:
+            sequence_valid = True
+            reordered_effects = [effects[i] for i in seq]
+            reordered_curses = [effects[i + 3] for i in seq]
+
+            for idx in range(3):
+                eff = reordered_effects[idx]
+                curse = reordered_curses[idx]
+                effect_pool = pools[idx]
+                curse_pool = pools[idx + 3]
+
+                # Check effect placement
+                if eff in [0, -1, 4294967295]:
+                    # Empty effect - OK
+                    pass
+                elif effect_pool == -1:
+                    # Effect present but no pool available - invalid
+                    sequence_valid = False
+                    break
+                else:
+                    # Effect must be in its pool
+                    pool_effects = data_source.get_pool_effects(effect_pool)
+                    if eff not in pool_effects:
+                        sequence_valid = False
+                        break
+
+                    # Check if this effect NEEDS a curse (deep-only effect)
+                    if data_source.effect_needs_curse(eff):
+                        if curse_pool == -1:
+                            # Effect needs curse but relic has no curse slot here
+                            sequence_valid = False
+                            break
+                        # Only require curse to be present if flag is set
+                        if require_curses_present and curse in [0, -1, 4294967295]:
+                            # Effect needs curse but none provided
+                            sequence_valid = False
+                            break
+
+                # Check curse placement
+                if curse in [0, -1, 4294967295]:
+                    # Empty curse - OK (unless effect needed one, checked above)
+                    pass
+                elif curse_pool == -1:
+                    # Curse present but no pool available - invalid
+                    sequence_valid = False
+                    break
+                else:
+                    # Curse must be in its pool
+                    pool_curses = data_source.get_pool_effects(curse_pool)
+                    if curse not in pool_curses:
+                        sequence_valid = False
+                        break
+
+            if sequence_valid:
+                return True
+
+        return False
 
     def change_relic_color(self, target_color):
         """Change the relic to a different color while keeping effects legal"""
         color_names = {0: "Red", 1: "Blue", 2: "Yellow", 3: "Green"}
         target_color_name = color_names.get(target_color, "Unknown")
+
+        # Guard: Check if relic is assigned to a character or preset
+        assigned_to = ga_to_characters.get(self.ga_handle, [])
+        if assigned_to:
+            messagebox.showwarning(
+                "Cannot Change Color",
+                f"This relic is assigned to: {', '.join(assigned_to)}\n\n"
+                f"Changing the color would break the assignment.\n"
+                f"Please unequip the relic first before changing its color."
+            )
+            return
 
         try:
             # Get current effects from the entry fields
@@ -3020,6 +5869,10 @@ class ModifyRelicDialog:
             # Count how many effect slots are used (non-empty)
             effect_count = sum(1 for e in current_effects[:3] if e not in [0, -1, 4294967295])
             curse_count = sum(1 for e in current_effects[3:] if e not in [0, -1, 4294967295])
+
+            # Count curses NEEDED by effects (deep-only effects require curses)
+            curses_needed = sum(1 for e in current_effects[:3]
+                               if e not in [0, -1, 4294967295] and data_source.effect_needs_curse(e))
 
             # Get current relic's color to check if already the target
             current_relic_id = int(self.item_id_entry.get())
@@ -3067,6 +5920,9 @@ class ModifyRelicDialog:
                     continue
                 if available_curse_slots < curse_count:
                     continue
+                # Must have enough curse slots for effects that NEED curses
+                if available_curse_slots < curses_needed:
+                    continue
 
                 # Check if all current effects are valid in this relic's pools
                 effects_valid = self._check_effects_valid_for_relic(relic_id, current_effects, pools)
@@ -3104,12 +5960,48 @@ class ModifyRelicDialog:
     def search_effects(self, effect_index):
         """Open search dialog for effects"""
         _items = {}
+        is_curse_slot = effect_index >= 3
+
         if self.safe_mode_var.get():
-            _effects = [int(entry.get()) for entry in self.effect_entries]
-            _cut_relic_id = int(self.item_id_entry.get())
-            # _pool_id = data_source.get_relic_pools_seq(_cut_relic_id)[effect_index]
-            _pool_id = data_source.get_adjusted_pool_sequence(_cut_relic_id, _effects)[effect_index]
+            try:
+                _cut_relic_id = int(self.item_id_entry.get())
+            except ValueError:
+                messagebox.showerror("Error", "Invalid relic ID in entry field")
+                return
+
+            try:
+                _effects = [int(entry.get()) for entry in self.effect_entries]
+                _pools = data_source.get_adjusted_pool_sequence(_cut_relic_id, _effects)
+                _pool_id = _pools[effect_index]
+            except (KeyError, IndexError, ValueError) as e:
+                messagebox.showerror("Error", f"Could not get pool for relic {_cut_relic_id}: {e}")
+                return
+
             _pool_effects = data_source.get_pool_effects(_pool_id)
+
+            # For curse slots (index >= 3), if this specific pool is disabled,
+            # use ALL available curse pools combined (game rearranges internally)
+            if not _pool_effects and is_curse_slot:
+                # Combine effects from all available curse pools
+                all_curse_effects = set()
+                for i in range(3):
+                    curse_pool = _pools[3 + i]
+                    if curse_pool != -1:
+                        pool_effects = data_source.get_pool_effects(curse_pool)
+                        all_curse_effects.update(pool_effects)
+                _pool_effects = list(all_curse_effects)
+
+            if not _pool_effects:
+                # Slot is disabled and no alternatives available
+                slot_type = "effect" if effect_index < 3 else "curse"
+                slot_num = (effect_index % 3) + 1
+                messagebox.showinfo(
+                    "Slot Disabled",
+                    f"This relic has no {slot_type} slots available.\n"
+                    f"Try finding a different relic ID with 'Find Valid ID'."
+                )
+                return
+
             _effect_params_df = data_source.effect_params.copy()
             _effect_params_df = _effect_params_df[_effect_params_df.index.isin(_pool_effects)]
             match effect_index:
@@ -3150,7 +6042,12 @@ class ModifyRelicDialog:
             _items = data_source.cvrt_filtered_effect_origin_structure(_effect_params_df)
         else:
             _items = effects_json
-        SearchDialog(self.dialog, _items, f"Select Effect {effect_index + 1}", 
+
+        # For curse slots, add "No Curse (Empty)" option at the top
+        if is_curse_slot:
+            _items = {"4294967295": {"name": "🚫 No Curse (Empty)"}, **_items}
+
+        SearchDialog(self.dialog, _items, f"Select Effect {effect_index + 1}",
                     lambda item_id: self.on_effect_selected(effect_index, item_id))
     
     def on_item_selected(self, item_id):
