@@ -41,7 +41,7 @@ class RelicChecker:
         Args:
             relic_id: The relic ID to check
             effects: List of 6 effect IDs [e1, e2, e3, curse1, curse2, curse3]
-            allow_empty_curses: If True, allow empty curse slots even if pool requires curse
+            allow_empty_curses: If True, allow empty curse slots even if effect needs curse
                                (used to check if only curse is missing vs wrong effects)
         """
         # Load relic effects pool data
@@ -61,26 +61,53 @@ class RelicChecker:
         test_results = []
         for seq in possible_sequences:
             cur_effects = [effects[i] for i in seq]
-            cur_effects.extend([effects[i+3] for i in seq])
+            cur_curses = [effects[i+3] for i in seq]
             test_result = []
-            for idx, eff in enumerate(cur_effects):
-                is_curse_slot = idx >= 3
+
+            # Check effects (indices 0-2)
+            for idx in range(3):
+                eff = cur_effects[idx]
                 if pools[idx] == -1:
-                    if eff != 4294967295:  # 4294967295 means Empty
+                    if eff not in [-1, 0, 4294967295]:  # Must be empty
                         test_result.append(False)
                     else:
                         test_result.append(True)
                 else:
-                    # Allow empty curse slots if flag is set
-                    if allow_empty_curses and is_curse_slot and eff in [-1, 0, 4294967295]:
+                    if eff in [-1, 0, 4294967295]:
+                        # Empty effect is OK (slot just not used)
                         test_result.append(True)
                     elif eff not in self.data_source.get_pool_effects(pools[idx]):
                         test_result.append(False)
                     else:
                         test_result.append(True)
-                if idx == 5:
-                    test_results.append(all(test_result))
-                    test_result = []
+
+            # Check curses (indices 3-5)
+            for idx in range(3):
+                curse = cur_curses[idx]
+                eff = cur_effects[idx]
+                curse_pool = pools[idx + 3]
+
+                if curse_pool == -1:
+                    # No curse slot - curse must be empty
+                    if curse not in [-1, 0, 4294967295]:
+                        test_result.append(False)
+                    else:
+                        test_result.append(True)
+                else:
+                    # Curse slot exists
+                    if curse in [-1, 0, 4294967295]:
+                        # Empty curse - check if effect needs one
+                        effect_needs = self._effect_needs_curse(eff)
+                        if effect_needs and not allow_empty_curses:
+                            test_result.append(False)
+                        else:
+                            test_result.append(True)
+                    elif curse not in self.data_source.get_pool_effects(curse_pool):
+                        test_result.append(False)
+                    else:
+                        test_result.append(True)
+
+            test_results.append(all(test_result))
             if test_results[-1]:
                 return True
         return False
