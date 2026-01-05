@@ -24,6 +24,11 @@ LANGUAGE_MAP = {
     "zh_CN": "简体中文",
     "zh_TW": "繁體中文 (台灣)"
 }
+# Character names for vessel assignment
+CHARACTER_NAME_ID = [100000, 100030, 100050, 100010, 100040, 100090,
+                     100070, 100060, 110000, 110010]
+CHARACTER_NAMES = ['Wylder', 'Guardian', 'Ironeye', 'Duchess', 'Raider',
+                   'Revenant', 'Recluse', 'Executor', 'Scholar', 'Undertaker']
 
 
 def get_system_language():
@@ -53,6 +58,10 @@ class SourceDataHandler:
     EFFECT_NAME_FILE_NAMES = [
         "AttachEffectName.fmg.xml",
         "AttachEffectName_dlc01.fmg.xml",
+    ]
+    NPC_NAME_FILE_NAMES = [
+        "NpcName.fmg.xml",
+        "NpcName_dlc01.fmg.xml",
     ]
 
     def __init__(self, language: str = "en_US"):
@@ -86,6 +95,7 @@ class SourceDataHandler:
 
         self.relic_name: Optional[pd.DataFrame] = None
         self.effect_name: Optional[pd.DataFrame] = None
+        self.npc_name: Optional[pd.DataFrame] = None
         self._load_text(language)
 
     def _load_text(self, language: str = "en_US"):
@@ -118,6 +128,27 @@ class SourceDataHandler:
                 _effect_names = _df
             else:
                 _effect_names = pd.concat([_effect_names, _df])
+
+        # Deal with NPC text
+        # Read all NPC xml from language subfolder
+        _npc_names: Optional[pd.DataFrame] = None
+        for file_name in SourceDataHandler.NPC_NAME_FILE_NAMES:
+            _df = pd.read_xml(
+                SourceDataHandler.TEXT_DIR / _lng / file_name,
+                xpath="/fmg/entries/text"
+            )
+            if _npc_names is None:
+                _npc_names = _df
+            else:
+                _npc_names = pd.concat([_npc_names, _df])
+
+        global CHARACTER_NAMES
+        CHARACTER_NAMES.clear()
+        for id in CHARACTER_NAME_ID:
+            _name = _npc_names[_npc_names["id"] == id]["text"].to_list()[0]
+            CHARACTER_NAMES.append(_name)
+
+        self.npc_name = _npc_names
         self.relic_name = _relic_names
         self.effect_name = _effect_names
 
@@ -383,4 +414,4 @@ class SourceDataHandler:
 if __name__ == "__main__":
     source_data_handler = SourceDataHandler("zh_TW")
     t = source_data_handler.get_effect_origin_structure()
-    print(t)
+    print(CHARACTER_NAMES)

@@ -7,7 +7,7 @@ from pathlib import Path
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 from relic_checker import RelicChecker
-from source_data_handler import SourceDataHandler, get_system_language
+from source_data_handler import SourceDataHandler, get_system_language, CHARACTER_NAMES
 from typing import Optional
 import sys
 
@@ -69,9 +69,6 @@ AOB_search='00 00 00 00 0A 00 00 00 ?? ?? 00 00 00 00 00 00 06'
 from_aob_steam= 44
 steam_id=None
 
-# Character names for vessel assignment
-CHARACTER_NAMES = ['Wylder', 'Guardian', 'Ironeye', 'Duchess', 'Raider',
-                   'Revenant', 'Recluse', 'Executor', 'Scholar', 'Undertaker']
 
 # Items type
 ITEM_TYPE_EMPTY = 0x00000000
