@@ -219,6 +219,45 @@ def parse_items(data_type, start_offset, slot_count=5120):
     return items, offset
 
 
+# Global to store acquisition order mapping (GA handle -> acquisition ID from inventory entry)
+ga_acquisition_order = {}
+
+def parse_inventory_acquisition_order(data_type, items_end_offset):
+    """
+    Parse the inventory section to get the acquisition ID of relics.
+    Each inventory entry has a 2-byte acquisition ID at offset +12 within the 14-byte entry.
+    Lower acquisition ID = acquired earlier (oldest).
+    Returns a dict mapping GA handle -> acquisition ID.
+    """
+    global ga_acquisition_order
+    ga_acquisition_order = {}
+
+    # Inventory section starts at items_end_offset + 0x650
+    inventory_start = items_end_offset + 0x650
+
+    # Build set of known relic GA handles for quick lookup
+    relic_ga_set = set()
+    for relic in ga_relic:
+        relic_ga_set.add(relic[0])  # relic[0] is ga_handle
+
+    if not relic_ga_set:
+        return ga_acquisition_order
+
+    # Scan inventory section for relic GA handles
+    # Inventory entries are 14 bytes: [4 bytes prefix] [4 bytes GA handle] [4 bytes unknown] [2 bytes acq_id]
+    inventory_data = data_type[inventory_start:]
+
+    # Scan for GA handles and extract acquisition ID
+    for offset in range(0, min(len(inventory_data) - 14, 0x3000), 2):
+        potential_ga = struct.unpack_from('<I', inventory_data, offset + 4)[0]
+        if potential_ga in relic_ga_set and potential_ga not in ga_acquisition_order:
+            # Extract acquisition ID from last 2 bytes of the 14-byte entry
+            acq_id = struct.unpack_from('<H', inventory_data, offset + 12)[0]
+            ga_acquisition_order[potential_ga] = acq_id
+
+    return ga_acquisition_order
+
+
 def gaprint(data_type):
     global ga_relic, ga_items
     ga_items = []
@@ -232,11 +271,15 @@ def gaprint(data_type):
         ga_items.append((item.gaitem_handle, item.item_id, item.effect_1,
                         item.effect_2, item.effect_3, item.sec_effect1,
                         item.sec_effect2, item.sec_effect3, item.offset, item.size))
-        
+
         if type_bits == ITEM_TYPE_RELIC:
             ga_relic.append((item.gaitem_handle, item.item_id, item.effect_1,
                            item.effect_2, item.effect_3, item.sec_effect1,
                            item.sec_effect2, item.sec_effect3, item.offset, item.size))
+
+    # Parse inventory section to get acquisition order
+    parse_inventory_acquisition_order(data_type, end_offset)
+
     return end_offset
 
 
@@ -3860,16 +3903,17 @@ class SaveEditorGUI:
         inv_frame = ttk.Frame(self.inventory_tab)
         inv_frame.pack(fill='both', expand=True, padx=10, pady=5)
 
-        # Treeview for relics (added Equipped By and Deep columns)
+        # Treeview for relics (with Equipped By and Deep columns)
         # Note: "Curse" columns show curse effects for deep relics
+        # "#" column shows acquisition order (lower = older)
         columns = ('Item Name', 'Deep', 'Item ID', 'Color', 'Equipped By', 'Effect 1', 'Effect 2', 'Effect 3',
                    'Curse 1', 'Curse 2', 'Curse 3')
 
         self.tree = ttk.Treeview(inv_frame, columns=columns, show='tree headings', height=20)
 
-        # Configure columns
+        # Configure columns - # column shows acquisition order
         self.tree.heading('#0', text='#')
-        self.tree.column('#0', width=40, minwidth=40, stretch=False)
+        self.tree.column('#0', width=50, minwidth=50, stretch=False)
 
         # Set column widths - more space for effect names
         col_widths = {
@@ -3890,7 +3934,7 @@ class SaveEditorGUI:
             self.tree.heading(col, text=col, command=lambda c=col: self.sort_by_column(c))
             self.tree.column(col, width=col_widths.get(col, 150), minwidth=80)
 
-        # Also allow sorting by # column
+        # Also allow sorting by # column (sorts by acquisition order)
         self.tree.heading('#0', text='#', command=lambda: self.sort_by_column('#'))
 
         # Track sort state
@@ -4219,10 +4263,15 @@ class SaveEditorGUI:
             elif is_illegal:
                 tag_list.append('illegal')
 
+            # Get acquisition order from inventory section (matches in-game sorting)
+            # Lower number = acquired earlier (oldest)
+            acquisition_order = ga_acquisition_order.get(ga, 999999)
+
             # Store relic data for filtering
             self.all_relics.append({
                 'index': idx + 1,
                 'ga': ga,
+                'acquisition_index': acquisition_order,
                 'item_name': item_name,
                 'real_id': real_id,
                 'item_color': item_color,
@@ -4237,7 +4286,13 @@ class SaveEditorGUI:
                 'is_curse_illegal': is_curse_illegal,
                 'both': is_forbidden and is_illegal
             })
-        
+
+        # Calculate acquisition rank (1, 2, 3...) based on acquisition_index
+        # Sort by acquisition_index and assign ranks
+        sorted_by_acq = sorted(self.all_relics, key=lambda r: r.get('acquisition_index', 999999))
+        for rank, relic in enumerate(sorted_by_acq, start=1):
+            relic['acquisition_rank'] = rank
+
         # Apply current filter (if any)
         self.filter_relics()
     
@@ -4332,7 +4387,8 @@ class SaveEditorGUI:
             if is_deep:
                 tags.append('deep')
 
-            self.tree.insert('', 'end', text=str(relic['index']),
+            # Use acquisition_rank for the # column (1 = oldest, 2 = second oldest, etc.)
+            self.tree.insert('', 'end', text=str(relic.get('acquisition_rank', 0)),
                            values=(relic['item_name'], deep_indicator, relic['real_id'], relic['item_color'],
                                   relic.get('equipped_by_str', '-'),
                                   relic['effect_names'][0], relic['effect_names'][1], relic['effect_names'][2],
@@ -4378,7 +4434,8 @@ class SaveEditorGUI:
         # Define sort key based on column
         def get_sort_key(relic):
             if col == '#':
-                return relic['index']
+                # Sort by acquisition rank (1 = oldest, 2 = second oldest, etc.)
+                return relic.get('acquisition_rank', 999999)
             elif col == 'Item Name':
                 return relic['item_name'].lower()
             elif col == 'Deep':
@@ -4395,11 +4452,11 @@ class SaveEditorGUI:
                 return relic['effect_names'][1].lower()
             elif col == 'Effect 3':
                 return relic['effect_names'][2].lower()
-            elif col == 'Sec Effect 1':
+            elif col == 'Curse 1':
                 return relic['effect_names'][3].lower()
-            elif col == 'Sec Effect 2':
+            elif col == 'Curse 2':
                 return relic['effect_names'][4].lower()
-            elif col == 'Sec Effect 3':
+            elif col == 'Curse 3':
                 return relic['effect_names'][5].lower()
             return 0
 
