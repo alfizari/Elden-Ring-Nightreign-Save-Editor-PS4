@@ -410,6 +410,12 @@ class SourceDataHandler:
                 new_pool_ids.append(-1)
         return new_pool_ids
 
+    def get_relic_slot_count(self, relic_id: int) -> tuple[int, int]:
+        pool_seq: list = self.get_relic_pools_seq(relic_id)
+        effect_slot = pool_seq[:3]
+        curse_slot = pool_seq[3:]
+        return 3-effect_slot.count(-1), 3-curse_slot.count(-1)
+
 
 if __name__ == "__main__":
     source_data_handler = SourceDataHandler("zh_TW")
