@@ -1,3 +1,7 @@
 Source code/Finalctk.py
 Source code/.vscode/*
 Source code/settings.json
+
+# Debug files
+debug.txt
+debug_relic_analysis.txt

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fmg>
+<filename>NpcName.fmg</filename>
+<compression>None</compression>
+<version>DarkSouls3</version>
+<bigendian>False</bigendian>
+<entries>
+<text id="100000">Wylder</text>
+<text id="100010">Duchess</text>
+<text id="100030">Guardian</text>
+<text id="100040">Raider</text>
+<text id="100050">Ironeye</text>
+<text id="100060">Executor</text>
+<text id="100070">Recluse</text>
+<text id="100090">Revenant</text>
+<text id="110000">Scholar</text>
+<text id="110010">Undertaker</text>
+</entries>
+</fmg>
