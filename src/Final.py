@@ -4002,7 +4002,16 @@ class SaveEditorGUI:
         lang_code = next((code for code, name in LANGUAGE_MAP.items() if name == selected_name), "en_US")
         global data_source, items_json, effects_json
         if reload_language(lang_code):
+            # Reload Vessel Character ComboBox Names
+            vessel_char_combobox_idx = self.vessel_char_combo.current()
+            self.vessel_char_combo['values'] = CHARACTER_NAMES
+            self.vessel_char_var.set(CHARACTER_NAMES[vessel_char_combobox_idx])
+            # Reload Inventory Character Filter ComboBox Names
+            filter_combo_idx = self.char_filter_combo.current()
+            self.char_filter_combo['values'] = ["All"] + CHARACTER_NAMES
+            self.char_filter_var.set(self.char_filter_combo['values'][filter_combo_idx])
             self.refresh_inventory()
+            self.refresh_vessels()
         else:
             messagebox.showerror("Error", "Can't change language.")
 
