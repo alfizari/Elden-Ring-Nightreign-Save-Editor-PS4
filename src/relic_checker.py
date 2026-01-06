@@ -390,3 +390,14 @@ class RelicChecker:
             if relic_id in range(group_range[0], group_range[1] + 1):
                 return group_name, group_range
         return None
+
+    def get_safe_relic_ids(self):
+        range_names = ["store_102", "store_103", "reward_0",
+                       "reward_1", "reward_2", "reward_3",
+                       "reward_4", "reward_5", "reward_6", "reward_7",
+                       "reward_8", "reward_9", "deep_102", "deep_103"]
+        safe_relic_ids = []
+        for group_name, group_range in self.RELIC_GROUPS.items():
+            if group_name in range_names:
+                safe_relic_ids.extend(range(group_range[0], group_range[1] + 1))
+        return safe_relic_ids
