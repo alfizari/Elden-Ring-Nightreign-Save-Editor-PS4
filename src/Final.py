@@ -441,10 +441,10 @@ def debug_dump_complete_relic_analysis(file_data):
     vessel_findings = []
     for offset in range(0x10000, min(0x50000, len(file_data) - 28), 4):
         val = struct.unpack_from('<I', file_data, offset)[0]
-        if 1000 <= val <= 10006:
+        if 1000 <= val <= 10010 or 19000 <= val <= 19020:
             char_id = (val - 1000) // 1000
             vessel_slot = val % 1000
-            if vessel_slot <= 6:
+            if vessel_slot <= 10:
                 ga_handles = list(struct.unpack_from('<6I', file_data, offset + 4))
                 has_relics = any((h & 0xF0000000) == ITEM_TYPE_RELIC for h in ga_handles if h != 0)
                 vessel_findings.append({
@@ -646,10 +646,10 @@ def debug_find_preset_names(file_data):
                     nearby_vessels = []
                     for check_offset in range(max(0, str_start - 256), min(len(file_data) - 4, str_end + 256), 4):
                         val = struct.unpack_from('<I', file_data, check_offset)[0]
-                        if 1000 <= val <= 10006:
+                        if 1000 <= val <= 10010 or 19000 <= val <= 19020:
                             char_id = (val - 1000) // 1000
                             vessel_slot = val % 1000
-                            if vessel_slot <= 6:
+                            if vessel_slot <= 10:
                                 nearby_vessels.append((check_offset, val, char_id, vessel_slot))
 
                     found_presets.append((full_string, str_start, nearby_vessels))
@@ -699,10 +699,10 @@ def find_preset_names(file_data):
     for offset in range(preset_area_start, preset_area_end, 4):
         try:
             val = struct.unpack_from('<I', file_data, offset)[0]
-            if 1000 <= val <= 10006:
+            if 1000 <= val <= 10010 or 19000 <= val <= 19020:
                 char_id = (val - 1000) // 1000
                 vessel_slot = val % 1000
-                if vessel_slot <= 6:
+                if vessel_slot <= 10:
                     vessel_offsets.append((offset, val, char_id, vessel_slot))
         except:
             continue
@@ -812,18 +812,19 @@ def parse_vessel_assignments(file_data):
     # First pass: collect ALL vessel occurrences
     vessel_occurrences = {}  # (char_id, vessel_slot) -> list of (offset, ga_handles)
 
-    log("\nSearching for vessel IDs (1000-10006)...")
+    log("\nSearching for vessel IDs (1000-10010 and 19000-19020 for global presets)...")
     for offset in range(0x10000, min(0x50000, len(file_data) - 28), 4):
         try:
             val = struct.unpack_from('<I', file_data, offset)[0]
 
-            # Check for vessel IDs in range 1000-10006 (characters 0-9, vessels 0-6)
-            if 1000 <= val <= 10006:
+            # Check for vessel IDs in range 1000-10010 (characters 0-9, vessels 0-10)
+            # Also check 19000-19020 for global presets (character 18)
+            if 1000 <= val <= 10010 or 19000 <= val <= 19020:
                 char_id = (val - 1000) // 1000  # 0-based character index
-                vessel_slot = val % 1000  # vessel 0-6
+                vessel_slot = val % 1000  # vessel 0-10
 
-                # Only process valid vessel slots (0-6)
-                if vessel_slot > 6:
+                # Only process valid vessel slots (0-10, for 11 vessels per character)
+                if vessel_slot > 10:
                     continue
 
                 # Read the 6 potential GA handles
@@ -917,10 +918,168 @@ def parse_vessel_assignments(file_data):
                 ga_to_characters[ga].add(char_name)
 
     log(f"\n{'='*60}")
+    log("PARSING SHARED VESSELS (per-character configurations)")
+    log(f"{'='*60}")
+
+    # Shared vessels are stored under GlobalPresets (19000-19010) but have per-character configs
+    # Two patterns exist:
+    # 1. Characters 0-8: [header] [marker like 1000, 2000] [19000] [6 handles] [19001] [6 handles]...
+    # 2. Character 9 (Undertaker): [header with lo=0x0A] [19010] [19000] [6 handles]... (no marker)
+    shared_vessel_configs = {}  # char_id -> {shared_slot -> (offset, ga_handles)}
+
+    def parse_shared_vessels(char_id, start_offset, log_prefix=""):
+        """Parse shared vessel configs starting at given offset"""
+        char_name = CHARACTER_NAMES[char_id] if char_id < len(CHARACTER_NAMES) else f'Char_{char_id}'
+        if char_id not in shared_vessel_configs:
+            shared_vessel_configs[char_id] = {}
+
+        curr_off = start_offset
+        for i in range(5):  # Up to 5 shared vessels (slots 0,1,2,10,...)
+            vessel_id = struct.unpack_from('<I', file_data, curr_off)[0]
+            if not (19000 <= vessel_id <= 19020):
+                break
+            shared_slot = vessel_id % 1000
+            ga_handles = list(struct.unpack_from('<6I', file_data, curr_off + 4))
+            has_relics = any((h & 0xF0000000) == ITEM_TYPE_RELIC for h in ga_handles if h != 0)
+
+            # Map shared slot to vessel slot 7-10 (7=slot0, 8=slot1, 9=slot2, 10=slot10)
+            if shared_slot <= 2:
+                vessel_slot = 7 + shared_slot
+            elif shared_slot == 10:
+                vessel_slot = 10
+            else:
+                vessel_slot = 7 + shared_slot  # fallback
+
+            shared_vessel_configs[char_id][vessel_slot] = {
+                'offset': curr_off,
+                'ga_handles': ga_handles,
+                'relic_slot_offsets': [curr_off + 4 + (j * 4) for j in range(6)],
+                'shared_slot': shared_slot
+            }
+
+            log(f"{log_prefix}  Shared slot {shared_slot} -> Vessel {vessel_slot}: {'HAS RELICS' if has_relics else 'empty'}")
+            if has_relics:
+                log(f"{log_prefix}    Handles: {[f'0x{h:08X}' for h in ga_handles]}")
+
+            curr_off += 28  # vessel_id (4) + 6 handles (24)
+
+    for offset in range(0x10000, min(0x50000, len(file_data) - 120), 4):
+        try:
+            val = struct.unpack_from('<I', file_data, offset)[0]
+            next_val = struct.unpack_from('<I', file_data, offset + 4)[0]
+
+            # Pattern 1: Character marker (1000-9999) followed by GlobalPresets vessel
+            if 1000 <= val <= 9999 and 19000 <= next_val <= 19020:
+                char_id = (val // 1000) - 1  # 1000->0, 2000->1, etc.
+                if 0 <= char_id <= 8:  # Characters 0-8 only
+                    char_name = CHARACTER_NAMES[char_id] if char_id < len(CHARACTER_NAMES) else f'Char_{char_id}'
+                    log(f"\nFound shared vessel config for {char_name} at 0x{offset:06X} (marker={val})")
+                    parse_shared_vessels(char_id, offset + 4)
+
+            # Pattern 2: Header with lo byte = 0x0A (10) for Undertaker
+            # Structure: [header 0x010A] [19010] [19000] [6 handles] [19001] [6 handles]...
+            # The first 19010 is a marker, not a vessel with handles
+            elif val < 1000 and (val & 0xFF) == 0x0A and 19000 <= next_val <= 19020:
+                char_id = 9  # Undertaker
+                char_name = CHARACTER_NAMES[char_id]
+                log(f"\nFound shared vessel config for {char_name} at 0x{offset:06X} (header=0x{val:04X})")
+
+                # Check if first vessel ID is followed by another vessel ID (marker pattern)
+                # or by relic handles (normal pattern)
+                third_val = struct.unpack_from('<I', file_data, offset + 8)[0]
+                if 19000 <= third_val <= 19020:
+                    # First vessel ID is a marker, skip it and start from the second
+                    log(f"  Skipping marker vessel {next_val}, starting from {third_val}")
+                    parse_shared_vessels(char_id, offset + 8)
+                else:
+                    # Normal pattern
+                    parse_shared_vessels(char_id, offset + 4)
+        except:
+            continue
+
+    # Merge shared vessel configs into vessel_data and character_vessels
+    for char_id, shared_vessels in shared_vessel_configs.items():
+        char_name = CHARACTER_NAMES[char_id] if char_id < len(CHARACTER_NAMES) else f'Char_{char_id}'
+        for vessel_slot, config in shared_vessels.items():
+            key = (char_id, vessel_slot)
+            if key not in vessel_data:  # Don't override if already found
+                vessel_data[key] = config
+                if char_name in character_vessels:
+                    character_vessels[char_name][vessel_slot] = config['ga_handles']
+                    log(f"Added shared vessel {vessel_slot} to {char_name}")
+
+    # Collect all shared vessel config offsets - these are NOT presets
+    shared_config_offsets = set()
+    for char_id, shared_vessels in shared_vessel_configs.items():
+        for vessel_slot, config in shared_vessels.items():
+            shared_config_offsets.add(config['offset'])
+    log(f"Shared vessel config offsets (not presets): {[f'0x{o:06X}' for o in sorted(shared_config_offsets)]}")
+
+    # Re-associate GlobalPresets (19000-19020) presets with their actual character owner
+    # Each character has their own presets for shared vessels stored in sequence
+    # The 19010 preset after Undertaker's 10000 vessel belongs to Undertaker, not GlobalPresets
+    # ONLY reassign presets that are NOT in the shared vessel config area
+    globalpreset_presets = {}  # Save for reassignment
+    for (preset_char_id, vessel_slot), presets in list(vessel_presets.items()):
+        if preset_char_id == 18:  # GlobalPresets
+            globalpreset_presets[(preset_char_id, vessel_slot)] = presets
+
+    # Map GlobalPresets presets to characters based on nearby character vessel offsets
+    for (preset_char_id, vessel_slot), presets in globalpreset_presets.items():
+        for preset in presets:
+            preset_offset = preset['offset']
+
+            # Skip if this is a shared vessel config entry (not a real preset)
+            if preset_offset in shared_config_offsets:
+                log(f"Skipping shared vessel config at 0x{preset_offset:06X} (not a preset)")
+                continue
+
+            ga_handles = preset.get('ga_handles', [])
+
+            # Skip empty presets (no actual relics)
+            has_relics = any((h & 0xF0000000) == ITEM_TYPE_RELIC and h != 0 for h in ga_handles)
+            if not has_relics:
+                log(f"Skipping empty GlobalPresets preset at 0x{preset_offset:06X}")
+                continue
+
+            # Find which character's vessel section this preset is in
+            # by looking for the closest preceding character vessel
+            best_char_id = None
+            best_distance = float('inf')
+
+            for (char_id, v_slot), v_data in vessel_data.items():
+                if char_id < 10:  # Only real characters, not GlobalPresets
+                    char_offset = v_data.get('offset', 0)
+                    if char_offset < preset_offset and preset_offset - char_offset < best_distance:
+                        best_distance = preset_offset - char_offset
+                        best_char_id = char_id
+
+            if best_char_id is not None and best_distance < 500:  # Reasonable proximity
+                # Map shared vessel slot: 0,1,2,10 -> 7,8,9,10
+                if vessel_slot <= 2:
+                    target_vessel = 7 + vessel_slot
+                elif vessel_slot == 10:
+                    target_vessel = 10
+                else:
+                    target_vessel = vessel_slot
+
+                target_key = (best_char_id, target_vessel)
+                if target_key not in vessel_presets:
+                    vessel_presets[target_key] = []
+
+                # Avoid duplicates
+                existing_offsets = {p['offset'] for p in vessel_presets[target_key]}
+                if preset_offset not in existing_offsets:
+                    vessel_presets[target_key].append(preset.copy())
+                    char_name = CHARACTER_NAMES[best_char_id]
+                    log(f"Reassigned preset '{preset.get('name', 'Unknown')}' from GlobalPresets to {char_name} vessel {target_vessel}")
+
+    log(f"\n{'='*60}")
     log("SUMMARY")
     log(f"{'='*60}")
     log(f"Total vessel slots: {found_count}")
     log(f"Total presets found: {sum(len(p) for p in vessel_presets.values())}")
+    log(f"Shared vessel configs found: {sum(len(v) for v in shared_vessel_configs.values())}")
 
     # Write debug to file
     with open("debug_vessel_parsing.txt", "w", encoding="utf-8") as f:
@@ -2036,9 +2195,11 @@ class SaveEditorGUI:
 
         # Character selector
         ttk.Label(controls_frame, text="Character:").pack(side='left', padx=(20, 5))
-        self.vessel_char_var = tk.StringVar(value=CHARACTER_NAMES[0])
+        # Only show the 10 real playable characters in the dropdown (not internal parsing names)
+        playable_characters = CHARACTER_NAMES[:10]
+        self.vessel_char_var = tk.StringVar(value=playable_characters[0])
         self.vessel_char_combo = ttk.Combobox(controls_frame, textvariable=self.vessel_char_var,
-                                               values=CHARACTER_NAMES, state="readonly", width=12)
+                                               values=playable_characters, state="readonly", width=12)
         self.vessel_char_combo.pack(side='left', padx=5)
         self.vessel_char_combo.bind("<<ComboboxSelected>>", lambda e: self.refresh_vessels())
 
@@ -2087,9 +2248,9 @@ class SaveEditorGUI:
         # Configure inner frame to expand column 0
         self.vessels_inner_frame.columnconfigure(0, weight=1)
 
-        # Create 7 vessel slot displays (1 column layout)
+        # Create 11 vessel slot displays (1 column layout)
         # Vessel names will be updated dynamically based on selected character
-        for i in range(7):
+        for i in range(11):
             vessel_frame = ttk.LabelFrame(self.vessels_inner_frame, text=f"Vessel Slot {i}")
             vessel_frame.grid(row=i, column=0, padx=5, pady=5, sticky='nsew')
 
@@ -2161,7 +2322,7 @@ class SaveEditorGUI:
         # PRESETS SECTION
         # ============================================
         self.presets_section = ttk.LabelFrame(self.vessels_inner_frame, text="📁 Saved Presets")
-        self.presets_section.grid(row=7, column=0, padx=5, pady=10, sticky='nsew')
+        self.presets_section.grid(row=11, column=0, padx=5, pady=10, sticky='nsew')
 
         # Modern card-based layout - no internal scroll, expands with content
         # Cards flow naturally and main vessels canvas handles all scrolling
@@ -2176,7 +2337,7 @@ class SaveEditorGUI:
         self.preset_data_map = {}
 
         # Configure grid weights (single column)
-        for i in range(8):  # 7 vessels + 1 presets section
+        for i in range(12):  # 11 vessels + 1 presets section
             self.vessels_inner_frame.grid_rowconfigure(i, weight=1)
         self.vessels_inner_frame.grid_columnconfigure(0, weight=1)
 
@@ -5093,6 +5254,18 @@ class ModifyRelicDialog:
         """Called when item ID entry changes - updates color and structure display"""
         self._update_color_display()
         self._update_relic_structure_display()
+        self._update_relic_type_display()
+
+    def _update_relic_type_display(self):
+        """Update the relic type indicator (Original vs Scene/1.02)"""
+        try:
+            current_relic_id = int(self.item_id_entry.get())
+            type_name, description, color_hex = data_source.get_relic_type_info(current_relic_id)
+            self.relic_type_label.config(text=type_name, foreground=color_hex)
+            self.relic_type_info_label.config(text=f"— {description}")
+        except (KeyError, ValueError):
+            self.relic_type_label.config(text="Unknown", foreground="gray")
+            self.relic_type_info_label.config(text="")
 
     def _update_illegal_status_display(self, relic_id, effects):
         """Update the prominent illegal status display with human-readable reasons"""
@@ -5424,6 +5597,16 @@ class ModifyRelicDialog:
 
         self.relic_structure_label = ttk.Label(item_info_frame, text="", font=('Arial', 9), foreground='#666666')
         self.relic_structure_label.pack(side='left')
+
+        # Relic type indicator (Original vs Scene/1.02)
+        relic_type_frame = ttk.Frame(item_frame)
+        relic_type_frame.pack(fill='x', anchor='w', pady=(5, 0))
+
+        self.relic_type_label = ttk.Label(relic_type_frame, text="", font=('Arial', 9, 'bold'))
+        self.relic_type_label.pack(side='left')
+
+        self.relic_type_info_label = ttk.Label(relic_type_frame, text="", font=('Arial', 8), foreground='#888888')
+        self.relic_type_info_label.pack(side='left', padx=(10, 0))
 
         ttk.Label(item_frame, text="Enter new Item ID (decimal) or search:").pack(anchor='w', pady=(10, 0))
 
@@ -6215,7 +6398,15 @@ class ModifyRelicDialog:
         if is_curse_slot:
             _items = {"4294967295": {"name": "🚫 No Curse (Empty)"}, **_items}
 
-        SearchDialog(self.dialog, "effects", _items, f"Select Effect {effect_index + 1}",
+        # Build dialog title with relic type info in safe mode
+        if self.safe_mode_var.get():
+            relic_type, _, _ = data_source.get_relic_type_info(_cut_relic_id)
+            slot_type = "Curse" if is_curse_slot else "Effect"
+            dialog_title = f"Select {slot_type} {(effect_index % 3) + 1} — {relic_type} Pools"
+        else:
+            dialog_title = f"Select Effect {effect_index + 1} — All Effects (Unsafe)"
+
+        SearchDialog(self.dialog, "effects", _items, dialog_title,
                     lambda item_id: self.on_effect_selected(effect_index, item_id))
     
     def on_item_selected(self, item_id):

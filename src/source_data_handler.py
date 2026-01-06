@@ -28,7 +28,9 @@ LANGUAGE_MAP = {
 CHARACTER_NAME_ID = [100000, 100030, 100050, 100010, 100040, 100090,
                      100070, 100060, 110000, 110010]
 CHARACTER_NAMES = ['Wylder', 'Guardian', 'Ironeye', 'Duchess', 'Raider',
-                   'Revenant', 'Recluse', 'Executor', 'Scholar', 'Undertaker']
+                   'Revenant', 'Recluse', 'Executor', 'Scholar', 'Undertaker',
+                   'Char_10', 'Char_11', 'Char_12', 'Char_13', 'Char_14',
+                   'Char_15', 'Char_16', 'Char_17', 'GlobalPresets']
 
 
 def get_system_language():
@@ -96,6 +98,8 @@ class SourceDataHandler:
         self.relic_name: Optional[pd.DataFrame] = None
         self.effect_name: Optional[pd.DataFrame] = None
         self.npc_name: Optional[pd.DataFrame] = None
+        # Track which relic IDs are from 1.02 patch (Scene relics)
+        self._scene_relic_ids: set = set()
         self._load_text(language)
 
     def _load_text(self, language: str = "en_US"):
@@ -105,12 +109,18 @@ class SourceDataHandler:
             _lng = "en_US"
         # Deal with Relic text
         # Read all Relic xml from language subfolder
+        # Track which IDs come from _dlc01 file (1.02 patch / Scene relics)
         _relic_names: Optional[pd.DataFrame] = None
+        self._scene_relic_ids = set()
         for file_name in SourceDataHandler.RELIC_TEXT_FILE_NAME:
             _df = pd.read_xml(
                 SourceDataHandler.TEXT_DIR / _lng / file_name,
                 xpath="/fmg/entries/text"
             )
+            # Track IDs from dlc01 file as Scene relics (1.02 patch)
+            if "_dlc01" in file_name:
+                valid_ids = _df[_df['text'] != '%null%']['id'].tolist()
+                self._scene_relic_ids.update(valid_ids)
             if _relic_names is None:
                 _relic_names = _df
             else:
@@ -147,6 +157,12 @@ class SourceDataHandler:
         for id in CHARACTER_NAME_ID:
             _name = _npc_names[_npc_names["id"] == id]["text"].to_list()[0]
             CHARACTER_NAMES.append(_name)
+
+        # Add placeholder names for characters 10-17 and GlobalPresets (char 18)
+        # These are used for global relic presets stored under vessel IDs 19000-19020
+        for i in range(10, 18):
+            CHARACTER_NAMES.append(f'Char_{i}')
+        CHARACTER_NAMES.append('GlobalPresets')
 
         self.npc_name = _npc_names
         self.relic_name = _relic_names
@@ -308,6 +324,40 @@ class SourceDataHandler:
                                           "attachEffectTableId_curse2",
                                           "attachEffectTableId_curse3"]]
         return _pool_ids.values.tolist()
+
+    def is_scene_relic(self, relic_id: int) -> bool:
+        """Check if a relic is a Scene relic (added in patch 1.02).
+
+        Scene relics have different effect pools than original relics,
+        which is why certain effects can only be found on Scene relics
+        and vice versa.
+
+        Returns:
+            True if the relic is a Scene relic (1.02+), False otherwise
+        """
+        return relic_id in self._scene_relic_ids
+
+    def get_relic_type_info(self, relic_id: int) -> tuple:
+        """Get relic type information for display purposes.
+
+        Returns:
+            Tuple of (type_name, description, color_hex)
+            - type_name: "Scene" or "Original"
+            - description: Brief explanation of what this means
+            - color_hex: Color for display
+        """
+        if self.is_scene_relic(relic_id):
+            return (
+                "Scene Relic (1.02+)",
+                "Has unique effect pools not found on original relics",
+                "#9966CC"  # Purple for Scene relics
+            )
+        else:
+            return (
+                "Original Relic",
+                "Has effect pools from base game release",
+                "#666666"  # Gray for original relics
+            )
 
     def get_effect_conflict_id(self, effect_id: int):
         try:
