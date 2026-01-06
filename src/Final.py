@@ -5637,14 +5637,13 @@ class ModifyRelicDialog:
         """Open search dialog for items"""
         _items = {}
         if self.safe_mode_var.get():
-            _cut_relic_id = int(self.item_id_entry.get())
-            _, _safe_range = relic_checker.find_id_range(_cut_relic_id)
+            _safe_range = relic_checker.get_safe_relic_ids() if relic_checker else []
             _df = data_source.relic_table.copy()
-            _df = _df[_df.index.isin(range(_safe_range[0], _safe_range[1] + 1))]
+            _df = _df[_df.index.isin(_safe_range)]
             _items = data_source.cvrt_filtered_relic_origin_structure(_df)
         else:
             _items = items_json
-        SearchDialog(self.dialog, _items, "Select Relic", self.on_item_selected)
+        SearchDialog(self.dialog, "relics", _items, "Select Relic", self.on_item_selected)
 
     def find_valid_relic_id(self):
         """Find a valid relic ID that matches the current effects configuration"""
@@ -6216,7 +6215,7 @@ class ModifyRelicDialog:
         if is_curse_slot:
             _items = {"4294967295": {"name": "🚫 No Curse (Empty)"}, **_items}
 
-        SearchDialog(self.dialog, _items, f"Select Effect {effect_index + 1}",
+        SearchDialog(self.dialog, "effects", _items, f"Select Effect {effect_index + 1}",
                     lambda item_id: self.on_effect_selected(effect_index, item_id))
     
     def on_item_selected(self, item_id):
@@ -6276,9 +6275,10 @@ class ModifyRelicDialog:
 
 class SearchDialog:
     """Search dialog for JSON items"""
-    def __init__(self, parent, json_data, title, callback):
+    def __init__(self, parent, search_type, json_data, title, callback):
         self.json_data = json_data
         self.callback = callback
+        self.search_type = search_type
         
         self.dialog = tk.Toplevel(parent)
         self.dialog.title(title)
@@ -6318,7 +6318,13 @@ class SearchDialog:
         self.all_items = []
         for item_id, item_data in self.json_data.items():
             name = item_data.get('name', 'Unknown')
-            self.all_items.append((item_id, name))
+            item_str = ""
+            if self.search_type == "effects":
+                item_str = name
+            elif self.search_type == "relics":
+                relic_slot = data_source.get_relic_slot_count(int(item_id))
+                item_str = f"{name} (effects: {relic_slot[0]}, curses:{relic_slot[1]})"
+            self.all_items.append((item_id, item_str))
         
         self.all_items.sort(key=lambda x: int(x[0]) if x[0].isdigit() else 0)
         self.filter_results()
