@@ -219,6 +219,13 @@ class Item:
 
     @classmethod
     def from_bytes(cls, data_type, offset=0):
+        data_len = len(data_type)
+
+        # Check if we have enough data for the base read
+        if offset + cls.BASE_SIZE > data_len:
+            # Return empty item if not enough data
+            return cls(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, offset, size=cls.BASE_SIZE)
+
         gaitem_handle, item_id = struct.unpack_from("<II", data_type, offset)
         type_bits = gaitem_handle & 0xF0000000
         cursor = offset + cls.BASE_SIZE
@@ -237,14 +244,29 @@ class Item:
                 cursor += 8
                 size = cursor - offset
             elif type_bits == ITEM_TYPE_RELIC:
+                # Check bounds before each read to handle corrupted/truncated saves
+                if cursor + 8 > data_len:
+                    return cls(gaitem_handle, item_id, 0, 0, 0, 0, 0, 0, 0, 0, 0, offset, size=cls.BASE_SIZE)
                 durability, unk_1 = struct.unpack_from("<II", data_type, cursor)
                 cursor += 8
+
+                if cursor + 12 > data_len:
+                    return cls(gaitem_handle, item_id, 0, 0, 0, durability, unk_1, 0, 0, 0, 0, offset, size=cursor-offset)
                 effect_1, effect_2, effect_3 = struct.unpack_from("<III", data_type, cursor)
                 cursor += 12
+
+                if cursor + 0x1C > data_len:
+                    return cls(gaitem_handle, item_id, effect_1, effect_2, effect_3, durability, unk_1, 0, 0, 0, 0, offset, size=cursor-offset)
                 padding = struct.unpack_from("<7I", data_type, cursor)
                 cursor += 0x1C
+
+                if cursor + 12 > data_len:
+                    return cls(gaitem_handle, item_id, effect_1, effect_2, effect_3, durability, unk_1, 0, 0, 0, 0, offset, extra=padding, size=cursor-offset)
                 sec_effect1, sec_effect2, sec_effect3 = struct.unpack_from("<III", data_type, cursor)
                 cursor += 12
+
+                if cursor + 4 > data_len:
+                    return cls(gaitem_handle, item_id, effect_1, effect_2, effect_3, durability, unk_1, sec_effect1, sec_effect2, sec_effect3, 0, offset, extra=padding, size=cursor-offset)
                 unk_2 = struct.unpack_from("<I", data_type, cursor)[0]
                 cursor += 12
                 size = cursor - offset
@@ -1484,20 +1506,27 @@ def name_to_path():
     global char_name_list, MODE
     char_name_list = []
     unpacked_folder = working_directory / 'decrypted_output'
-    
+
     prefix = "userdata" if MODE == 'PS4' else "USERDATA_0"
-    
+
     for i in range(10):
         file_path = os.path.join(unpacked_folder, f"{prefix}{i}")
         if not os.path.exists(file_path):
             continue
-            
+
         try:
             with open(file_path, "rb") as f:
                 file_data = f.read()
+                # Check minimum file size before parsing
+                if len(file_data) < 0x1000:  # Minimum expected size
+                    print(f"Warning: {file_path} is too small ({len(file_data)} bytes), skipping")
+                    continue
                 name = read_char_name(file_data)
                 if name:
                     char_name_list.append((name, file_path))
+        except struct.error as e:
+            print(f"Error parsing save file {file_path}: Data structure error - {e}")
+            print(f"  This may indicate a corrupted save file or incompatible format")
         except Exception as e:
             print(f"Error reading {file_path}: {e}")
 
@@ -3639,6 +3668,7 @@ class SaveEditorGUI:
         dialog_title = "Assign Relic" if is_empty_slot else "Replace Relic"
         dialog.title(f"{dialog_title} - Slot {slot_index + 1}")
         dialog.geometry("700x500")
+        dialog.minsize(500, 350)  # Set minimum size so buttons are always visible
         dialog.transient(self.root)
         dialog.grab_set()
 
@@ -3727,6 +3757,10 @@ class SaveEditorGUI:
         search_var.trace('w', lambda *args: self.refresh_replacement_list(
             relic_tree, current_color, any_color_var.get(), is_deep_slot, search_var.get()))
 
+        # Buttons frame - pack FIRST with side='bottom' so it's always visible
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(side='bottom', fill='x', padx=10, pady=10)
+
         # Relic list - for universal slots, start with "All Colors"
         list_label = "All Colors" if is_universal_slot else current_color
         list_frame = ttk.LabelFrame(dialog, text=f"Available Relics ({list_label})")
@@ -3760,10 +3794,6 @@ class SaveEditorGUI:
 
         # Populate initial list - use is_universal_slot to show all colors for white slots
         self.refresh_replacement_list(relic_tree, current_color, is_universal_slot, is_deep_slot)
-
-        # Buttons
-        btn_frame = ttk.Frame(dialog)
-        btn_frame.pack(fill='x', padx=10, pady=10)
 
         def do_replace():
             selection = relic_tree.selection()
@@ -4414,6 +4444,15 @@ class SaveEditorGUI:
             self.refresh_stats()
             self.refresh_vessels()
 
+        except struct.error as e:
+            messagebox.showerror("Error",
+                f"Failed to load character: Data structure error\n\n"
+                f"Details: {str(e)}\n\n"
+                f"This may indicate:\n"
+                f"• A corrupted save file\n"
+                f"• Save file from a different game version\n"
+                f"• Incompatible file format\n\n"
+                f"Try deleting some relics in-game and saving again.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load character: {str(e)}")
     
