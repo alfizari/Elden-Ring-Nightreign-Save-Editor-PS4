@@ -6,7 +6,7 @@ import sys
 import os
 
 
-COLOR_MAP = ["Red", "Blue", "Yellow", "Green"]
+COLOR_MAP = ["Red", "Blue", "Yellow", "Green", "White"]
 LANGUAGE_MAP = {
     "ar_AE": "العربية (الإمارات)",
     "de_DE": "Deutsch",
@@ -30,7 +30,7 @@ CHARACTER_NAME_ID = [100000, 100030, 100050, 100010, 100040, 100090,
 CHARACTER_NAMES = ['Wylder', 'Guardian', 'Ironeye', 'Duchess', 'Raider',
                    'Revenant', 'Recluse', 'Executor', 'Scholar', 'Undertaker',
                    'Char_10', 'Char_11', 'Char_12', 'Char_13', 'Char_14',
-                   'Char_15', 'Char_16', 'Char_17', 'GlobalPresets']
+                   'Char_15', 'Char_16', 'Char_17', 'GlobalPresets', 'All']
 
 
 def get_system_language():
@@ -65,6 +65,10 @@ class SourceDataHandler:
         "NpcName.fmg.xml",
         "NpcName_dlc01.fmg.xml",
     ]
+    GOODS_NAME_FILE_NAMES = [
+        "GoodsName.fmg.xml",
+        "GoodsName_dlc01.fmg.xml",
+    ]
 
     def __init__(self, language: str = "en_US"):
         self.effect_params = \
@@ -95,11 +99,16 @@ class SourceDataHandler:
         ]
         self.relic_table.set_index("ID", inplace=True)
 
+        self.antique_stand_param = \
+            pd.read_csv(self.PARAM_DIR / "AntiqueStandParam.csv")
+        self.antique_stand_param: pd.DataFrame = self.antique_stand_param
+
         self.relic_name: Optional[pd.DataFrame] = None
         self.effect_name: Optional[pd.DataFrame] = None
         self.npc_name: Optional[pd.DataFrame] = None
         # Track which relic IDs are from 1.02 patch (Scene relics)
         self._scene_relic_ids: set = set()
+        self.vessel_names: Optional[pd.DataFrame] = None
         self._load_text(language)
 
     def _load_text(self, language: str = "en_US"):
@@ -164,6 +173,22 @@ class SourceDataHandler:
             CHARACTER_NAMES.append(f'Char_{i}')
         CHARACTER_NAMES.append('GlobalPresets')
 
+        # Deal with Goods Names
+        # Read all Goods xml from language subfolder
+        _goods_names: Optional[pd.DataFrame] = None
+        for file_name in SourceDataHandler.GOODS_NAME_FILE_NAMES:
+            _df = pd.read_xml(
+                SourceDataHandler.TEXT_DIR / _lng / file_name,
+                xpath="/fmg/entries/text"
+            )
+            if _goods_names is None:
+                _goods_names = _df
+            else:
+                _goods_names = pd.concat([_goods_names, _df])
+
+        self.vessel_names = _goods_names[(9600 <= _goods_names["id"]) &
+                                         (_goods_names["id"] <= 9956) &
+                                         (_goods_names["text"] != "%null%")]
         self.npc_name = _npc_names
         self.relic_name = _relic_names
         self.effect_name = _effect_names
@@ -466,8 +491,34 @@ class SourceDataHandler:
         curse_slot = pool_seq[3:]
         return 3-effect_slot.count(-1), 3-curse_slot.count(-1)
 
+    def get_character_name(self, character_id: int):
+        return self.npc_name[self.npc_name["id"] == character_id]["text"].values[0]
+
+    def get_vessel_data(self, vessel_id: int):
+        if self.antique_stand_param is None:
+            return None
+        _vessel_data = self.antique_stand_param[self.antique_stand_param["ID"] == vessel_id][
+            ["goodsId", "heroType",
+             "relicSlot1", "relicSlot2", "relicSlot3",
+             "deepRelicSlot1", "deepRelicSlot2", "deepRelicSlot3"]
+        ]
+        # hero type start at 1, and 11 means ALL
+        _hero_type = int(_vessel_data["heroType"].values[0])
+        _result = {"Name": self.vessel_names[self.vessel_names["id"] == _vessel_data["goodsId"].values[0]]["text"].values[0],
+                   "Character": self.get_character_name(CHARACTER_NAME_ID[_hero_type-1]) if _hero_type != 11 else "All",
+                   "Colors": (
+                        COLOR_MAP[_vessel_data["relicSlot1"].values[0]],
+                        COLOR_MAP[_vessel_data["relicSlot2"].values[0]],
+                        COLOR_MAP[_vessel_data["relicSlot3"].values[0]],
+                        COLOR_MAP[_vessel_data["deepRelicSlot1"].values[0]],
+                        COLOR_MAP[_vessel_data["deepRelicSlot2"].values[0]],
+                        COLOR_MAP[_vessel_data["deepRelicSlot3"].values[0]]
+                        )
+                   }
+        return _result
+
 
 if __name__ == "__main__":
     source_data_handler = SourceDataHandler("zh_TW")
-    t = source_data_handler.get_effect_origin_structure()
-    print(CHARACTER_NAMES)
+    t = source_data_handler.get_vessel_data(1000)
+    print(t)
