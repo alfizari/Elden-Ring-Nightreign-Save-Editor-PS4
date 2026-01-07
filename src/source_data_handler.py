@@ -170,7 +170,9 @@ class SourceDataHandler:
             else:
                 _goods_names = pd.concat([_goods_names, _df])
 
-        self.vessel_names = _goods_names[9600 <= _goods_names["id"] <= 9956]
+        self.vessel_names = _goods_names[(9600 <= _goods_names["id"]) &
+                                         (_goods_names["id"] <= 9956) &
+                                         (_goods_names["text"] != "%null%")]
         self.npc_name = _npc_names
         self.relic_name = _relic_names
         self.effect_name = _effect_names
@@ -451,8 +453,8 @@ class SourceDataHandler:
              "deepRelicSlot1", "deepRelicSlot2", "deepRelicSlot3"]
         ]
         # hero type start at 1, and 11 means ALL
-        _hero_type = _vessel_data["heroType"].values[0]
-        _result = {"Name": self.vessel_names[_vessel_data["goodsId"]].values[0],
+        _hero_type = int(_vessel_data["heroType"].values[0])
+        _result = {"Name": self.vessel_names[self.vessel_names["id"] == _vessel_data["goodsId"].values[0]]["text"].values[0],
                    "Character": self.get_character_name(CHARACTER_NAME_ID[_hero_type-1]) if _hero_type != 11 else "All",
                    "Colors": (
                         COLOR_MAP[_vessel_data["relicSlot1"].values[0]],
@@ -468,5 +470,5 @@ class SourceDataHandler:
 
 if __name__ == "__main__":
     source_data_handler = SourceDataHandler("zh_TW")
-    t = source_data_handler.get_effect_origin_structure()
-    print(CHARACTER_NAMES)
+    t = source_data_handler.get_vessel_data(1000)
+    print(t)
