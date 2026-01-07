@@ -4025,16 +4025,16 @@ class SaveEditorGUI:
         if not file_path:
             return
         
-        file_name = os.path.basename(file_path)
+        file_name = os.path.basename(file_path).lower()
         
         # Determine mode
         if file_name.lower() == 'memory.dat':
             MODE = 'PS4'
             
-        elif file_name == 'NR0000.sl2':
+        elif file_base.endswith(('.sl2', '.co', '.co2')) # support for seamless and other formats 
             MODE = 'PC'
         else:
-            messagebox.showerror("Error", "If this is a PS4 save, make sure it is decrypted and change the file name to memory.dat")
+            messagebox.showerror("Error", "If this is a PS4 save, make sure it is decrypted and change the file name to memory.dat. For PC save, it should end with (.sl2 or '.co' or .co2")
             return
         
         # Split files
@@ -6365,4 +6365,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
