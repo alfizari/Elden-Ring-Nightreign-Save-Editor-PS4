@@ -28,9 +28,7 @@ LANGUAGE_MAP = {
 CHARACTER_NAME_ID = [100000, 100030, 100050, 100010, 100040, 100090,
                      100070, 100060, 110000, 110010]
 CHARACTER_NAMES = ['Wylder', 'Guardian', 'Ironeye', 'Duchess', 'Raider',
-                   'Revenant', 'Recluse', 'Executor', 'Scholar', 'Undertaker',
-                   'Char_10', 'Char_11', 'Char_12', 'Char_13', 'Char_14',
-                   'Char_15', 'Char_16', 'Char_17', 'GlobalPresets', 'All']
+                   'Revenant', 'Recluse', 'Executor', 'Scholar', 'Undertaker', 'All']
 
 
 def get_system_language():
@@ -166,12 +164,6 @@ class SourceDataHandler:
         for id in CHARACTER_NAME_ID:
             _name = _npc_names[_npc_names["id"] == id]["text"].to_list()[0]
             CHARACTER_NAMES.append(_name)
-
-        # Add placeholder names for characters 10-17 and GlobalPresets (char 18)
-        # These are used for global relic presets stored under vessel IDs 19000-19020
-        for i in range(10, 18):
-            CHARACTER_NAMES.append(f'Char_{i}')
-        CHARACTER_NAMES.append('GlobalPresets')
 
         # Deal with Goods Names
         # Read all Goods xml from language subfolder
@@ -500,10 +492,12 @@ class SourceDataHandler:
         _vessel_data = self.antique_stand_param[self.antique_stand_param["ID"] == vessel_id][
             ["goodsId", "heroType",
              "relicSlot1", "relicSlot2", "relicSlot3",
-             "deepRelicSlot1", "deepRelicSlot2", "deepRelicSlot3"]
+             "deepRelicSlot1", "deepRelicSlot2", "deepRelicSlot3",
+             "unlockFlag"]
         ]
         # hero type start at 1, and 11 means ALL
         _hero_type = int(_vessel_data["heroType"].values[0])
+        _unlock_flag = int(_vessel_data["unlockFlag"].values[0])
         _result = {"Name": self.vessel_names[self.vessel_names["id"] == _vessel_data["goodsId"].values[0]]["text"].values[0],
                    "Character": self.get_character_name(CHARACTER_NAME_ID[_hero_type-1]) if _hero_type != 11 else "All",
                    "Colors": (
@@ -513,7 +507,8 @@ class SourceDataHandler:
                         COLOR_MAP[_vessel_data["deepRelicSlot1"].values[0]],
                         COLOR_MAP[_vessel_data["deepRelicSlot2"].values[0]],
                         COLOR_MAP[_vessel_data["deepRelicSlot3"].values[0]]
-                        )
+                        ),
+                   "unlockFlag": _unlock_flag
                    }
         return _result
 

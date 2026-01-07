@@ -106,12 +106,57 @@ steam_id=None
 # White = Universal (any relic)
 
 def get_vessel_info(char_name, vessel_slot):
-    """Get vessel name for a character's vessel slot.
+    """Get vessel information for a character's vessel slot.
 
-    Note: We don't have actual vessel names from the save file or game data,
-    so we use simple numbering (Vessel 0, Vessel 1, etc.)
+    Uses AntiqueStandParam.csv to get:
+    - Vessel name from GoodsName
+    - Relic slot color requirements (normal and deep)
+    - Character association
+
+    Args:
+        char_name: Character name (e.g., 'Wylder')
+        vessel_slot: Vessel slot number (0-10)
+
+    Returns:
+        Dictionary with 'name' and optionally 'colors' (6 colors for normal/deep slots)
     """
-    return {'name': f"Vessel {vessel_slot}"}
+    global data_source
+
+    # Calculate vessel ID from character and slot
+    # Characters 0-9 have vessels at IDs 1000-1006, 2000-2006, etc.
+    # Shared vessels (slots 7-9) use IDs 19000-19002
+    # Shared vessel slot 10 uses ID 19010
+    char_id = CHARACTER_NAMES.index(char_name) if char_name in CHARACTER_NAMES else -1
+
+    if char_id < 0 or char_id >= 10:
+        return {'name': f"Vessel {vessel_slot}"}
+
+    # Determine vessel ID
+    if vessel_slot <= 6:
+        # Character-specific vessels: 1000-1006, 2000-2006, etc.
+        vessel_id = (char_id + 1) * 1000 + vessel_slot
+    elif vessel_slot <= 9:
+        # Shared vessels: 19000-19002 map to slots 7-9
+        vessel_id = 19000 + (vessel_slot - 7)
+    else:
+        # Shared vessel 10: 19010
+        vessel_id = 19010
+
+    # Try to get vessel data from source_data_handler
+    if data_source is not None:
+        try:
+            vessel_data_info = data_source.get_vessel_data(vessel_id)
+            if vessel_data_info:
+                return {
+                    'name': vessel_data_info.get('Name', f'Vessel {vessel_slot}'),
+                    'colors': vessel_data_info.get('Colors', None),
+                    'character': vessel_data_info.get('Character', char_name),
+                    'unlockFlag': vessel_data_info.get('unlockFlag', 0)
+                }
+        except Exception:
+            pass
+
+    return {'name': f"Vessel {vessel_slot}", 'unlockFlag': 0}
 
 # Items type
 ITEM_TYPE_EMPTY = 0x00000000
@@ -812,20 +857,21 @@ def parse_vessel_assignments(file_data):
     # First pass: collect ALL vessel occurrences
     vessel_occurrences = {}  # (char_id, vessel_slot) -> list of (offset, ga_handles)
 
-    log("\nSearching for vessel IDs (1000-10010 and 19000-19020 for global presets)...")
+    log("\nSearching for vessel IDs (1000-10010 for character-specific vessels)...")
     for offset in range(0x10000, min(0x50000, len(file_data) - 28), 4):
         try:
             val = struct.unpack_from('<I', file_data, offset)[0]
 
-            # Check for vessel IDs in range 1000-10010 (characters 0-9, vessels 0-10)
-            # Also check 19000-19020 for global presets (character 18)
-            if 1000 <= val <= 10010 or 19000 <= val <= 19020:
-                char_id = (val - 1000) // 1000  # 0-based character index
+            # Only process character-specific vessel IDs (1000-10010)
+            # Skip shared vessel IDs (19000-19020) - they are handled separately
+            if 1000 <= val <= 10010:
                 vessel_slot = val % 1000  # vessel 0-10
 
                 # Only process valid vessel slots (0-10, for 11 vessels per character)
                 if vessel_slot > 10:
                     continue
+
+                char_id = (val - 1000) // 1000  # 0-based character index
 
                 # Read the 6 potential GA handles
                 ga_handles = list(struct.unpack_from('<6I', file_data, offset + 4))
@@ -1015,64 +1061,69 @@ def parse_vessel_assignments(file_data):
             shared_config_offsets.add(config['offset'])
     log(f"Shared vessel config offsets (not presets): {[f'0x{o:06X}' for o in sorted(shared_config_offsets)]}")
 
-    # Re-associate GlobalPresets (19000-19020) presets with their actual character owner
-    # Each character has their own presets for shared vessels stored in sequence
-    # The 19010 preset after Undertaker's 10000 vessel belongs to Undertaker, not GlobalPresets
-    # ONLY reassign presets that are NOT in the shared vessel config area
-    globalpreset_presets = {}  # Save for reassignment
-    for (preset_char_id, vessel_slot), presets in list(vessel_presets.items()):
-        if preset_char_id == 18:  # GlobalPresets
-            globalpreset_presets[(preset_char_id, vessel_slot)] = presets
+    # Map shared vessel presets (19000-19010) to correct vessel slots (7-10)
+    # The occurrence-based parsing already assigned the correct character,
+    # but the vessel slot needs to be remapped: 0->7, 1->8, 2->9, 10->10
+    # Also filter out shared vessel config entries (active loadouts, not presets)
+    shared_vessel_presets_to_remap = []
+    for (char_id, vessel_slot), presets in list(vessel_presets.items()):
+        # Only remap shared vessel slots (0, 1, 2, 10) for characters 0-9
+        if char_id < 10 and vessel_slot in [0, 1, 2, 10]:
+            for preset in presets:
+                preset_offset = preset['offset']
 
-    # Map GlobalPresets presets to characters based on nearby character vessel offsets
-    for (preset_char_id, vessel_slot), presets in globalpreset_presets.items():
-        for preset in presets:
-            preset_offset = preset['offset']
+                # Skip if this is a shared vessel config entry (not a real preset)
+                if preset_offset in shared_config_offsets:
+                    log(f"Skipping shared vessel config at 0x{preset_offset:06X} (not a preset)")
+                    continue
 
-            # Skip if this is a shared vessel config entry (not a real preset)
-            if preset_offset in shared_config_offsets:
-                log(f"Skipping shared vessel config at 0x{preset_offset:06X} (not a preset)")
-                continue
+                ga_handles = preset.get('ga_handles', [])
 
-            ga_handles = preset.get('ga_handles', [])
+                # Skip empty presets (no actual relics)
+                has_relics = any((h & 0xF0000000) == ITEM_TYPE_RELIC and h != 0 for h in ga_handles)
+                if not has_relics:
+                    log(f"Skipping empty preset at 0x{preset_offset:06X}")
+                    continue
 
-            # Skip empty presets (no actual relics)
-            has_relics = any((h & 0xF0000000) == ITEM_TYPE_RELIC and h != 0 for h in ga_handles)
-            if not has_relics:
-                log(f"Skipping empty GlobalPresets preset at 0x{preset_offset:06X}")
-                continue
-
-            # Find which character's vessel section this preset is in
-            # by looking for the closest preceding character vessel
-            best_char_id = None
-            best_distance = float('inf')
-
-            for (char_id, v_slot), v_data in vessel_data.items():
-                if char_id < 10:  # Only real characters, not GlobalPresets
-                    char_offset = v_data.get('offset', 0)
-                    if char_offset < preset_offset and preset_offset - char_offset < best_distance:
-                        best_distance = preset_offset - char_offset
-                        best_char_id = char_id
-
-            if best_char_id is not None and best_distance < 500:  # Reasonable proximity
-                # Map shared vessel slot: 0,1,2,10 -> 7,8,9,10
+                # Map shared vessel slot: 0,1,2 -> 7,8,9; 10 stays 10
                 if vessel_slot <= 2:
                     target_vessel = 7 + vessel_slot
-                elif vessel_slot == 10:
-                    target_vessel = 10
                 else:
                     target_vessel = vessel_slot
 
-                target_key = (best_char_id, target_vessel)
-                if target_key not in vessel_presets:
-                    vessel_presets[target_key] = []
+                shared_vessel_presets_to_remap.append({
+                    'char_id': char_id,
+                    'source_slot': vessel_slot,
+                    'target_slot': target_vessel,
+                    'preset': preset.copy()
+                })
 
-                # Avoid duplicates
-                existing_offsets = {p['offset'] for p in vessel_presets[target_key]}
-                if preset_offset not in existing_offsets:
-                    vessel_presets[target_key].append(preset.copy())
-                    char_name = CHARACTER_NAMES[best_char_id]
-                    log(f"Reassigned preset '{preset.get('name', 'Unknown')}' from GlobalPresets to {char_name} vessel {target_vessel}")
+    # Apply the remapping
+    for remap in shared_vessel_presets_to_remap:
+        char_id = remap['char_id']
+        source_slot = remap['source_slot']
+        target_slot = remap['target_slot']
+        preset = remap['preset']
+
+        # Remove from source slot
+        source_key = (char_id, source_slot)
+        if source_key in vessel_presets:
+            vessel_presets[source_key] = [p for p in vessel_presets[source_key]
+                                          if p['offset'] != preset['offset']]
+            if not vessel_presets[source_key]:
+                del vessel_presets[source_key]
+
+        # Add to target slot
+        target_key = (char_id, target_slot)
+        if target_key not in vessel_presets:
+            vessel_presets[target_key] = []
+
+        # Avoid duplicates
+        existing_offsets = {p['offset'] for p in vessel_presets[target_key]}
+        if preset['offset'] not in existing_offsets:
+            vessel_presets[target_key].append(preset)
+            char_name = CHARACTER_NAMES[char_id]
+            log(f"Remapped preset '{preset.get('name', 'Unknown')}' for {char_name} from slot {source_slot} to slot {target_slot}")
 
     log(f"\n{'='*60}")
     log("SUMMARY")
@@ -1265,7 +1316,8 @@ def split_files(file_path, folder_name):
                 with open(os.path.join(split_dir, "regulation"), "wb") as out:
                     out.write(regulation)
 
-    elif file_name == 'NR0000.sl2':
+    elif file_path.lower().endswith('.sl2'):
+        # Accept any .sl2 file (supports custom save names from ModEngine 3, etc.)
         decrypt_ds2_sl2(file_path)
 
 def save_file():
@@ -1665,7 +1717,8 @@ def split_files_import(file_path, folder_name):
                 with open(os.path.join(split_dir, "regulation"), "wb") as out:
                     out.write(regulation)
 
-    elif file_name == 'NR0000.sl2':
+    elif file_path.lower().endswith('.sl2'):
+        # Accept any .sl2 file (supports custom save names from ModEngine 3, etc.)
         IMPORT_MODE='PC'
         decrypt_ds2_sl2_import(file_path)
 
@@ -2296,8 +2349,6 @@ class SaveEditorGUI:
             tree.tag_configure('empty', foreground='#666666')
             # Add tag for color mismatch (wrong color relic in slot)
             tree.tag_configure('mismatch', foreground='#FF6B6B', background='#331111')
-            # Add White/Universal color
-            tree.tag_configure('White', foreground='#FFFFFF')
             # Add tag for deep relic slots (slots 4-6) - just use a subtle indicator
             tree.tag_configure('deep_slot', foreground='#9999BB')
 
@@ -2368,21 +2419,23 @@ class SaveEditorGUI:
 
                 # Update status label
                 if vessel_slot < len(self.vessel_status_labels):
+                    unlock_flag = vessel_data_info.get('unlockFlag', 0)
                     if has_relics:
                         # Has relics = definitely unlocked
                         relic_count = sum(1 for _, r in vessel_info.get('relics', []) if r is not None)
                         self.vessel_status_labels[vessel_slot].config(
                             text=f"✅ Unlocked ({relic_count}/6 relics)",
                             foreground='green')
-                    elif vessel_slot == 0:
+                    elif vessel_slot == 0 or unlock_flag == 0:
                         # Slot 0 is always unlocked (default vessel)
+                        # unlock_flag == 0 means no flag required (always unlocked)
                         self.vessel_status_labels[vessel_slot].config(
                             text="✅ Unlocked (Empty)",
                             foreground='green')
                     else:
-                        # Empty non-zero slots - status unknown
+                        # Empty non-zero slots - show unlock flag ID for reference
                         self.vessel_status_labels[vessel_slot].config(
-                            text="❓ Empty (Status Unknown)",
+                            text=f"❓ Empty (Unlock Flag: {unlock_flag})",
                             foreground='#888888')
 
             # Get relics for this vessel
@@ -2395,10 +2448,19 @@ class SaveEditorGUI:
             # Only show first 6 slots
             relics = relics[:6]
 
+            # Get vessel colors for empty slot display
+            vessel_colors = vessel_data_info.get('colors', None)
+
             for idx, (ga, relic_info) in enumerate(relics):
                 # Determine if this is a deep slot (slots 4-6, index 3-5)
                 is_deep_slot = idx >= 3
                 slot_type = "🔮 Deep" if is_deep_slot else "Normal"
+
+                # Get expected slot color from vessel data
+                # Colors tuple: (normal1, normal2, normal3, deep1, deep2, deep3)
+                expected_color = None
+                if vessel_colors:
+                    expected_color = vessel_colors[idx] if idx < len(vessel_colors) else None
 
                 if relic_info:
                     # Get effect names (full text, no truncation)
@@ -2434,15 +2496,18 @@ class SaveEditorGUI:
                         effect_names[2]
                     ), tags=tuple(tags))
                 else:
-                    # Empty slot
+                    # Empty slot - show expected color from vessel data
+                    slot_color_display = expected_color if expected_color else "-"
                     tags = ['empty']
+                    if expected_color:
+                        tags.append(expected_color)  # Add color tag for styling
                     if is_deep_slot:
                         tags.append('deep_slot')
 
                     tree.insert('', 'end', values=(
                         idx + 1,
                         slot_type,
-                        "-",
+                        slot_color_display,
                         "(Empty)",
                         "-",
                         "-",
@@ -3071,6 +3136,9 @@ class SaveEditorGUI:
         # Store relic data by treeview item ID
         item_to_relic = {}
 
+        # Get vessel slot colors for proper filtering
+        vessel_colors = vessel_info.get('colors', None)
+
         def populate_relic_list():
             """Populate the relic list based on selected slot and filters"""
             # Clear existing
@@ -3080,21 +3148,29 @@ class SaveEditorGUI:
 
             idx = selected_slot.get()
             is_deep_slot = idx >= 3
-            current_slot_relic = slot_relic_data.get(idx)
-            current_color = current_slot_relic.get('color') if current_slot_relic else None
+
+            # Get slot color from vessel data (proper way to handle White/Universal slots)
+            slot_color = None
+            if vessel_colors and idx < len(vessel_colors):
+                slot_color = vessel_colors[idx]
+
+            # For White/Universal slots, show all colors by default
+            is_universal_slot = (slot_color == 'White')
 
             search_text = search_var.get().lower()
-            show_all = show_all_colors_var.get()
+            show_all = show_all_colors_var.get() or is_universal_slot
 
             # Debug info - append to file
             with open('preset_debug.txt', 'a') as f:
                 f.write(f"populate_relic_list: slot={idx}, is_deep={is_deep_slot}, "
-                        f"current_color={current_color}, show_all={show_all}, all_relics={len(all_relics)}\n")
+                        f"slot_color={slot_color}, is_universal={is_universal_slot}, show_all={show_all}, all_relics={len(all_relics)}\n")
 
             # Update title to show filtering info
             slot_type = "Deep" if is_deep_slot else "Normal"
-            if current_color and not show_all:
-                relic_list_title.config(text=f"Available {slot_type} Relics ({current_color})")
+            if is_universal_slot:
+                relic_list_title.config(text=f"Available {slot_type} Relics (Universal Slot)")
+            elif slot_color and not show_all:
+                relic_list_title.config(text=f"Available {slot_type} Relics ({slot_color})")
             else:
                 relic_list_title.config(text=f"Available {slot_type} Relics (All Colors)")
 
@@ -3106,8 +3182,8 @@ class SaveEditorGUI:
                 if not is_deep_slot and relic['is_deep']:
                     continue  # Normal slots need normal relics
 
-                # Color filter (based on current slot's relic color, unless "show all" or slot is empty)
-                if not show_all and current_color and relic['color'] != current_color:
+                # Color filter (based on slot color from vessel data, unless "show all" or universal slot)
+                if not show_all and slot_color and slot_color != 'White' and relic['color'] != slot_color:
                     continue
 
                 # Search filter
@@ -3499,16 +3575,17 @@ class SaveEditorGUI:
                 command=lambda: self.open_edit_relic_dialog(vessel_slot, slot_index)
             )
         else:
+            # Empty slot - allow assigning a relic (we know slot color from vessel data)
             menu.add_command(
-                label="(Empty slot - fill in game first)",
-                state='disabled'
+                label=f"Assign Relic ({relic_color})",
+                command=lambda: self.open_replace_relic_dialog(vessel_slot, slot_index)
             )
 
         # Show the menu
         menu.tk_popup(event.x_root, event.y_root)
 
     def on_vessel_relic_double_click(self, event, vessel_slot):
-        """Handle double-click on vessel relic - open replace dialog"""
+        """Handle double-click on vessel relic - open replace/assign dialog"""
         tree = self.vessel_trees[vessel_slot]
 
         # Identify which row was clicked
@@ -3522,52 +3599,70 @@ class SaveEditorGUI:
             return
 
         slot_index = int(values[0]) - 1
-        relic_name = values[3]
-
-        # Only open dialog if slot has a relic
-        if relic_name != "(Empty)" and relic_name != "-":
-            self.open_replace_relic_dialog(vessel_slot, slot_index)
+        # Allow double-click on any slot (empty or not) to open the dialog
+        self.open_replace_relic_dialog(vessel_slot, slot_index)
 
     def open_replace_relic_dialog(self, vessel_slot, slot_index):
-        """Open dialog to replace a relic with another of the same color"""
+        """Open dialog to assign/replace a relic in a vessel slot"""
         char_name = self.vessel_char_var.get()
         loadout = get_character_loadout(char_name)
 
         vessel_info = loadout.get(vessel_slot, {})
         relics = vessel_info.get('relics', [])
 
-        if slot_index >= len(relics):
-            return
+        # Extend relics list if needed
+        while len(relics) <= slot_index:
+            relics.append((0, None))
 
         current_ga, current_relic = relics[slot_index]
-        if not current_relic:
-            messagebox.showinfo("Info", "This slot is empty. Fill it in-game first.")
-            return
+        is_empty_slot = current_relic is None
 
-        current_color = current_relic.get('color', 'Unknown')
+        # Get slot color from vessel data (what color should go in this slot)
+        # This properly handles White/Universal slots
+        vessel_data_info = get_vessel_info(char_name, vessel_slot)
+        vessel_colors = vessel_data_info.get('colors', None)
+        slot_color = None
+        if vessel_colors and slot_index < len(vessel_colors):
+            slot_color = vessel_colors[slot_index]
+
+        # Use slot color from vessel data, or fall back to equipped relic's color
+        if slot_color:
+            current_color = slot_color
+        elif current_relic:
+            current_color = current_relic.get('color', 'Unknown')
+        else:
+            current_color = 'Unknown'
         is_deep_slot = slot_index >= 3
 
         # Create dialog
         dialog = tk.Toplevel(self.root)
-        dialog.title(f"Replace Relic - Slot {slot_index + 1}")
+        dialog_title = "Assign Relic" if is_empty_slot else "Replace Relic"
+        dialog.title(f"{dialog_title} - Slot {slot_index + 1}")
         dialog.geometry("700x500")
         dialog.transient(self.root)
         dialog.grab_set()
 
-        # Current relic info
-        info_frame = ttk.LabelFrame(dialog, text="Current Relic")
+        # Current relic info (or empty slot info)
+        info_frame = ttk.LabelFrame(dialog, text="Current Slot" if is_empty_slot else "Current Relic")
         info_frame.pack(fill='x', padx=10, pady=5)
 
         info_left = ttk.Frame(info_frame)
         info_left.pack(side='left', fill='x', expand=True)
 
-        ttk.Label(info_left, text=f"Name: {current_relic['name']}").pack(anchor='w', padx=5)
-        ttk.Label(info_left, text=f"Color: {current_color}").pack(anchor='w', padx=5)
-        ttk.Label(info_left, text=f"ID: {current_relic['real_id']}").pack(anchor='w', padx=5)
-        ttk.Label(info_left, text=f"Slot Type: {'Deep' if is_deep_slot else 'Normal'}").pack(anchor='w', padx=5)
+        if is_empty_slot:
+            ttk.Label(info_left, text="(Empty Slot)").pack(anchor='w', padx=5)
+            ttk.Label(info_left, text=f"Slot Color: {current_color}").pack(anchor='w', padx=5)
+            ttk.Label(info_left, text=f"Slot Type: {'Deep' if is_deep_slot else 'Normal'}").pack(anchor='w', padx=5)
+        else:
+            ttk.Label(info_left, text=f"Name: {current_relic['name']}").pack(anchor='w', padx=5)
+            ttk.Label(info_left, text=f"Color: {current_color}").pack(anchor='w', padx=5)
+            ttk.Label(info_left, text=f"ID: {current_relic['real_id']}").pack(anchor='w', padx=5)
+            ttk.Label(info_left, text=f"Slot Type: {'Deep' if is_deep_slot else 'Normal'}").pack(anchor='w', padx=5)
 
-        # Edit button for current relic
+        # Edit button for current relic (only if slot has a relic)
         def edit_current_relic():
+            if is_empty_slot:
+                return
             # Create refresh callback that updates vessels
             def refresh_after_edit():
                 self.refresh_inventory()
@@ -3598,21 +3693,31 @@ class SaveEditorGUI:
 
         info_right = ttk.Frame(info_frame)
         info_right.pack(side='right', padx=10, pady=5)
-        ttk.Button(info_right, text="✏️ Edit Effects", command=edit_current_relic).pack()
+        edit_btn = ttk.Button(info_right, text="✏️ Edit Effects", command=edit_current_relic)
+        edit_btn.pack()
+        if is_empty_slot:
+            edit_btn.config(state='disabled')
 
         # Options frame
         options_frame = ttk.Frame(dialog)
         options_frame.pack(fill='x', padx=10, pady=5)
 
-        # Checkbox to allow any color
-        any_color_var = tk.BooleanVar(value=False)
+        # For White/Universal slots, default to showing all colors
+        is_universal_slot = (slot_color == 'White')
+        any_color_var = tk.BooleanVar(value=is_universal_slot)
+
+        # Checkbox to allow any color (pre-checked for White slots)
         any_color_cb = ttk.Checkbutton(
             options_frame,
-            text="Allow any color (for flex slots)",
+            text="Show all colors" if is_universal_slot else "Show all colors (slot accepts any)",
             variable=any_color_var,
             command=lambda: self.refresh_replacement_list(relic_tree, current_color, any_color_var.get(), is_deep_slot)
         )
         any_color_cb.pack(side='left', padx=5)
+
+        # Add indicator if it's a universal slot
+        if is_universal_slot:
+            ttk.Label(options_frame, text="(Universal slot)", foreground='gray').pack(side='left', padx=5)
 
         # Search box
         ttk.Label(options_frame, text="Search:").pack(side='left', padx=(20, 5))
@@ -3622,8 +3727,9 @@ class SaveEditorGUI:
         search_var.trace('w', lambda *args: self.refresh_replacement_list(
             relic_tree, current_color, any_color_var.get(), is_deep_slot, search_var.get()))
 
-        # Relic list
-        list_frame = ttk.LabelFrame(dialog, text=f"Available Relics ({current_color})")
+        # Relic list - for universal slots, start with "All Colors"
+        list_label = "All Colors" if is_universal_slot else current_color
+        list_frame = ttk.LabelFrame(dialog, text=f"Available Relics ({list_label})")
         list_frame.pack(fill='both', expand=True, padx=10, pady=5)
 
         columns = ('Name', 'Color', 'ID', 'Effect 1', 'Effect 2', 'Effect 3')
@@ -3652,8 +3758,8 @@ class SaveEditorGUI:
         # Store reference to update label
         self._replace_list_frame = list_frame
 
-        # Populate initial list
-        self.refresh_replacement_list(relic_tree, current_color, False, is_deep_slot)
+        # Populate initial list - use is_universal_slot to show all colors for white slots
+        self.refresh_replacement_list(relic_tree, current_color, is_universal_slot, is_deep_slot)
 
         # Buttons
         btn_frame = ttk.Frame(dialog)
@@ -4187,15 +4293,26 @@ class SaveEditorGUI:
             return
         
         file_name = os.path.basename(file_path)
-        
-        # Determine mode
+
+        # Determine mode based on file content, not just filename
+        # This allows custom save file names (e.g., from ModEngine 3 Manager)
         if file_name.lower() == 'memory.dat':
             MODE = 'PS4'
-            
-        elif file_name == 'NR0000.sl2':
-            MODE = 'PC'
+        elif file_path.lower().endswith('.sl2'):
+            # Check if it's a valid SL2 file by looking for BND4 header
+            try:
+                with open(file_path, 'rb') as f:
+                    header = f.read(4)
+                if header == b'BND4':
+                    MODE = 'PC'
+                else:
+                    messagebox.showerror("Error", "This .sl2 file does not have a valid BND4 header. It may be corrupted or not a valid Nightreign save file.")
+                    return
+            except Exception as e:
+                messagebox.showerror("Error", f"Could not read file: {e}")
+                return
         else:
-            messagebox.showerror("Error", "If this is a PS4 save, make sure it is decrypted and change the file name to memory.dat")
+            messagebox.showerror("Error", "Please select a valid save file:\n\n• PC: .sl2 file (e.g., NR0000.sl2 or custom named .sl2)\n• PS4: decrypted memory.dat file")
             return
         
         # Split files
