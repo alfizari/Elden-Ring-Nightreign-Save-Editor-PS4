@@ -3741,7 +3741,7 @@ class SaveEditorGUI:
             options_frame,
             text="Show all colors" if is_universal_slot else "Show all colors (slot accepts any)",
             variable=any_color_var,
-            command=lambda: self.refresh_replacement_list(relic_tree, current_color, any_color_var.get(), is_deep_slot)
+            command=lambda: self.refresh_replacement_list(relic_tree, current_color, any_color_var.get(), is_deep_slot, "", relics)
         )
         any_color_cb.pack(side='left', padx=5)
 
@@ -3755,7 +3755,7 @@ class SaveEditorGUI:
         search_entry = ttk.Entry(options_frame, textvariable=search_var, width=30)
         search_entry.pack(side='left', padx=5)
         search_var.trace('w', lambda *args: self.refresh_replacement_list(
-            relic_tree, current_color, any_color_var.get(), is_deep_slot, search_var.get()))
+            relic_tree, current_color, any_color_var.get(), is_deep_slot, search_var.get(), relics))
 
         # Buttons frame - pack FIRST with side='bottom' so it's always visible
         btn_frame = ttk.Frame(dialog)
@@ -3793,7 +3793,7 @@ class SaveEditorGUI:
         self._replace_list_frame = list_frame
 
         # Populate initial list - use is_universal_slot to show all colors for white slots
-        self.refresh_replacement_list(relic_tree, current_color, is_universal_slot, is_deep_slot)
+        self.refresh_replacement_list(relic_tree, current_color, is_universal_slot, is_deep_slot, "", relics)
 
         def do_replace():
             selection = relic_tree.selection()
@@ -3815,8 +3815,11 @@ class SaveEditorGUI:
         ttk.Button(btn_frame, text="Replace", command=do_replace).pack(side='left', padx=5)
         ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(side='left', padx=5)
 
-    def refresh_replacement_list(self, tree, current_color, allow_any_color, is_deep_slot, search_term=""):
+    def refresh_replacement_list(self, tree, current_color, allow_any_color, is_deep_slot, search_term="", vessel_relics=None):
         """Refresh the replacement relic list based on filters"""
+        if vessel_relics is None:
+            vessel_relics = []
+
         # Clear existing items
         for item in tree.get_children():
             tree.delete(item)
@@ -3838,6 +3841,10 @@ class SaveEditorGUI:
             item_data = items_json.get(str(real_id), {})
             item_name = item_data.get('name', f'Unknown ({real_id})')
             item_color = item_data.get('color', 'Unknown')
+
+            # Filter existing relics currently in the vessel
+            if ga in [i[0] for i in vessel_relics]:
+                continue
 
             # Filter by color unless "any color" is checked
             if not allow_any_color and item_color != current_color:
