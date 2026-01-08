@@ -1527,7 +1527,14 @@ def name_to_path():
         except struct.error as e:
             print(f"Error parsing save file {file_path}: Data structure error - {e}")
             print(f"  This may indicate a corrupted save file or incompatible format")
+        except IndexError as e:
+            import traceback
+            traceback.print_exc()
+            print(f"Error parsing save file {file_path}: Index error - {e}")
+            print(f"  This may indicate a corrupted save file")
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Error reading {file_path}: {e}")
 
 def name_to_path_import():
@@ -1795,12 +1802,26 @@ def load_imported_data_and_close(path, popup):
 def load_imported_data(path):
     global imported_data, data
 
+    # Check if steam_id was found - required for import
+    if steam_id is None:
+        messagebox.showerror("Error",
+            "Cannot import save: Steam ID not found in current save file.\n\n"
+            "The Steam ID pattern could not be detected in your save.\n"
+            "This may indicate a corrupted or incompatible save file.")
+        return
+
     with open (path, "rb") as f:
         imported_data=f.read()
 
     offsets = aob_search(imported_data, AOB_search)
+    if not offsets:
+        messagebox.showerror("Error",
+            "Cannot import save: Steam ID pattern not found in the imported save file.\n\n"
+            "The imported save may be corrupted or incompatible.")
+        return
+
     offset = offsets[0] + 44
-    imported_data = imported_data[:offset] + bytes.fromhex(steam_id) + imported_data[offset + 8:] 
+    imported_data = imported_data[:offset] + bytes.fromhex(steam_id) + imported_data[offset + 8:]
 
 
     if len(imported_data) <= len(data):
@@ -2051,7 +2072,7 @@ def find_steam_id(section_data):
     # # 假設你的 Steam ID 是 '76561198000000000' (17位數字)
     # # 先將它轉為 8 byte 的 little-endian 二進制格式 (這是 Steam ID 常見的儲存方式)
     # import struct
-    # target_steam_id_hex = struct.pack('<Q', int(76561198013358313)).hex().upper() 
+    # target_steam_id_hex = struct.pack('<Q', int(76561198013358313)).hex().upper()
     # # 或者直接用你已知的 16進位 字串搜尋
 
     # # 搜尋 section_data 中你 ID 出現的所有位置
@@ -2065,6 +2086,14 @@ def find_steam_id(section_data):
     #     print(f"原本定義的 AOB 模式為: 00 00 00 00 ?? 00 00 00 ?? ?? 00 00 00 00 00 00 ??")
 
     offsets = aob_search(section_data, AOB_search)
+    if not offsets:
+        # AOB pattern not found - return None instead of crashing
+        print("Warning: Steam ID AOB pattern not found in save data")
+        print(f"  AOB pattern searched: {AOB_search}")
+        print(f"  Save data size: {len(section_data)} bytes")
+        print(f"  This may happen with PS4 saves or after a game update")
+        return None
+
     offset = offsets[0] + 44
     steam_id = section_data[offset:offset+8]
 
@@ -2204,6 +2233,8 @@ class SaveEditorGUI:
                 self.on_character_click(last_char_index, path, name)
 
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Could not auto-load last file: {e}")
 
     def setup_file_tab(self):
@@ -3070,10 +3101,14 @@ class SaveEditorGUI:
             # Open or reuse modify dialog
             if not self.modify_dialog or not self.modify_dialog.dialog.winfo_exists():
                 self.modify_dialog = ModifyRelicDialog(self.root, ga, real_id, refresh_after_edit)
-                self.modify_dialog.dialog.protocol("WM_DELETE_WINDOW", lambda: [self.modify_dialog.dialog.destroy(), on_edit_dialog_close()])
             else:
                 self.modify_dialog.load_relic(ga, real_id)
-                self.modify_dialog.dialog.lift()
+                self.modify_dialog.callback = refresh_after_edit
+
+            # Set up close protocol and bring to front
+            self.modify_dialog.dialog.protocol("WM_DELETE_WINDOW", lambda: [self.modify_dialog.dialog.destroy(), on_edit_dialog_close()])
+            self.modify_dialog.dialog.lift()
+            self.modify_dialog.dialog.focus_force()
 
         ttk.Button(btn_frame, text="Clear Slot", command=clear_selected_slot).pack(side='left', padx=5)
         edit_btn = ttk.Button(btn_frame, text="✏️ Edit Relic", command=edit_selected_relic)
@@ -3714,12 +3749,25 @@ class SaveEditorGUI:
                             ttk.Label(info_left, text=f"ID: {new_relic['real_id']}").pack(anchor='w', padx=5)
                             ttk.Label(info_left, text=f"Slot Type: {'Deep' if is_deep_slot else 'Normal'}").pack(anchor='w', padx=5)
 
-            # Open modify dialog
+            def on_edit_dialog_close():
+                # Restore grab when edit dialog closes
+                if dialog.winfo_exists():
+                    dialog.grab_set()
+
+            # Release grab so edit dialog can receive input
+            dialog.grab_release()
+
+            # Open or reuse modify dialog
             if not self.modify_dialog or not self.modify_dialog.dialog.winfo_exists():
                 self.modify_dialog = ModifyRelicDialog(self.root, current_ga, current_relic['real_id'], refresh_after_edit)
             else:
                 self.modify_dialog.load_relic(current_ga, current_relic['real_id'])
-                self.modify_dialog.dialog.lift()
+                self.modify_dialog.callback = refresh_after_edit
+
+            # Set up close protocol and bring to front
+            self.modify_dialog.dialog.protocol("WM_DELETE_WINDOW", lambda: [self.modify_dialog.dialog.destroy(), on_edit_dialog_close()])
+            self.modify_dialog.dialog.lift()
+            self.modify_dialog.dialog.focus_force()
 
         info_right = ttk.Frame(info_frame)
         info_right.pack(side='right', padx=10, pady=5)
@@ -4102,7 +4150,7 @@ class SaveEditorGUI:
         ttk.Button(controls_frame, text="🔄 Refresh Inventory", command=self.refresh_inventory).pack(side='left', padx=5)
         ttk.Button(controls_frame, text="📤 Export to Excel", command=self.export_relics).pack(side='left', padx=5)
         ttk.Button(controls_frame, text="📥 Import from Excel", command=self.import_relics).pack(side='left', padx=5)
-        ttk.Button(controls_frame, text="🗑️ Delete All Illegal", command=self.delete_all_illegal, 
+        ttk.Button(controls_frame, text="🗑️ Delete All Illegal", command=self.delete_all_illegal,
                   style='Danger.TButton').pack(side='left', padx=5)
         ttk.Button(controls_frame, text="🗑️ Mass Delete Selected", command=self.mass_delete_relics,
                   style='Danger.TButton').pack(side='left', padx=5)
@@ -4124,6 +4172,7 @@ class SaveEditorGUI:
         ttk.Label(legend_frame, text="Red = Illegal", foreground="red").pack(side='left', padx=5)
         ttk.Label(legend_frame, text="Purple = Missing Curse", foreground="#800080").pack(side='left', padx=5)
         ttk.Label(legend_frame, text="Orange = Unique Relic (don't edit)", foreground="#FF8C00").pack(side='left', padx=5)
+        ttk.Label(legend_frame, text="Teal = Strict Invalid", foreground="#008080").pack(side='left', padx=5)
 
         
         # Search frame - Row 1: Basic search and filters
@@ -4169,9 +4218,9 @@ class SaveEditorGUI:
         # Status filter
         ttk.Label(search_frame, text="⚠️ Status:").pack(side='left', padx=(10, 2))
         self.status_filter_var = tk.StringVar(value="All")
-        status_options = ["All", "Valid", "Illegal", "Curse Illegal", "Forbidden", "Deep Only"]
+        status_options = ["All", "Valid", "Illegal", "Curse Illegal", "Forbidden", "Strict Invalid", "Deep Only"]
         self.status_filter_combo = ttk.Combobox(search_frame, textvariable=self.status_filter_var,
-                                                 values=status_options, state="readonly", width=11)
+                                                 values=status_options, state="readonly", width=12)
         self.status_filter_combo.pack(side='left', padx=2)
         self.status_filter_combo.bind("<<ComboboxSelected>>", lambda e: self.filter_relics())
 
@@ -4453,7 +4502,17 @@ class SaveEditorGUI:
                 f"• Save file from a different game version\n"
                 f"• Incompatible file format\n\n"
                 f"Try deleting some relics in-game and saving again.")
+        except IndexError as e:
+            import traceback
+            traceback.print_exc()
+            messagebox.showerror("Error",
+                f"Failed to load character: Index error\n\n"
+                f"Details: {str(e)}\n\n"
+                f"This may indicate corrupted save data.\n"
+                f"Check the console for detailed error location.")
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             messagebox.showerror("Error", f"Failed to load character: {str(e)}")
     
     def refresh_stats(self):
@@ -4570,6 +4629,7 @@ class SaveEditorGUI:
             is_illegal = ga in illegal_gas
             is_forbidden = real_id in forbidden_relics
             is_curse_illegal = relic_checker and ga in relic_checker.curse_illegal_gas
+            is_strict_invalid = relic_checker and ga in relic_checker.strict_invalid_gas
 
             # Get character assignment (which characters have this relic equipped)
             equipped_by = ga_to_characters.get(ga, [])
@@ -4588,6 +4648,8 @@ class SaveEditorGUI:
                 tag_list.append('curse_illegal')
             elif is_illegal:
                 tag_list.append('illegal')
+            elif is_strict_invalid:
+                tag_list.append('strict_invalid')
 
             # Get acquisition order from inventory section (matches in-game sorting)
             # Lower number = acquired earlier (oldest)
@@ -4610,6 +4672,7 @@ class SaveEditorGUI:
                 'is_forbidden': is_forbidden,
                 'is_illegal': is_illegal,
                 'is_curse_illegal': is_curse_illegal,
+                'is_strict_invalid': is_strict_invalid,
                 'both': is_forbidden and is_illegal
             })
 
@@ -4683,13 +4746,17 @@ class SaveEditorGUI:
             passes_status = True
             if status_filter != "All":
                 if status_filter == "Valid":
-                    passes_status = not relic['is_illegal'] and not relic['is_forbidden'] and not relic.get('is_curse_illegal', False)
+                    passes_status = (not relic['is_illegal'] and not relic['is_forbidden']
+                                     and not relic.get('is_curse_illegal', False)
+                                     and not relic.get('is_strict_invalid', False))
                 elif status_filter == "Illegal":
                     passes_status = relic['is_illegal']
                 elif status_filter == "Curse Illegal":
                     passes_status = relic.get('is_curse_illegal', False)
                 elif status_filter == "Forbidden":
                     passes_status = relic['is_forbidden']
+                elif status_filter == "Strict Invalid":
+                    passes_status = relic.get('is_strict_invalid', False)
                 elif status_filter == "Deep Only":
                     passes_status = relic.get('is_deep', False)
 
@@ -4701,6 +4768,7 @@ class SaveEditorGUI:
         self.tree.tag_configure('forbidden', foreground='#FF8C00', font=('Arial', 9, 'bold'))
         self.tree.tag_configure('curse_illegal', foreground='#9932CC', font=('Arial', 9, 'bold'))
         self.tree.tag_configure('illegal', foreground='red', font=('Arial', 9, 'bold'))
+        self.tree.tag_configure('strict_invalid', foreground='#008080', font=('Arial', 9))  # Teal for strict invalid
         self.tree.tag_configure('deep', foreground='#9999BB')  # Subtle color for deep relics, no background
 
         # Populate treeview with filtered results
@@ -5052,7 +5120,7 @@ class SaveEditorGUI:
             messagebox.showerror("Error", "Failed to delete any relics")
 
     def mass_fix_incorrect_ids(self):
-        """Find relics with incorrect IDs (effects don't match) and fix them by finding valid IDs"""
+        """Find and fix all problematic relics (illegal and strict invalid)"""
         global data, userdata_path
 
         if data is None:
@@ -5063,48 +5131,82 @@ class SaveEditorGUI:
             messagebox.showwarning("Warning", "Relic checker not initialized")
             return
 
-        # Find all illegal relics that could be fixed
-        fixable_relics = []
-        unfixable_relics = []  # Track relics that can't be fixed
+        # Find all problematic relics that could be fixed
+        fixable_illegal = []
+        fixable_strict = []
+        unfixable_relics = []
 
         for ga, id, e1, e2, e3, se1, se2, se3, offset, size in ga_relic:
             real_id = id - 2147483648
             effects = [e1, e2, e3, se1, se2, se3]
-
-            # Skip if not illegal
-            if ga not in relic_checker.illegal_gas:
-                continue
 
             # Skip unique relics
             if real_id in RelicChecker.UNIQUENESS_IDS:
                 continue
 
             item_name = items_json.get(str(real_id), {}).get("name", f"Unknown ({real_id})")
+            is_illegal = ga in relic_checker.illegal_gas
+            is_strict_invalid = ga in relic_checker.strict_invalid_gas
 
-            # Try to find a valid ID for these effects
-            # This will find an ID with enough curse slots for effects that need curses
-            valid_id = self._find_valid_relic_id_for_effects(real_id, effects)
+            if not is_illegal and not is_strict_invalid:
+                continue
 
-            if valid_id is not None:
-                # valid_id == real_id means effects are valid but might need reordering
-                # valid_id != real_id means we need to change the item ID
-                new_name = items_json.get(str(valid_id), {}).get("name", f"Unknown ({valid_id})")
-                if valid_id == real_id:
-                    # Same ID - just needs effect reordering
-                    fixable_relics.append((ga, id, real_id, valid_id, item_name, f"{new_name} (reorder effects)", effects))
-                else:
-                    fixable_relics.append((ga, id, real_id, valid_id, item_name, new_name, effects))
-            else:
-                # Track why it can't be fixed
-                reason = "No valid ID found with same color"
-                unfixable_relics.append((real_id, item_name, reason))
+            # For illegal relics: try to find strictly valid first, then fall back to valid
+            if is_illegal:
+                # First try strictly valid (best outcome)
+                strict_order = relic_checker.get_strictly_valid_order(real_id, effects)
+                if strict_order:
+                    fixable_illegal.append((ga, id, real_id, real_id, item_name, f"{item_name} (reorder)", strict_order, False))
+                    continue
+
+                # Try finding a different ID that's strictly valid
+                valid_id = self._find_strictly_valid_relic_id(real_id, effects)
+                if valid_id and valid_id != real_id:
+                    new_name = items_json.get(str(valid_id), {}).get("name", f"Unknown ({valid_id})")
+                    strict_order = relic_checker.get_strictly_valid_order(valid_id, effects)
+                    if strict_order and not relic_checker.is_illegal(valid_id, strict_order):
+                        fixable_illegal.append((ga, id, real_id, valid_id, item_name, new_name, strict_order, False))
+                        continue
+
+                # Fall back to just valid (not strictly valid)
+                valid_id = self._find_valid_relic_id_for_effects(real_id, effects)
+                if valid_id is not None:
+                    new_name = items_json.get(str(valid_id), {}).get("name", f"Unknown ({valid_id})")
+                    if valid_id == real_id:
+                        fixable_illegal.append((ga, id, real_id, valid_id, item_name, f"{new_name} (reorder)", effects, True))
+                    else:
+                        fixable_illegal.append((ga, id, real_id, valid_id, item_name, new_name, effects, True))
+                    continue
+
+                unfixable_relics.append((real_id, item_name, "illegal", "No valid ID found"))
+
+            # For strict invalid relics (not illegal)
+            elif is_strict_invalid:
+                # Try strictly valid permutation for current ID
+                strict_order = relic_checker.get_strictly_valid_order(real_id, effects)
+                if strict_order:
+                    fixable_strict.append((ga, id, real_id, real_id, item_name, f"{item_name} (reorder)", strict_order, False))
+                    continue
+
+                # Try finding a different ID that's strictly valid
+                valid_id = self._find_strictly_valid_relic_id(real_id, effects)
+                if valid_id and valid_id != real_id:
+                    new_name = items_json.get(str(valid_id), {}).get("name", f"Unknown ({valid_id})")
+                    strict_order = relic_checker.get_strictly_valid_order(valid_id, effects)
+                    if strict_order and not relic_checker.is_illegal(valid_id, strict_order):
+                        fixable_strict.append((ga, id, real_id, valid_id, item_name, new_name, strict_order, False))
+                        continue
+
+                unfixable_relics.append((real_id, item_name, "strict", "No valid permutation found"))
+
+        fixable_relics = fixable_illegal + fixable_strict
 
         if not fixable_relics:
             msg = "No fixable relics found.\n\n"
             if unfixable_relics:
-                msg += f"{len(unfixable_relics)} illegal relic(s) cannot be auto-fixed:\n"
-                for real_id, name, reason in unfixable_relics[:5]:
-                    msg += f"• {name} ({real_id}): {reason}\n"
+                msg += f"{len(unfixable_relics)} relic(s) cannot be auto-fixed:\n"
+                for real_id, name, issue_type, reason in unfixable_relics[:5]:
+                    msg += f"• {name} ({issue_type}): {reason}\n"
                 if len(unfixable_relics) > 5:
                     msg += f"... and {len(unfixable_relics) - 5} more\n"
                 msg += "\nThese may need manual effect changes."
@@ -5112,11 +5214,24 @@ class SaveEditorGUI:
             return
 
         # Show confirmation with details
-        details = f"Found {len(fixable_relics)} relic(s) that can be fixed:\n\n"
-        for i, (ga, id, old_id, new_id, old_name, new_name, effects) in enumerate(fixable_relics[:10]):
-            details += f"• {old_name} ({old_id}) → {new_name} ({new_id})\n"
+        details = ""
+        if fixable_illegal:
+            details += f"Illegal relics: {len(fixable_illegal)}\n"
+        if fixable_strict:
+            details += f"Strict invalid relics: {len(fixable_strict)}\n"
+        details += f"\nTotal: {len(fixable_relics)} relic(s) to fix:\n\n"
+
+        for i, (ga, id, old_id, new_id, old_name, new_name, effects, is_fallback) in enumerate(fixable_relics[:10]):
+            marker = " ⚠️" if is_fallback else ""
+            if old_id == new_id:
+                details += f"• {old_name} → reorder effects{marker}\n"
+            else:
+                details += f"• {old_name} → {new_name}{marker}\n"
         if len(fixable_relics) > 10:
             details += f"\n... and {len(fixable_relics) - 10} more"
+
+        if any(r[7] for r in fixable_relics):  # Check if any fallback fixes
+            details += "\n\n⚠️ = Fixed to valid but may still have 0% weight effects"
 
         details += "\n\nProceed with fixing these relics?"
 
@@ -5124,30 +5239,34 @@ class SaveEditorGUI:
         if not result:
             return
 
-        # Apply fixes - use modify_relic_by_ga which matches by GA handle only
-        # This avoids issues where item_id changes after gaprint refresh
+        # Apply fixes
         fixed_count = 0
         failed_count = 0
 
-        for ga, id, old_id, new_id, old_name, new_name, effects in fixable_relics:
-            # Reload ga_relic before each modification to ensure we have current offsets
+        for ga, id, old_id, new_id, old_name, new_name, new_effects, is_fallback in fixable_relics:
             gaprint(data)
-
-            # Use modify_relic_by_ga which only needs GA handle (doesn't care about current item_id)
-            if modify_relic_by_ga(ga, effects, new_id):
+            # Use sort_effects=True for fallback fixes (need sorting), False for strict fixes (already sorted)
+            if modify_relic_by_ga(ga, new_effects, new_id, sort_effects=is_fallback):
                 fixed_count += 1
             else:
                 failed_count += 1
 
-        # Reload data from file to ensure we have the final saved state
+        # Reload data
         if userdata_path:
             with open(userdata_path, 'rb') as f:
                 data = f.read()
 
         # Show result
         message = f"Fixed {fixed_count} relic(s)"
+        if fixable_illegal:
+            message += f"\n• {len([r for r in fixable_illegal if r[7] == False])} illegal → strictly valid"
+            fallback_count = len([r for r in fixable_illegal if r[7] == True])
+            if fallback_count:
+                message += f"\n• {fallback_count} illegal → valid (may still be strict invalid)"
+        if fixable_strict:
+            message += f"\n• {len(fixable_strict)} strict invalid → strictly valid"
         if failed_count > 0:
-            message += f"\n{failed_count} failed to fix"
+            message += f"\n\n{failed_count} failed to fix"
 
         messagebox.showinfo("Mass Fix Complete", message)
         self.refresh_inventory()
@@ -5207,6 +5326,39 @@ class SaveEditorGUI:
 
             # Check if effects are valid for this ID (allow empty curses)
             if relic_checker._check_relic_effects_in_pool(test_id, effects, allow_empty_curses=True):
+                return test_id
+
+        return None
+
+    def _find_strictly_valid_relic_id(self, current_id, effects):
+        """Find a relic ID where effects can be strictly valid (same color)"""
+        if current_id not in data_source.relic_table.index:
+            return None
+        current_color = data_source.relic_table.loc[current_id, "relicColor"]
+
+        # Get range
+        id_range = relic_checker.find_id_range(current_id)
+        if not id_range:
+            return None
+
+        group_name, (range_start, range_end) = id_range
+        if group_name == "illegal":
+            return None
+
+        # Search for strictly valid ID
+        for test_id in range(range_start, range_end + 1):
+            if test_id == current_id:
+                continue
+            if test_id not in data_source.relic_table.index:
+                continue
+
+            test_color = data_source.relic_table.loc[test_id, "relicColor"]
+            if test_color != current_color:
+                continue
+
+            # Check if effects can be strictly valid with this ID
+            valid_order = relic_checker.get_strictly_valid_order(test_id, effects)
+            if valid_order:
                 return test_id
 
         return None
@@ -5441,8 +5593,19 @@ class ModifyRelicDialog:
         is_curse_illegal = relic_checker.is_curse_illegal(relic_id, effects) if relic_checker else False
 
         if not is_illegal and not is_curse_illegal:
-            self.status_label.config(text="✅ VALID", foreground='green')
-            self.illegal_reason_label.config(text="This relic configuration is legal and will work in-game.")
+            # Check for strict invalid (valid but 0% weight effects)
+            is_strict_invalid = relic_checker.is_strict_invalid(relic_id, effects) if relic_checker else False
+            if is_strict_invalid:
+                strict_reason = relic_checker.get_strict_invalid_reason(relic_id, effects) if relic_checker else None
+                self.status_label.config(text="⚠️ STRICT INVALID", foreground='#008080')  # Teal color
+                reason_text = "This relic is technically valid but has effects with 0% drop weight in their assigned pools.\n"
+                if strict_reason:
+                    reason_text += f"\n{strict_reason}\n"
+                reason_text += "\nThis may cause detection or unexpected behavior. Use 'Mass Fix' or 'Find Valid ID' to resolve."
+                self.illegal_reason_label.config(text=reason_text)
+            else:
+                self.status_label.config(text="✅ VALID", foreground='green')
+                self.illegal_reason_label.config(text="This relic configuration is legal and will work in-game.")
             return
 
         # Determine relic type for clearer messaging

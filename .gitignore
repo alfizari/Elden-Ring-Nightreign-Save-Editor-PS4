@@ -5,3 +5,20 @@ Source code/settings.json
 # Debug files
 debug*.txt
 editor_config.json
+*_debug.txt
+preset_debug.txt
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Decrypted save files
+src/decrypted_output/
+
+# Dev/test scripts
+src/analyze_presets.py
+src/check_deep_relics.py
+src/check_relic_ids.py
+src/find_vessel.py
+src/find_presets.py
