@@ -104,6 +104,8 @@ class SourceDataHandler:
         self.relic_name: Optional[pd.DataFrame] = None
         self.effect_name: Optional[pd.DataFrame] = None
         self.npc_name: Optional[pd.DataFrame] = None
+        # Track which relic IDs are from 1.02 patch (Scene relics)
+        self._scene_relic_ids: set = set()
         self.vessel_names: Optional[pd.DataFrame] = None
         self._load_text(language)
 
@@ -114,12 +116,18 @@ class SourceDataHandler:
             _lng = "en_US"
         # Deal with Relic text
         # Read all Relic xml from language subfolder
+        # Track which IDs come from _dlc01 file (1.02 patch / Scene relics)
         _relic_names: Optional[pd.DataFrame] = None
+        self._scene_relic_ids = set()
         for file_name in SourceDataHandler.RELIC_TEXT_FILE_NAME:
             _df = pd.read_xml(
                 SourceDataHandler.TEXT_DIR / _lng / file_name,
                 xpath="/fmg/entries/text"
             )
+            # Track IDs from dlc01 file as Scene relics (1.02 patch)
+            if "_dlc01" in file_name:
+                valid_ids = _df[_df['text'] != '%null%']['id'].tolist()
+                self._scene_relic_ids.update(valid_ids)
             if _relic_names is None:
                 _relic_names = _df
             else:
@@ -334,6 +342,40 @@ class SourceDataHandler:
                                           "attachEffectTableId_curse3"]]
         return _pool_ids.values.tolist()
 
+    def is_scene_relic(self, relic_id: int) -> bool:
+        """Check if a relic is a Scene relic (added in patch 1.02).
+
+        Scene relics have different effect pools than original relics,
+        which is why certain effects can only be found on Scene relics
+        and vice versa.
+
+        Returns:
+            True if the relic is a Scene relic (1.02+), False otherwise
+        """
+        return relic_id in self._scene_relic_ids
+
+    def get_relic_type_info(self, relic_id: int) -> tuple:
+        """Get relic type information for display purposes.
+
+        Returns:
+            Tuple of (type_name, description, color_hex)
+            - type_name: "Scene" or "Original"
+            - description: Brief explanation of what this means
+            - color_hex: Color for display
+        """
+        if self.is_scene_relic(relic_id):
+            return (
+                "Scene Relic (1.02+)",
+                "Has unique effect pools not found on original relics",
+                "#9966CC"  # Purple for Scene relics
+            )
+        else:
+            return (
+                "Original Relic",
+                "Has effect pools from base game release",
+                "#666666"  # Gray for original relics
+            )
+
     def get_effect_conflict_id(self, effect_id: int):
         try:
             if effect_id == -1 or effect_id == 4294967295:
@@ -450,10 +492,12 @@ class SourceDataHandler:
         _vessel_data = self.antique_stand_param[self.antique_stand_param["ID"] == vessel_id][
             ["goodsId", "heroType",
              "relicSlot1", "relicSlot2", "relicSlot3",
-             "deepRelicSlot1", "deepRelicSlot2", "deepRelicSlot3"]
+             "deepRelicSlot1", "deepRelicSlot2", "deepRelicSlot3",
+             "unlockFlag"]
         ]
         # hero type start at 1, and 11 means ALL
         _hero_type = int(_vessel_data["heroType"].values[0])
+        _unlock_flag = int(_vessel_data["unlockFlag"].values[0])
         _result = {"Name": self.vessel_names[self.vessel_names["id"] == _vessel_data["goodsId"].values[0]]["text"].values[0],
                    "Character": self.get_character_name(CHARACTER_NAME_ID[_hero_type-1]) if _hero_type != 11 else "All",
                    "Colors": (
@@ -463,7 +507,8 @@ class SourceDataHandler:
                         COLOR_MAP[_vessel_data["deepRelicSlot1"].values[0]],
                         COLOR_MAP[_vessel_data["deepRelicSlot2"].values[0]],
                         COLOR_MAP[_vessel_data["deepRelicSlot3"].values[0]]
-                        )
+                        ),
+                   "unlockFlag": _unlock_flag
                    }
         return _result
 
