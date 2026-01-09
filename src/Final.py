@@ -4,8 +4,7 @@ import json, shutil, os , struct
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, simpledialog
 from pathlib import Path
-from openpyxl import Workbook, load_workbook
-from openpyxl.utils import get_column_letter
+# openpyxl is lazy-loaded in export/import functions to speed up startup
 from relic_checker import RelicChecker, InvalidReason, is_curse_invalid
 from source_data_handler import SourceDataHandler, get_system_language, CHARACTER_NAMES
 from typing import Optional
@@ -17,13 +16,20 @@ working_directory = os.path.dirname(os.path.abspath(__file__))
 working_directory = Path(working_directory)
 os.chdir(working_directory)
 
-# Data storage
-data_source = SourceDataHandler(language=get_system_language())
+# Data storage - SourceDataHandler is lazy-initialized to speed up startup
+data_source: Optional[SourceDataHandler] = None
 relic_checker: Optional[RelicChecker] = None
 items_json = {}
 effects_json = {}
 data = None
 userdata_path = None
+
+
+def _ensure_data_source():
+    """Lazy initialize data_source on first use"""
+    global data_source
+    if data_source is None:
+        data_source = SourceDataHandler(language=get_system_language())
 
 
 def get_base_dir():
@@ -167,6 +173,7 @@ ITEM_TYPE_RELIC = 0xC0000000
 
 def load_json_data():
     global items_json, effects_json
+    _ensure_data_source()  # Lazy init data_source
     try:
         # file_path = os.path.join(working_directory, "Resources/Json")
 
@@ -190,6 +197,7 @@ def load_json_data():
 
 def reload_language(language_code):
     global items_json, effects_json, data_source
+    _ensure_data_source()  # Lazy init data_source
     result = data_source.reload_text(language_code)
     items_json = data_source.get_relic_origin_structure()
     effects_json = data_source.get_effect_origin_structure()
@@ -869,8 +877,9 @@ def parse_vessel_assignments(file_data):
     log("VESSEL PARSING DEBUG")
     log("="*60)
 
-    # Run debug analysis first
-    debug_dump_save_analysis(file_data)
+    # NOTE: debug_dump_save_analysis removed for performance - it was adding ~3s to every file load
+    # Uncomment below line if you need detailed debug output:
+    # debug_dump_save_analysis(file_data)
 
     # Find preset names in save file
     find_preset_names(file_data)
@@ -1848,6 +1857,10 @@ def load_imported_data(path):
 
 
 def export_relics_to_excel(filepath="relics.xlsx"):
+    # Lazy import openpyxl only when needed
+    from openpyxl import Workbook
+    from openpyxl.utils import get_column_letter
+
     if not ga_relic:
         return False, "No relics found in ga_relic."
 
@@ -1925,11 +1938,14 @@ def import_relics_from_excel(filepath):
     Imports relics from an Excel file and modifies current relics to match.
     If imported list is longer than current relic list, extras are ignored.
     """
+    # Lazy import openpyxl only when needed
+    from openpyxl import load_workbook
+
     global data, ga_relic
-    
+
     if not ga_relic:
         return False, "No relics loaded in current save"
-    
+
     try:
         wb = load_workbook(filepath)
         ws = wb.active
@@ -4486,16 +4502,17 @@ class SaveEditorGUI:
             # Parse vessel assignments (maps GA handles to character names)
             parse_vessel_assignments(data)
 
-            # Load Relic Checker
+            # Initialize Relic Checker (set_illegal_relics will be called by refresh_inventory)
             relic_checker = RelicChecker(ga_relic=ga_relic,
                                          data_source=data_source)
-            relic_checker.set_illegal_relics()
+            # NOTE: Don't call set_illegal_relics() here - refresh_inventory() will call it
+
             # Read stats
             read_murks_and_sigs(data)
 
             steam_id = find_steam_id(data)
 
-            # Refresh all tabs
+            # Refresh all tabs (refresh_inventory calls set_illegal_relics)
             self.refresh_inventory()
             self.refresh_stats()
             self.refresh_vessels()
