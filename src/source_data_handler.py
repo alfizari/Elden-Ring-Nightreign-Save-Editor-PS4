@@ -386,8 +386,12 @@ class SourceDataHandler:
             return -1
 
     def get_sort_id(self, effect_id: int):
-        _sort_id = self.effect_params.loc[effect_id, "overrideEffectId"]
-        return _sort_id
+        try:
+            _sort_id = self.effect_params.loc[effect_id, "overrideEffectId"]
+            return _sort_id
+        except KeyError:
+            pass
+        return -1
 
     def get_effect_name(self, effect_id: int) -> str:
         """Get the name of an effect by its ID."""
