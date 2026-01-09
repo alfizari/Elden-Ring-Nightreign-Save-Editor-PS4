@@ -389,12 +389,66 @@ class SourceDataHandler:
         _sort_id = self.effect_params.loc[effect_id, "overrideEffectId"]
         return _sort_id
 
+    def get_effect_name(self, effect_id: int) -> str:
+        """Get the name of an effect by its ID."""
+        if effect_id in [-1, 0, 4294967295]:
+            return "Empty"
+        if self.effect_name is None:
+            self._load_text()
+        try:
+            row = self.effect_name[self.effect_name["id"] == effect_id]
+            if not row.empty:
+                return row["text"].values[0]
+        except Exception:
+            pass
+        return f"Effect {effect_id}"
+
     def get_pool_effects(self, pool_id: int):
         if pool_id == -1:
             return []
         _effects = self.effect_table[self.effect_table["ID"] == pool_id]
         _effects = _effects["attachEffectId"].values.tolist()
         return _effects
+
+    def get_pool_rollable_effects(self, pool_id: int):
+        """Get effects that can actually roll in a pool (chanceWeight != -65536).
+
+        Effects with weight -65536 are technically in the pool but have 0% chance
+        to roll, so they should not be considered valid for that pool.
+
+        For deep pools (2000000, 2100000, 2200000), returns effects that have
+        non-zero weight in ANY of the three deep pools, since the game appears
+        to allow effects to roll on any deep relic if they're valid in any deep pool.
+        """
+        if pool_id == -1:
+            return []
+
+        # Deep pools are interchangeable - effect valid in any deep pool is valid for all
+        deep_pools = {2000000, 2100000, 2200000}
+        if pool_id in deep_pools:
+            # Get effects with non-zero weight in ANY deep pool
+            _effects = self.effect_table[self.effect_table["ID"].isin(deep_pools)]
+            _effects = _effects[_effects["chanceWeight"] != -65536]
+            return _effects["attachEffectId"].unique().tolist()
+
+        # For non-deep pools, check the specific pool
+        _effects = self.effect_table[self.effect_table["ID"] == pool_id]
+        # Filter out effects with weight -65536 (cannot roll)
+        _effects = _effects[_effects["chanceWeight"] != -65536]
+        return _effects["attachEffectId"].values.tolist()
+
+    def get_pool_effects_strict(self, pool_id: int):
+        """Get effects that can roll in a SPECIFIC pool (chanceWeight != -65536).
+
+        Unlike get_pool_rollable_effects(), this does NOT combine deep pools.
+        Use this for strict validation to detect effects that are valid in some
+        deep pool but not in the specific pool assigned to a relic.
+        """
+        if pool_id == -1:
+            return []
+        _effects = self.effect_table[self.effect_table["ID"] == pool_id]
+        _effects = _effects[_effects["chanceWeight"] != -65536]
+        return _effects["attachEffectId"].values.tolist()
 
     def get_effect_pools(self, effect_id: int):
         """Get all pool IDs that contain a specific effect."""

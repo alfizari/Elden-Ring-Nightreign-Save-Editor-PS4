@@ -76,7 +76,8 @@ class RelicChecker:
                     if eff in [-1, 0, 4294967295]:
                         # Empty effect is OK (slot just not used)
                         test_result.append(True)
-                    elif eff not in self.data_source.get_pool_effects(pools[idx]):
+                    elif eff not in self.data_source.get_pool_rollable_effects(pools[idx]):
+                        # Effect must have non-zero weight in the pool to be valid
                         test_result.append(False)
                     else:
                         test_result.append(True)
@@ -102,7 +103,8 @@ class RelicChecker:
                             test_result.append(False)
                         else:
                             test_result.append(True)
-                    elif curse not in self.data_source.get_pool_effects(curse_pool):
+                    elif curse not in self.data_source.get_pool_rollable_effects(curse_pool):
+                        # Curse must have non-zero weight in the pool
                         test_result.append(False)
                     else:
                         test_result.append(True)
@@ -188,13 +190,15 @@ class RelicChecker:
                 effect_pool = pools[idx]
                 curse_pool = pools[idx + 3]
 
-                # Check effect is in pool
+                # Check effect is in pool (must have non-zero weight)
                 if effect_pool == -1:
-                    if eff != 4294967295:
+                    if eff not in [-1, 0, 4294967295]:  # Must be empty
                         sequence_fully_valid = False
                         break
                 else:
-                    if eff not in self.data_source.get_pool_effects(effect_pool):
+                    if eff in [-1, 0, 4294967295]:
+                        pass  # Empty effect is OK (slot just not used)
+                    elif eff not in self.data_source.get_pool_rollable_effects(effect_pool):
                         sequence_fully_valid = False
                         break
 
@@ -216,7 +220,7 @@ class RelicChecker:
                         # Missing required curse
                         sequence_fully_valid = False
                         break
-                    if curse not in self.data_source.get_pool_effects(curse_pool):
+                    if curse not in self.data_source.get_pool_rollable_effects(curse_pool):
                         # Curse not in correct pool
                         sequence_fully_valid = False
                         break
@@ -224,7 +228,7 @@ class RelicChecker:
                     # Effect doesn't need curse but slot supports one (optional)
                     # Curse can be empty or valid
                     if curse not in [-1, 0, 4294967295]:
-                        if curse not in self.data_source.get_pool_effects(curse_pool):
+                        if curse not in self.data_source.get_pool_rollable_effects(curse_pool):
                             # Curse provided but not in correct pool
                             sequence_fully_valid = False
                             break
@@ -253,6 +257,11 @@ class RelicChecker:
                                  self.RELIC_RANGE[1]+1):
             return True
         else:
+            # Rule: Effects must be in valid pools for this relic
+            # This is the primary validation - effects must match the relic's effect pools
+            if not self._check_relic_effects_in_pool(relic_id, effects):
+                return True
+
             # Rule: Deep-only effects must have curses
             # Effects that only exist in deep relic pools require curses
             # when used on multi-effect relics
@@ -291,6 +300,116 @@ class RelicChecker:
                 if sorted_effects[i][1] != effects[i]:
                     return True
             return False
+
+    def is_strict_invalid(self, relic_id: int, effects: list[int]):
+        """Check if a relic has effects with 0 weight in the relic's specific pools,
+        but non-zero weight in other pools of the same type.
+
+        This catches cases where an effect could exist on a deep relic (weight > 0 in
+        some deep pool) but has 0 weight in the specific pool assigned to this relic,
+        AND no permutation exists where all effects have non-zero weight in their slot's pool.
+
+        Returns True only if NO permutation results in all effects being strictly valid
+        for their permuted slot's specific pool.
+        """
+        # Skip if relic is actually illegal (that's a different issue)
+        if self.is_illegal(relic_id, effects):
+            return False
+
+        try:
+            pools = self.data_source.get_relic_pools_seq(relic_id)
+        except KeyError:
+            return False
+
+        deep_pools = {2000000, 2100000, 2200000}
+
+        # Check if this relic uses any deep pools
+        has_deep_pools = any(p in deep_pools for p in pools[:3])
+        if not has_deep_pools:
+            return False
+
+        # Try all permutations - if ANY permutation is strictly valid, return False
+        possible_sequences = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]
+
+        for seq in possible_sequences:
+            cur_effects = [effects[i] for i in seq]
+            sequence_strict_valid = True
+
+            for idx in range(3):
+                effect = cur_effects[idx]
+                effect_pool = pools[idx]
+
+                # Skip empty effects
+                if effect in [-1, 0, 4294967295]:
+                    continue
+
+                # Skip non-deep pools
+                if effect_pool not in deep_pools:
+                    continue
+
+                # Check if effect has non-zero weight in this SPECIFIC pool
+                specific_pool_effects = self.data_source.get_pool_effects_strict(effect_pool)
+
+                if effect not in specific_pool_effects:
+                    sequence_strict_valid = False
+                    break
+
+            if sequence_strict_valid:
+                # Found a permutation where all effects are strictly valid
+                return False
+
+        # No permutation is strictly valid
+        return True
+
+    def get_strict_invalid_reason(self, relic_id: int, effects: list[int]) -> str | None:
+        """Get a human-readable reason why a relic is strictly invalid.
+
+        Returns None if the relic is not strictly invalid.
+        """
+        if not self.is_strict_invalid(relic_id, effects):
+            return None
+
+        try:
+            pools = self.data_source.get_relic_pools_seq(relic_id)
+        except KeyError:
+            return "Unknown relic ID"
+
+        deep_pools = {2000000, 2100000, 2200000}
+        pool_names = {2000000: "Pool A", 2100000: "Pool B", 2200000: "Pool C"}
+
+        # Find which effects are problematic
+        problematic_effects = []
+        for i, effect in enumerate(effects[:3]):
+            if effect in [-1, 0, 4294967295]:
+                continue
+
+            effect_pool = pools[i]
+            if effect_pool not in deep_pools:
+                continue
+
+            # Check if effect is strictly valid in this pool
+            specific_pool_effects = self.data_source.get_pool_effects_strict(effect_pool)
+            if effect not in specific_pool_effects:
+                # Find which pools this effect IS valid in
+                valid_pools = []
+                for pool_id in deep_pools:
+                    if effect in self.data_source.get_pool_effects_strict(pool_id):
+                        valid_pools.append(pool_names.get(pool_id, str(pool_id)))
+
+                effect_name = self.data_source.get_effect_name(effect)
+                if valid_pools:
+                    problematic_effects.append(
+                        f"'{effect_name}' needs {'/'.join(valid_pools)} but slot {i+1} uses {pool_names.get(effect_pool, str(effect_pool))}"
+                    )
+                else:
+                    problematic_effects.append(
+                        f"'{effect_name}' has 0 weight in all deep pools"
+                    )
+
+        if not problematic_effects:
+            return "No valid permutation exists"
+
+        return "; ".join(problematic_effects)
 
     def sort_effects(self, effects: list[int]):
         """Sort effects by their sort ID, keeping curses paired with their primary effects.
@@ -336,9 +455,181 @@ class RelicChecker:
         result.extend([pair[2] for pair in sorted_pairs])  # curses
         return result
 
+    def get_valid_order(self, relic_id: int, effects: list[int]):
+        """Find a permutation of effects that is valid for this relic.
+
+        Returns the reordered effects list if a valid permutation exists,
+        or None if no permutation can make the relic valid.
+        This checks rollable pool validity (effects must have non-zero weight).
+        """
+        try:
+            pools = self.data_source.get_relic_pools_seq(relic_id)
+        except KeyError:
+            return None
+
+        possible_sequences = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]
+
+        for seq in possible_sequences:
+            cur_effects = [effects[i] for i in seq]
+            cur_curses = [effects[i + 3] for i in seq]
+            sequence_valid = True
+
+            for idx in range(3):
+                effect = cur_effects[idx]
+                curse = cur_curses[idx]
+                effect_pool = pools[idx]
+                curse_pool = pools[idx + 3]
+
+                # Skip empty effects
+                if effect in [-1, 0, 4294967295]:
+                    continue
+
+                # Check effect is rollable in the pool (must have non-zero weight)
+                pool_effects = self.data_source.get_pool_rollable_effects(effect_pool)
+                if effect not in pool_effects:
+                    sequence_valid = False
+                    break
+
+                # Check curse requirements
+                if self.data_source.effect_needs_curse(effect):
+                    if curse_pool == -1:
+                        sequence_valid = False
+                        break
+                    # Curse must be present and valid
+                    if curse in [-1, 0, 4294967295]:
+                        sequence_valid = False
+                        break
+                    pool_curses = self.data_source.get_pool_rollable_effects(curse_pool)
+                    if curse not in pool_curses:
+                        sequence_valid = False
+                        break
+
+                # Check curse placement (if curse present but effect doesn't need it)
+                if curse not in [-1, 0, 4294967295]:
+                    if curse_pool == -1:
+                        sequence_valid = False
+                        break
+                    pool_curses = self.data_source.get_pool_rollable_effects(curse_pool)
+                    if curse not in pool_curses:
+                        sequence_valid = False
+                        break
+
+            if sequence_valid:
+                # Found a valid permutation - return effects sorted for storage
+                return self.sort_effects(effects)
+
+        return None
+
+    def get_strictly_valid_order(self, relic_id: int, effects: list[int]):
+        """Find a permutation of effects that is strictly valid for this relic.
+
+        Returns the reordered effects list if a valid permutation exists,
+        or None if no permutation can make the relic strictly valid.
+        This requires effects to have non-zero weight in the specific pool, not just combined.
+        """
+        try:
+            pools = self.data_source.get_relic_pools_seq(relic_id)
+        except KeyError:
+            return None
+
+        deep_pools = {2000000, 2100000, 2200000}
+        possible_sequences = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]
+
+        for seq in possible_sequences:
+            cur_effects = [effects[i] for i in seq]
+            cur_curses = [effects[i + 3] for i in seq]
+            sequence_strict_valid = True
+
+            for idx in range(3):
+                effect = cur_effects[idx]
+                curse = cur_curses[idx]
+                effect_pool = pools[idx]
+                curse_pool = pools[idx + 3]
+
+                # Skip empty effects
+                if effect in [-1, 0, 4294967295]:
+                    continue
+
+                # Check effect is valid in the pool (any pool, not just deep)
+                pool_effects = self.data_source.get_pool_effects(effect_pool)
+                if effect not in pool_effects:
+                    sequence_strict_valid = False
+                    break
+
+                # For deep pools, also check strict validity
+                if effect_pool in deep_pools:
+                    specific_pool_effects = self.data_source.get_pool_effects_strict(effect_pool)
+                    if effect not in specific_pool_effects:
+                        sequence_strict_valid = False
+                        break
+
+                # Check curse requirements
+                if self.data_source.effect_needs_curse(effect):
+                    if curse_pool == -1:
+                        sequence_strict_valid = False
+                        break
+                    # Curse must be present and valid
+                    if curse in [-1, 0, 4294967295]:
+                        sequence_strict_valid = False
+                        break
+                    pool_curses = self.data_source.get_pool_effects(curse_pool)
+                    if curse not in pool_curses:
+                        sequence_strict_valid = False
+                        break
+
+                # Check curse placement (if curse present but effect doesn't need it)
+                if curse not in [-1, 0, 4294967295]:
+                    if curse_pool == -1:
+                        sequence_strict_valid = False
+                        break
+
+            if sequence_strict_valid:
+                # Found a valid permutation - return effects sorted for storage
+                return self.sort_effects(effects)
+
+        return None
+
+    def find_replacement_effect(self, relic_id: int, slot_idx: int, current_effect: int):
+        """Find a replacement effect that is strictly valid in the given slot.
+
+        Returns a list of (effect_id, effect_name) tuples that could replace
+        the current effect while being strictly valid in the slot's pool.
+        """
+        try:
+            pools = self.data_source.get_relic_pools_seq(relic_id)
+        except KeyError:
+            return []
+
+        effect_pool = pools[slot_idx]
+        curse_pool = pools[slot_idx + 3]
+
+        if effect_pool == -1:
+            return []
+
+        # Get effects that are strictly valid in this pool
+        strict_effects = self.data_source.get_pool_effects_strict(effect_pool)
+
+        # Filter based on curse requirements
+        valid_replacements = []
+        for eff_id in strict_effects:
+            if eff_id == current_effect:
+                continue  # Skip current effect
+
+            needs_curse = self.data_source.effect_needs_curse(eff_id)
+
+            # If effect needs curse, slot must have curse_pool
+            if needs_curse and curse_pool == -1:
+                continue
+
+            eff_name = self.data_source.effect_name(eff_id)
+            valid_replacements.append((eff_id, eff_name))
+
+        return valid_replacements
+
     def set_illegal_relics(self):
         illegal_relics = []
         curse_illegal_relics = []
+        strict_invalid_relics = []
         relic_group_by_id = {}
         for relic in self.ga_relic:
             ga, relic_id, e1, e2, e3, e4, e5, e6, offset, size = relic
@@ -352,6 +643,9 @@ class RelicChecker:
                 # Check if it's specifically curse-illegal
                 if self.is_curse_illegal(real_id, effects):
                     curse_illegal_relics.append(ga)
+            elif self.is_strict_invalid(real_id, effects):
+                # Valid but has effects with 0 weight in specific pool
+                strict_invalid_relics.append(ga)
 
         for real_id, relics in relic_group_by_id.items():
             if int(real_id) in self.UNIQUENESS_IDS:
@@ -369,6 +663,7 @@ class RelicChecker:
                         illegal_relics.append(ga)
         self.illegal_gas = illegal_relics
         self.curse_illegal_gas = curse_illegal_relics
+        self.strict_invalid_gas = strict_invalid_relics
 
     @property
     def illegal_count(self):
