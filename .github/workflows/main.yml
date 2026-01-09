@@ -48,7 +48,7 @@ jobs:
           python-version: '3.12'
           architecture: ${{ matrix.python-architecture }}
       - name: Install Dependencies
-        run: pip install cryptography pyinstaller openpyxl
+        run: pip install cryptography pyinstaller openpyxl orjson pandas
       - name: Build Executable
         run: pyinstaller ${{ matrix.spec }}
         env:
