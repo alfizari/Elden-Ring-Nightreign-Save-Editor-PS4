@@ -1,4 +1,35 @@
 from source_data_handler import SourceDataHandler
+from enum import IntEnum, auto, unique
+from typing import Union
+
+
+@unique
+class InvalidReason(IntEnum):
+    VALIDATION_ERROR = -1
+    NONE = 0
+    IN_ILLEGAL_RANGE = auto()
+    INVALID_ITEM = auto()
+    EFF_MUST_EMPTY = auto()
+    EFF_NOT_IN_ROLLABLE_POOL = auto()
+    EFF_CONFLICT = auto()
+
+    CURSE_MUST_EMPTY = auto()
+    CURSE_REQUIRED_BY_EFFECT = auto()
+    CURSE_NOT_IN_ROLLABLE_POOL = auto()
+    CURSE_CONFLICT = auto()
+    CURSES_NOT_ENOUGH = auto()
+
+    EFFS_NOT_SORTED = auto()
+
+
+def is_curse_invalid(reason: int):
+    return reason in [
+        InvalidReason.CURSE_MUST_EMPTY,
+        InvalidReason.CURSE_REQUIRED_BY_EFFECT,
+        InvalidReason.CURSE_NOT_IN_ROLLABLE_POOL,
+        InvalidReason.CURSE_CONFLICT,
+        InvalidReason.CURSES_NOT_ENOUGH
+    ]
 
 
 class RelicChecker:
@@ -33,8 +64,7 @@ class RelicChecker:
         self.illegal_gas = []
         self.curse_illegal_gas = []  # Track relics illegal due to missing curses
 
-    def _check_relic_effects_in_pool(self, relic_id: int, effects: list[int],
-                                      allow_empty_curses: bool = False):
+    def _check_relic_effects_in_pool(self, relic_id: int, effects: list[int]):
         """
         Check that all relic effects are in the relic effects pool.
 
@@ -48,7 +78,7 @@ class RelicChecker:
         try:
             pools = self.data_source.get_relic_pools_seq(relic_id)
         except KeyError:
-            return False
+            return InvalidReason.VALIDATION_ERROR, -1
         # There are 6 effects: 3 normal effects and 3 curse effects
         # The first 3 are normal effects, the last 3 are curse effects
         # Each effect corresponds to a pool ID
@@ -69,18 +99,18 @@ class RelicChecker:
                 eff = cur_effects[idx]
                 if pools[idx] == -1:
                     if eff not in [-1, 0, 4294967295]:  # Must be empty
-                        test_result.append(False)
+                        test_result.append(InvalidReason.EFF_MUST_EMPTY)
                     else:
-                        test_result.append(True)
+                        test_result.append(InvalidReason.NONE)
                 else:
                     if eff in [-1, 0, 4294967295]:
                         # Empty effect is OK (slot just not used)
-                        test_result.append(True)
+                        test_result.append(InvalidReason.NONE)
                     elif eff not in self.data_source.get_pool_rollable_effects(pools[idx]):
                         # Effect must have non-zero weight in the pool to be valid
-                        test_result.append(False)
+                        test_result.append(InvalidReason.EFF_NOT_IN_ROLLABLE_POOL)
                     else:
-                        test_result.append(True)
+                        test_result.append(InvalidReason.NONE)
 
             # Check curses (indices 3-5)
             for idx in range(3):
@@ -91,28 +121,32 @@ class RelicChecker:
                 if curse_pool == -1:
                     # No curse slot - curse must be empty
                     if curse not in [-1, 0, 4294967295]:
-                        test_result.append(False)
+                        test_result.append(InvalidReason.CURSE_MUST_EMPTY)
                     else:
-                        test_result.append(True)
+                        test_result.append(InvalidReason.NONE)
                 else:
                     # Curse slot exists
                     if curse in [-1, 0, 4294967295]:
                         # Empty curse - check if effect needs one
                         effect_needs = self._effect_needs_curse(eff)
-                        if effect_needs and not allow_empty_curses:
-                            test_result.append(False)
+                        if effect_needs:
+                            test_result.append(InvalidReason.CURSE_REQUIRED_BY_EFFECT)
                         else:
-                            test_result.append(True)
+                            test_result.append(InvalidReason.NONE)
                     elif curse not in self.data_source.get_pool_rollable_effects(curse_pool):
                         # Curse must have non-zero weight in the pool
-                        test_result.append(False)
+                        test_result.append(InvalidReason.CURSE_NOT_IN_ROLLABLE_POOL)
                     else:
-                        test_result.append(True)
+                        test_result.append(InvalidReason.NONE)
 
-            test_results.append(all(test_result))
-            if test_results[-1]:
-                return True
-        return False
+            test_results.append(test_result)
+            if all(r == InvalidReason.NONE for r in test_results[-1]):
+                return InvalidReason.NONE, 0
+        for idx, res in enumerate(test_results[0]):
+            if res == InvalidReason.NONE:
+                continue
+            return res, idx
+        return InvalidReason.VALIDATION_ERROR, -1
 
     def _effect_needs_curse(self, effect_id: int) -> bool:
         """Check if an effect REQUIRES a curse.
@@ -123,7 +157,7 @@ class RelicChecker:
         """
         return self.data_source.effect_needs_curse(effect_id)
 
-    def is_curse_illegal(self, relic_id: int, effects: list[int]):
+    def check_curse_invalidity(self, relic_id: int, effects: list[int]):
         """Check if a relic is illegal ONLY due to missing curses.
 
         Returns True if:
@@ -134,22 +168,22 @@ class RelicChecker:
         - RED: Wrong relic ID for effects (effects not in pool)
         - PURPLE: Correct relic ID but missing required curses in ALL sequences
         """
-        # Check if relic ID is in valid range
-        if relic_id not in range(self.RELIC_RANGE[0], self.RELIC_RANGE[1]+1):
-            return False
+        # # Check if relic ID is in valid range
+        # if relic_id not in range(self.RELIC_RANGE[0], self.RELIC_RANGE[1]+1):
+        #     return False
 
-        # Check if in illegal range
-        if relic_id in range(self.RELIC_GROUPS['illegal'][0],
-                             self.RELIC_GROUPS['illegal'][1] + 1):
-            return False
+        # # Check if in illegal range
+        # if relic_id in range(self.RELIC_GROUPS['illegal'][0],
+        #                      self.RELIC_GROUPS['illegal'][1] + 1):
+        #     return False
 
-        # Check if effects are valid for this relic (allowing empty curses)
-        # If effects aren't valid even with empty curses allowed, it's not curse-illegal
-        if not self._check_relic_effects_in_pool(relic_id, effects, allow_empty_curses=True):
-            return False
+        # # Check if effects are valid for this relic (allowing empty curses)
+        # # If effects aren't valid even with empty curses allowed, it's not curse-illegal
+        # if not self._check_relic_effects_in_pool(relic_id, effects, allow_empty_curses=True):
+        #     return False
 
-        # Effects are valid. Now check if there's ANY sequence that is FULLY valid
-        # (including proper curses). If such a sequence exists, it's NOT curse-illegal.
+        # # Effects are valid. Now check if there's ANY sequence that is FULLY valid
+        # # (including proper curses). If such a sequence exists, it's NOT curse-illegal.
         try:
             pools = self.data_source.get_relic_pools_seq(relic_id)
         except KeyError:
@@ -161,7 +195,7 @@ class RelicChecker:
         # Single-effect relics (1 slot) don't need curses at all
         # Only multi-effect relics (2+ slots) have curse requirements
         if effect_slot_count <= 1:
-            return False  # Single-effect relics are never curse-illegal
+            return InvalidReason.NONE  # Single-effect relics are never curse-illegal
 
         # For multi-effect relics, count how many effects need curses
         # Deep-only effects require curses when on multi-effect relics
@@ -172,7 +206,7 @@ class RelicChecker:
 
         # Quick check: if not enough curses for deep-only effects
         if deep_only_effects > curses_provided:
-            return True  # Not enough curses for deep-only effects
+            return InvalidReason.CURSES_NOT_ENOUGH  # Not enough curses for deep-only effects
 
         possible_sequences = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0],
                               [2, 0, 1], [2, 1, 0]]
@@ -246,31 +280,69 @@ class RelicChecker:
         # No fully valid sequence found, but effects are valid -> curse-illegal
         return True
 
-    def is_illegal(self, relic_id: int, effects: list[int]):
+    def check_invalidity(self, relic_id: int, effects: list[int],
+                         return_1st_invalid_idx: bool = False) -> Union[
+                             InvalidReason, tuple[InvalidReason, int]]:
+        """
+        Check if a relic is invalid based on several rules.
+        
+        Args:
+            relic_id (int): The relic ID to check.
+            effects (list[int]): List of 6 effect IDs [e1, e2, e3, curse1, curse2, curse3].
+            return_1st_invalid_idx (bool, optional): Whether to output the errored effects list index (0-based),
+            where -1 indicates the error is unrelated to the effect's position. Defaults to False.
+
+        Returns:
+            InvalidReason | tuple[InvalidReason, int]: InvalidReason or InvalidReason and first invalid effect index.
+        """
 
         # Rule 1
         if relic_id in range(self.RELIC_GROUPS['illegal'][0],
                              self.RELIC_GROUPS['illegal'][1] + 1):
-            return True
+            if return_1st_invalid_idx:
+                return InvalidReason.IN_ILLEGAL_RANGE, -1
+            else:
+                return InvalidReason.IN_ILLEGAL_RANGE
+
+        # Rule 2
 
         if relic_id not in range(self.RELIC_RANGE[0],
                                  self.RELIC_RANGE[1]+1):
-            return True
+            if return_1st_invalid_idx:
+                return InvalidReason.INVALID_ITEM, -1
+            else:
+                return InvalidReason.INVALID_ITEM
         else:
             # Rule: Effects must be in valid pools for this relic
             # This is the primary validation - effects must match the relic's effect pools
-            if not self._check_relic_effects_in_pool(relic_id, effects):
-                return True
+            effects_valid, first_invalid_idx = \
+                self._check_relic_effects_in_pool(relic_id, effects)
+            if effects_valid != InvalidReason.NONE:
+                if return_1st_invalid_idx:
+                    return effects_valid, first_invalid_idx
+                else:
+                    return effects_valid
 
             # Rule: Deep-only effects must have curses
             # Effects that only exist in deep relic pools require curses
             # when used on multi-effect relics
-            if self.is_curse_illegal(relic_id, effects):
-                return True
+            deep_only_effects = sum(1 for eff in effects[:3]
+                                    if self._effect_needs_curse(eff))
+            curses_provided = sum(1 for c in effects[3:]
+                                  if c not in [-1, 0, 4294967295])
+            # Quick check: if not enough curses for deep-only effects
+            if deep_only_effects > curses_provided:
+                # Not enough curses for deep-only effects
+                if return_1st_invalid_idx:
+                    return InvalidReason.CURSES_NOT_ENOUGH, -1
+                else:
+                    return InvalidReason.CURSES_NOT_ENOUGH
+            # if self.check_curse_invalidity(relic_id, effects):
+            #     return True
 
             # Rule: The compatibilityId (conflict ID) should not be duplicated.
             conflict_ids = []
-            for effect_id in effects:
+            for idx, effect_id in enumerate(effects):
                 # Skip empty effects
                 if effect_id in [-1, 0, 4294967295]:
                     continue
@@ -278,7 +350,10 @@ class RelicChecker:
                     self.data_source.get_effect_conflict_id(effect_id)
                 # conflict id -1 is allowed to be duplicated
                 if conflict_id in conflict_ids and conflict_id != -1:
-                    return True
+                    if return_1st_invalid_idx:
+                        return (InvalidReason.EFF_CONFLICT, idx) if idx < 3 else (InvalidReason.CURSE_CONFLICT, idx)
+                    else:
+                        return InvalidReason.EFF_CONFLICT if idx < 3 else InvalidReason.CURSE_CONFLICT
                 conflict_ids.append(conflict_id)
             # Rule: Effect order
             # Effects are sorted in ascending order by overrideEffectId.
@@ -298,8 +373,13 @@ class RelicChecker:
             sorted_effects = sorted(sort_tuple, key=lambda x: (x[0], x[1]))
             for i in range(len(sorted_effects)):
                 if sorted_effects[i][1] != effects[i]:
-                    return True
-            return False
+                    if return_1st_invalid_idx:
+                        return InvalidReason.EFFS_NOT_SORTED, -1
+                    else:
+                        return InvalidReason.EFFS_NOT_SORTED
+            if return_1st_invalid_idx:
+                return InvalidReason.NONE, -1
+            return InvalidReason.NONE
 
     def is_strict_invalid(self, relic_id: int, effects: list[int]):
         """Check if a relic has effects with 0 weight in the relic's specific pools,
@@ -313,7 +393,8 @@ class RelicChecker:
         for their permuted slot's specific pool.
         """
         # Skip if relic is actually illegal (that's a different issue)
-        if self.is_illegal(relic_id, effects):
+        invalid_reason = self.check_invalidity(relic_id, effects)
+        if invalid_reason != InvalidReason.NONE:
             return False
 
         try:
@@ -638,10 +719,11 @@ class RelicChecker:
                 relic_group_by_id[str(real_id)] = []
             relic_group_by_id[str(real_id)].append(relic)
             effects = [e1, e2, e3, e4, e5, e6]
-            if self.is_illegal(real_id, effects):
+            invalid_reason = self.check_invalidity(real_id, effects)
+            if invalid_reason != InvalidReason.NONE:
                 illegal_relics.append(ga)
                 # Check if it's specifically curse-illegal
-                if self.is_curse_illegal(real_id, effects):
+                if is_curse_invalid(invalid_reason):
                     curse_illegal_relics.append(ga)
             elif self.is_strict_invalid(real_id, effects):
                 # Valid but has effects with 0 weight in specific pool
