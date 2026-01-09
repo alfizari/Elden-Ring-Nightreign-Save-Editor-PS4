@@ -5586,8 +5586,6 @@ class ModifyRelicDialog:
         if not hasattr(self, 'status_label'):
             return
 
-        reasons = []
-
         try:
             pools = data_source.get_relic_pools_seq(relic_id)
         except KeyError:
@@ -5595,10 +5593,11 @@ class ModifyRelicDialog:
             self.illegal_reason_label.config(text=f"Relic ID {relic_id} does not exist in the game data.")
             return
 
-        invalid_reason = relic_checker.check_invalidity(relic_id, effects) if relic_checker else InvalidReason.VALIDATION_ERROR
-        is_curse_illegal = is_curse_invalid(invalid_reason) if invalid_reason is not InvalidReason.VALIDATION_ERROR else False
+        # Get invalid reason with index of first problematic effect
+        invalid_reason, invalid_idx = relic_checker.check_invalidity(relic_id, effects, True) if relic_checker else (InvalidReason.VALIDATION_ERROR, -1)
+        is_curse_illegal_flag = is_curse_invalid(invalid_reason)
 
-        if invalid_reason == InvalidReason.NONE and not is_curse_illegal:
+        if invalid_reason == InvalidReason.NONE:
             # Check for strict invalid (valid but 0% weight effects)
             is_strict_invalid = relic_checker.is_strict_invalid(relic_id, effects) if relic_checker else False
             if is_strict_invalid:
@@ -5615,94 +5614,93 @@ class ModifyRelicDialog:
             return
 
         # Determine relic type for clearer messaging
-        effect_slot_count = sum(1 for p in pools[:3] if p != -1)
+        effect_pools = [p for p in pools[:3] if p != -1]
         curse_slot_count = sum(1 for p in pools[3:] if p != -1)
-        is_deep_relic = curse_slot_count < effect_slot_count  # Deep relics have fewer curse slots
+        is_deep_relic = any(p >= 2000000 for p in effect_pools)
         relic_type_desc = "Deep Relic" if is_deep_relic else "Normal Relic"
 
-        # Get all pools this relic supports (for checking if effect can exist at all)
-        all_relic_effect_pools = set(p for p in pools[:3] if p != -1)
+        # Check if fixable by reordering
+        if invalid_reason == InvalidReason.EFFS_NOT_SORTED:
+            reasons = [
+                "• Effects are valid but in the WRONG ORDER",
+                "• Use 'Find Valid ID' button or 'Mass Fix' to automatically reorder"
+            ]
+            self.status_label.config(text="❌ ILLEGAL (fixable)", foreground='#CC6600')
+            self.illegal_reason_label.config(text="\n".join(reasons))
+            return
 
-        # Check each effect - determine if it can exist on this relic type AT ALL
-        for i, eff in enumerate(effects[:3]):
-            if eff in [-1, 0, 4294967295]:
-                continue
+        # Build human-readable message based on InvalidReason enum
+        reason_messages = {
+            InvalidReason.IN_ILLEGAL_RANGE: "• Relic ID is in an illegal/reserved range (20000-30035)",
+            InvalidReason.INVALID_ITEM: f"• Relic ID {relic_id} is not a valid relic",
+            InvalidReason.EFF_CONFLICT: "• Two effects have the same conflict ID and cannot be combined",
+            InvalidReason.CURSE_CONFLICT: "• Two curses have the same conflict ID and cannot be combined",
+            InvalidReason.CURSES_NOT_ENOUGH: f"• Not enough curses provided - some effects require curses on {relic_type_desc}s",
+        }
 
-            eff_name = effects_json.get(str(eff), {}).get("name", f"Unknown ({eff})")
-            pool_id = pools[i]
+        reasons = []
 
-            # Get all pools this effect can be in
-            effect_valid_pools = set(data_source.get_effect_pools(eff))
+        # Add the main reason message
+        if invalid_reason in reason_messages:
+            reasons.append(reason_messages[invalid_reason])
 
-            # Check if effect can be in ANY of this relic's pools
-            can_exist_on_relic = bool(effect_valid_pools & all_relic_effect_pools)
-
-            if pool_id == -1:
-                reasons.append(f"• Effect slot {i+1} is disabled for this relic, but has effect '{eff_name}'")
-            elif not can_exist_on_relic:
-                # Effect can't exist on this relic type at all
-                reasons.append(f"• Effect '{eff_name}' cannot exist on this {relic_type_desc} type (incompatible pools)")
-            else:
-                pool_effects = data_source.get_pool_effects(pool_id)
-                if eff not in pool_effects:
-                    # Effect CAN exist on relic, just in wrong slot - might be fixable by reordering
-                    reasons.append(f"• Effect '{eff_name}' is in wrong slot position (try using 'Find Valid ID' or reorder effects)")
-
-        # Check curses - with better messaging for deep relics
-        if effect_slot_count > 1:
-            for i, eff in enumerate(effects[:3]):
-                if eff in [-1, 0, 4294967295]:
-                    continue
-
+        # Add specific details for effect/curse pool issues
+        if invalid_reason == InvalidReason.EFF_NOT_IN_ROLLABLE_POOL:
+            if invalid_idx >= 0 and invalid_idx < 3:
+                eff = effects[invalid_idx]
                 eff_name = effects_json.get(str(eff), {}).get("name", f"Unknown ({eff})")
-                curse = effects[i + 3]
-                curse_pool = pools[i + 3]
-                needs_curse = data_source.effect_needs_curse(eff)
-
-                if needs_curse:
-                    if curse_pool == -1:
-                        # This is the key case for deep relics
-                        if is_deep_relic:
-                            reasons.append(f"• Effect '{eff_name}' needs a curse, but Deep Relics only have {curse_slot_count} curse slot(s) - this effect can't be in slot {i+1}")
-                        else:
-                            reasons.append(f"• Effect '{eff_name}' needs a curse but this relic has no curse slot {i+1}")
-                    elif curse in [-1, 0, 4294967295]:
-                        reasons.append(f"• Effect '{eff_name}' REQUIRES a curse but Curse slot {i+1} is empty")
+                # Check if effect can exist on this relic type at all
+                all_relic_pools = set(p for p in pools[:3] if p != -1)
+                can_exist = any(eff in data_source.get_pool_rollable_effects(p) for p in all_relic_pools)
+                if not can_exist:
+                    reasons.append(f"• Effect '{eff_name}' has 0% drop weight on {relic_type_desc}s - cannot exist on this relic type")
                 else:
-                    # Effect doesn't need curse
-                    if curse not in [-1, 0, 4294967295]:
-                        curse_name = effects_json.get(str(curse), {}).get("name", f"Unknown ({curse})")
-                        if curse_pool == -1:
-                            if is_deep_relic:
-                                reasons.append(f"• Deep Relics only have {curse_slot_count} curse slot(s) - can't have curse '{curse_name}' in slot {i+1}")
-                            else:
-                                reasons.append(f"• Curse slot {i+1} has '{curse_name}' but this relic doesn't support curses there")
-                        else:
-                            reasons.append(f"• Effect '{eff_name}' does NOT need a curse, but slot {i+1} has '{curse_name}' - remove it!")
+                    reasons.append(f"• Effect '{eff_name}' is not valid in slot {invalid_idx + 1}")
+            else:
+                reasons.append(f"• An effect is not valid for this relic's pools")
 
-        # Check curse validity
-        for i, curse in enumerate(effects[3:]):
-            if curse in [-1, 0, 4294967295]:
-                continue
+        if invalid_reason == InvalidReason.EFF_MUST_EMPTY:
+            if invalid_idx >= 0 and invalid_idx < 3:
+                eff = effects[invalid_idx]
+                eff_name = effects_json.get(str(eff), {}).get("name", f"Unknown ({eff})")
+                reasons.append(f"• Effect slot {invalid_idx + 1} should be empty but has '{eff_name}'")
+            else:
+                reasons.append("• An effect slot should be empty but has a value")
 
-            curse_name = effects_json.get(str(curse), {}).get("name", f"Unknown ({curse})")
-            curse_pool = pools[i + 3]
+        if invalid_reason == InvalidReason.CURSE_MUST_EMPTY:
+            if invalid_idx >= 3:
+                curse = effects[invalid_idx]
+                curse_name = effects_json.get(str(curse), {}).get("name", f"Unknown ({curse})")
+                slot_num = invalid_idx - 2  # Convert to 1-based curse slot
+                reasons.append(f"• Curse slot {slot_num} should be empty but has '{curse_name}'")
+            else:
+                reasons.append("• A curse slot should be empty but has a value")
 
-            if curse_pool != -1:
-                pool_curses = data_source.get_pool_effects(curse_pool)
-                if curse not in pool_curses:
-                    reasons.append(f"• Curse '{curse_name}' is not valid for this relic type")
+        if invalid_reason == InvalidReason.CURSE_REQUIRED_BY_EFFECT:
+            if invalid_idx >= 3:
+                eff_idx = invalid_idx - 3
+                eff = effects[eff_idx]
+                eff_name = effects_json.get(str(eff), {}).get("name", f"Unknown ({eff})")
+                reasons.append(f"• Effect '{eff_name}' REQUIRES a curse but curse slot {eff_idx + 1} is empty")
+            else:
+                reasons.append("• An effect requires a curse but the corresponding curse slot is empty")
+
+        if invalid_reason == InvalidReason.CURSE_NOT_IN_ROLLABLE_POOL:
+            if invalid_idx >= 3:
+                curse = effects[invalid_idx]
+                curse_name = effects_json.get(str(curse), {}).get("name", f"Unknown ({curse})")
+                slot_num = invalid_idx - 2
+                reasons.append(f"• Curse '{curse_name}' is not valid for slot {slot_num}")
+            else:
+                reasons.append("• A curse is not valid for its assigned pool")
+
+        # Fallback if no specific message was added
+        if not reasons:
+            reasons.append(f"• Invalid: {invalid_reason.name}")
 
         # Set the display
-        if reasons:
-            self.status_label.config(text="❌ ILLEGAL", foreground='red')
-            self.illegal_reason_label.config(text="\n".join(reasons))
-        elif invalid_reason or is_curse_illegal:
-            self.status_label.config(text="❌ ILLEGAL", foreground='red')
-            self.illegal_reason_label.config(text="Effect/curse combination is invalid for this relic type. Check the debug info below for details.")
-        else:
-            self.status_label.config(text="✅ VALID", foreground='green')
-            self.illegal_reason_label.config(text="This relic configuration is legal.")
+        self.status_label.config(text="❌ ILLEGAL", foreground='red')
+        self.illegal_reason_label.config(text="\n".join(reasons))
 
     def update_debug_info(self):
         """Update debug info showing why relic is flagged"""
@@ -5878,17 +5876,20 @@ class ModifyRelicDialog:
 
         # Enable mouse wheel scrolling only when mouse is over this dialog
         def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            if canvas.winfo_exists():
+                canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
         def _bind_mousewheel(event):
             canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
-        def _unbind_mousewheel(event):
+        def _unbind_mousewheel(event=None):
             canvas.unbind_all("<MouseWheel>")
 
         # Bind on enter, unbind on leave
         self.dialog.bind("<Enter>", _bind_mousewheel)
         self.dialog.bind("<Leave>", _unbind_mousewheel)
+        # Also unbind when dialog is destroyed to prevent orphaned bindings
+        self.dialog.bind("<Destroy>", _unbind_mousewheel)
 
         # Illegal Status Section - prominent display at top
         self.status_frame = ttk.LabelFrame(scrollable_frame, text="⚠️ Relic Status", padding=10)

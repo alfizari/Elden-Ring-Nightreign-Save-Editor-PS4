@@ -536,6 +536,69 @@ class RelicChecker:
         result.extend([pair[2] for pair in sorted_pairs])  # curses
         return result
 
+    def has_valid_order(self, relic_id: int, effects: list[int]) -> bool:
+        """Check if ANY permutation of effects is valid for this relic.
+
+        This uses get_pool_rollable_effects (effects with >0 weight).
+        Used to detect if reordering alone could fix an illegal relic.
+        """
+        try:
+            pools = self.data_source.get_relic_pools_seq(relic_id)
+        except KeyError:
+            return False
+
+        possible_sequences = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]
+
+        for seq in possible_sequences:
+            cur_effects = [effects[i] for i in seq]
+            cur_curses = [effects[i + 3] for i in seq]
+            sequence_valid = True
+
+            for idx in range(3):
+                effect = cur_effects[idx]
+                curse = cur_curses[idx]
+                effect_pool = pools[idx]
+                curse_pool = pools[idx + 3]
+
+                # Skip empty effects
+                if effect in [-1, 0, 4294967295]:
+                    continue
+
+                # Check effect is rollable in pool (must have >0 weight)
+                pool_effects = self.data_source.get_pool_rollable_effects(effect_pool)
+                if effect not in pool_effects:
+                    sequence_valid = False
+                    break
+
+                # Check curse requirements
+                if self.data_source.effect_needs_curse(effect):
+                    if curse_pool == -1:
+                        sequence_valid = False
+                        break
+                    # Curse must be present and valid
+                    if curse in [-1, 0, 4294967295]:
+                        sequence_valid = False
+                        break
+                    pool_curses = self.data_source.get_pool_rollable_effects(curse_pool)
+                    if curse not in pool_curses:
+                        sequence_valid = False
+                        break
+
+                # Check curse placement (if curse present but effect doesn't need it)
+                if curse not in [-1, 0, 4294967295]:
+                    if curse_pool == -1:
+                        sequence_valid = False
+                        break
+                    pool_curses = self.data_source.get_pool_rollable_effects(curse_pool)
+                    if curse not in pool_curses:
+                        sequence_valid = False
+                        break
+
+            if sequence_valid:
+                return True
+
+        return False
+
     def get_valid_order(self, relic_id: int, effects: list[int]):
         """Find a permutation of effects that is valid for this relic.
 
