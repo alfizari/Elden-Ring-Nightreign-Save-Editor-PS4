@@ -4965,7 +4965,7 @@ class SaveEditorGUI:
 
         # Check if this would make the relic illegal
         if relic_checker:
-            would_be_illegal = relic_checker.is_illegal(item_id, source_effects)
+            would_be_illegal = relic_checker.check_invalidity(item_id, source_effects)
             if would_be_illegal:
                 warn_msg = "⚠️ Warning: These effects may not be valid for this relic type.\n\n"
                 warn_msg += "The relic may be flagged as illegal after pasting.\n\nContinue anyway?"
@@ -4976,8 +4976,8 @@ class SaveEditorGUI:
         if modify_relic(ga_handle, item_id, source_effects):
             # Update illegal status
             if relic_checker:
-                is_illegal = relic_checker.is_illegal(item_id, source_effects)
-                is_curse_illegal = relic_checker.is_curse_illegal(item_id, source_effects)
+                is_illegal = relic_checker.check_invalidity(item_id, source_effects)
+                is_curse_illegal = relic_checker.check_curse_invalidity(item_id, source_effects)
                 if is_illegal and ga_handle not in relic_checker.illegal_gas:
                     relic_checker.append_illegal(ga_handle, is_curse_illegal)
                 elif not is_illegal and ga_handle in relic_checker.illegal_gas:
@@ -5171,7 +5171,7 @@ class SaveEditorGUI:
                 if valid_id and valid_id != real_id:
                     new_name = items_json.get(str(valid_id), {}).get("name", f"Unknown ({valid_id})")
                     strict_order = relic_checker.get_strictly_valid_order(valid_id, effects)
-                    if strict_order and not relic_checker.is_illegal(valid_id, strict_order):
+                    if strict_order and not relic_checker.check_invalidity(valid_id, strict_order):
                         fixable_illegal.append((ga, id, real_id, valid_id, item_name, new_name, strict_order, False))
                         continue
 
@@ -5200,7 +5200,7 @@ class SaveEditorGUI:
                 if valid_id and valid_id != real_id:
                     new_name = items_json.get(str(valid_id), {}).get("name", f"Unknown ({valid_id})")
                     strict_order = relic_checker.get_strictly_valid_order(valid_id, effects)
-                    if strict_order and not relic_checker.is_illegal(valid_id, strict_order):
+                    if strict_order and not relic_checker.check_invalidity(valid_id, strict_order):
                         fixable_strict.append((ga, id, real_id, valid_id, item_name, new_name, strict_order, False))
                         continue
 
@@ -5302,7 +5302,7 @@ class SaveEditorGUI:
 
         # First check if current ID is actually valid (effects match AND has enough curse slots)
         # Use allow_empty_curses=True because we're checking if primary effects fit the pools
-        if relic_checker._check_relic_effects_in_pool(current_id, effects, allow_empty_curses=True):
+        if relic_checker._check_relic_effects_in_pool(current_id, effects):
             # Also check it has enough curse slots for effects that need curses
             try:
                 pools = data_source.get_relic_pools_seq(current_id)
@@ -5332,7 +5332,7 @@ class SaveEditorGUI:
                 continue
 
             # Check if effects are valid for this ID (allow empty curses)
-            if relic_checker._check_relic_effects_in_pool(test_id, effects, allow_empty_curses=True):
+            if relic_checker._check_relic_effects_in_pool(test_id, effects):
                 return test_id
 
         return None
@@ -5596,8 +5596,8 @@ class ModifyRelicDialog:
             self.illegal_reason_label.config(text=f"Relic ID {relic_id} does not exist in the game data.")
             return
 
-        is_illegal = relic_checker.is_illegal(relic_id, effects) if relic_checker else False
-        is_curse_illegal = relic_checker.is_curse_illegal(relic_id, effects) if relic_checker else False
+        is_illegal = relic_checker.check_invalidity(relic_id, effects) if relic_checker else False
+        is_curse_illegal = relic_checker.check_curse_invalidity(relic_id, effects) if relic_checker else False
 
         if not is_illegal and not is_curse_illegal:
             # Check for strict invalid (valid but 0% weight effects)
@@ -5743,8 +5743,8 @@ class ModifyRelicDialog:
 
             # Check validation status
             if relic_checker:
-                is_illegal = relic_checker.is_illegal(relic_id, effects)
-                is_curse_illegal = relic_checker.is_curse_illegal(relic_id, effects)
+                is_illegal = relic_checker.check_invalidity(relic_id, effects)
+                is_curse_illegal = relic_checker.check_curse_invalidity(relic_id, effects)
 
                 lines.append(f"is_illegal(): {is_illegal}")
                 lines.append(f"is_curse_illegal(): {is_curse_illegal}")
@@ -6771,8 +6771,8 @@ class ModifyRelicDialog:
         except ValueError:
             pass  # Keep original ID if invalid entry
         
-        is_illegal = relic_checker.is_illegal(entered_id, new_effects)
-        is_curse_illegal = relic_checker.is_curse_illegal(entered_id, new_effects)
+        is_illegal = relic_checker.check_invalidity(entered_id, new_effects)
+        is_curse_illegal = relic_checker.check_curse_invalidity(entered_id, new_effects)
         if is_illegal and self.ga_handle not in relic_checker.illegal_gas:
             relic_checker.append_illegal(self.ga_handle, is_curse_illegal)
         elif not is_illegal and self.ga_handle in relic_checker.illegal_gas:
