@@ -1,5 +1,6 @@
 from source_data_handler import SourceDataHandler
 from enum import IntEnum, auto, unique
+from typing import Union
 
 
 @unique
@@ -15,9 +16,20 @@ class InvalidReason(IntEnum):
     CURSE_MUST_EMPTY = auto()
     CURSE_REQUIRED_BY_EFFECT = auto()
     CURSE_NOT_IN_ROLLABLE_POOL = auto()
+    CURSE_CONFLICT = auto()
     CURSES_NOT_ENOUGH = auto()
 
     EFFS_NOT_SORTED = auto()
+
+
+def is_curse_invalid(reason: int):
+    return reason in [
+        InvalidReason.CURSE_MUST_EMPTY,
+        InvalidReason.CURSE_REQUIRED_BY_EFFECT,
+        InvalidReason.CURSE_NOT_IN_ROLLABLE_POOL,
+        InvalidReason.CURSE_CONFLICT,
+        InvalidReason.CURSES_NOT_ENOUGH
+    ]
 
 
 class RelicChecker:
@@ -127,8 +139,8 @@ class RelicChecker:
                     else:
                         test_result.append(InvalidReason.NONE)
 
-            test_results.append(all(r == InvalidReason.NONE for r in test_result))
-            if test_results[-1]:
+            test_results.append(test_result)
+            if all(r == InvalidReason.NONE for r in test_results[-1]):
                 return InvalidReason.NONE, 0
         for idx, res in enumerate(test_results[0]):
             if res == InvalidReason.NONE:
@@ -269,13 +281,26 @@ class RelicChecker:
         return True
 
     def check_invalidity(self, relic_id: int, effects: list[int],
-                         return_1st_invalid_idx: bool = False):
+                         return_1st_invalid_idx: bool = False) -> Union[
+                             InvalidReason, tuple[InvalidReason, int]]:
+        """
+        Check if a relic is invalid based on several rules.
+        
+        Args:
+            relic_id (int): The relic ID to check.
+            effects (list[int]): List of 6 effect IDs [e1, e2, e3, curse1, curse2, curse3].
+            return_1st_invalid_idx (bool, optional): Whether to output the errored effects list index (0-based),
+            where -1 indicates the error is unrelated to the effect's position. Defaults to False.
+
+        Returns:
+            InvalidReason | tuple[InvalidReason, int]: InvalidReason or InvalidReason and first invalid effect index.
+        """
 
         # Rule 1
         if relic_id in range(self.RELIC_GROUPS['illegal'][0],
                              self.RELIC_GROUPS['illegal'][1] + 1):
             if return_1st_invalid_idx:
-                return InvalidReason.IN_ILLEGAL_RANGE, 0
+                return InvalidReason.IN_ILLEGAL_RANGE, -1
             else:
                 return InvalidReason.IN_ILLEGAL_RANGE
 
@@ -284,7 +309,7 @@ class RelicChecker:
         if relic_id not in range(self.RELIC_RANGE[0],
                                  self.RELIC_RANGE[1]+1):
             if return_1st_invalid_idx:
-                return InvalidReason.INVALID_ITEM, 0
+                return InvalidReason.INVALID_ITEM, -1
             else:
                 return InvalidReason.INVALID_ITEM
         else:
@@ -301,12 +326,23 @@ class RelicChecker:
             # Rule: Deep-only effects must have curses
             # Effects that only exist in deep relic pools require curses
             # when used on multi-effect relics
-            if self.check_curse_invalidity(relic_id, effects):
-                return True
+            deep_only_effects = sum(1 for eff in effects[:3]
+                                    if self._effect_needs_curse(eff))
+            curses_provided = sum(1 for c in effects[3:]
+                                  if c not in [-1, 0, 4294967295])
+            # Quick check: if not enough curses for deep-only effects
+            if deep_only_effects > curses_provided:
+                # Not enough curses for deep-only effects
+                if return_1st_invalid_idx:
+                    return InvalidReason.CURSES_NOT_ENOUGH, -1
+                else:
+                    return InvalidReason.CURSES_NOT_ENOUGH
+            # if self.check_curse_invalidity(relic_id, effects):
+            #     return True
 
             # Rule: The compatibilityId (conflict ID) should not be duplicated.
             conflict_ids = []
-            for effect_id in effects:
+            for idx, effect_id in enumerate(effects):
                 # Skip empty effects
                 if effect_id in [-1, 0, 4294967295]:
                     continue
@@ -314,7 +350,10 @@ class RelicChecker:
                     self.data_source.get_effect_conflict_id(effect_id)
                 # conflict id -1 is allowed to be duplicated
                 if conflict_id in conflict_ids and conflict_id != -1:
-                    return True
+                    if return_1st_invalid_idx:
+                        return (InvalidReason.EFF_CONFLICT, idx) if idx < 3 else (InvalidReason.CURSE_CONFLICT, idx)
+                    else:
+                        return InvalidReason.EFF_CONFLICT if idx < 3 else InvalidReason.CURSE_CONFLICT
                 conflict_ids.append(conflict_id)
             # Rule: Effect order
             # Effects are sorted in ascending order by overrideEffectId.
@@ -334,8 +373,13 @@ class RelicChecker:
             sorted_effects = sorted(sort_tuple, key=lambda x: (x[0], x[1]))
             for i in range(len(sorted_effects)):
                 if sorted_effects[i][1] != effects[i]:
-                    return True
-            return False
+                    if return_1st_invalid_idx:
+                        return InvalidReason.EFFS_NOT_SORTED, -1
+                    else:
+                        return InvalidReason.EFFS_NOT_SORTED
+            if return_1st_invalid_idx:
+                return InvalidReason.NONE, -1
+            return InvalidReason.NONE
 
     def is_strict_invalid(self, relic_id: int, effects: list[int]):
         """Check if a relic has effects with 0 weight in the relic's specific pools,
@@ -349,7 +393,8 @@ class RelicChecker:
         for their permuted slot's specific pool.
         """
         # Skip if relic is actually illegal (that's a different issue)
-        if self.check_invalidity(relic_id, effects):
+        invalid_reason = self.check_invalidity(relic_id, effects)
+        if invalid_reason != InvalidReason.NONE:
             return False
 
         try:
@@ -674,10 +719,11 @@ class RelicChecker:
                 relic_group_by_id[str(real_id)] = []
             relic_group_by_id[str(real_id)].append(relic)
             effects = [e1, e2, e3, e4, e5, e6]
-            if self.check_invalidity(real_id, effects):
+            invalid_reason = self.check_invalidity(real_id, effects)
+            if invalid_reason != InvalidReason.NONE:
                 illegal_relics.append(ga)
                 # Check if it's specifically curse-illegal
-                if self.check_curse_invalidity(real_id, effects):
+                if is_curse_invalid(invalid_reason):
                     curse_illegal_relics.append(ga)
             elif self.is_strict_invalid(real_id, effects):
                 # Valid but has effects with 0 weight in specific pool

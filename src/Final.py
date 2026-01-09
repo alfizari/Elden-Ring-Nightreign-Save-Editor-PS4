@@ -6,7 +6,7 @@ from tkinter import ttk, filedialog, messagebox, simpledialog
 from pathlib import Path
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
-from relic_checker import RelicChecker
+from relic_checker import RelicChecker, InvalidReason, is_curse_invalid
 from source_data_handler import SourceDataHandler, get_system_language, CHARACTER_NAMES
 from typing import Optional
 import sys
@@ -4976,11 +4976,10 @@ class SaveEditorGUI:
         if modify_relic(ga_handle, item_id, source_effects):
             # Update illegal status
             if relic_checker:
-                is_illegal = relic_checker.check_invalidity(item_id, source_effects)
-                is_curse_illegal = relic_checker.check_curse_invalidity(item_id, source_effects)
-                if is_illegal and ga_handle not in relic_checker.illegal_gas:
-                    relic_checker.append_illegal(ga_handle, is_curse_illegal)
-                elif not is_illegal and ga_handle in relic_checker.illegal_gas:
+                invalid_reason = relic_checker.check_invalidity(item_id, source_effects)
+                if invalid_reason and ga_handle not in relic_checker.illegal_gas:
+                    relic_checker.append_illegal(ga_handle, is_curse_invalid(invalid_reason))
+                elif not invalid_reason and ga_handle in relic_checker.illegal_gas:
                     relic_checker.remove_illegal(ga_handle)
 
             messagebox.showinfo("Success", f"Effects pasted to {target_name}")
@@ -5596,10 +5595,10 @@ class ModifyRelicDialog:
             self.illegal_reason_label.config(text=f"Relic ID {relic_id} does not exist in the game data.")
             return
 
-        is_illegal = relic_checker.check_invalidity(relic_id, effects) if relic_checker else False
-        is_curse_illegal = relic_checker.check_curse_invalidity(relic_id, effects) if relic_checker else False
+        invalid_reason = relic_checker.check_invalidity(relic_id, effects) if relic_checker else InvalidReason.VALIDATION_ERROR
+        is_curse_illegal = is_curse_invalid(invalid_reason) if invalid_reason is not InvalidReason.VALIDATION_ERROR else False
 
-        if not is_illegal and not is_curse_illegal:
+        if invalid_reason == InvalidReason.NONE and not is_curse_illegal:
             # Check for strict invalid (valid but 0% weight effects)
             is_strict_invalid = relic_checker.is_strict_invalid(relic_id, effects) if relic_checker else False
             if is_strict_invalid:
@@ -5698,7 +5697,7 @@ class ModifyRelicDialog:
         if reasons:
             self.status_label.config(text="❌ ILLEGAL", foreground='red')
             self.illegal_reason_label.config(text="\n".join(reasons))
-        elif is_illegal or is_curse_illegal:
+        elif invalid_reason or is_curse_illegal:
             self.status_label.config(text="❌ ILLEGAL", foreground='red')
             self.illegal_reason_label.config(text="Effect/curse combination is invalid for this relic type. Check the debug info below for details.")
         else:
@@ -5743,11 +5742,12 @@ class ModifyRelicDialog:
 
             # Check validation status
             if relic_checker:
-                is_illegal = relic_checker.check_invalidity(relic_id, effects)
-                is_curse_illegal = relic_checker.check_curse_invalidity(relic_id, effects)
-
-                lines.append(f"is_illegal(): {is_illegal}")
-                lines.append(f"is_curse_illegal(): {is_curse_illegal}")
+                invalid_reason, invalid_effect_index = relic_checker.check_invalidity(relic_id, effects, True)
+                is_curse_illegal = is_curse_invalid(invalid_reason)
+                _invalid_idx_msg = "" if not invalid_reason else f" at effect index {invalid_effect_index + 1}"
+                _invalid_curse_idx_msg = "" if not is_curse_illegal else f" at curse index {invalid_effect_index - 2}"
+                lines.append(f"invalid_reason(): {invalid_reason.name}{_invalid_idx_msg}")
+                lines.append(f"is_curse_illegal(): {is_curse_illegal}{_invalid_curse_idx_msg}")
                 lines.append("")
 
                 # Show effect analysis
@@ -6771,11 +6771,11 @@ class ModifyRelicDialog:
         except ValueError:
             pass  # Keep original ID if invalid entry
         
-        is_illegal = relic_checker.check_invalidity(entered_id, new_effects)
-        is_curse_illegal = relic_checker.check_curse_invalidity(entered_id, new_effects)
-        if is_illegal and self.ga_handle not in relic_checker.illegal_gas:
+        invalid_reason = relic_checker.check_invalidity(entered_id, new_effects)
+        is_curse_illegal = is_curse_invalid(invalid_reason)
+        if invalid_reason and self.ga_handle not in relic_checker.illegal_gas:
             relic_checker.append_illegal(self.ga_handle, is_curse_illegal)
-        elif not is_illegal and self.ga_handle in relic_checker.illegal_gas:
+        elif not invalid_reason and self.ga_handle in relic_checker.illegal_gas:
             relic_checker.remove_illegal(self.ga_handle)
         # Apply modifications
         if modify_relic(self.ga_handle, self.item_id, new_effects, new_item_id):
