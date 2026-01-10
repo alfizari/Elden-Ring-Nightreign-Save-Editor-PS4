@@ -50,6 +50,29 @@ def get_system_language():
     return "en_US"
 
 
+def df_filter_zero_chanceWeight(effects: pd.DataFrame) -> pd.DataFrame:
+    """
+    Filter effects DataFrame to include only those with non-zero FINAL chanceWeight.
+    chanceWeight_dlc explains from Smithbox(unpacking tool):
+    The DLC new Weighting to apply during the roll.
+    -1 will use base roll weight(chanceWeight).
+
+    Args:
+        effects (pd.DataFrame): DataFrame import from AttachEffectTableParam.csv .\n
+            Can be filtered before calling this function,\n
+            but must have 'chanceWeight' and 'chanceWeight_dlc' columns.
+
+    Returns:
+        DataFrame:
+            Filtered DataFrame with effects that have non-zero chanceWeight
+    """
+    _effs = effects.copy()
+    _effs = _effs[_effs["chanceWeight_dlc"] != 0]
+    _effs = _effs[(_effs["chanceWeight"] != 0) &
+                  (_effs["chanceWeight_dlc"] != -1)]
+    return _effs
+
+
 class SourceDataHandler:
     WORKING_DIR = pathlib.Path(__file__).parent.resolve()
     PARAM_DIR = pathlib.Path(WORKING_DIR / "Resources/Param")
@@ -79,7 +102,7 @@ class SourceDataHandler:
         self.effect_table = \
             pd.read_csv(self.PARAM_DIR / "AttachEffectTableParam.csv")
         self.effect_table: pd.DataFrame = \
-            self.effect_table[["ID", "attachEffectId", "chanceWeight"]]
+            self.effect_table[["ID", "attachEffectId", "chanceWeight", "chanceWeight_dlc"]]
 
         self.relic_table = \
             pd.read_csv(self.PARAM_DIR / "EquipParamAntique.csv")
@@ -415,7 +438,7 @@ class SourceDataHandler:
         return _effects
 
     def get_pool_rollable_effects(self, pool_id: int):
-        """Get effects that can actually roll in a pool (chanceWeight != -65536 and != 0).
+        """Get effects that can actually roll in a pool (chanceWeight != 0).
 
         Effects with weight -65536 are disabled (cannot roll).
         Effects with weight 0 are class-specific effects that cannot naturally roll.
@@ -433,17 +456,17 @@ class SourceDataHandler:
         if pool_id in deep_pools:
             # Get effects with rollable weight in ANY deep pool
             _effects = self.effect_table[self.effect_table["ID"].isin(deep_pools)]
-            _effects = _effects[(_effects["chanceWeight"] != -65536) & (_effects["chanceWeight"] != 0)]
+            _effects = df_filter_zero_chanceWeight(_effects)
             return _effects["attachEffectId"].unique().tolist()
 
         # For non-deep pools, check the specific pool
         _effects = self.effect_table[self.effect_table["ID"] == pool_id]
         # Filter out disabled (-65536) and zero-weight effects
-        _effects = _effects[(_effects["chanceWeight"] != -65536) & (_effects["chanceWeight"] != 0)]
+        _effects = df_filter_zero_chanceWeight(_effects)
         return _effects["attachEffectId"].values.tolist()
 
     def get_pool_effects_strict(self, pool_id: int):
-        """Get effects that can roll in a SPECIFIC pool (chanceWeight != -65536).
+        """Get effects that can roll in a SPECIFIC pool (chanceWeight != 0).
 
         Unlike get_pool_rollable_effects(), this does NOT combine deep pools.
         Use this for strict validation to detect effects that are valid in some
@@ -452,7 +475,7 @@ class SourceDataHandler:
         if pool_id == -1:
             return []
         _effects = self.effect_table[self.effect_table["ID"] == pool_id]
-        _effects = _effects[_effects["chanceWeight"] != -65536]
+        _effects = df_filter_zero_chanceWeight(_effects)
         return _effects["attachEffectId"].values.tolist()
 
     def get_effect_pools(self, effect_id: int):
@@ -461,10 +484,10 @@ class SourceDataHandler:
         return _pools["ID"].values.tolist()
 
     def get_effect_rollable_pools(self, effect_id: int):
-        """Get all pool IDs where this effect can actually roll (chanceWeight != -65536)."""
+        """Get all pool IDs where this effect can actually roll (chanceWeight != 0)."""
         _rows = self.effect_table[self.effect_table["attachEffectId"] == effect_id]
-        # Filter out rows where chanceWeight is -65536 (cannot roll)
-        _rollable = _rows[_rows["chanceWeight"] != -65536]
+        # Filter out rows where chanceWeight is 0 (cannot roll)
+        _rollable = df_filter_zero_chanceWeight(_rows)
         return _rollable["ID"].values.tolist()
 
     def is_deep_only_effect(self, effect_id: int):
