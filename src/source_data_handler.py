@@ -415,13 +415,14 @@ class SourceDataHandler:
         return _effects
 
     def get_pool_rollable_effects(self, pool_id: int):
-        """Get effects that can actually roll in a pool (chanceWeight != -65536).
+        """Get effects that can actually roll in a pool (chanceWeight != -65536 and != 0).
 
-        Effects with weight -65536 are technically in the pool but have 0% chance
-        to roll, so they should not be considered valid for that pool.
+        Effects with weight -65536 are disabled (cannot roll).
+        Effects with weight 0 are class-specific effects that cannot naturally roll.
+        Other weights (including other negative values) are valid rollable weights.
 
         For deep pools (2000000, 2100000, 2200000), returns effects that have
-        non-zero weight in ANY of the three deep pools, since the game appears
+        rollable weight in ANY of the three deep pools, since the game appears
         to allow effects to roll on any deep relic if they're valid in any deep pool.
         """
         if pool_id == -1:
@@ -430,15 +431,15 @@ class SourceDataHandler:
         # Deep pools are interchangeable - effect valid in any deep pool is valid for all
         deep_pools = {2000000, 2100000, 2200000}
         if pool_id in deep_pools:
-            # Get effects with non-zero weight in ANY deep pool
+            # Get effects with rollable weight in ANY deep pool
             _effects = self.effect_table[self.effect_table["ID"].isin(deep_pools)]
-            _effects = _effects[_effects["chanceWeight"] != -65536]
+            _effects = _effects[(_effects["chanceWeight"] != -65536) & (_effects["chanceWeight"] != 0)]
             return _effects["attachEffectId"].unique().tolist()
 
         # For non-deep pools, check the specific pool
         _effects = self.effect_table[self.effect_table["ID"] == pool_id]
-        # Filter out effects with weight -65536 (cannot roll)
-        _effects = _effects[_effects["chanceWeight"] != -65536]
+        # Filter out disabled (-65536) and zero-weight effects
+        _effects = _effects[(_effects["chanceWeight"] != -65536) & (_effects["chanceWeight"] != 0)]
         return _effects["attachEffectId"].values.tolist()
 
     def get_pool_effects_strict(self, pool_id: int):
