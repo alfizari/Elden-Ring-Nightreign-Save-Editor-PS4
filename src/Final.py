@@ -6655,7 +6655,7 @@ class ModifyRelicDialog:
                 messagebox.showerror("Error", f"Could not get pool for relic {_cut_relic_id}: {e}")
                 return
 
-            _pool_effects = data_source.get_pool_effects(_pool_id)
+            _pool_effects = data_source.get_pool_rollable_effects(_pool_id)
 
             # For curse slots (index >= 3), if this specific pool is disabled,
             # use ALL available curse pools combined (game rearranges internally)
@@ -6665,7 +6665,7 @@ class ModifyRelicDialog:
                 for i in range(3):
                     curse_pool = _pools[3 + i]
                     if curse_pool != -1:
-                        pool_effects = data_source.get_pool_effects(curse_pool)
+                        pool_effects = data_source.get_pool_rollable_effects(curse_pool)
                         all_curse_effects.update(pool_effects)
                 _pool_effects = list(all_curse_effects)
 
