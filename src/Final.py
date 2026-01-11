@@ -4,8 +4,7 @@ import json, shutil, os , struct
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, simpledialog
 from pathlib import Path
-from openpyxl import Workbook, load_workbook
-from openpyxl.utils import get_column_letter
+# openpyxl is lazy-loaded in export/import functions to speed up startup
 from relic_checker import RelicChecker, InvalidReason, is_curse_invalid
 from source_data_handler import SourceDataHandler, get_system_language, CHARACTER_NAMES
 from typing import Optional
@@ -17,13 +16,20 @@ working_directory = os.path.dirname(os.path.abspath(__file__))
 working_directory = Path(working_directory)
 os.chdir(working_directory)
 
-# Data storage
-data_source = SourceDataHandler(language=get_system_language())
+# Data storage - SourceDataHandler is lazy-initialized to speed up startup
+data_source: Optional[SourceDataHandler] = None
 relic_checker: Optional[RelicChecker] = None
 items_json = {}
 effects_json = {}
 data = None
 userdata_path = None
+
+
+def _ensure_data_source():
+    """Lazy initialize data_source on first use"""
+    global data_source
+    if data_source is None:
+        data_source = SourceDataHandler(language=get_system_language())
 
 
 def get_base_dir():
@@ -167,6 +173,7 @@ ITEM_TYPE_RELIC = 0xC0000000
 
 def load_json_data():
     global items_json, effects_json
+    _ensure_data_source()  # Lazy init data_source
     try:
         # file_path = os.path.join(working_directory, "Resources/Json")
 
@@ -190,6 +197,7 @@ def load_json_data():
 
 def reload_language(language_code):
     global items_json, effects_json, data_source
+    _ensure_data_source()  # Lazy init data_source
     result = data_source.reload_text(language_code)
     items_json = data_source.get_relic_origin_structure()
     effects_json = data_source.get_effect_origin_structure()
@@ -869,8 +877,9 @@ def parse_vessel_assignments(file_data):
     log("VESSEL PARSING DEBUG")
     log("="*60)
 
-    # Run debug analysis first
-    debug_dump_save_analysis(file_data)
+    # NOTE: debug_dump_save_analysis removed for performance - it was adding ~3s to every file load
+    # Uncomment below line if you need detailed debug output:
+    # debug_dump_save_analysis(file_data)
 
     # Find preset names in save file
     find_preset_names(file_data)
@@ -1848,6 +1857,10 @@ def load_imported_data(path):
 
 
 def export_relics_to_excel(filepath="relics.xlsx"):
+    # Lazy import openpyxl only when needed
+    from openpyxl import Workbook
+    from openpyxl.utils import get_column_letter
+
     if not ga_relic:
         return False, "No relics found in ga_relic."
 
@@ -1925,11 +1938,14 @@ def import_relics_from_excel(filepath):
     Imports relics from an Excel file and modifies current relics to match.
     If imported list is longer than current relic list, extras are ignored.
     """
+    # Lazy import openpyxl only when needed
+    from openpyxl import load_workbook
+
     global data, ga_relic
-    
+
     if not ga_relic:
         return False, "No relics loaded in current save"
-    
+
     try:
         wb = load_workbook(filepath)
         ws = wb.active
@@ -4486,16 +4502,17 @@ class SaveEditorGUI:
             # Parse vessel assignments (maps GA handles to character names)
             parse_vessel_assignments(data)
 
-            # Load Relic Checker
+            # Initialize Relic Checker (set_illegal_relics will be called by refresh_inventory)
             relic_checker = RelicChecker(ga_relic=ga_relic,
                                          data_source=data_source)
-            relic_checker.set_illegal_relics()
+            # NOTE: Don't call set_illegal_relics() here - refresh_inventory() will call it
+
             # Read stats
             read_murks_and_sigs(data)
 
             steam_id = find_steam_id(data)
 
-            # Refresh all tabs
+            # Refresh all tabs (refresh_inventory calls set_illegal_relics)
             self.refresh_inventory()
             self.refresh_stats()
             self.refresh_vessels()
@@ -6179,12 +6196,15 @@ class ModifyRelicDialog:
             # Also count curses that are present (for validation)
             curses_present = sum(1 for e in current_effects[3:] if e not in [0, -1, 4294967295])
 
-            # Get current relic's color
+            # Get current relic's color and deep status
             current_relic_id = int(self.item_id_entry.get())
             try:
                 current_color = data_source.relic_table.loc[current_relic_id, "relicColor"]
             except KeyError:
                 current_color = None
+
+            # Check if current relic is a deep relic (ID range 2000000-2019999)
+            is_current_deep = 2000000 <= current_relic_id <= 2019999
 
             # Search for valid relics with matching structure
             relic_table = data_source.relic_table.copy()
@@ -6197,6 +6217,11 @@ class ModifyRelicDialog:
 
                 # Check if within valid range
                 if relic_id not in range(100, 2013323):
+                    continue
+
+                # Deep relics must stay deep, normal relics must stay normal
+                is_candidate_deep = 2000000 <= relic_id <= 2019999
+                if is_current_deep != is_candidate_deep:
                     continue
 
                 # Get pool configuration for this relic
@@ -6755,7 +6780,7 @@ class ModifyRelicDialog:
         # Extract effect IDs from entries
         global relic_checker
         new_effects = []
-        
+
         for entry in self.effect_entries:
             try:
                 value = int(entry.get())
@@ -6763,7 +6788,7 @@ class ModifyRelicDialog:
             except ValueError:
                 new_effects.append(0)
         new_effects = relic_checker.sort_effects(new_effects)
-        
+
         # Check if item ID was changed
         new_item_id = None
         try:
@@ -6772,9 +6797,47 @@ class ModifyRelicDialog:
                 new_item_id = entered_id
         except ValueError:
             pass  # Keep original ID if invalid entry
-        
+
+        # Block deep/normal type mismatch - never allow changing between types
+        original_is_deep = 2000000 <= self.item_id <= 2019999
+        entered_is_deep = 2000000 <= entered_id <= 2019999
+        if original_is_deep != entered_is_deep:
+            messagebox.showerror(
+                "Invalid Operation",
+                f"Cannot change from a {'Deep' if original_is_deep else 'Normal'} relic "
+                f"to a {'Deep' if entered_is_deep else 'Normal'} relic ID.\n\n"
+                "Deep and Normal relics have different effect pools and are not interchangeable."
+            )
+            return
+
         invalid_reason = relic_checker.check_invalidity(entered_id, new_effects)
         is_curse_illegal = is_curse_invalid(invalid_reason)
+
+        # Warn user if the relic will be invalid
+        if invalid_reason:
+            reason_text = {
+                InvalidReason.IN_ILLEGAL_RANGE: "Relic ID is in the illegal range (20000-30035)",
+                InvalidReason.INVALID_ITEM: "Relic ID is not in valid range",
+                InvalidReason.EFF_NOT_IN_ROLLABLE_POOL: "One or more effects cannot roll on this relic",
+                InvalidReason.EFF_MUST_EMPTY: "Effect slot must be empty for this relic",
+                InvalidReason.EFF_CONFLICT: "Effects have conflicting IDs",
+                InvalidReason.CURSE_NOT_IN_ROLLABLE_POOL: "One or more curses cannot roll on this relic",
+                InvalidReason.CURSE_MUST_EMPTY: "Curse slot must be empty for this relic",
+                InvalidReason.CURSE_REQUIRED_BY_EFFECT: "Effect requires a curse but none provided",
+                InvalidReason.CURSE_CONFLICT: "Curses have conflicting IDs",
+                InvalidReason.CURSES_NOT_ENOUGH: "Not enough curses for the effects",
+                InvalidReason.EFFS_NOT_SORTED: "Effects are not properly sorted",
+            }.get(invalid_reason, f"Unknown reason ({invalid_reason})")
+
+            warning_msg = (
+                f"This relic configuration will be INVALID:\n\n"
+                f"• {reason_text}\n\n"
+                "Invalid relics may cause issues in game.\n"
+                "Do you want to save anyway?"
+            )
+            if not messagebox.askyesno("Invalid Relic Warning", warning_msg, icon='warning'):
+                return
+
         if invalid_reason and self.ga_handle not in relic_checker.illegal_gas:
             relic_checker.append_illegal(self.ga_handle, is_curse_illegal)
         elif not invalid_reason and self.ga_handle in relic_checker.illegal_gas:
