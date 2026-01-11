@@ -67,7 +67,7 @@ def df_filter_zero_chanceWeight(effects: pd.DataFrame) -> pd.DataFrame:
             Filtered DataFrame with effects that have non-zero chanceWeight
     """
     _effs = effects.copy()
-    _effs = _effs[(_effs["chanceWeight_dlc"] != 0) |
+    _effs = _effs[(_effs["chanceWeight_dlc"] > 0) |
                   ((_effs["chanceWeight"] != 0) & (_effs["chanceWeight_dlc"] == -1))]
     return _effs
 
