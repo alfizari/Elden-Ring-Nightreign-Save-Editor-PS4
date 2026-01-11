@@ -2236,6 +2236,8 @@ class SaveEditorGUI:
             # Load JSON data
             if not load_json_data():
                 return
+            self.update_inventory_comboboxes()
+            self.update_vessel_tab_comboboxes()
 
             # Get character names
             name_to_path()
@@ -2472,6 +2474,8 @@ class SaveEditorGUI:
         """Refresh the vessels display for the selected character"""
         if data is None:
             return
+        
+        self.update_vessel_tab_comboboxes()
 
         char_name = self.vessel_char_var.get()
         loadout = get_character_loadout(char_name)
@@ -4365,20 +4369,24 @@ class SaveEditorGUI:
                 item_id = int(tags[1])
                 self.modify_dialog.load_relic(ga_handle, item_id)
 
+    def update_vessel_tab_comboboxes(self):
+        # Reload Vessel Character ComboBox Names
+        vessel_char_combobox_idx = self.vessel_char_combo.current()
+        self.vessel_char_combo['values'] = CHARACTER_NAMES
+        self.vessel_char_var.set(CHARACTER_NAMES[vessel_char_combobox_idx])
+        
+    def update_inventory_comboboxes(self):
+        # Reload Inventory Character Filter ComboBox Names
+        filter_combo_idx = self.char_filter_combo.current()
+        self.char_filter_combo['values'] = ["All"] + CHARACTER_NAMES
+        self.char_filter_var.set(self.char_filter_combo['values'][filter_combo_idx])
+
     def on_language_change(self, event=None):
         selected_name = self.lang_combobox.get()
         from source_data_handler import LANGUAGE_MAP
         lang_code = next((code for code, name in LANGUAGE_MAP.items() if name == selected_name), "en_US")
         global data_source, items_json, effects_json
         if reload_language(lang_code):
-            # Reload Vessel Character ComboBox Names
-            vessel_char_combobox_idx = self.vessel_char_combo.current()
-            self.vessel_char_combo['values'] = CHARACTER_NAMES
-            self.vessel_char_var.set(CHARACTER_NAMES[vessel_char_combobox_idx])
-            # Reload Inventory Character Filter ComboBox Names
-            filter_combo_idx = self.char_filter_combo.current()
-            self.char_filter_combo['values'] = ["All"] + CHARACTER_NAMES
-            self.char_filter_var.set(self.char_filter_combo['values'][filter_combo_idx])
             self.refresh_inventory()
             self.refresh_vessels()
         else:
@@ -4423,6 +4431,8 @@ class SaveEditorGUI:
         # Load JSON data
         if not load_json_data():
             return
+        self.update_inventory_comboboxes()
+        self.update_vessel_tab_comboboxes()
 
         # Get character names
         name_to_path()
@@ -4580,6 +4590,8 @@ class SaveEditorGUI:
     
     def refresh_inventory(self):
         global data, ga_relic, relic_checker
+        
+        self.update_inventory_comboboxes()
 
         if data is None:
             messagebox.showwarning("Warning", "No character loaded")
