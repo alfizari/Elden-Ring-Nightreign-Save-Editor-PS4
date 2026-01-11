@@ -5318,7 +5318,7 @@ class SaveEditorGUI:
 
         # First check if current ID is actually valid (effects match AND has enough curse slots)
         # Use allow_empty_curses=True because we're checking if primary effects fit the pools
-        if relic_checker._check_relic_effects_in_pool(current_id, effects):
+        if relic_checker.has_valid_order(current_id, effects):
             # Also check it has enough curse slots for effects that need curses
             try:
                 pools = data_source.get_relic_pools_seq(current_id)
@@ -5348,7 +5348,7 @@ class SaveEditorGUI:
                 continue
 
             # Check if effects are valid for this ID (allow empty curses)
-            if relic_checker._check_relic_effects_in_pool(test_id, effects):
+            if relic_checker.has_valid_order(test_id, effects):
                 return test_id
 
         return None
@@ -5759,8 +5759,8 @@ class ModifyRelicDialog:
             if relic_checker:
                 invalid_reason, invalid_effect_index = relic_checker.check_invalidity(relic_id, effects, True)
                 is_curse_illegal = is_curse_invalid(invalid_reason)
-                _invalid_idx_msg = "" if not invalid_reason else f" at effect index {invalid_effect_index + 1}"
-                _invalid_curse_idx_msg = "" if not is_curse_illegal else f" at curse index {invalid_effect_index - 2}"
+                _invalid_idx_msg = "" if invalid_effect_index == -1 else f" at effect index {invalid_effect_index + 1}"
+                _invalid_curse_idx_msg = "" if invalid_effect_index == -1 else f" at curse index {invalid_effect_index - 2}"
                 lines.append(f"invalid_reason(): {invalid_reason.name}{_invalid_idx_msg}")
                 lines.append(f"is_curse_illegal(): {is_curse_illegal}{_invalid_curse_idx_msg}")
                 lines.append("")
@@ -5823,7 +5823,7 @@ class ModifyRelicDialog:
                                     seq_valid = False
                                     issues.append(f"slot{idx}: pool=-1 but eff={eff}")
                             else:
-                                pool_effs = data_source.get_pool_effects(eff_pool)
+                                pool_effs = data_source.get_pool_effects_strict(eff_pool)
                                 if eff not in pool_effs:
                                     seq_valid = False
                                     issues.append(f"slot{idx}: eff {eff} not in pool {eff_pool}")
@@ -5841,14 +5841,14 @@ class ModifyRelicDialog:
                                         issues.append(f"curse{idx}: effect REQUIRES curse, but empty!")
                                         seq_valid = False
                                     else:
-                                        pool_curses = data_source.get_pool_effects(curse_pool)
+                                        pool_curses = data_source.get_pool_effects_strict(curse_pool)
                                         if curse not in pool_curses:
                                             issues.append(f"curse{idx}: {curse} not in pool {curse_pool}")
                                             seq_valid = False
                                 elif curse_pool != -1:
                                     # Effect doesn't need curse but slot supports one (optional)
                                     if curse not in [-1, 0, 4294967295]:
-                                        pool_curses = data_source.get_pool_effects(curse_pool)
+                                        pool_curses = data_source.get_pool_effects_strict(curse_pool)
                                         if curse not in pool_curses:
                                             issues.append(f"curse{idx}: {curse} not in pool {curse_pool}")
                                             seq_valid = False
@@ -6086,6 +6086,7 @@ class ModifyRelicDialog:
                     entry.insert(0, str(sorted_effects[i]))
                     self.on_effect_change(i)  # Update name labels
 
+                self.update_debug_info()
                 messagebox.showinfo("Auto Sort", "Effects sorted successfully!\nCurses remain paired with their corresponding effects.")
             else:
                 messagebox.showerror("Error", "Relic checker not initialized")
@@ -6432,7 +6433,7 @@ class ModifyRelicDialog:
                 return False
             else:
                 # Effect must be in its pool
-                pool_effects = data_source.get_pool_effects(effect_pool)
+                pool_effects = data_source.get_pool_effects_strict(effect_pool)
                 if eff not in pool_effects:
                     return False
 
@@ -6451,7 +6452,7 @@ class ModifyRelicDialog:
                 return False
             else:
                 # Curse must be in its pool
-                pool_curses = data_source.get_pool_effects(curse_pool)
+                pool_curses = data_source.get_pool_effects_strict(curse_pool)
                 if curse not in pool_curses:
                     return False
 
@@ -6498,7 +6499,7 @@ class ModifyRelicDialog:
                     break
                 else:
                     # Effect must be in its pool
-                    pool_effects = data_source.get_pool_effects(effect_pool)
+                    pool_effects = data_source.get_pool_effects_strict(effect_pool)
                     if eff not in pool_effects:
                         sequence_valid = False
                         break
@@ -6525,7 +6526,7 @@ class ModifyRelicDialog:
                     break
                 else:
                     # Curse must be in its pool
-                    pool_curses = data_source.get_pool_effects(curse_pool)
+                    pool_curses = data_source.get_pool_effects_strict(curse_pool)
                     if curse not in pool_curses:
                         sequence_valid = False
                         break
@@ -6672,7 +6673,7 @@ class ModifyRelicDialog:
                 messagebox.showerror("Error", f"Could not get pool for relic {_cut_relic_id}: {e}")
                 return
 
-            _pool_effects = data_source.get_pool_effects(_pool_id)
+            _pool_effects = data_source.get_pool_rollable_effects(_pool_id)
 
             # For curse slots (index >= 3), if this specific pool is disabled,
             # use ALL available curse pools combined (game rearranges internally)
@@ -6682,7 +6683,7 @@ class ModifyRelicDialog:
                 for i in range(3):
                     curse_pool = _pools[3 + i]
                     if curse_pool != -1:
-                        pool_effects = data_source.get_pool_effects(curse_pool)
+                        pool_effects = data_source.get_pool_rollable_effects(curse_pool)
                         all_curse_effects.update(pool_effects)
                 _pool_effects = list(all_curse_effects)
 
