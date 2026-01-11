@@ -6196,12 +6196,15 @@ class ModifyRelicDialog:
             # Also count curses that are present (for validation)
             curses_present = sum(1 for e in current_effects[3:] if e not in [0, -1, 4294967295])
 
-            # Get current relic's color
+            # Get current relic's color and deep status
             current_relic_id = int(self.item_id_entry.get())
             try:
                 current_color = data_source.relic_table.loc[current_relic_id, "relicColor"]
             except KeyError:
                 current_color = None
+
+            # Check if current relic is a deep relic (ID range 2000000-2019999)
+            is_current_deep = 2000000 <= current_relic_id <= 2019999
 
             # Search for valid relics with matching structure
             relic_table = data_source.relic_table.copy()
@@ -6214,6 +6217,11 @@ class ModifyRelicDialog:
 
                 # Check if within valid range
                 if relic_id not in range(100, 2013323):
+                    continue
+
+                # Deep relics must stay deep, normal relics must stay normal
+                is_candidate_deep = 2000000 <= relic_id <= 2019999
+                if is_current_deep != is_candidate_deep:
                     continue
 
                 # Get pool configuration for this relic
@@ -6772,7 +6780,7 @@ class ModifyRelicDialog:
         # Extract effect IDs from entries
         global relic_checker
         new_effects = []
-        
+
         for entry in self.effect_entries:
             try:
                 value = int(entry.get())
@@ -6780,7 +6788,7 @@ class ModifyRelicDialog:
             except ValueError:
                 new_effects.append(0)
         new_effects = relic_checker.sort_effects(new_effects)
-        
+
         # Check if item ID was changed
         new_item_id = None
         try:
@@ -6789,9 +6797,47 @@ class ModifyRelicDialog:
                 new_item_id = entered_id
         except ValueError:
             pass  # Keep original ID if invalid entry
-        
+
+        # Block deep/normal type mismatch - never allow changing between types
+        original_is_deep = 2000000 <= self.item_id <= 2019999
+        entered_is_deep = 2000000 <= entered_id <= 2019999
+        if original_is_deep != entered_is_deep:
+            messagebox.showerror(
+                "Invalid Operation",
+                f"Cannot change from a {'Deep' if original_is_deep else 'Normal'} relic "
+                f"to a {'Deep' if entered_is_deep else 'Normal'} relic ID.\n\n"
+                "Deep and Normal relics have different effect pools and are not interchangeable."
+            )
+            return
+
         invalid_reason = relic_checker.check_invalidity(entered_id, new_effects)
         is_curse_illegal = is_curse_invalid(invalid_reason)
+
+        # Warn user if the relic will be invalid
+        if invalid_reason:
+            reason_text = {
+                InvalidReason.IN_ILLEGAL_RANGE: "Relic ID is in the illegal range (20000-30035)",
+                InvalidReason.INVALID_ITEM: "Relic ID is not in valid range",
+                InvalidReason.EFF_NOT_IN_ROLLABLE_POOL: "One or more effects cannot roll on this relic",
+                InvalidReason.EFF_MUST_EMPTY: "Effect slot must be empty for this relic",
+                InvalidReason.EFF_CONFLICT: "Effects have conflicting IDs",
+                InvalidReason.CURSE_NOT_IN_ROLLABLE_POOL: "One or more curses cannot roll on this relic",
+                InvalidReason.CURSE_MUST_EMPTY: "Curse slot must be empty for this relic",
+                InvalidReason.CURSE_REQUIRED_BY_EFFECT: "Effect requires a curse but none provided",
+                InvalidReason.CURSE_CONFLICT: "Curses have conflicting IDs",
+                InvalidReason.CURSES_NOT_ENOUGH: "Not enough curses for the effects",
+                InvalidReason.EFFS_NOT_SORTED: "Effects are not properly sorted",
+            }.get(invalid_reason, f"Unknown reason ({invalid_reason})")
+
+            warning_msg = (
+                f"This relic configuration will be INVALID:\n\n"
+                f"• {reason_text}\n\n"
+                "Invalid relics may cause issues in game.\n"
+                "Do you want to save anyway?"
+            )
+            if not messagebox.askyesno("Invalid Relic Warning", warning_msg, icon='warning'):
+                return
+
         if invalid_reason and self.ga_handle not in relic_checker.illegal_gas:
             relic_checker.append_illegal(self.ga_handle, is_curse_illegal)
         elif not invalid_reason and self.ga_handle in relic_checker.illegal_gas:
